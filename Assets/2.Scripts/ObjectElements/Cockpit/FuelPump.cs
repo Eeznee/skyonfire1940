@@ -1,0 +1,72 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
+#if UNITY_EDITOR
+using UnityEditor;
+using UnityEditor.SceneManagement;
+#endif
+
+
+public class FuelPump : AnalogInteractable
+{
+    public PistonEngine engine;
+
+    public int pumpActions = 3;
+    private float pumped;
+    private float previousInput;
+
+    public override void Initialize(ObjectData d, bool firstTime)
+    {
+        base.Initialize(d, firstTime);
+        if (firstTime)
+        {
+            pumped = 0f;
+            previousInput = input = 1f;
+        }
+    }
+    protected override void VRInteraction(Vector3 gripPos, Quaternion gripRot)
+    {
+        base.VRInteraction(gripPos, gripRot);
+        if (engine.pumped) return;
+        float delta = Mathf.Max(0f, previousInput - input);
+        pumped += delta;
+        if (pumped * 1.2f > pumpActions)
+            engine.pumped = true;
+        previousInput = input;
+    }
+    protected override void Animate()
+    {
+        if (xrGrip.isSelected) return;
+        base.Animate();
+    }
+    private void Update()
+    {
+        CockpitInteractableUpdate();
+    }
+}
+#if UNITY_EDITOR
+[CustomEditor(typeof(FuelPump))]
+public class FuelPumpEditor : AnalogInteractableEditor
+{
+    public override void OnInspectorGUI()
+    {
+        base.OnInspectorGUI();
+        serializedObject.Update();
+
+        FuelPump pump = (FuelPump)target;
+        GUI.color = Color.red;
+        EditorGUILayout.HelpBox("Starter Configuration", MessageType.None);
+        GUI.color = GUI.backgroundColor;
+        pump.engine = EditorGUILayout.ObjectField("Piston Engine", pump.engine, typeof(PistonEngine), true) as PistonEngine;
+        pump.pumpActions = EditorGUILayout.IntField("Pumping Actions", pump.pumpActions);
+
+        if (GUI.changed)
+        {
+            EditorUtility.SetDirty(pump);
+            EditorSceneManager.MarkSceneDirty(pump.gameObject.scene);
+        }
+        serializedObject.ApplyModifiedProperties();
+    }
+}
+#endif
