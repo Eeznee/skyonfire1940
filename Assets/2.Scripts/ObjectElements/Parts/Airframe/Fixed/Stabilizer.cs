@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
-public class Stabilizer : Fuselage
+public class Stabilizer : Airframe
 {
     //Airfoil Settings
     public SimuFoil simuFoil;
@@ -32,6 +32,7 @@ public class Stabilizer : Fuselage
             vital = false;
             maxG = aircraft.maxG * 1.5f;
             CalculateAerofoilStructure();
+            controlSurface.miniFoil.airfoil = airfoil;
         }
     }
 
@@ -105,7 +106,6 @@ public class StabilizerEditor : Editor
         GUI.color = Color.green;
         EditorGUILayout.HelpBox("Damage Model", MessageType.None); //Damage and forces model
         GUI.color = backgroundColor;
-        stab.detachable = true;
         SerializedProperty ripOnRip = serializedObject.FindProperty("ripOnRip");
         EditorGUILayout.PropertyField(ripOnRip, true);
         stab.emptyMass = EditorGUILayout.FloatField("Mass", stab.emptyMass);
@@ -123,10 +123,8 @@ public class StabilizerEditor : Editor
             cs.maxDeflection = Mathf.Abs(EditorGUILayout.FloatField("Positive Limit", cs.maxDeflection));
             cs.minDeflection = Mathf.Abs(EditorGUILayout.FloatField("Negative Limit", -cs.minDeflection));
             cs.effectiveSpeed = EditorGUILayout.FloatField("Eff Speed Km/h", Mathf.Round(cs.effectiveSpeed * 36f) / 10f) / 3.6f;
-            cs.miniFoil.airfoil = EditorGUILayout.ObjectField("Airfoil", cs.miniFoil.airfoil, typeof(AirfoilPreset), false) as AirfoilPreset;
             cs.material = EditorGUILayout.ObjectField("Material", cs.material, typeof(PartMaterial), false) as PartMaterial;
             cs.emptyMass = EditorGUILayout.FloatField("Mass", cs.emptyMass);
-            cs.detachable = true;
             EditorGUILayout.LabelField("Control Surface Area", cs.miniFoil.mainQuad.area.ToString("0.00") + " m2");
         }
         if (GUI.changed)

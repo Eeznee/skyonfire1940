@@ -28,7 +28,6 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7667917607293212951}
   m_Father: {fileID: 0}
@@ -63,7 +62,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_IsGlobal: 1
+  isGlobal: 1
   priority: 0
   blendDistance: 0
   weight: 1
@@ -80,10 +79,9 @@ GameObject:
   - component: {fileID: 7667917607293212938}
   - component: {fileID: 7667917607293212939}
   - component: {fileID: 1813743439727284846}
-  - component: {fileID: 6286607282130388441}
-  - component: {fileID: 1453865974420296909}
   - component: {fileID: 2847990252724951149}
   - component: {fileID: 4243240089206972251}
+  - component: {fileID: 774511101844073717}
   m_Layer: 0
   m_Name: MainCam
   m_TagString: MainCamera
@@ -101,7 +99,6 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7667917607145368983}
   m_RootOrder: 0
@@ -176,42 +173,6 @@ MonoBehaviour:
   threshold: 2000
   physicsThreshold: 2000
   defaultSleepThreshold: 0.14
---- !u!114 &6286607282130388441
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7667917607293212950}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2baddbfb1a0d174cb46a7320ad53184, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  boardSize: 3
-  chunkSize: 120
-  chunkDensity: 0.03
-  groundedDepth: 0.5
-  chunkPrefab: {fileID: 160518658745356949, guid: 96ce532d605059b4fa76062600ac2731,
-    type: 3}
---- !u!114 &1453865974420296909
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7667917607293212950}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2baddbfb1a0d174cb46a7320ad53184, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  boardSize: 3
-  chunkSize: 240
-  chunkDensity: 0.03
-  groundedDepth: 0.5
-  chunkPrefab: {fileID: 160518658745356949, guid: 96ce532d605059b4fa76062600ac2731,
-    type: 3}
 --- !u!114 &2847990252724951149
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -257,3 +218,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e96fcafb9fb171f43aab7e1104a09ea1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!124 &774511101844073717
+Behaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7667917607293212950}
+  m_Enabled: 1

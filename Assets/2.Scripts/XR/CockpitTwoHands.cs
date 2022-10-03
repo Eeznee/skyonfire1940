@@ -14,41 +14,44 @@ public class CockpitTwoHands : CockpitInteractable
     {
         base.Initialize(d, firstTime);
         secondXrGrip.colliders[0].gameObject.layer = secondXrGrip.gameObject.layer = indexSelect ? 14 : 13;
-        secondXrGrip.interactionLayerMask = LayerMask.GetMask(indexSelect ? "TriggerGrab" : "GripGrab");
+        secondXrGrip.interactionLayers = LayerMask.GetMask(indexSelect ? "TriggerGrab" : "GripGrab");
         secondXrGrip.attachEaseInTime = 0f;
         secondXrGripDefaultPos = secondXrGrip.transform.localPosition;
     }
     protected override void OnGrab()
     {
         
-        Vector3 average = Vector3.Lerp(secondXrGrip.transform.position, xrGrip.transform.position,0.5f);
-        Vector3 averageDefault = Vector3.Lerp(secondXrGripDefaultPos,xrGripDefaultPos, 0.5f);
-        data.transform.InverseTransformVector(average - anchor.TransformPoint(averageDefault));
+        Vector3 average = Vector3.Lerp(secondXrGrip.transform.position, xrGrab.transform.position,0.5f);
+        Vector3 averageDefault = Vector3.Lerp(secondXrGripDefaultPos,gripDefaultPos, 0.5f);
+        data.transform.InverseTransformVector(average - grip.transform.parent.TransformPoint(averageDefault));
     }
     protected override void CockpitInteractableUpdate()
     {
-        if (!xrGrip || !secondXrGrip) return;
-        bool selected = xrGrip.isSelected && !(indexSelect && SofVrRig.instance.Grip(xrGrip) > 0.7f);
+        if (!xrGrab || !secondXrGrip) return;
+        bool selected = xrGrab.isSelected && !(indexSelect && SofVrRig.instance.Grip(xrGrab) > 0.7f);
         selected = selected && secondXrGrip.isSelected && !(indexSelect && SofVrRig.instance.Grip(secondXrGrip) > 0.7f);
         if (selected)
         {
-            if (!selectedPrevious) OnGrab();
-            Vector3 average = Vector3.Lerp(secondXrGrip.transform.position, xrGrip.transform.position, 0.5f);
-            VRInteraction(average - data.transform.TransformVector(gripOffset), xrGrip.transform.rotation);
+            if (!wasSelected) OnGrab();
+            Vector3 average = Vector3.Lerp(secondXrGrip.transform.position, xrGrab.transform.position, 0.5f);
+            VRInteraction(average - data.transform.TransformVector(gripOffset), xrGrab.transform.rotation);
         }
         else
         {
-            if (selectedPrevious) OnRelease();
-            xrGrip.transform.localPosition = xrGripDefaultPos;
+            if (wasSelected) OnRelease();
+            xrGrab.transform.localPosition = gripDefaultPos;
             secondXrGrip.transform.localPosition = secondXrGripDefaultPos;
         }
-        Animate();
-        if (GameManager.gm.vr && outline) outline.enabled = ReadySelect();
-        selectedPrevious = selected;
+        wasSelected = selected;
     }
 
     protected override bool ReadySelect()
     {
-        return xrGrip.isHovered ||secondXrGrip.isHovered;
+        return xrGrab.isHovered ||secondXrGrip.isHovered;
+    }
+
+    private void Update()
+    {
+        CockpitInteractableUpdate();
     }
 }

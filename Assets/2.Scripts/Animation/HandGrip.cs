@@ -15,6 +15,7 @@ public class HandGrip : MonoBehaviour
     public Vector3 rightHintPos;
     public Vector3 leftHintPos;
 
+    public bool fixedRotation = false;
     public float grip;
     public float trigger;
     public float thumbDown;

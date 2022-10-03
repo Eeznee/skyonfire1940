@@ -50,17 +50,25 @@ public class PostProcessFX : MonoBehaviour
     }
     private void ClearEffects()
     {
-        Color empty = new Color(0f, 0f, 0f, 0f);
-        fullScreenFilter.color = veins.color = vignetteFilter.color = empty;
-        colors.colorFilter.value = Color.white;
-
         if (kiaText.enabled) kiaText.enabled = false;
+
+        Color empty = new Color(0f, 0f, 0f, 0f);
+
+        //Lightweight
+        fullScreenFilter.color = veins.color = vignetteFilter.color = empty;
         PlayerCamera.instance.camTr.localRotation = Quaternion.identity;
 
-        Camera.main.GetUniversalAdditionalCameraData().renderPostProcessing = false;
+        //Post FX
+        colors.colorFilter.value = Color.white;
+        vignette.intensity.value = 0f;
+        aberration.intensity.value = 0f;
+        colors.saturation.value = 0f;
+        lens.intensity.value = 0f;
+        
     }
     private void UpdateLightWeight()
     {
+        //Screen Color Change
         Color fullColor = Color.Lerp(Color.black, Color.red * 0.65f, -blackout * 3f);
         fullColor = Color.Lerp(damageFilterLW, fullColor, Mathf.Abs(blackout));
         fullColor.a = Mathf.Max(Mathf.Abs(blackout), (1f - GameManager.player.crew.structureDamage) * damageVignetteIntensityLW);
@@ -68,11 +76,13 @@ public class PostProcessFX : MonoBehaviour
         if (body.Gloc()) fullColor = Color.black;
         fullScreenFilter.color = Vector4.Lerp(fullScreenFilter.color, fullColor, Time.deltaTime);
 
+        //Vignette
         Color vignetteColor = Color.Lerp(Color.black, Color.red * 0.65f, -blackout * 3f);
         vignetteColor = Color.Lerp(damageVignetteLW, vignetteColor, Mathf.Abs(blackout));
         vignetteColor.a = body.Gloc() ? 0f : fullColor.a;
         vignetteFilter.color = vignetteColor;
 
+        //Sickness
         Transform camTr = PlayerCamera.instance.camTr;
         camTr.localRotation = Quaternion.identity;
         Vector3 rot = Vector3.one * body.Sickness();
@@ -83,7 +93,6 @@ public class PostProcessFX : MonoBehaviour
     }
     private void UpdatePostFx()
     {
-        Camera.main.GetUniversalAdditionalCameraData().renderPostProcessing = true;
         //Vignette
         Color blackOutColor = Color.Lerp(Color.white, blackout > 0f ? Color.black : Color.red, Mathf.Abs(blackout * 2f));
         Color damageColor = Color.Lerp(damageVignette, Color.white, GameManager.player.crew.structureDamage);
@@ -109,7 +118,7 @@ public class PostProcessFX : MonoBehaviour
         center.x += 0.1f * Mathf.Sin(Time.time) * body.Sickness();
         center.y += 0.1f * Mathf.Cos(Mathf.PI * Time.time / 4f) * body.Sickness();
         lens.center.value = center;
-        lens.intensity.value = Mathf.Lerp(0f, -0.3f, body.Sickness());
+        lens.intensity.value += Mathf.Lerp(0f, -0.3f, body.Sickness());
         colors.saturation.value = Mathf.Lerp(colors.saturation.value, Mathf.Min(colors.saturation.value, -50f), body.Sickness());
     }
     void Update()

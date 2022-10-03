@@ -72,6 +72,11 @@ public class Gun : Part
         return counter != -Mathf.Infinity && PossibleFire();
     }
 
+    public Vector3 MagazinePosition()
+    {
+        return transform.TransformPoint(magazineLocalPos);
+    }
+
     public override void Initialize(ObjectData d, bool firstTime)
     {
         material = gunPreset.material;
@@ -147,11 +152,11 @@ public class Gun : Part
         bullet.transform.Rotate(Vector3.right * Random.Range(-1f, 1f) * dispersion);
         GameObject bubble = data.complex ? data.complex.bubble.gameObject : null;
         bullet.bubbleShotFrom = bubble;
-        bullet.BulletAction(ammuPreset.defaultMuzzleVel, 10f);
-        bullet.InitializeTrajectory(bullet.transform.forward * ammuPreset.defaultMuzzleVel + rb.velocity);
+        bullet.BulletAction(bullet.bullet.muzzleVelocity,bullet.transform.forward, 10f);
+        bullet.InitializeTrajectory(bullet.transform.forward * bullet.bullet.muzzleVelocity + rb.velocity);
         if (fuzeDistance > 50f) bullet.SetFuze(fuzeDistance);
         //Recoil and temperature
-        float energy = ammuPreset.mass / 500f * ammuPreset.defaultMuzzleVel;
+        float energy = bullet.bullet.mass / 500f * bullet.bullet.muzzleVelocity;
         rb.AddForceAtPosition(-transform.forward * energy / rb.mass, transform.position, ForceMode.VelocityChange);
         //Temperature
         temperature += gunPreset.temperaturePerShot;
@@ -191,8 +196,17 @@ public class Gun : Part
         if (gunPreset == mag.gunPreset)
         {
             magazine = mag;
-            mag.attachedGun = this;
+            magazine.attachedGun = this;
+            magazine.transform.parent = transform;
+            magazine.transform.localPosition = magazineLocalPos;
+            magazine.transform.localRotation = Quaternion.identity;
         }
+    }
+    public void RemoveMagazine()
+    {
+        magazine.attachedGun = null;
+        magazine.transform.parent = transform.root;
+        magazine = null;
     }
 }
 #if UNITY_EDITOR
@@ -209,6 +223,7 @@ public class GunEditor : Editor
         GUI.color = Color.white;
         EditorGUILayout.HelpBox("General Settings", MessageType.None);
         GUI.color = GUI.backgroundColor;
+
         gun.ejection = EditorGUILayout.ObjectField("Ejection Transform", gun.ejection, typeof(Transform), true) as Transform;
         gun.muzzle = EditorGUILayout.ObjectField("Muzzle Transform", gun.muzzle, typeof(Transform), true) as Transform;
         gun.muzzleBulletSpawn = EditorGUILayout.ObjectField("Bullet Spawn Transform", gun.muzzleBulletSpawn, typeof(Transform), true) as Transform;

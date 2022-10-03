@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
-public class Slat : Fuselage
+public class Slat : Airframe
 {
     public MiniAirfoil miniFoil;
 
@@ -96,7 +96,6 @@ public class SlatEditor : Editor
         EditorGUILayout.HelpBox("Flap", MessageType.None);
         GUI.color = backgroundColor;
         slat.lockedSpeed = EditorGUILayout.FloatField("Lock Speed", Mathf.Round(slat.lockedSpeed * 36f) / 10f) / 3.6f;
-        slat.detachable = true;
         EditorGUILayout.LabelField("Area", slat.miniFoil.mainQuad.area.ToString("0.00") + " m2");
         EditorGUILayout.LabelField("Mass", slat.emptyMass.ToString("0.00") + " kg");
 

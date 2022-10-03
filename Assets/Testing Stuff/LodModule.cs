@@ -27,7 +27,7 @@ public class LodModule : ObjectElement
     void Update()
     {
         switched = false;
-        float dis = (transform.position - PlayerCamera.instance.camTr.position).sqrMagnitude;
+        float dis = (transform.position - Camera.main.transform.position).sqrMagnitude;
 
         int newLod = 0;
         if (dis > fullSqr) newLod++;

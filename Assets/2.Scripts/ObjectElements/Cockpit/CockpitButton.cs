@@ -23,11 +23,6 @@ public class CockpitButton : CockpitInteractable
         base.OnRelease();
 
     }
-    protected override void Animate()
-    {
-        //transform.localPosition = Vector3.Lerp(defaultPos,openedPos,cannopy.state);
-        //if (bailOut) bailOut.xrGrip.colliders[0].enabled = cannopy.state > 0.7f;
-    }
 
     private void Update()
     {

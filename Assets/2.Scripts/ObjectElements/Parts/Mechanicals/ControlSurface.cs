@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
-public class ControlSurface : Fuselage
+public class ControlSurface : Airframe
 {
     public enum Type { Aileron,Elevator,Rudder,Ruddervator}
     public Type type;
@@ -111,7 +111,6 @@ public class ControlSurfaceEditor : Editor
         EditorGUILayout.HelpBox("Control Surface", MessageType.None);
         GUI.color = backgroundColor;
         surface.emptyMass = EditorGUILayout.FloatField("Mass", surface.emptyMass);
-        surface.detachable = true;
         surface.maxDeflection = Mathf.Abs(EditorGUILayout.FloatField("Positive Limit", surface.maxDeflection));
         surface.minDeflection = Mathf.Abs(EditorGUILayout.FloatField("Negative Limit", -surface.minDeflection));
         surface.effectiveSpeed = EditorGUILayout.FloatField("Eff Speed Km/h", Mathf.Round(surface.effectiveSpeed * 36f) / 10f) / 3.6f;

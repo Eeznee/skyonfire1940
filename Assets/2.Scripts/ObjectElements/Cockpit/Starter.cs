@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
-public class Starter : AnalogInteractable
+public class Starter : ButtonInteractable
 {
     public PistonEngine engine;
 
@@ -14,11 +14,12 @@ public class Starter : AnalogInteractable
     {
         CockpitInteractableUpdate();
         if (activated) engine.TryIgnite();
+        Animate(input);
     }
 }
 #if UNITY_EDITOR
 [CustomEditor(typeof(Starter))]
-public class StarterEditor : AnalogInteractableEditor
+public class StarterEditor : ButtonInteractableEditor
 {
     public override void OnInspectorGUI()
     {

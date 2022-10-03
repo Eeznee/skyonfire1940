@@ -24,15 +24,12 @@ public class CannopySlider : CockpitTwoHands
         base.OnRelease();
         cannopy.stateInput = cannopy.state;
     }
-    protected override void Animate()
-    {
-        transform.localPosition = Vector3.Lerp(defaultPos,openedPos,cannopy.state);
-        if (bailOut) bailOut.xrGrip.colliders[0].enabled = bailOut.secondXrGrip.colliders[0].enabled = cannopy.state > 0.7f;
-    }
-
     private void Update()
     {
         CockpitInteractableUpdate();
+
+        transform.localPosition = Vector3.Lerp(defaultPos, openedPos, cannopy.state);
+        if (xrGrab && bailOut) bailOut.xrGrab.colliders[0].enabled = bailOut.secondXrGrip.colliders[0].enabled = cannopy.state > 0.7f;
     }
 }
 

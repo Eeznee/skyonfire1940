@@ -1,8 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+using UnityEditor.SceneManagement;
+#endif
 
-public class Magazine : CockpitInteractable
+public class Magazine : ObjectElement
 {
     public GunPreset gunPreset;
     public int capacity = 100;
@@ -10,11 +14,10 @@ public class Magazine : CockpitInteractable
     public Vector3 ejectVector = new Vector3(0f,0.2f,0f);
     public int[] markers;
     public GameObject[] markersGameObjects;
-    public MeshRenderer rend;
 
+    [HideInInspector] public HandGrip grip;
     [HideInInspector] public Gun attachedGun;
     [HideInInspector] public MagazineStock attachedStock;
-    Gun[] guns;
 
     public override float Mass()
     {
@@ -24,10 +27,9 @@ public class Magazine : CockpitInteractable
     public override void Initialize(ObjectData d, bool firstTime)
     {
         base.Initialize(d, firstTime);
-        guns = data.GetComponentsInChildren<Gun>();
         if (firstTime)
         {
-            rend = GetComponentInChildren<MeshRenderer>();
+            grip = GetComponentInChildren<HandGrip>();
             ammo = capacity;
         }
     }
@@ -45,37 +47,6 @@ public class Magazine : CockpitInteractable
         return true;
     }
 
-    protected override void VRInteraction(Vector3 gripPos, Quaternion gripRot)
-    {
-        transform.SetPositionAndRotation(gripPos, gripRot);
-
-        //The magazine is removed initially
-        if (attachedGun) attachedGun.magazine = null;
-        attachedGun = null;
-
-        //Check every gun to load into
-        for (int i = 0; i < guns.Length; i++)
-        {
-            Gun g = guns[i];
-            Vector3 magPos = g.transform.TransformPoint(g.magazineLocalPos);
-            if (g.gunPreset == gunPreset && g.magazine == null)
-            {
-                if ((magPos - transform.position).sqrMagnitude < 0.01f)
-                    g.LoadMagazine(this);//Attach Magazine to the gun
-            }
-        }
-    }
-
-    protected override void Animate()
-    {
-        if (attachedGun && sofObject)
-        {
-            transform.parent = attachedGun.transform;
-            transform.localPosition = attachedGun.magazineLocalPos;
-            transform.localRotation = Quaternion.identity;
-        }
-    }
-
     public Vector3 MagTravelPos(Vector3 startPos, Vector3 endPos,float animTime)
     {
         float distance = (startPos - endPos).magnitude;
@@ -85,3 +56,24 @@ public class Magazine : CockpitInteractable
         return travelOffset + startPos + ejectVector * Mathf.Clamp01(animTime*distance * 3f);
     }
 }
+
+#if UNITY_EDITOR
+[CustomEditor(typeof(Magazine))]
+public class MagazineEditor : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        base.OnInspectorGUI();
+        serializedObject.Update();
+
+        Magazine mag = (Magazine)target;
+
+        if (GUI.changed)
+        {
+            EditorUtility.SetDirty(mag);
+            EditorSceneManager.MarkAllScenesDirty();
+        }
+        serializedObject.ApplyModifiedProperties();
+    }
+}
+#endif

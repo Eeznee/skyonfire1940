@@ -9,22 +9,25 @@ public class RealTimeGrass : MonoBehaviour
     public float chunkDensity = 0.2f;
     public float groundedDepth = 0.5f;
 
-    int sides;
-    float maxCompDistanceDestroy;
-    float maxCompDistanceSpawn;
-    float fullGrassDistance;
+    private int sides;
+    private float maxCompDistanceDestroy;
+    private float maxCompDistanceSpawn;
+    private float fullGrassDistance;
 
     public GrassChunk chunkPrefab;
-    GrassChunk refChunk;
-    GrassChunk[][] chunks;
+    private GrassChunk refChunk;
+    private GrassChunk[][] chunks;
 
-
+    private GrassChunk InstantiateChunk(Vector3 pos)
+    {
+        return Instantiate(chunkPrefab, pos, Quaternion.identity, transform);
+    }
     void Start()
     {
         maxCompDistanceDestroy = Mathf.Pow((boardSize - 0.95f) * chunkSize, 2);
         maxCompDistanceSpawn = Mathf.Pow((boardSize - 1.05f) * chunkSize, 2);
         fullGrassDistance = maxCompDistanceSpawn / 4f;
-        chunkPrefab = Instantiate(chunkPrefab, GameManager.player.tr.position, Quaternion.identity);
+        chunkPrefab = InstantiateChunk(GameManager.player.tr.position);
         chunkPrefab.CreateChunk(chunkSize, chunkDensity);
         sides = 2 * boardSize + 1;
 
@@ -33,7 +36,7 @@ public class RealTimeGrass : MonoBehaviour
 
     private void Initialize()
     {
-        refChunk = Instantiate(chunkPrefab, GameManager.player.tr.position, Quaternion.identity);
+        refChunk = InstantiateChunk(GameManager.player.tr.position);
         chunks = new GrassChunk[sides][];
 
         for (int x = 0; x < sides; x++)
@@ -42,7 +45,7 @@ public class RealTimeGrass : MonoBehaviour
             for (int y = 0; y < sides; y++)
             {
                 if (x == boardSize && y == boardSize) chunks[x][y] = refChunk;
-                else chunks[x][y] = Instantiate(chunkPrefab, refChunk.transform.position + Mathv.HexTilePosition(x, y, chunkSize, boardSize), Quaternion.identity);
+                else chunks[x][y] = InstantiateChunk(refChunk.transform.position + Mathv.HexTilePosition(x, y, chunkSize, boardSize));
                 chunks[x][y].WakeChunk();
             }
         }
@@ -90,7 +93,7 @@ public class RealTimeGrass : MonoBehaviour
                     float dis = (pos- playerPos).sqrMagnitude;
                     if (dis < maxCompDistanceSpawn)
                     {
-                        chunks[x][y] = Instantiate(chunkPrefab, pos, Quaternion.identity);
+                        chunks[x][y] = InstantiateChunk(pos);
                         chunks[x][y].WakeChunk();
                     }
                 }

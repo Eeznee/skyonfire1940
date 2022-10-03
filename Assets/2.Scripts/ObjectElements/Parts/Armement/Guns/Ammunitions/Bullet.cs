@@ -11,9 +11,13 @@ public class Bullet : MonoBehaviour
     public AmmunitionPreset.BulletPreset bullet;
     public GameObject bubbleShotFrom;
     public LineRenderer line;
-    
+    public TrailRenderer trail;
+
     private float counter = 0f;
-    float fuzeDisSquared;
+    private float fuzeDisSquared;
+    private float dragCoeff;
+    private float tracerOffset;
+    private Vector3 tracerDir;
 
     private Vector3[] worldPos;
     private Vector3 previousPos;
@@ -24,7 +28,7 @@ public class Bullet : MonoBehaviour
     private Vector3 initVelNormalized;
     private float initSpeed;
 
-    private float dragCoeff;
+
 
     public void SetFuze(float dis)
     {
@@ -37,32 +41,23 @@ public class Bullet : MonoBehaviour
         previousPos = initPosition = transform.position;
         initVelocity = velocity = vel;
         initSpeed = initVelocity.magnitude;
-        initVelNormalized = transform.forward = vel/initSpeed;
-        dragCoeff = Mathf.Pow(ammo.caliber / 2000, 2) * Mathf.PI * 0.1f / (ammo.mass / 1000f);
+        tracerDir = transform.forward;
+        initVelNormalized = transform.forward = vel / initSpeed;
+        dragCoeff = Mathf.Pow(ammo.caliber / 2000f, 2) * Mathf.PI * 0.1f / (ammo.mass / 1000f);
 
         //Compute the world poses
         float logConst = Mathf.Log(1f / initSpeed) / dragCoeff;
         worldPos = new Vector3[points];
         for (int i = 0; i < points; i++)
         {
-            float t = (float) i / points * lifetime;
+            float t = (float)i / points * lifetime;
             worldPos[i] = initPosition;
             worldPos[i] += Physics.gravity / 2f * t * t;
             worldPos[i] += initVelocity.normalized * (Mathf.Log(dragCoeff * t + 1f / initSpeed) / dragCoeff - logConst);
         }
-
-        //Tracer Effect
-        if (line)
-        {
-            line.positionCount = 4;
-            float offset = Random.Range(0f, 30f);
-            float scatterPos = Random.Range(ammo.tracerLength * 0.1f, ammo.tracerLength * 0.9f);
-            Vector2 scatterOffset = Random.insideUnitCircle.normalized * Random.Range(0.05f, 0.15f);
-            line.SetPosition(0, new Vector3(0, 0, offset));
-            line.SetPosition(1, new Vector3(scatterOffset.x, scatterOffset.y, scatterPos + offset));
-            line.SetPosition(2, new Vector3(0, 0, scatterPos + 0.3f + offset));
-            line.SetPosition(3, new Vector3(0, 0, ammo.tracerLength + offset));
-        }
+        float updateDis = initSpeed * Time.fixedDeltaTime;
+        tracerOffset = Random.Range(0f, updateDis) + updateDis * 0.2f;
+        UpdateTracer();
     }
 
     void FixedUpdate()
@@ -75,21 +70,42 @@ public class Bullet : MonoBehaviour
         Vector3 next = worldPos[prevIndex + 1];
         Vector3 pos = Vector3.Lerp(prev, next, counter * points / lifetime - prevIndex);
         transform.position += pos - previousPos;
+        transform.forward = pos - previousPos;
         previousPos = pos;
 
         velocity = initVelNormalized / (dragCoeff * counter + 1 / initSpeed) + Physics.gravity * counter;
         if (transform.position.y < 0f) WaterImpact();
 
-        if (fuzeDisSquared > 50f*50f)
+        if (fuzeDisSquared > 50f * 50f)
         {
             float dis = (transform.position - initPosition).sqrMagnitude;
             if (dis > fuzeDisSquared) SelfDestruct(false);
         }
         else if (counter > lifetime)
             SelfDestruct(false);
+
+        UpdateTracer();
+    }
+    private void UpdateTracer()
+    {
+        if (line && Time.timeScale != 0f)
+        {
+            Vector3 tailPos = transform.position + tracerDir * tracerOffset;
+            float length = ammo.tracerLength * Time.timeScale + ammo.tracerWidth * 3f;
+            Vector3 frontPos = tailPos + tracerDir * length;
+            line.SetPosition(0, tailPos);
+            line.SetPosition(1, frontPos);
+
+            Vector3 midPos = Vector3.Lerp(tailPos, frontPos, Random.value);
+            Vector3 midOffset = Random.insideUnitSphere * ammo.tracerScatter * ammo.tracerWidth * Time.timeScale;
+            line.SetPosition(0, tailPos);
+            line.SetPosition(1, midPos + midOffset / 2f);
+            line.SetPosition(2, midPos - midOffset / 2f);
+            line.SetPosition(3, frontPos);
+        }
     }
 
-    public void Ricochet(RaycastHit hit,float vel)
+    public void Ricochet(RaycastHit hit, float vel)
     {
         transform.position = hit.point;
         if (bullet.explosive) SelfDestruct(true);
@@ -109,18 +125,20 @@ public class Bullet : MonoBehaviour
     {
         if ((bullet.explosive && explodes) || bullet.fuze)
         {
-            Explosion.ExplosionDamage(transform.position, bullet.tntMass/1000f, ammo.mass);
+            Explosion.ExplosionDamage(transform.position, bullet.tntMass / 1000f, ammo.mass);
             Destroy(Instantiate(ammo.bulletHits.explosiveHit, transform.position, Quaternion.identity), 10f);
         }
         Destroy(gameObject);
     }
 
     //Compute bullet raycasting damages, return true if something has been hit
-    public bool BulletAction(float relativeSpeed, float range)
+    public bool BulletAction(float relativeSpeed, Vector3 direction, float range)
     {
+
+
         //Cast and sort hits
         RaycastHit[] hits;
-        hits = Physics.RaycastAll(transform.position, transform.forward, range, LayerMask.GetMask("SofObject"));
+        hits = Physics.RaycastAll(transform.position, direction, range, LayerMask.GetMask("SofObject"));
         if (hits.Length == 0) return false;
         for (int i = 0; i < hits.Length; i++) //Sort hits in order
         {
@@ -135,10 +153,8 @@ public class Bullet : MonoBehaviour
 
         //Hit audio
         if (GameManager.player.tr == hits[0].collider.transform.root)
-        {
-            AudioClip clip = ammo.bulletHits.GetClip(bullet.explosive);
-            GameManager.player.sofObj.avm.persistent.local.PlayOneShot(clip, 1f);
-        }
+            GameManager.player.sofObj.avm.persistent.local.PlayOneShot(ammo.bulletHits.GetClip(bullet.explosive), 1f);
+
 
         //Particles
         Destroy(Instantiate(bullet.AircraftHit(), hits[0].point, Quaternion.LookRotation(hits[0].normal), hits[0].collider.transform), 10f);
@@ -159,7 +175,7 @@ public class Bullet : MonoBehaviour
                 if (!part.material) Debug.LogError(part.name + " has no part material");
                 float armor = Random.Range(0.8f, 1.2f) * part.material.armor / Mathf.Cos(alpha * Mathf.Deg2Rad);
                 //If penetration occurs
-                if (penetrationPower > armor) 
+                if (penetrationPower > armor)
                 {
                     part.Damage(energy / 1000f, ammo.caliber, bullet.fireMultiplier);
 
@@ -169,7 +185,7 @@ public class Bullet : MonoBehaviour
                 }
                 else //Try ricochet if penetration fails
                 {
-                    Ricochet(hit,relativeSpeed);
+                    Ricochet(hit, relativeSpeed);
                     return true;
                 }
             }
@@ -186,7 +202,7 @@ public class Bullet : MonoBehaviour
     void WaterImpact()
     {
         transform.Translate(transform.position.y * Vector3.down);
-        Destroy(Instantiate(ammo.bulletHits.waterHit, transform.position, Quaternion.identity),10f) ;
+        Destroy(Instantiate(ammo.bulletHits.waterHit, transform.position, Quaternion.identity), 10f);
         Destroy(gameObject);
     }
     void OnTriggerEnter(Collider obj)
@@ -198,21 +214,24 @@ public class Bullet : MonoBehaviour
         {
             Ray ray = new Ray(transform.position, transform.forward);
             RaycastHit hit;
-            if (!Physics.Raycast(ray, out hit, 15f, LayerMask.GetMask("Default","Terrain"))) return;
+            if (!Physics.Raycast(ray, out hit, 15f, LayerMask.GetMask("Default", "Terrain"))) return;
 
             Destroy(Instantiate(bullet.EnvironmentHit(obj), hit.point, Quaternion.LookRotation(hit.normal)), 10f);
             SofSimple sofSimple = hit.collider.transform.parent ? hit.collider.transform.parent.GetComponent<SofSimple>() : null;
             if (sofSimple && sofSimple.bulletAffected)
                 sofSimple.BulletDamage(ammo.mass * speed * speed / 2000f);
 
-            Ricochet(hit,velocity.magnitude);
+            Ricochet(hit, velocity.magnitude);
         }
 
         //Object with complex damage system have been hit
         else if (obj.gameObject != bubbleShotFrom)
         {
-            Rigidbody rb = obj.transform.root.GetComponent<Rigidbody>();
-            BulletAction((velocity - rb.velocity).magnitude,35f);
+            
+            Vector3 relativeVelocity = velocity - obj.transform.root.GetComponent<Rigidbody>().velocity;
+            float relativeSpeed = relativeVelocity.magnitude;
+            BulletAction(relativeSpeed,relativeVelocity , 35f);
         }
+
     }
 }

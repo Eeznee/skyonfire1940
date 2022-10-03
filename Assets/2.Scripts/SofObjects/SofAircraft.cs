@@ -25,6 +25,7 @@ public class SofAircraft : SofComplex
     public Stabilizer hStab;
     public Stabilizer vStab;
     public AirfoilPreset foil;
+    public MaterialsList materials;
 
     //Physics
     public Vector3 emptyCOI = new Vector3(5f, 5f, 3f);
@@ -74,7 +75,7 @@ public class SofAircraft : SofComplex
         if (gear) { gear.SetInstant(spawntype != Spawner.Type.InAir); }
         foreach (HardPoint point in hardPoints) point.LoadGroup();
 
-        GameManager.ui.CreateMarker(this);
+        if (GameManager.ui) GameManager.ui.CreateMarker(this);
     }
     public override void Awake()
     {
@@ -102,7 +103,7 @@ public class SofAircraft : SofComplex
     {
         Transform tr = col.GetContact(0).thisCollider.transform;
         tr = tr.name.Contains("Skin") ? tr.parent : tr;
-        Fuselage collided = tr.GetComponent<Fuselage>();
+        Airframe collided = tr.GetComponent<Airframe>();
         if (collided && col.impulse.magnitude > 10000f) collided.Rip();
     }
 
@@ -127,8 +128,10 @@ public class SofAircraft : SofComplex
         bool destroyedEngine = true;
         bool allOn = true;
         bool allOff = true;
+        throttle = 0f;
         foreach (Engine e in engines)
         {
+            throttle = Mathf.Max(throttle, e.throttleInput);
             destroyedEngine = destroyedEngine && e.ripped;
             allOn = allOn && e.Working();
             allOff = allOff && !e.Working();
@@ -363,6 +366,9 @@ public class SofAircraftEditor : Editor
         GUI.color = Color.green;
         EditorGUILayout.HelpBox("References", MessageType.None);
         GUI.color = GUI.backgroundColor;
+        aircraft.materials = EditorGUILayout.ObjectField("Materials", aircraft.materials, typeof(MaterialsList), true) as MaterialsList;
+        if (aircraft.materials && GUILayout.Button("Apply materials"))
+            aircraft.materials.ApplyMaterials(aircraft);
         aircraft.flaps = EditorGUILayout.ObjectField("Flaps Hydraulics", aircraft.flaps, typeof(HydraulicSystem), true) as HydraulicSystem;
         aircraft.gear = EditorGUILayout.ObjectField("Gear Hydraulics", aircraft.gear, typeof(HydraulicSystem), true) as HydraulicSystem;
         aircraft.airBrakes = EditorGUILayout.ObjectField("Air Brakes Hydraulics", aircraft.airBrakes, typeof(HydraulicSystem), true) as HydraulicSystem;

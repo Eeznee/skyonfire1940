@@ -13,6 +13,7 @@ public class Airfoil : Airframe
     public AirfoilPreset airfoil;
     public float oswald = 0.75f;
     public AirfoilSkin skin;
+    public Mesh skinMesh;
     public Airfoil parent;
     public Airfoil child;
     public Airfoil root;
@@ -54,6 +55,10 @@ public class Airfoil : Airframe
         if (!aircraft) return base.MaxSpeed();
         return aircraft.maxSpeed * FlightModel.OverSpeedCoeff(parent, child);
     }
+    public override float RecalculateArea()
+    {
+        return Mathf.Abs(tr.localScale.x) * tr.localScale.z * 0.5f * (1f + tipWidth / 100f);
+    }
     private void GetReferences()
     {
         tr = FlightModel.AirfoilShapeTransform(transform, tr);
@@ -85,6 +90,20 @@ public class Airfoil : Airframe
         {
             vital = child;
             maxG = aircraft.maxG * FlightModel.OverGCoeff(parent, child);
+
+            if (skinMesh)
+            {
+                skin = new GameObject(name + " Skin").AddComponent<AirfoilSkin>();
+                skin.transform.SetParent(transform);
+                skin.transform.SetPositionAndRotation(transform.position, transform.rotation);
+                MeshCollider meshCo = skin.gameObject.AddComponent<MeshCollider>();
+                meshCo.sharedMesh = skinMesh;
+                meshCo.isTrigger = meshCo.convex = true;
+                skin.material = aircraft.materials.Material(skin);
+                skin.gameObject.layer = 9;
+                skin.Initialize(data, true);
+            }
+
             if (!child) //Tip
             {
                 Vector3 tipPos = tr.TransformPoint(rootTipLocal * 0.55f);
@@ -138,7 +157,6 @@ public class Airfoil : Airframe
         }
         if (child) child.CalculateAerofoilStructure();
     }
-
     void FixedUpdate()
     {
         Vector3 rootTip = tr.TransformDirection(rootTipLocal);
@@ -155,7 +173,7 @@ public class Airfoil : Airframe
         ForcesStress(true, true);
 
         if (tipTrail && aircraft) 
-            tipTrail.emitting = data.ias > 20f && alpha > airfoil.maxAngle * 0.8f && alpha < airfoil.maxAngle * 1.1f && complex.lod.LOD() <= 2;
+            tipTrail.emitting = data.ias > 20f && alpha * data.ias > airfoil.maxAngle * 0.8f * 50f && complex.lod.LOD() <= 2;
     }
 
 
@@ -215,7 +233,7 @@ public class AerofoilReEditor : Editor
 
         airfoil.tr = FlightModel.AirfoilShapeTransform(airfoil.transform, airfoil.tr);
         airfoil.CalculateAerofoilStructure();
-        airfoil.skin = EditorGUILayout.ObjectField("Airfoil Skin", airfoil.skin, typeof(AirfoilSkin), true) as AirfoilSkin;
+        airfoil.skinMesh = EditorGUILayout.ObjectField("Airfoil Skin", airfoil.skinMesh, typeof(Mesh), true) as Mesh;
         if (!airfoil.parent)
         {
             airfoil.airfoil = EditorGUILayout.ObjectField("Airfoil", airfoil.airfoil, typeof(AirfoilPreset), false) as AirfoilPreset;
@@ -230,7 +248,6 @@ public class AerofoilReEditor : Editor
         GUI.color = Color.green;
         EditorGUILayout.HelpBox("Damage Model", MessageType.None); //Damage and forces model
         GUI.color = backgroundColor;
-        airfoil.detachable = true;
         airfoil.material = EditorGUILayout.ObjectField("Material", airfoil.material, typeof(PartMaterial), false) as PartMaterial;
         SerializedProperty ripOnRip = serializedObject.FindProperty("ripOnRip");
         EditorGUILayout.PropertyField(ripOnRip, true);
@@ -261,7 +278,6 @@ public class AerofoilReEditor : Editor
                         cs.maxDeflection = Mathf.Abs(EditorGUILayout.FloatField("Positive Limit", cs.maxDeflection));
                         cs.minDeflection = Mathf.Abs(EditorGUILayout.FloatField("Negative Limit", -cs.minDeflection));
                         cs.effectiveSpeed = EditorGUILayout.FloatField("Eff Speed Km/h", Mathf.Round(cs.effectiveSpeed * 36f) / 10f) / 3.6f;
-                        cs.detachable = true;
                         EditorGUILayout.LabelField("Control Surface Area", cs.miniFoil.mainQuad.area.ToString("0.00") + " m2");
                     }
                     break;
@@ -284,7 +300,6 @@ public class AerofoilReEditor : Editor
                             if (flap)
                             {
                                 flap.extendedRipSpeed = refFlap.extendedRipSpeed;
-                                flap.detachable = true;
                                 flap.emptyMass = airfoil.flapsTotalMass * flap.area / airfoil.flapsTotalArea;
                             }
                     }
@@ -303,7 +318,6 @@ public class AerofoilReEditor : Editor
                     airfoil.slat.extendedSpeed = EditorGUILayout.FloatField("Extended Speed", airfoil.slat.extendedSpeed);
                     airfoil.slat.lockedSpeed = EditorGUILayout.FloatField("Locked Speed", airfoil.slat.lockedSpeed);
                     airfoil.slat.straightLockedSpeed = EditorGUILayout.FloatField("Straight Locked Speed", airfoil.slat.straightLockedSpeed);
-                    airfoil.slat.detachable = true;
                     break;
             }
         }

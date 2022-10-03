@@ -6,12 +6,21 @@ using UnityEditor.SceneManagement;
 
 public class AirfoilSkin : Airframe
 {
+    Airfoil parentAirfoil;
     const float caliberToHoleRatio = 25f;
     public override void Initialize(ObjectData d,bool firstTime)
     {
         base.Initialize(d,firstTime);
         emptyMass = 0f;
-        detachable = false;
+        if (firstTime)
+        {
+            parentAirfoil = transform.parent.GetComponent<Airfoil>();
+            if (!parentAirfoil) Debug.LogError("No Parent Foil");
+        }
+    }
+    public override bool Detachable()
+    {
+        return false;
     }
     public override void Damage(float damage, float caliber, float fireCoeff)
     {

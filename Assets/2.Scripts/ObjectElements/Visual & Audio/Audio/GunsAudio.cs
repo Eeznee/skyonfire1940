@@ -24,11 +24,14 @@ public class GunsAudio : AudioVisual
     {
         base.Initialize(d,firstTime);
 
-        if (references.Length == 0) Debug.LogError("This Gun Audio has no reference gun", this);
+        if (firstTime)
+        {
+            if (references.Length == 0) Debug.LogError("This Gun Audio has no reference gun", this);
 
-        gunSource = new SofAudio(avm, gunLoop, SofAudioGroup.External, true, false);
-        cockpitGunSource = new SofAudio(avm, cockpitGunLoop, SofAudioGroup.Cockpit, false,false);
-        gunSource.source.dopplerLevel = cockpitGunSource.source.dopplerLevel = 0f;
+            gunSource = new SofAudio(avm, gunLoop, SofAudioGroup.External, true, false);
+            cockpitGunSource = new SofAudio(avm, cockpitGunLoop, SofAudioGroup.Cockpit, false, false);
+            gunSource.source.dopplerLevel = cockpitGunSource.source.dopplerLevel = 0f;
+        }
     }
 
     public void Update()

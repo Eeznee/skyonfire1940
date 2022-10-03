@@ -2,149 +2,142 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
-using UnityEngine.InputSystem;
-
+using UnityEngine.XR.Interaction.Toolkit.Inputs;
+using UnityEngine.SceneManagement;
+[RequireComponent(typeof(InputActionManager))]
 public class SofVrRig : MonoBehaviour
 {
     //References
     public static SofVrRig instance;
-    private SofAircraft aircraft;
-    private CrewMember crew;
-    private Transform camTr;
-    private Transform aircraftTr;
-    private Transform crewTr;
-    private XRRig rig;
-
-    public InputActionProperty rightGripButton;
-    public InputActionProperty rightTriggerButton;
-    public InputActionProperty rightPrimaryButton;
-    public InputActionProperty rightSecondaryButton;
-
-    public InputActionProperty leftGripButton;
-    public InputActionProperty leftTriggerButton;
-    public InputActionProperty leftPrimaryButton;
-    public InputActionProperty leftSecondaryButton;
+    public XRGrabInteractable xrGrab;
+    private XRActions actions;
 
     public XRDirectInteractor rightHand;
     public XRDirectInteractor rightIndex;
     public XRDirectInteractor leftHand;
     public XRDirectInteractor leftIndex;
+
+    [HideInInspector] public CockpitInteractable rightHandTarget;
+    [HideInInspector] public CockpitInteractable leftHandTarget;
+
     [SerializeField] private HandGrip xrRightGrip;
     [SerializeField] private HandGrip xrLeftGrip;
     [HideInInspector] public HandGrip rightHandGrip;
     [HideInInspector] public HandGrip leftHandGrip;
-    [HideInInspector] public XRBaseInteractable rightHandTarget;
-    [HideInInspector] public XRBaseInteractable leftHandTarget;
-    [HideInInspector] public XRBaseInteractable rightIndexTarget;
-    [HideInInspector] public XRBaseInteractable leftIndexTarget;
+
     [HideInInspector] public Vector3 rightHandDelta;
     [HideInInspector] public Vector3 leftHandDelta;
     private Vector3 previousRightHandPos = Vector3.zero;
     private Vector3 previousLeftHandPos = Vector3.zero;
 
-
+    public static void EnableVR(SofObject obj)
+    {
+        CockpitInteractable[] interactables = obj.GetComponentsInChildren<CockpitInteractable>();
+        foreach (CockpitInteractable c in interactables) c.EnableVR(instance.xrGrab);
+        instance.actions.Enable();
+    }
+    public static void DisableVR(SofObject obj)
+    {
+        CockpitInteractable[] interactables = obj.GetComponentsInChildren<CockpitInteractable>();
+        foreach (CockpitInteractable c in interactables) c.DisableVR();
+        instance.actions.Disable();
+    }
     public float Grip(XRGrabInteractable grab)
     {
-        if (grab == rightHand.selectTarget) return Grip(true);
-        if (grab == leftHand.selectTarget) return Grip(false);
+        IXRInteractable ixr = grab;
+        if (ixr == rightHand.firstInteractableSelected) return actions.RightHand.GripValue.ReadValue<float>();
+        if (ixr == leftHand.firstInteractableSelected) return actions.LeftHand.GripValue.ReadValue<float>();
         return 0f;
-    }
-    public float Grip(bool right)
-    {
-        if (right) return rightGripButton.action.ReadValue<float>();
-        return leftGripButton.action.ReadValue<float>();
     }
     public float Trigger(XRGrabInteractable grab)
     {
-        if (grab == rightHand.selectTarget) return Trigger(true);
-        if (grab == leftHand.selectTarget) return Trigger(false);
+        IXRInteractable ixr = grab;
+        if (ixr == rightHand.firstInteractableSelected) return actions.RightHand.TriggerValue.ReadValue<float>();
+        if (ixr == leftHand.firstInteractableSelected) return actions.LeftHand.TriggerValue.ReadValue<float>();
         return 0f;
-    }
-    public float Trigger(bool right)
-    {
-        if (right) return rightTriggerButton.action.ReadValue<float>();
-        return leftTriggerButton.action.ReadValue<float>();
     }
     public bool PrimaryButton(XRGrabInteractable grab)
     {
-        if (grab == rightHand.selectTarget) return PrimaryButton(true);
-        if (grab == leftHand.selectTarget) return PrimaryButton(false);
+        IXRInteractable ixr = grab;
+        if (ixr == rightHand.firstInteractableSelected) return actions.RightHand.ButtonIn.ReadValue<float>() > 0.5f;
+        if (ixr == leftHand.firstInteractableSelected) return actions.LeftHand.ButtonIn.ReadValue<float>() > 0.5f;
         return false;
-    }
-    public bool PrimaryButton(bool right)
-    {
-        if (right) return rightPrimaryButton.action.ReadValue<float>() > 0.5f;
-        return rightPrimaryButton.action.ReadValue<float>() > 0.5f;
     }
     public bool SecondaryButton(XRGrabInteractable grab)
     {
-        if (grab == rightHand.selectTarget) return SecondaryButton(true);
-        if (grab == leftHand.selectTarget) return SecondaryButton(false);
+        IXRInteractable ixr = grab;
+        if (ixr == rightHand.firstInteractableSelected) return actions.RightHand.ButtonOut.ReadValue<float>() > 0.5f;
+        if (ixr == leftHand.firstInteractableSelected) return actions.LeftHand.ButtonOut.ReadValue<float>() > 0.5f;
         return false;
     }
-    public bool SecondaryButton(bool right)
+    public Vector2 Stick(XRGrabInteractable grab)
     {
-        if (right) return rightSecondaryButton.action.ReadValue<float>() > 0.5f;
-        return leftSecondaryButton.action.ReadValue<float>() > 0.5f;
+        IXRInteractable ixr = grab;
+        if (ixr == rightHand.firstInteractableSelected) return actions.RightHand.Stick.ReadValue<Vector2>();
+        if (ixr == leftHand.firstInteractableSelected) return actions.LeftHand.Stick.ReadValue<Vector2>();
+        return Vector2.zero;
     }
-
     void Awake()
     {
         GetReferences();
+        actions.LeftHand.Menu.performed += _ => SceneManager.LoadScene("MainMenu");
     }
-    private XRBaseInteractable GetTarget(XRDirectInteractor interactor)
-    {
-        List<XRBaseInteractable> targets = new List<XRBaseInteractable>();
-        interactor.GetValidTargets(targets);
-        return targets.Count > 0 ? targets[0] : null;
-    }
-    void GetReferences()
+    private void GetReferences()
     {
         instance = this;
-        rig = GetComponent<XRRig>();
-        camTr = Camera.main.transform;
-        aircraft = GameManager.player.aircraft;
-        if (aircraft) aircraftTr = aircraft.transform;
-        crew = GameManager.player.crew;
-        if (crew) crewTr = crew.transform;
-        rightHandTarget = GetTarget(rightHand);
-        leftHandTarget = GetTarget(leftHand);
-        rightIndexTarget = GetTarget(rightIndex);
-        leftIndexTarget = GetTarget(leftIndex);
+
+        if (actions == null)
+            actions = new XRActions();
     }
     void Update()
     {
-        GetReferences();
         rightHandDelta = transform.TransformDirection(rightHand.transform.localPosition - previousRightHandPos);
         previousRightHandPos = rightHand.transform.localPosition;
         leftHandDelta = transform.TransformDirection(leftHand.transform.localPosition - previousLeftHandPos);
         previousLeftHandPos = leftHand.transform.localPosition;
-    }
-    public void HandGrab(SelectEnterEventArgs args)
-    {
-        HandGrip grip = args.interactable.colliders[0].GetComponent<HandGrip>();
 
-        if (args.interactor == rightHand || args.interactor == rightIndex)
-            rightHandGrip = grip;
-        if (args.interactor == leftHand || args.interactor == leftIndex)
-            leftHandGrip = grip;
-    }
-    public void HandRelease(SelectExitEventArgs args)
-    {
-        if (args.interactor == rightHand || args.interactor == rightIndex)
-            rightHandGrip = xrRightGrip;
-        if (args.interactor == leftHand || args.interactor == leftIndex)
-            leftHandGrip = xrLeftGrip;
+        rightHandGrip = rightHandTarget ? rightHandTarget.CurrentGrip() : xrRightGrip;
+        leftHandGrip = leftHandTarget ? leftHandTarget.CurrentGrip() : xrLeftGrip;
     }
     public void ResetView()
     {
         GetReferences();
-        Transform pov = crew.seats[crew.currentSeat].defaultPOV;
+        Transform pov = GameManager.player.crew.Seat().defaultPOV;
         transform.parent = pov;
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.identity;
-
         rightHandGrip = xrRightGrip;
         leftHandGrip = xrLeftGrip;
+    }
+    //Used in events
+    public void HandGrab(SelectEnterEventArgs args)
+    {
+        XRDirectInteractor xrObj = (XRDirectInteractor)args.interactorObject;
+        if (xrObj == rightHand || xrObj == rightIndex)
+        {
+            rightHandTarget = args.interactableObject.colliders[0].GetComponentInParent<CockpitInteractable>();
+            rightHand.enabled = xrObj == rightHand;
+            rightIndex.enabled = xrObj == rightIndex;
+        }
+        if (xrObj == leftHand || xrObj == leftIndex) 
+        {
+            leftHandTarget = args.interactableObject.colliders[0].GetComponentInParent<CockpitInteractable>();
+            leftHand.enabled = xrObj == leftHand;
+            leftIndex.enabled = xrObj == leftIndex;
+        }
+    }
+    public void HandRelease(SelectExitEventArgs args)
+    {
+        XRDirectInteractor xrObj = (XRDirectInteractor)args.interactorObject;
+        if (xrObj == rightHand || xrObj == rightIndex)
+        {
+            rightHandTarget = null;
+            rightHand.enabled = rightIndex.enabled = true;
+        }
+        if (xrObj == leftHand || xrObj == leftIndex)
+        {
+            leftHandTarget = null;
+            leftHand.enabled = leftIndex.enabled = true;
+        }
     }
 }

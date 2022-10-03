@@ -10,21 +10,15 @@ using UnityEditor.SceneManagement;
 public class Throttle : AnalogInteractable
 {
     public Engine engine;
-
     protected override void VRInteraction(Vector3 gripPos, Quaternion gripRot)
     {
         base.VRInteraction(gripPos, gripRot);
         engine.throttleInput = input;
     }
-    protected override void Animate()
-    {
-        if (xrGrip.isSelected) return;
-        base.Animate();
-        input = engine.throttleInput;
-    }
     private void Update()
     {
         CockpitInteractableUpdate();
+        Animate(engine ? engine.throttleInput : input);
     }
 }
 #if UNITY_EDITOR

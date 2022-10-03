@@ -25,7 +25,8 @@ public class Part : ObjectElement
 
     public override void Initialize(ObjectData d,bool firstTime)
     {
-        if (!material) { Debug.LogError(name + " has no material attached", this); return; }
+        if (!material) Debug.LogError(material.name + " Has no material attached");
+
         base.Initialize(d, firstTime);
         if (firstTime) maxHp = hp = material.hp;
     }
@@ -82,7 +83,6 @@ public class Part : ObjectElement
     }
     public virtual void Rip()
     {
-        if (ripped) return;
         ripped = true;
     }
     public void Detach()

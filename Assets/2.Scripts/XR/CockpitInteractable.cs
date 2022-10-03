@@ -8,87 +8,92 @@ using UnityEditor.SceneManagement;
 #endif
 public class CockpitInteractable : ObjectElement
 {
-    public XRGrabInteractable xrGrip;
+    [HideInInspector]public XRGrabInteractable xrGrab;
     public HandGrip grip;
-    public Outline outline;
 
     public bool indexSelect = false;
-    public bool relative = true;
 
-    protected private bool selectedPrevious;
-    protected private Vector3 gripOffset = Vector3.zero;
-    protected private Vector3 xrGripDefaultPos;
-    protected private Vector3 defaultPos;
-    protected private Quaternion defaultRot;
-    protected Transform anchor;
+    protected bool wasSelected = false;
+    protected Vector3 gripOffset = Vector3.zero;
+    protected Vector3 gripDefaultPos;
+    protected Vector3 defaultPos;
+    protected Quaternion defaultRot;
 
-    Color indexOutline = new Color(0f, 0.585f,1f);
-    Color handOutline = new Color(1f, 0.19f,0.19f);
+    public virtual HandGrip CurrentGrip()
+    {
+        return grip;
+    }
     public override void Initialize(ObjectData d, bool firstTime)
     {
         base.Initialize(d, firstTime);
-        defaultPos = transform.localPosition;
-        defaultRot = transform.localRotation;
-        if (!xrGrip) return;
-        selectedPrevious = false;
-        xrGripDefaultPos = xrGrip.transform.localPosition;
-        if (xrGrip.colliders[0]) xrGrip.colliders[0].gameObject.layer = xrGrip.gameObject.layer =  indexSelect ? 14 : 13;
-        xrGrip.interactionLayerMask = LayerMask.GetMask(indexSelect ? "TriggerGrab" : "GripGrab");
-        xrGrip.attachEaseInTime = 0f;
-        anchor = xrGrip.transform.parent;
-        if (outline)
+
+        if (firstTime)
         {
-            outline.OutlineColor = indexSelect ? indexOutline : handOutline;
-            outline.enabled = false;
+            //Default Positions
+            defaultPos = transform.localPosition;
+            defaultRot = transform.localRotation;
+            gripDefaultPos = grip.transform.localPosition;
         }
+    }
+    public virtual void EnableVR(XRGrabInteractable xrPrefab)
+    {
+        xrPrefab.colliders.Clear();
+        xrPrefab.colliders.AddRange(grip.GetComponentsInChildren<Collider>());
+        xrGrab = Instantiate(xrPrefab);
+
+        xrGrab.transform.parent = grip.transform.parent;
+        xrGrab.transform.position = grip.transform.position;
+
+        xrGrab.interactionLayers = LayerMask.GetMask(indexSelect ? "TriggerGrab" : "GripGrab");
+        xrGrab.gameObject.layer = indexSelect ? 14 : 13;
+        foreach (Collider col in xrGrab.colliders)
+            col.gameObject.layer = 0;
+        xrGrab.attachEaseInTime = 0f;
+
+        Rigidbody rb = xrGrab.GetComponent<Rigidbody>();
+        rb.useGravity = false;
+        rb.isKinematic = false;
+    }
+    public virtual void DisableVR()
+    {
+        Destroy(xrGrab.gameObject);
     }
     protected virtual void VRInteraction(Vector3 gripPos, Quaternion gripRot)
     {
 
     }
-    protected virtual void Animate()
-    {
-
-    }
     protected virtual void OnGrab()
     {
-        if (relative) gripOffset = data.transform.InverseTransformVector(xrGrip.transform.position - anchor.TransformPoint(xrGripDefaultPos));
+        gripOffset = data.transform.InverseTransformVector(xrGrab.transform.position - grip.transform.parent.TransformPoint(gripDefaultPos));
     }
     protected virtual void OnRelease()
     {
-        xrGrip.transform.localPosition = xrGripDefaultPos;
     }
     protected virtual void CockpitInteractableUpdate()
     {
-        if (!xrGrip) return;
-        if (xrGrip.isSelected)
+        if (xrGrab)
         {
-            if (!selectedPrevious) OnGrab();
-            VRInteraction(xrGrip.transform.position - data.transform.TransformVector(gripOffset), xrGrip.transform.rotation);
+            if (xrGrab.isSelected)
+            {
+                if (!wasSelected) OnGrab();
+                VRInteraction(xrGrab.transform.position - data.transform.TransformVector(gripOffset), xrGrab.transform.rotation);
+            }
+            else
+            {
+                xrGrab.transform.SetPositionAndRotation(grip.transform.position, transform.rotation);
+                if (wasSelected) OnRelease();
+            }
+            wasSelected = xrGrab.isSelected;
         }
-        else
-        {
-            if (selectedPrevious) OnRelease();
-        }
-        if (GameManager.gm.vr && outline) outline.enabled = ReadySelect();
-        selectedPrevious = xrGrip.isSelected;
-        if (Time.timeScale > 0f) Animate();
     }
     protected virtual bool ReadySelect()
     {
-        if (xrGrip.isSelected) return true;
+        if (xrGrab.isSelected) return true;
         SofVrRig s = SofVrRig.instance;
         bool hovered;
-        if (indexSelect)
-        {
-            hovered = s.rightIndexTarget && s.rightIndexTarget.Equals(xrGrip);
-            hovered = hovered || (s.leftIndexTarget && s.leftIndexTarget.Equals(xrGrip));
-        } else
-        {
-            hovered = s.rightHandTarget && s.rightHandTarget.Equals(xrGrip);
-            hovered = hovered || (s.leftHandTarget && s.leftHandTarget.Equals(xrGrip));
-        }
-        return hovered && xrGrip.isHovered;
+        hovered = s.rightHandTarget && s.rightHandTarget.Equals(xrGrab);
+        hovered |= s.leftHandTarget && s.leftHandTarget.Equals(xrGrab);
+        return hovered && xrGrab.isHovered;
     }
 }
 #if UNITY_EDITOR
@@ -102,12 +107,9 @@ public class CockpitInteractableEditor : Editor
         CockpitInteractable inter = (CockpitInteractable)target;
 
         GUI.color = GUI.backgroundColor;
-        inter.xrGrip = EditorGUILayout.ObjectField("XR Grab Interactable", inter.xrGrip, typeof(XRGrabInteractable), true) as XRGrabInteractable;
         inter.grip = EditorGUILayout.ObjectField("Hand Grip", inter.grip, typeof(HandGrip), true) as HandGrip;
-        inter.outline = EditorGUILayout.ObjectField("Outline", inter.outline, typeof(Outline), true) as Outline;
         GUILayout.Space(15f);
         inter.indexSelect = EditorGUILayout.Toggle("Index Select", inter.indexSelect);
-        inter.relative = EditorGUILayout.Toggle("Relative Grab", inter.relative);
         if (GUI.changed)
         {
             EditorUtility.SetDirty(inter);

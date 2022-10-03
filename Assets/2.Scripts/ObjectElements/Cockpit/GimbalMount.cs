@@ -10,21 +10,18 @@ public class GimbalMount : CockpitInteractable
     public override void Initialize(ObjectData d, bool firstTime)
     {
         base.Initialize(d, firstTime);
-        pistolGripOffset = xrGripDefaultPos;
+        pistolGripOffset = gripDefaultPos;
         pistolGripOffset.z = 0f;
     }
     protected override void VRInteraction(Vector3 gripPos,Quaternion gripRot)
     {
         turret.SetDirectionSemi(transform.position - gripPos + transform.TransformDirection(pistolGripOffset));
+        bool guns = SofVrRig.instance.Trigger(xrGrab) > 0.1f;
+        turret.Operate(guns, false);
     }
 
     private void Update()
     {
-        if (xrGrip.isSelected)
-        {
-            bool guns = SofVrRig.instance.Trigger(xrGrip) > 0.1f;
-            turret.Operate(guns,false);
-        }
         CockpitInteractableUpdate();
     }
 }

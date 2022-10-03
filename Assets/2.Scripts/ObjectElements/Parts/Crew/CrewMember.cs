@@ -49,7 +49,7 @@ public class CrewMember : Part
     private void Update()
     {
         //LOD
-        bool firstPerson = GameManager.player.crew == this && (PlayerCamera.customCam.pos == CamPosition.FirstPerson || GameManager.gm.vr);
+        bool firstPerson = GameManager.player.crew == this && (GameManager.gm.vr || PlayerCamera.customCam.pos == CamPosition.FirstPerson);
         bool isFirstPerson = meshRend.sharedMesh == headLessModel;
         if (firstPerson != isFirstPerson) meshRend.sharedMesh = firstPerson ? headLessModel : defaultModel;
         //Audio

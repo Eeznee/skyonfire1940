@@ -98,15 +98,14 @@ public class GameManager : MonoBehaviour
         list.UpdateCards();
 
         if (actions == null)
-        {
             actions = new Actions();
-        }
+        actions.Enable();
+
         squadrons = new List<SofAircraft[]>(0);
         sofObjects = new List<SofObject>(0);
         axisAircrafts = new List<SofAircraft>(0);
         allyAircrafts = new List<SofAircraft>(0);
 
-        actions.Enable();
         UpdateInterface(SeatInterface.Empty);
 
         if (playableScene)
@@ -245,7 +244,7 @@ public class GameManager : MonoBehaviour
         }
         PlayerPrefs.SetInt("FirstGame", 1);
     }
-    public SofAircraft[] SpawnAir(Game.Squadron squad)
+    public static SofAircraft[] SpawnAir(Game.Squadron squad)
     {
         SofAircraft[] squadronAircrafts = new SofAircraft[squad.amount];
         for (int i = 0; i < squad.amount; i++)
@@ -262,7 +261,6 @@ public class GameManager : MonoBehaviour
         }
         return squadronAircrafts;
     }
-
     public static SofAircraft OffsetSquadron(int offset, int squad)
     {
         SofAircraft[] squadron = squadrons[(int)Mathf.Repeat(squad + offset, squadrons.Count)];
@@ -284,7 +282,6 @@ public class GameManager : MonoBehaviour
             return OffsetWing(offset + (int)Mathf.Sign(offset),wing,squad);
         return null;
     }
-
     public static void PlayerNull()
     {
         player.Set(null);
@@ -295,6 +292,7 @@ public class GameManager : MonoBehaviour
     public static void SetPlayer(SofObject obj, SeatPath path, bool original){ SetPlayer(path.Crew(obj), path.seat, original); }
     public static void SetPlayer(CrewMember tCrew, int seat,bool original)
     {
+        CrewMember oldPlayer = player.crew;
         if (tCrew == player.crew || tCrew == null) return;
 
         player.Set(tCrew);
@@ -309,7 +307,14 @@ public class GameManager : MonoBehaviour
         tCrew.SwitchSeat(seat);
 
         if (gm.vr)
+        {
             SofVrRig.instance.ResetView();
+            if (!oldPlayer || oldPlayer.sofObject != player.sofObj)
+            {
+                if (oldPlayer) SofVrRig.DisableVR(oldPlayer.sofObject);
+                SofVrRig.EnableVR(player.sofObj);
+            }
+        }
         else
             PlayerCamera.instance.ResetView(true);
 

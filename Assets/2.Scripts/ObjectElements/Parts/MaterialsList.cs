@@ -14,6 +14,17 @@ public class MaterialsList : ScriptableObject
     public PartMaterial wheelMat;
     public PhysicMaterial aircraftMat;
 
+    public PartMaterial Material(Part p)
+    {
+        if (p.GetComponent<Wheel>()) return wheelMat;
+        if (p.GetComponent<AirfoilSkin>()) return skinMat;
+        if (p.GetComponent<Airfoil>()) return sparMat;
+        if (p.GetComponent<Slat>() || p.GetComponent<Flap>() || p.GetComponent<ControlSurface>()) return controlsMat;
+        if (p.GetComponent<Stabilizer>()) return stabilizerMat;
+        if (p.GetComponent<Airframe>()) return airframeMat;
+        return airframeMat;
+    }
+
     public void ApplyMaterials(SofAircraft aircraft)
     {
         foreach (MeshCollider col in aircraft.GetComponentsInChildren<MeshCollider>())
@@ -21,7 +32,7 @@ public class MaterialsList : ScriptableObject
             col.convex = true;
             col.sharedMaterial = aircraftMat;
         }
-        foreach (Fuselage frame in aircraft.GetComponentsInChildren<Fuselage>())
+        foreach (Airframe frame in aircraft.GetComponentsInChildren<Airframe>())
             frame.material = airframeMat;
         foreach (Stabilizer stab in aircraft.GetComponentsInChildren<Stabilizer>())
             stab.material = stabilizerMat;

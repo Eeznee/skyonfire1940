@@ -72,23 +72,30 @@ public class ObjectData : MonoBehaviour
 
         weather = GameManager.weather;
         rb = (type == 1) ? GameManager.gm.mapRb : (GetComponent<Rigidbody>() ? GetComponent<Rigidbody>() : gameObject.AddComponent<Rigidbody>());
-        ObjectElement[] elements = GetComponentsInChildren<ObjectElement>();
         parts = GetComponentsInChildren<Part>();
 
-        //rb settings
-        mass = 0f;
-        foreach (ObjectElement element in elements)
-        {
-            element.gameObject.layer = 9;
+        //First Initialization
+        foreach (ObjectElement element in GetComponentsInChildren<ObjectElement>())
             element.Initialize(this, firstTime);
-            mass += element.Mass();
-        }
+
         if (type == 1) return;
         rb.mass = mass;
         rb.angularDrag = 0f;
         rb.drag = 0f;
         rb.isKinematic = false;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+
+        //New parts might have been created
+        parts = GetComponentsInChildren<Part>();
+
+        //Final initialization
+        mass = 0f;
+        foreach (ObjectElement element in GetComponentsInChildren<ObjectElement>())
+        {
+            element.gameObject.layer = 9;
+            element.Initialize(this, false);
+            mass += element.Mass();
+        }
     }
 
     private void Start()

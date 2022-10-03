@@ -9,21 +9,15 @@ using UnityEditor.SceneManagement;
 public class Cover : AnalogInteractable
 {
     public Collider covered;
-
     protected override void VRInteraction(Vector3 gripPos, Quaternion gripRot)
     {
         base.VRInteraction(gripPos, gripRot);
         covered.enabled = input > 0.5f;
     }
-    protected override void Animate()
-    {
-        if (xrGrip.isSelected) return;
-        input = covered.enabled ? 1f : 0f;
-        base.Animate();
-    }
     private void Update()
     {
         CockpitInteractableUpdate();
+        Animate(covered.enabled ? 1f : 0f);
     }
 }
 #if UNITY_EDITOR

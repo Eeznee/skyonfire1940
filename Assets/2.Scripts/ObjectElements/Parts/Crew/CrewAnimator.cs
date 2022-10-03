@@ -79,22 +79,24 @@ public class CrewAnimator : ObjectElement
         CrewSeat seat = crew.seats[Mathf.Clamp(crew.currentSeat, 0,crew.seats.Length - 1)];
         bool vrPlayer = Application.isPlaying && GameManager.gm.vr && GameManager.player.crew == crew;
 
-        //Body animation
+        //Body
         float distance = (tr.position - seat.transform.position).magnitude;
         float leaning = Mathf.InverseLerp(standingButtHead, leaningButtHead, distance);
         animator.SetFloat("Leaning", leaning);
 
-        //Limbs animation
+        //Arms
         HandGrip right = vrPlayer ? SofVrRig.instance.rightHandGrip : seat.rightHandGrip;
         HandGrip left = vrPlayer ? SofVrRig.instance.leftHandGrip : seat.leftHandGrip;
-        FootRest rightFoot = seat.rightFootRest ? seat.rightFootRest : standingRightFoot;
-        FootRest leftFoot = seat.leftFootRest ? seat.leftFootRest : standingLeftFoot;
         if (right) rightHand.SetHandPose(animator, right);
         if (left) leftHand.SetHandPose(animator, left);
+
+        //Legs
+        FootRest rightFoot = seat.rightFootRest ? seat.rightFootRest : standingRightFoot;
+        FootRest leftFoot = seat.leftFootRest ? seat.leftFootRest : standingLeftFoot;
         if (rightFoot) rightFoot.SetFootPose(animator, AvatarIKGoal.RightFoot);
         if (leftFoot) leftFoot.SetFootPose(animator, AvatarIKGoal.LeftFoot);
 
-        //Head animation
+        //Head
         head.forward = seat.headLookDirection + seat.transform.forward * 0.05f;
         head.localPosition = Vector3.zero;
         Vector3 localDir = tr.InverseTransformDirection(head.forward);

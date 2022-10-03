@@ -70,7 +70,6 @@ public class FlapEditor : Editor
         EditorGUILayout.HelpBox("Flap", MessageType.None);
         GUI.color = backgroundColor;
         flap.extendedRipSpeed = EditorGUILayout.FloatField("Extended Rip Km/h", Mathf.Round(flap.extendedRipSpeed * 36f) / 10f) / 3.6f;
-        flap.detachable = true;
         EditorGUILayout.LabelField("Area", flap.miniFoil.mainQuad.area.ToString("0.00") + " m2");
         EditorGUILayout.LabelField("Mass", flap.emptyMass.ToString("0.00") + " kg");
 

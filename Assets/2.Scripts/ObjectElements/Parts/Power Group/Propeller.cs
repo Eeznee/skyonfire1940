@@ -62,7 +62,7 @@ public class Propeller : Part
             thrust = Mathf.Lerp(simulatedForces.x, tweakedForces.x, engine.trueThrottle);
             torque = engine.Working() ? tweakedForces.y : simulatedForces.y * reductionGear;
 
-            transform.Rotate(Vector3.forward * Time.deltaTime * rps * 57.3f);
+            transform.Rotate(-Vector3.forward * Time.deltaTime * rps * 57.3f);
         }
         //Visual Effect
         if (prop && blurredProp)
@@ -82,6 +82,14 @@ public class Propeller : Part
     void FixedUpdate()
     {
         if (aircraft && TotalSpeed > 0f && !float.IsNaN(thrust)) rb.AddForceAtPosition(transform.forward * thrust, transform.position, ForceMode.Force);
+        if (aircraft && TotalSpeed > 0f && !float.IsNaN(torque))
+        {
+            Vector3 upForce = transform.root.up * torque / preset.diameter; //The diameter and torque are divided by 2, cancelling each other
+            Vector3 upPosition = transform.position - transform.root.right * preset.diameter / 2f;
+            Vector3 downPosition = transform.position + transform.root.right * preset.diameter / 2f;
+            rb.AddForceAtPosition(upForce, upPosition , ForceMode.Force);
+            rb.AddForceAtPosition(-upForce, downPosition, ForceMode.Force);
+        }
     }
 
     public override void Damage(float damage, float caliber, float fireCoeff)

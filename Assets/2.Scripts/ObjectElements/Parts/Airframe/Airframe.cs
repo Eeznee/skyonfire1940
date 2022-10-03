@@ -9,13 +9,12 @@ public class Airframe : Part
     //Attachements and links
     public Part[] ripOnRip;
     public bool vital = false;
-    public bool detachable = true;
+
 
     //Damage model
     public float area = 5f;
 
     //Forces Model
-    public bool buoyancy = false;
     public float maxG;
     protected float stress = -1f;
     protected float randToughness = 1f;
@@ -24,6 +23,34 @@ public class Airframe : Part
     public virtual float MaxSpeed()
     {
         return aircraft ? aircraft.maxSpeed : 500f;
+    }
+    public virtual bool Detachable()
+    {
+        return true;
+    }
+    public Vector3 Bounds()
+    {
+        Vector3 bounds = Vector3.zero;
+        if (GetComponent<MeshCollider>())
+            bounds = GetComponent<MeshCollider>().sharedMesh.bounds.size;
+        else if (GetComponent<BoxCollider>())
+            bounds = GetComponent<BoxCollider>().bounds.size;
+        else if (GetComponent<MeshFilter>())
+            bounds = GetComponent<MeshFilter>().sharedMesh.bounds.size;
+        return bounds;
+    }
+    public virtual float RecalculateArea()
+    {
+        float a = area;
+        Vector3 bounds = Bounds();
+        //if (bounds != Vector3.zero) a = bounds.x * bounds.y * bounds.z / Mathf.Min(bounds.x, bounds.y, bounds.z);
+        //if (bounds != Vector3.zero) a = bounds.x * bounds.y + bounds.y * bounds.z + bounds.z * bounds.x;
+        if (bounds != Vector3.zero) a = bounds.z * Mathf.PI / Mathf.Sqrt(2f) * Mathf.Sqrt(bounds.x * bounds.x + bounds.y * bounds.y);
+        return a;
+    }
+    public virtual float AutoMassCoefficient()
+    {
+        return RecalculateArea();
     }
 
     public override void Initialize(ObjectData d, bool firstTime)
@@ -39,7 +66,7 @@ public class Airframe : Part
     }
     public void ForcesStress(bool g, bool spd)
     {
-        if (ripped || !detachable) return;
+        if (ripped || !Detachable()) return;
 
         //Compute torque and stress
         float damageCoeff = Mathf.Sqrt(Mathf.Abs(structureDamage));
@@ -56,7 +83,7 @@ public class Airframe : Part
     {
         if (transform.position.y < 0f)
         {
-            float displacementMultiplier = Mathf.Clamp01(-transform.position.y);
+            float displacementMultiplier = Mathf.Clamp(-transform.position.y,0f,0.5f);
             float force = displacementMultiplier * Mass() * 10f * floatLevel;
             if (!aircraft) force /= 7f;
             rb.AddForceAtPosition(Vector3.up * force, center);
@@ -66,7 +93,7 @@ public class Airframe : Part
     private void FixedUpdate()
     {
         ForcesStress(true, false);
-        if (buoyancy) Floating(transform.position);
+        Floating(transform.position);
     }
     public override void Rip()
     {
@@ -77,7 +104,7 @@ public class Airframe : Part
         {
             if (airf) airf.Rip();                          //Rip the assigned surface is there is one
         }
-        if (detachable) Detach();
+        if (Detachable()) Detach();
     }
 }
 
@@ -89,16 +116,14 @@ public class AirframeEditor : Editor
     {
         serializedObject.Update();
         //
-        Fuselage frame = (Fuselage)target;
+        Airframe frame = (Airframe)target;
 
+        EditorGUILayout.LabelField("Auto Area", frame.RecalculateArea().ToString("0.0"));
         frame.area = EditorGUILayout.FloatField("One Side Area m²", frame.area);
         frame.emptyMass = EditorGUILayout.FloatField("Mass kg", frame.emptyMass);
-        frame.buoyancy = EditorGUILayout.Toggle("Buoyancy", frame.buoyancy);
-        frame.detachable = EditorGUILayout.Toggle("Rippable", frame.detachable);
         frame.material = EditorGUILayout.ObjectField("Material", frame.material, typeof(PartMaterial), false) as PartMaterial;
         SerializedProperty ripOnRip = serializedObject.FindProperty("ripOnRip");
         EditorGUILayout.PropertyField(ripOnRip, true);
-        frame.brokenModel = EditorGUILayout.ObjectField("Broken Model", frame.brokenModel, typeof(GameObject), true) as GameObject;
 
         if (GUI.changed)
         {

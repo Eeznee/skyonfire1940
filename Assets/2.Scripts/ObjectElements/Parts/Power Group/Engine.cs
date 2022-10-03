@@ -146,7 +146,8 @@ public class Engine : Part
         while (delay < preset.ignitionTime)
         {
             temperature = Mathf.Max(temperature, Mathf.Lerp(startTemperature, preset.tempIdle, delay / preset.ignitionTime));
-            float rpsFactor = Mathf.Pow(delay / preset.ignitionTime, power);
+            float rpsFactor = Mathf.Sin(delay / preset.ignitionTime * Mathf.PI / 2f);
+            rpsFactor = Mathf.Pow(rpsFactor, 4);
             rps = Mathf.Lerp(fromRPS, preset.idleRPS, rpsFactor);
             trueEngineVolume = rpsFactor;
             delay += Time.deltaTime;

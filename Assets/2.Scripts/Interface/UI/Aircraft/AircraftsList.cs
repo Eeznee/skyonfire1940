@@ -10,14 +10,19 @@ using UnityEditor.SceneManagement;
 public class AircraftsList : ScriptableObject
 {
     public AircraftCard[] list;
+    
 
     public void UpdateCards()
     {
         for (int i = 0; i < list.Length; i++)
         {
+            SofAircraft aircraft = list[i].aircraft.GetComponent<SofAircraft>();
             if (list[i] != null)
                 list[i].id = i;
+
+            aircraft.emptyCOG.x = 0f;
         }
+        
     }
 }
 #if UNITY_EDITOR

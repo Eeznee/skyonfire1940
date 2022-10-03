@@ -63,7 +63,7 @@ public class AVM : ObjectElement
     }
     private void Update()
     {
-        bool newUse3dSound = GameManager.player.sofObj != sofObject || PlayerCamera.customCam.pos == CamPosition.Free;
+        bool newUse3dSound = GameManager.player.sofObj != sofObject || (GameManager.gm.vr ? false : PlayerCamera.customCam.pos == CamPosition.Free);
         if (newUse3dSound != use3dSound)
             UpdatePlayer(newUse3dSound);
     }

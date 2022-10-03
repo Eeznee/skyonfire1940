@@ -5,7 +5,6 @@ using UnityEngine;
 public class MagazineStock : ObjectElement
 {
     private List<Magazine> mags = new List<Magazine>(0);
-    private bool show = true;
     public override void Initialize(ObjectData d, bool firstTime)
     {
         base.Initialize(d, firstTime);
@@ -33,7 +32,7 @@ public class MagazineStock : ObjectElement
         return null;
     }
 
-
+    /*
     void SwitchMode(int mode)
     {
         foreach (Magazine mag in mags)
@@ -49,4 +48,5 @@ public class MagazineStock : ObjectElement
             SwitchMode(complex.lod.LOD());
         }
     }
+    */
 }

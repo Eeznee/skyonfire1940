@@ -26,8 +26,6 @@ public class AircraftCard : ScriptableObject
 
     public bool Available()
     {
-        Mesh mesh;
-
         if (baseGameIncluded) return true;
 
         bool purchased = PlayerPrefs.GetInt(fileName, 0) == 1;

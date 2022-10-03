@@ -31,6 +31,7 @@ public class SofAudioListener : MonoBehaviour
     }
     private Transform CurrentParent()
     {
+        if (GameManager.gm.vr) return GameManager.player.crew.transform;
         if (PlayerCamera.customCam.pos == CamPosition.Free || GameManager.player.crew == null)
             return PlayerCamera.instance.camTr;
 
@@ -40,7 +41,8 @@ public class SofAudioListener : MonoBehaviour
     void Update()
     {
         //Cockpit volume
-        float targetRatio = PlayerCamera.customCam.pos ==  CamPosition.FirstPerson ? GameManager.player.crew.audioCockpitRatio : 0f;
+        bool firstPerson = GameManager.gm.vr || PlayerCamera.customCam.pos == CamPosition.FirstPerson;
+        float targetRatio = firstPerson ? GameManager.player.crew.audioCockpitRatio : 0f;
         cockpitRatio = Mathf.MoveTowards(cockpitRatio, targetRatio, 5f * Time.deltaTime);
         mixer.SetFloat("CockpitVolume", Mathf.Log10(cockpitRatio + 0.0001f) * 20);
         float externalVol = Mathf.Log10(1f - cockpitRatio + 0.0001f) * 20;

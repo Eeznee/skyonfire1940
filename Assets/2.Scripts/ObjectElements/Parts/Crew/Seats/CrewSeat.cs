@@ -100,8 +100,7 @@ public class CrewSeat : BasicSeat
             leftHandGrip = oldMagRef.grip;
             yield return new WaitForSeconds(0.4f);  //Wait for hand to attach
 
-            oldMagRef.attachedGun = null;
-            gun.magazine = null;
+            gun.RemoveMagazine();
             oldMag.parent = transform;
 
             Vector3 start = oldMag.localPosition;

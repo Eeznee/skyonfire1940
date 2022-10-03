@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 public static class AircraftControl
 {
     public const float futureTime = 1f;
-    const float throttleIncrement = 0.02f;
+    const float throttleIncrement = 0.0002f;
     const float minAltitude = 50f;
     const float targetMaxAngle = Mathf.PI / 3f;
     const float frontDistance = 500f;
@@ -91,10 +91,10 @@ public static class AircraftControl
         aircraft.boost = pilot.Boost.ReadValue<float>() > 0.5f;
 #else
 
-        if (Input.mouseScrollDelta.y != 0f)
+        if(GameManager.gm.actions.General.Scroll.ReadValue<float>() != 0f)
         {
             float thr = GameManager.player.aircraft.engines[0].throttleInput;
-            float input = Input.mouseScrollDelta.y * throttleIncrement;
+            float input = GameManager.gm.actions.General.Scroll.ReadValue<float>() * throttleIncrement;
             aircraft.SetThrottle(thr + input);
             aircraft.boost = (thr == 1f && input > 0f) || aircraft.boost;
             if (aircraft.boost && input < 0f) { aircraft.boost = false; aircraft.SetThrottle(1f); }
@@ -107,7 +107,6 @@ public static class AircraftControl
 
         Vector3 axis = Vector3.zero;
         bool canUseTracking = PlayerCamera.customCam.dir == CamDirection.Game || PlayerCamera.customCam.dir == CamDirection.Free;
-
         if (GameManager.trackingControl && canUseTracking) //Tracking input, mouse
         {
             //track

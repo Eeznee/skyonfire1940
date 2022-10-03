@@ -35,14 +35,10 @@ public class FuelPump : AnalogInteractable
             engine.pumped = true;
         previousInput = input;
     }
-    protected override void Animate()
-    {
-        if (xrGrip.isSelected) return;
-        base.Animate();
-    }
     private void Update()
     {
         CockpitInteractableUpdate();
+        Animate(input);
     }
 }
 #if UNITY_EDITOR

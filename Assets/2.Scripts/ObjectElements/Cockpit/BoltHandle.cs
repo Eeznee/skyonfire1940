@@ -38,20 +38,6 @@ public class BoltHandle : CockpitInteractable
         sofObject.avm.cockpit.local.PlayOneShot(cockingRelease, 1f);
         pulled = false;
     }
-    protected override void Animate()
-    {
-        if (!xrGrip.isSelected && !animatedPulling)
-        {
-            float previousBoltState = boltState;
-            boltState = Mathf.MoveTowards(boltState, targetBoltState, Time.deltaTime * gun.gunPreset.FireRate / 30f);
-            float left = Mathf.Abs(Mathf.Abs(previousBoltState - boltState) - Time.deltaTime * gun.gunPreset.FireRate / 30f);
-            if (!gun.Firing()) targetBoltState = gun.gunPreset.openBolt && gun.chambered ? 1f : 0f;
-            else if (boltState == targetBoltState) targetBoltState = boltState == 1f ? 0f : 1f;
-            boltState = Mathf.MoveTowards(boltState, targetBoltState, left);
-        }
-
-        transform.localPosition = defaultPos - boltState * Vector3.forward * maxDistance;
-    }
 
     public void CycleBoltAnimation()
     {
@@ -77,5 +63,19 @@ public class BoltHandle : CockpitInteractable
     private void Update()
     {
         CockpitInteractableUpdate();
+
+        if (!animatedPulling && !(xrGrab && xrGrab.isSelected))
+        {
+            float previousBoltState = boltState;
+            boltState = Mathf.MoveTowards(boltState, targetBoltState, Time.deltaTime * gun.gunPreset.FireRate / 30f);
+            float left = Mathf.Abs(Mathf.Abs(previousBoltState - boltState) - Time.deltaTime * gun.gunPreset.FireRate / 30f);
+
+            if (!gun.Firing()) targetBoltState = gun.gunPreset.openBolt && gun.chambered ? 1f : 0f;
+            else if (boltState == targetBoltState) targetBoltState = boltState == 1f ? 0f : 1f;
+
+            boltState = Mathf.MoveTowards(boltState, targetBoltState, left);
+        }
+
+        transform.localPosition = defaultPos - boltState * Vector3.forward * maxDistance;
     }
 }

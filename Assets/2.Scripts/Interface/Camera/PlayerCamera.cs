@@ -38,19 +38,18 @@ public class PlayerCamera : MonoBehaviour
     public static float fov = 60f;
 
     public static Vector3 directionInput;           //Aircraft and turret guns will track this direction when controlled by the player
-    public static Transform camTracker;             //Camera will smoothly rotate to match this transform, local to the player when not using tracking controls
+    public static Quaternion camTarget;
     public static bool Zoomed() { return fov < (instance.fieldOfView + instance.zoomedFieldOfView) * 0.5f; }
     void Awake()
     {
         touchSensitivity = PlayerPrefs.GetFloat("TouchSensitivity", 1f);
         sensPilot = PlayerPrefs.GetFloat("PilotSensitivity", sensPilot);
         sensGunner = PlayerPrefs.GetFloat("GunnerSensitivity", sensGunner);
-        camTracker = new GameObject("Camera Tracker").transform;
 
         Actions actions = GameManager.gm.actions;
         actions.General.Aim.performed += _ => fov = Zoomed() ? fieldOfView : zoomedFieldOfView;
         actions.General.ZoomAxis.performed += zoom => SetFov(Mathf.InverseLerp(-1f, 1f, zoom.ReadValue<float>()));
-        actions.General.LookAround.canceled += _ => camTracker.forward = directionInput;
+        actions.General.LookAround.canceled += _ => camTarget = Quaternion.LookRotation(directionInput,Vector3.up);
         actions.General.ResetCamera.performed += _ => TryResetView();
         actions.Pilot.Dynamic.performed += _ => dynamic = !dynamic;
         actions.General.ToggleViewMode.performed += _ => SetView(viewMode == 0 ? 1 : 0);
@@ -103,7 +102,7 @@ public class PlayerCamera : MonoBehaviour
         CustomCam ccam = customCam;
         bool lookAround = true;
 #if !UNITY_MOBILE
-        if (GameManager.gameUI != GameUI.Game && !Input.GetKey(KeyCode.Mouse0)) lookAround = false;
+        if (GameManager.gameUI != GameUI.Game && GameManager.gm.actions.General.UnlockCamera.ReadValue<float>() < 0.5f) lookAround = false;
         float zoomRelativeInput = GameManager.gm.actions.General.ZoomRelativeAxis.ReadValue<float>() * Time.unscaledDeltaTime * 0.2f;
         SetFov(zoomRelativeInput + FovFactor());
 #endif
@@ -112,7 +111,7 @@ public class PlayerCamera : MonoBehaviour
             ccam = bombSight;
             bombSight.relativePos = pa.transform.InverseTransformPoint(pa.bombSight.zoomedPOV.position);
             cam.fieldOfView = GameManager.ogPlayer.aircraft.bombSight.fov;
-            camTracker.rotation = DefaultRotation(ccam);
+            camTarget = DefaultRotation(ccam);
             lookAround = false;
         }
         else
@@ -127,8 +126,8 @@ public class PlayerCamera : MonoBehaviour
         else if (ccam.Player() != GameManager.player.sofObj) GameManager.SetPlayer(ccam.Player(),GameManager.seatInterface == SeatInterface.Bombardier);
 
         //Rotate using Cam Tracker
-        if (ccam.smooth) transform.rotation = Mathv.Damp(transform.rotation, camTracker.rotation, SmoothSpeed(), false);
-        else transform.rotation = camTracker.rotation;
+        if (ccam.smooth) transform.rotation = Mathv.Damp(transform.rotation, camTarget, SmoothSpeed(), false);
+        else transform.rotation = camTarget;
 
         //Position
         transform.position = Position(ccam);
@@ -138,10 +137,13 @@ public class PlayerCamera : MonoBehaviour
         LayerMask mask = LayerMask.GetMask("Terrain", "Default", "Water");
         float dis = new Vector2(ccam.height, ccam.distance).magnitude + 0.05f;
         if (Physics.Raycast(transform.position, camTr.position - transform.position, out RaycastHit hit, dis, mask))
+        {
             camTr.position = hit.point + camTr.forward * 0.05f + Vector3.up * 0.05f;
+        }
+
 
         //Setup Direction Input
-        if (GameManager.gm.actions.General.LookAround.ReadValue<float>() < 0.5f) directionInput = camTracker.forward;
+        if (GameManager.gm.actions.General.LookAround.ReadValue<float>() < 0.5f) directionInput = camTarget * Vector3.forward;
         else if (GameManager.gm.actions.Pilot.Pitch.phase == InputActionPhase.Started) directionInput = GameManager.player.tr.forward;
     }
     public float SmoothSpeed()
@@ -210,9 +212,9 @@ public class PlayerCamera : MonoBehaviour
         if (GameManager.gameUI == GameUI.PauseMenu) return;
         Vector3 up = defaultRotation * Vector3.up;
         //if (Vector3.Angle(camTracker.forward, up) < 10f) up = camTracker.up;
-        camTracker.rotation = Quaternion.LookRotation(camTracker.forward, up);
-        camTracker.Rotate(Vector3.up * inputs.x);
-        camTracker.Rotate(Vector3.right * inputs.y);
+        camTarget = Quaternion.LookRotation(camTarget * Vector3.forward, up);
+        camTarget *= Quaternion.Euler(Vector3.up * inputs.x);
+        camTarget *= Quaternion.Euler(Vector3.right * inputs.y);
     }
     private void RelativeLookAround(Vector2 inputs, Quaternion defaultRotation)
     {
@@ -220,9 +222,9 @@ public class PlayerCamera : MonoBehaviour
         float yLimit = customCam.pos == CamPosition.FirstPerson ? 84f : 180f;
         rotations.x += Mathf.Sign(rotations.y - 90f) * -inputs.x;
         rotations.y = Mathf.Clamp(rotations.y + inputs.y, -yLimit, yLimit);
-        camTracker.rotation = defaultRotation;
-        camTracker.Rotate(Vector3.up * rotations.x);
-        camTracker.Rotate(Vector3.right * rotations.y);
+        camTarget = defaultRotation;
+        camTarget *= Quaternion.Euler(Vector3.up * rotations.x);
+        camTarget *= Quaternion.Euler(Vector3.right * rotations.y);
     }
     private void TryResetView()
     {
@@ -242,9 +244,9 @@ public class PlayerCamera : MonoBehaviour
     {
         UpdateGameCams();
 
-        camTracker.rotation = DefaultRotation(customCam);
+        camTarget = DefaultRotation(customCam);
         rotations = Vector2.zero;
-        if (instant) instance.transform.rotation = camTracker.rotation;
+        if (instant) instance.transform.rotation = camTarget;
     }
     private CustomCam CamByViewMode(int vm)
     {

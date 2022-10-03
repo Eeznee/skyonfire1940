@@ -6,6 +6,7 @@ using UnityEditor.SceneManagement;
 
 public class Fuselage : Airframe
 {
+    public bool detachable = true;
     public GameObject brokenModel;
 
     public HydraulicSystem hydraulics;
@@ -14,6 +15,10 @@ public class Fuselage : Airframe
     public float maxSpeed = 100f;
     public float maxDrag = 0.1f;
 
+    public override bool Detachable()
+    {
+        return detachable;
+    }
     public override float MaxSpeed()
     {
         if (drag)
@@ -42,14 +47,14 @@ public class Fuselage : Airframe
     private void FixedUpdate()
     {
         ForcesStress(true, customRipSpeed);
-        if (buoyancy) Floating(transform.position);
+        Floating(transform.position);
         Drag();
     }
     public override void Rip()
     {
         if (ripped) return;
         base.Rip();
-        if (brokenModel && !detachable)
+        if (brokenModel && !Detachable())
         {
             brokenModel.SetActive(true);
             gameObject.SetActive(false);
@@ -69,7 +74,8 @@ public class FuselageEditor : AirframeEditor
         //
         Fuselage fuselage = (Fuselage)target;
 
-
+        fuselage.brokenModel = EditorGUILayout.ObjectField("Broken Model", fuselage.brokenModel, typeof(GameObject), true) as GameObject;
+        fuselage.detachable = EditorGUILayout.Toggle("Rippable", fuselage.detachable);
         fuselage.customRipSpeed = EditorGUILayout.Toggle("Custom Rip Speed",fuselage.customRipSpeed);
         if (fuselage.customRipSpeed)
             fuselage.maxSpeed = EditorGUILayout.FloatField(fuselage.hydraulics ? "Extended Max Speed" : "Max Speed",fuselage.maxSpeed * 3.6f) / 3.6f;

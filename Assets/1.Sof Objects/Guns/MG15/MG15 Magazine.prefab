@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1325925141747981053}
   - component: {fileID: 7409102120422856394}
   - component: {fileID: 3538376980630897648}
-  - component: {fileID: 4119508785191927176}
+  - component: {fileID: 3757940174007700433}
   m_Layer: 9
   m_Name: MG15 Magazine
   m_TagString: Untagged
@@ -107,11 +107,6 @@ MonoBehaviour:
   complex: {fileID: 0}
   aircraft: {fileID: 0}
   data: {fileID: 0}
-  xrGrip: {fileID: 0}
-  grip: {fileID: 3510618011283685082}
-  outline: {fileID: 4119508785191927176}
-  indexSelect: 0
-  relative: 0
   gunPreset: {fileID: 11400000, guid: 98117c37545eb8d4c9f4597bf4bf39e0, type: 2}
   capacity: 75
   ammo: 0
@@ -123,10 +118,10 @@ MonoBehaviour:
   - {fileID: 9209773864263526633}
   - {fileID: 7882132114102178868}
   - {fileID: 3221780402564323777}
-  rend: {fileID: 0}
+  grip: {fileID: 3510618011283685082}
   attachedGun: {fileID: 0}
   attachedStock: {fileID: 0}
---- !u!114 &4119508785191927176
+--- !u!114 &3757940174007700433
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -135,15 +130,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 772662193242426642}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Script: {fileID: 11500000, guid: 17ff3c4b31f0620459d159b67aabbce2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  outlineMode: 0
-  outlineColor: {r: 1, g: 1, b: 1, a: 1}
-  outlineWidth: 4
-  precomputeOutline: 0
-  bakeKeys: []
-  bakeValues: []
+  rb: {fileID: 0}
+  sofObject: {fileID: 0}
+  simple: {fileID: 0}
+  complex: {fileID: 0}
+  aircraft: {fileID: 0}
+  data: {fileID: 0}
+  xrGrab: {fileID: 0}
+  grip: {fileID: 3510618011283685082}
+  indexSelect: 0
+  relative: 1
 --- !u!1 &3149656025907957496
 GameObject:
   m_ObjectHideFlags: 0
@@ -154,6 +153,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6538963127089982421}
   - component: {fileID: 3510618011283685082}
+  - component: {fileID: 7924835041000092228}
   m_Layer: 13
   m_Name: Grip Clip
   m_TagString: Untagged
@@ -197,6 +197,19 @@ MonoBehaviour:
   trigger: 0.15
   thumbDown: 0.44
   thumbIn: 1
+--- !u!65 &7924835041000092228
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3149656025907957496}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.25, y: 0.1, z: 0.1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3221780402564323777
 GameObject:
   m_ObjectHideFlags: 0

@@ -137,7 +137,7 @@ public class SimuFoil
         //Coefficient of Drag
         float cd = (flap && !flap.ripped) ? airfoil.Cd(alpha, flapsInput) : airfoil.Cd(alpha);
         float wingSpan = frame.aircraft ? frame.aircraft.wingSpan : 5f;
-        if (wing) cd += cl * cl * totalArea * 2f / (wingSpan * wingSpan * Mathf.PI * airfoil.oswaldCoeff);                                   //Induced Drag
+        if (wing) cd += cl * cl * totalArea * 2f / (wingSpan * wingSpan * Mathf.PI * wing.oswald);                                   //Induced Drag
         cd *= frame.data.groundEffect;
 
         Vector3 force = Aerodynamics.ComputeLift(velocity, frame.data.tas, rootTip, frame.data.airDensity, area, cl, frame.structureDamage);
@@ -188,7 +188,6 @@ public class AirfoilPreset : ScriptableObject
     public float flapMaxAngle = 25f;
     public float flapMinAngle = -10f;
     public float flapCdMin = 0.1f;
-    public float oswaldCoeff = 0.75f;
 
     public TrailRenderer tipTrail;
 
@@ -234,7 +233,6 @@ public class AirfoilPresetEditor : Editor
             foil.flapClMin = EditorGUILayout.FloatField("Minimum Cl , Flaps", foil.flapClMin);
             foil.flapMinAngle = EditorGUILayout.FloatField("At angle , Flaps", foil.flapMinAngle);
             foil.flapCdMin = EditorGUILayout.FloatField("Cd Minimum , Flaps", foil.flapCdMin);
-            foil.oswaldCoeff = EditorGUILayout.Slider("Oswald Coefficient", foil.oswaldCoeff, 0.05f, 1f);
             foil.tipTrail = EditorGUILayout.ObjectField("Wingtip Trail", foil.tipTrail, typeof(TrailRenderer),false) as TrailRenderer;
         }
         else

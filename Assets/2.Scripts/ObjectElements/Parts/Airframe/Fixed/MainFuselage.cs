@@ -7,7 +7,6 @@ using UnityEditor.SceneManagement;
 public class MainFuselage : Fuselage
 {
     public AirfoilPreset foil;
-    public MaterialsList materialsPreset;
 
     public override float MaxSpeed()
     {
@@ -38,6 +37,7 @@ public class MainFuselageEditor : FuselageEditor
         //
         MainFuselage frame = (MainFuselage)target;
         frame.foil = EditorGUILayout.ObjectField("Airfoil Preset", frame.foil, typeof(AirfoilPreset), false) as AirfoilPreset;
+
         base.OnInspectorGUI();
 
         if (GUI.changed)

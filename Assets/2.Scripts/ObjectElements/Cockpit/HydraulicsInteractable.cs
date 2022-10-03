@@ -6,30 +6,51 @@ using UnityEditor.SceneManagement;
 public class HydraulicsInteractable : AnalogInteractable
 {
     public HydraulicSystem hydraulics;
-    public AnalogInteractable linked;
+    public AnalogInteractable opposite;
 
+    public override void Initialize(ObjectData d, bool firstTime)
+    {
+        base.Initialize(d, firstTime);
+        if (opposite)
+        {
+            opposite.switchInput = switchInput;
+            opposite.animationTime = animationTime;
+        }
+    }
     protected override void VRInteraction(Vector3 gripPos, Quaternion gripRot)
     {
         base.VRInteraction(gripPos, gripRot);
-        linked.input = Mathf.Clamp(linked.input, 0f, 1f - input);
+        if (opposite) opposite.input = Mathf.Clamp(opposite.input, 0f, 1f - input);
         SendToHydraulics();
     }
 
     private void SendToHydraulics()
     {
-        if (input > 0.5f && linked.input < input) hydraulics.Set(1f);
-        if (linked.input > 0.5f && linked.input > input) hydraulics.Set(0f);
-        if (linked.input < 0.5f && input < 0.5f) hydraulics.Stop();
+        if (!opposite)
+        {
+            hydraulics.Set(input);
+            return;
+        }
+        if (input > 0.5f && opposite.input < input) hydraulics.Set(1f);
+        if (opposite.input > 0.5f && opposite.input > input) hydraulics.Set(0f);
+        if (opposite.input < 0.5f && input < 0.5f) hydraulics.Stop();
     }
 
     private void Update()
     {
         CockpitInteractableUpdate();
-        if (linked.xrGrip.isSelected)
+        //Twin
+        if (opposite)
         {
-            input = Mathf.Clamp(input, 0f, 1f - linked.input);
-            SendToHydraulics();
+            if (opposite.xrGrab && opposite.xrGrab.isSelected)
+            {
+                input = Mathf.Clamp(input, 0f, 1f - opposite.input);
+                SendToHydraulics();
+            }
+            Animate(hydraulics.state == hydraulics.stateInput ? 0f : hydraulics.stateInput);
         }
+        else 
+            Animate(hydraulics.stateInput);
     }
 }
 
@@ -47,7 +68,7 @@ public class HydraulicsInteractableEditor : AnalogInteractableEditor
         EditorGUILayout.HelpBox("Hydraulics Configuration", MessageType.None);
         GUI.color = GUI.backgroundColor;
         inter.hydraulics = EditorGUILayout.ObjectField("Hydraulics", inter.hydraulics, typeof(HydraulicSystem), true) as HydraulicSystem;
-        inter.linked = EditorGUILayout.ObjectField("Linked Analog", inter.linked, typeof(AnalogInteractable), true) as AnalogInteractable;
+        inter.opposite = EditorGUILayout.ObjectField("Opposite Input (Optional)", inter.opposite, typeof(AnalogInteractable), true) as AnalogInteractable;
 
         if (GUI.changed)
         {

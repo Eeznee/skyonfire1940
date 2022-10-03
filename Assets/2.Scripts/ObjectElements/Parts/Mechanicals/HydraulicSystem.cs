@@ -36,12 +36,14 @@ public class HydraulicSystem : ObjectElement
     public override void Initialize(ObjectData d, bool firstTime)
     {
         base.Initialize(d, firstTime);
-        anim = GetComponentInParent<Animator>();
 
-        sofAudio = new SofAudio(sofObject.avm, clip, SofAudioGroup.Persistent,false, false);
-        sofAudio.source.pitch = pitch;
-
-        SetInstant(defaultState);
+        if (firstTime)
+        {
+            anim = GetComponentInParent<Animator>();
+            sofAudio = new SofAudio(sofObject.avm, clip, SofAudioGroup.Persistent, false, false);
+            sofAudio.source.pitch = pitch;
+            SetInstant(defaultState);
+        }
     }
 
     public bool Destroyed() //returns destroyed only if there are essential parts and all essential parts are destroyed

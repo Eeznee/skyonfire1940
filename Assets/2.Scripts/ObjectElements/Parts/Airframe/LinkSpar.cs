@@ -8,7 +8,7 @@ using UnityEditor.SceneManagement;
 
 public class LinkSpar : Airframe
 {
-    public Fuselage[] linkedAirframes;
+    public Airframe[] linkedAirframes;
     public float damageRatio = 0.5f;
 
     public override void Initialize(ObjectData d, bool firstTime)
@@ -18,7 +18,7 @@ public class LinkSpar : Airframe
     public override void Rip()
     {
         base.Rip();
-        foreach(Fuselage airf in linkedAirframes)
+        foreach(Airframe airf in linkedAirframes)
         {
             airf.Damage(damageRatio * airf.maxHp);
         }

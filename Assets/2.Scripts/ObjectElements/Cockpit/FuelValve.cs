@@ -15,15 +15,10 @@ public class FuelValve : AnalogInteractable
         base.VRInteraction(gripPos, gripRot);
         engine.onInput = input > 0.5f;
     }
-    protected override void Animate()
-    {
-        if (xrGrip.isSelected) return;
-        input = engine.onInput ? 1f : 0f;
-        base.Animate();
-    }
     private void Update()
     {
         CockpitInteractableUpdate();
+        Animate(engine ? engine.onInput : input > 0.5f);
     }
 }
 #if UNITY_EDITOR

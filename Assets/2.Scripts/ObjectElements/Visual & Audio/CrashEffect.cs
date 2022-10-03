@@ -55,7 +55,7 @@ public class CrashEffect : ObjectElement
         foreach (CrewMember c in aircraft.GetComponentsInChildren<CrewMember>())
             c.Damage(c.maxHp * Mathf.InverseLerp(humanGTolerance,humanGLethal, g * Random.Range(0.9f, 1.1f)));
         if (GameManager.player.tr != transform.root) return;
-        foreach (Fuselage frame in aircraft.GetComponentsInChildren<Fuselage>())
+        foreach (Airframe frame in aircraft.GetComponentsInChildren<Airframe>())
             if (g > airframeGTolerance * Random.Range(0.8f, 1.2f)) frame.Rip();
     }
 }

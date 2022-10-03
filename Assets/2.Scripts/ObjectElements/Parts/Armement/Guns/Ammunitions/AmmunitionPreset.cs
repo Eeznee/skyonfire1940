@@ -19,6 +19,7 @@ public class AmmunitionPreset : ScriptableObject
     public GameObject trailEffect;
     public float tracerLength = 5f;
     public float tracerWidth = 0.45f;
+    public float tracerScatter = 3f;
 
     public BulletPreset[] bullets = new BulletPreset[3];
     public int[] defaultBelt = new int[3] { 0, 1, 2 };
@@ -63,9 +64,9 @@ public class AmmunitionPreset : ScriptableObject
             CapsuleCollider c = bullet.gameObject.AddComponent<CapsuleCollider>();
             c.isTrigger = true;
             c.radius = 0.08f;
-            c.height = 5f;
+            c.height = 4f;
             c.direction = 2;
-            c.center = new Vector3(0f, 0f, 5f);
+            c.center = new Vector3(0f, 0f, 3f);
 
             //Add Tracer
             if (tracer)
@@ -74,11 +75,13 @@ public class AmmunitionPreset : ScriptableObject
                 bullet.line = line;
                 line.startColor = ammunition.tracerColor;
                 line.endColor = ammunition.tracerColor;
-                line.useWorldSpace = false;
                 line.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
                 line.receiveShadows = false;
                 line.material = ammunition.tracerMaterial;
                 line.endWidth = line.startWidth = ammunition.tracerWidth;
+                line.numCapVertices = 4;
+                line.positionCount = 4;
+                line.useWorldSpace = true;
 
                 if (ammunition.trailEffect) Instantiate(ammunition.trailEffect, bullet.transform.position, Quaternion.identity, bullet.transform);
             }
@@ -143,6 +146,7 @@ public class AmmunitionPreset : ScriptableObject
             ammo.tracerColor = EditorGUILayout.ColorField("Tracer Color", ammo.tracerColor);
             ammo.tracerLength = EditorGUILayout.FloatField("Tracer Length", ammo.tracerLength);
             ammo.tracerWidth = EditorGUILayout.FloatField("Tracer Width", ammo.tracerWidth);
+            ammo.tracerScatter = EditorGUILayout.FloatField("Tracer Scatter", ammo.tracerScatter);
             ammo.tracerMaterial = EditorGUILayout.ObjectField("Tracer Material", ammo.tracerMaterial, typeof(Material), false) as Material;
             ammo.trailEffect = EditorGUILayout.ObjectField("Trail Effect", ammo.trailEffect, typeof(GameObject), false) as GameObject;
 

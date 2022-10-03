@@ -14,8 +14,12 @@ public class TrackingCrosshair : MonoBehaviour
             transform.position = pos;
             level.rotation = Quaternion.Euler(0f, 0f, -PlayerCamera.instance.camTr.eulerAngles.z);
 
-            bool active = pos.z > 0f && !GameManager.paused && PlayerCamera.customCam.WorldLookAround() && GameManager.seatInterface != SeatInterface.Bombardier;
-            bool dyn = PlayerCamera.dynamic || GameManager.seatInterface == SeatInterface.Gunner;
+            bool active = pos.z > 0f;
+            active &= !GameManager.paused;
+            active &= PlayerCamera.customCam.WorldLookAround();
+            active &= GameManager.seatInterface != SeatInterface.Bombardier;
+            active &= !(GameManager.seatInterface == SeatInterface.Gunner && PlayerCamera.customCam.pos == CamPosition.FirstPerson);
+            bool dyn = PlayerCamera.dynamic || (GameManager.seatInterface == SeatInterface.Gunner);
             dynamic.gameObject.SetActive(dyn && active);
             level.gameObject.SetActive(!dyn && active);
         } else
