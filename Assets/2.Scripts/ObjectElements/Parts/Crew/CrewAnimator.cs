@@ -17,9 +17,12 @@ public class CrewAnimator : ObjectElement
     private Vector3 headLookAt;
     private Vector3 accelerationOffset = Vector3.zero;
     private Vector3 accelerationCompensation = Vector3.zero;
+    private Vector3 vel = Vector3.zero;
 
     const float standingButtHead = 0.88f;
     const float leaningButtHead = 0.68f;
+    const float headMoveSpeed = 1f;
+    const float smoothTime = 0.2f;
 
     public override void Initialize(ObjectData d, bool firstTime)
     {
@@ -68,7 +71,9 @@ public class CrewAnimator : ObjectElement
             rot = Quaternion.LookRotation(seat.transform.position - pos, seat.transform.forward * 2f + (vrPlayer ? Camera.main.transform.forward : Vector3.zero));
             rot *= Quaternion.Euler(-90f, 0f, 0f);
         }
-        transform.SetPositionAndRotation(pos, rot);
+        pos = transform.parent.InverseTransformPoint(pos);
+        transform.localPosition = Vector3.SmoothDamp(transform.localPosition, pos, ref vel, smoothTime, headMoveSpeed,Time.deltaTime);
+        transform.rotation = rot;
     }
     private void OnAnimatorIK()
     {

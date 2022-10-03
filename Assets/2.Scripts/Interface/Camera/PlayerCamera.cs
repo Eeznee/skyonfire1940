@@ -32,6 +32,10 @@ public class PlayerCamera : MonoBehaviour
     public CustomCam free;
     CustomCam bombSight;
 
+    //Smoothing
+    const float zoomSmoothTime = 0.1f;
+    private float zoomVel = 0f;
+
     //Cam state
     public static int viewMode = 0;
     public static bool dynamic = false;
@@ -97,7 +101,7 @@ public class PlayerCamera : MonoBehaviour
 
         UpdateGameCams();
 
-        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, fov, Time.unscaledDeltaTime * 10f);
+        cam.fieldOfView = Mathf.SmoothDamp(cam.fieldOfView, fov,ref zoomVel,zoomSmoothTime,Mathf.Infinity, Time.unscaledDeltaTime);
 
         CustomCam ccam = customCam;
         bool lookAround = true;
@@ -140,7 +144,6 @@ public class PlayerCamera : MonoBehaviour
         {
             camTr.position = hit.point + camTr.forward * 0.05f + Vector3.up * 0.05f;
         }
-
 
         //Setup Direction Input
         if (GameManager.gm.actions.General.LookAround.ReadValue<float>() < 0.5f) directionInput = camTarget * Vector3.forward;
