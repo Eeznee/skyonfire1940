@@ -9,7 +9,6 @@ using UnityEditor.SceneManagement;
 
 public class GunnerSeat : CrewSeat
 {
-    public Actions.GunnerActions actions;
     public bool mainGun = false;
     public Turret turret;
     public Transform gunPovTarget;

@@ -97,6 +97,7 @@ public class GameManager : MonoBehaviour
         map = GetComponent<MapTool>();
         list.UpdateCards();
 
+        InputSystem.settings.SetInternalFeatureFlag("DISABLE_SHORTCUT_SUPPORT", true);
         if (actions == null)
             actions = new Actions();
         actions.Enable();

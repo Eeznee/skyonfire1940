@@ -16,19 +16,21 @@ public class CrewHand : MonoBehaviour
     private const float handSpeed = 1.6f;
     private const float handRotSpeed = 420f;
 
-    private void SetHandAnim(string name, ref float current, float target)
+    private bool SetHandAnim(string name, ref float current, float target)
     {
+        if (current == target) return false;
         current = Mathf.MoveTowards(current, target, Time.deltaTime * 5f);
         animator.SetFloat(name, current);
-        animator.Update(0f);
+        return true;
     }
     public void SetHandPose(Animator crew, HandGrip handGrip)
     {
-        SetHandAnim("ThumbDown", ref thumbDown, handGrip.thumbDown);
-        SetHandAnim("ThumbIn", ref thumbIn, handGrip.thumbIn);
-        SetHandAnim("Grip", ref grip, handGrip.grip);
-        SetHandAnim("Trigger", ref trigger, handGrip.trigger);
-
+        bool changed = false;
+        changed |= SetHandAnim("ThumbDown", ref thumbDown, handGrip.thumbDown);
+        changed |= SetHandAnim("ThumbIn", ref thumbIn, handGrip.thumbIn);
+        changed |= SetHandAnim("Grip", ref grip, handGrip.grip);
+        changed |= SetHandAnim("Trigger", ref trigger, handGrip.trigger);
+        if (changed) animator.Update(Time.deltaTime);
 
         //Position
         Vector3 localGoal = ikGoal == AvatarIKGoal.RightHand ? handGrip.rightPosOffset : handGrip.leftPosOffset;

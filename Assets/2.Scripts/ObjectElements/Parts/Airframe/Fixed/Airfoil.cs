@@ -173,7 +173,7 @@ public class Airfoil : Airframe
         ForcesStress(true, true);
 
         if (tipTrail && aircraft) 
-            tipTrail.emitting = data.ias > 20f && alpha * data.ias > airfoil.maxAngle * 0.8f * 50f && complex.lod.LOD() <= 2;
+            tipTrail.emitting = data.ias > 20f && alpha * Mathf.Min(data.ias/50f,1f) > airfoil.maxAngle * 0.8f && complex.lod.LOD() <= 2;
     }
 
 

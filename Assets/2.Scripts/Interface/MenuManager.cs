@@ -14,7 +14,6 @@ public class MenuManager : MonoBehaviour
     public Airfield[] airfields;
     public Rigidbody mapRb;
     public AudioMixer mixer;
-    public Actions actions;
 
     public static float timeScale = 1f;
     public static bool paused;
@@ -45,17 +44,6 @@ public class MenuManager : MonoBehaviour
         weather = GetComponent<Weather>();
         map = GetComponent<MapTool>();
         list.UpdateCards();
-
-        if (actions == null)
-        {
-            actions = new Actions();
-        }
-
-        actions.Enable();
-    }
-    private void OnDisable()
-    {
-        actions.Disable();
     }
     private float TimeScaleFactor()
     {

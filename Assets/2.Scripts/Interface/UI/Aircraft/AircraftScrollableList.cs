@@ -67,7 +67,7 @@ public class AircraftScrollableList : MonoBehaviour
     }
 
 
-    private void Start()
+    private void Awake()
     {
         scroller = GetComponentInChildren<ScrollRect>();
         listTransform = scroller.GetComponent<RectTransform>();
