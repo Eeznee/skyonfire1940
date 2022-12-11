@@ -12,9 +12,10 @@ public class GunnerPicker : DynamicUI
     {
         base.ResetProperties();
 
-        RectTransform rectTransform = GetComponent<RectTransform>();
+        if (!PlayerManager.player.sofObj) return;
 
-        int gunners = GameManager.AvailablePlayer().sofObj.crew.Length - 1;
+        RectTransform rectTransform = GetComponent<RectTransform>();
+        int gunners = PlayerManager.player.sofObj.crew.Length - 1;
         for (int i = 0; i < gunnerButtons.Length; i++)
         {
             Vector2 anchored;

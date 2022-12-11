@@ -19,14 +19,6 @@ public class SquadronPositionner : MonoBehaviour
     public void UpdateValues() { 
         currentSquadron.UpdateHeading(headingSlider.value);
     }
-
-    public void OnEnable()
-    {
-        transform.position = Input.mousePosition;
-        transform.SetAsLastSibling();
-        confirm.interactable = true;
-    }
-
     public void EditSquad(SquadronOnMap squad)
     {
         currentSquadron = squad;
@@ -35,8 +27,10 @@ public class SquadronPositionner : MonoBehaviour
         difficultyInput.text = squad.assignedSquad.difficulty.ToString();
 
         gameObject.SetActive(true);
+        transform.position = Input.mousePosition;
+        transform.SetAsLastSibling();
+        confirm.interactable = true;
     }
-
     public void Confirm()
     {
         missionCreator.Confirm(int.Parse(headingInput.text), int.Parse(altitudeInput.text),int.Parse(difficultyInput.text)/100f, currentSquadron.assignedSquad.hiddenId);

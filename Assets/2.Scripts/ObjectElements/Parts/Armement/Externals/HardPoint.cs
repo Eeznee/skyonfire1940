@@ -42,7 +42,7 @@ public class HardPoint : ObjectElement
         if (bombBay) { if (aircraft.bombBay.state < 1f) return false; }
 
         weightCarried -= selectedGroup.order[bombIndex].Mass();
-        selectedGroup.order[bombIndex].Drop();
+        selectedGroup.order[bombIndex].Drop(5f, bombBay);
         bombIndex++;
 
         if (bombIndex == selectedGroup.order.Length) priority = -1;
@@ -50,16 +50,19 @@ public class HardPoint : ObjectElement
         return true;
     }
 
-    public HardPoint BestHardPoint()
+    public static HardPoint OptimalHardPoint(SofAircraft air)
     {
-        HardPoint[] hardPoints = aircraft.hardPoints;
+        HardPoint[] hardPoints = null;// air.hardPoints;
         float maxMass = 0f;
         int maxPriority = -1;
         int chosen = 0;
         for (int i = 0; i < hardPoints.Length; i++)
         {
             HardPoint hp = hardPoints[i];
-            if ((hp.weightCarried > maxMass && hp.priority >= maxPriority) || (hp.priority > maxPriority))
+
+            bool higherPriority = hp.priority > maxPriority;
+            higherPriority |= hp.weightCarried > maxMass && hp.priority == maxPriority;
+            if (higherPriority)
             {
                 chosen = i;
                 maxMass = hp.weightCarried;

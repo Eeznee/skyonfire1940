@@ -24,7 +24,7 @@ public class AirfoilSkin : Airframe
     }
     public override void Damage(float damage, float caliber, float fireCoeff)
     {
-        float holeArea = Mathf.Pow(caliber * caliberToHoleRatio / 2000f, 2) * Mathf.PI;
+        float holeArea = Mathv.SmoothStart(caliber * caliberToHoleRatio / 2000f, 2) * Mathf.PI;
         structureDamage -= holeArea / area * structureDamage;
         structureDamage = Mathf.Clamp01(structureDamage);
     }

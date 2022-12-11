@@ -77,7 +77,7 @@ public class EnginePreset : ScriptableObject
     {
         float targetRps = boost ? boostRPS : nominalRPS;
         if (radSec < targetRps)
-            return Mathf.Lerp(minPowEff, 1f, Mathf.Pow(radSec / targetRps, 2));
+            return Mathf.Lerp(minPowEff, 1f, Mathv.SmoothStart(radSec / targetRps, 2));
         else
             return Mathf.InverseLerp(targetRps * 2f, targetRps, radSec);
     }

@@ -65,7 +65,7 @@ public class Engine : Part
         }
     }
     public bool Operational() { return aircraft && !igniting && !ripped && currentTank >= 0; }
-    public virtual bool Working() { return onInput && Operational() && rps > preset.idleRPS / 2f && carburetorOk; }
+    public virtual bool Working() { return onInput && Operational() && rps > preset.idleRPS * 0.5f && carburetorOk; }
     public virtual float ConsumptionRate() { return 0f; } //Unit : kg/h
     public virtual void EngineFixedUpdate()
     {
@@ -74,7 +74,7 @@ public class Engine : Part
         trueThrottle = Mathf.Clamp01((throttleInput + 0.005f) / 1.005f);
         
         if (!igniting) trueEngineVolume = Mathf.MoveTowards(trueEngineVolume, Working() ? 1f : 0f, Time.fixedDeltaTime);
-        if (!Operational()) trueThrottle = 0f;
+        if (!Working()) trueThrottle = 0f;
 
         //Carburetor
         if (preset.fuelMixer == EnginePreset.FuelMixerType.Carburettor) carburetorState = Mathf.MoveTowards(carburetorState, Mathf.Sign(data.gForce + 0.5f), Time.fixedDeltaTime);
@@ -141,13 +141,12 @@ public class Engine : Part
         delay = 0f;
         float fromRPS = rps;
         float startTemperature = temperature;
-        float power = Random.Range(1.5f, 5f);
 
         while (delay < preset.ignitionTime)
         {
             temperature = Mathf.Max(temperature, Mathf.Lerp(startTemperature, preset.tempIdle, delay / preset.ignitionTime));
             float rpsFactor = Mathf.Sin(delay / preset.ignitionTime * Mathf.PI / 2f);
-            rpsFactor = Mathf.Pow(rpsFactor, 4);
+            rpsFactor = Mathv.SmoothStart(rpsFactor, 4);
             rps = Mathf.Lerp(fromRPS, preset.idleRPS, rpsFactor);
             trueEngineVolume = rpsFactor;
             delay += Time.deltaTime;
@@ -159,6 +158,11 @@ public class Engine : Part
     {
         Set(false, false);
         base.Rip();
+    }
+    public override void Damage(float damage, float caliber, float fireCoeff)
+    {
+        base.Damage(damage, caliber, fireCoeff);
+        TryBurn(caliber, fireCoeff);
     }
 }
 #if UNITY_EDITOR

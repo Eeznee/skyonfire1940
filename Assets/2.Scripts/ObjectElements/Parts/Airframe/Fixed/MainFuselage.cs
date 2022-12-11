@@ -20,8 +20,8 @@ public class MainFuselage : Fuselage
 
     private void FixedUpdate()
     {
-        Vector3 lift = Vector3.Cross(rb.velocity, transform.up).normalized * area * foil.Cl(data.angleOfSlip) * Mathf.Pow(data.gsp, 2) * data.airDensity / 2f;
-        Vector3 drag = -rb.velocity.normalized * area * foil.Cd(data.angleOfSlip) * Mathf.Pow(data.gsp, 2) * data.airDensity / 2f;
+        Vector3 lift = Vector3.Cross(rb.velocity, transform.up).normalized * area * foil.Cl(data.angleOfSlip) * Mathv.SmoothStart(data.tas, 2) * data.airDensity / 2f;
+        Vector3 drag = -rb.velocity.normalized * area * foil.Cd(data.angleOfSlip) * Mathv.SmoothStart(data.tas, 2) * data.airDensity / 2f;
         rb.AddForce(lift + drag);
 
         Drag();

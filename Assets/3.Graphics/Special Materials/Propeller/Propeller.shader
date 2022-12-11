@@ -15,10 +15,11 @@
 	}
 		SubShader
 		{
-			Tags { "Queue" = "Transparent" "RenderType" = "Transparent" "IgnoreProjector" = "True" }
-			Blend SrcAlpha OneMinusSrcAlpha
+			Tags { "Queue" = "Transparent" "RenderType" = "Transparent" "IgnoreProjector" = "True"}
+
 			LOD 100
-			ZWrite On
+			ZWrite Off
+			Blend SrcAlpha OneMinusSrcAlpha
 
 			Pass
 			{
@@ -80,7 +81,7 @@
 					}
 					fixed4 col = (length(i.uv - float2(0.5,0.5)) * 2 > _TipLimit) ? _TipColor : _Color;
 					col.w = alpha * _Transparency;
-					col.w *= lerp(1, 0.8 / _Transparency, pow(_CameraAngle / 90, 5));
+					col.w *= lerp(1, 0.8 / _Transparency, _CameraAngle);
 
 					return col;
 				}

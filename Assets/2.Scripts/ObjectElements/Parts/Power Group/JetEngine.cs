@@ -9,6 +9,7 @@ using UnityEditor.SceneManagement;
 
 public class JetEngine : Engine
 {
+    public Transform inlet;
     public float thrust;
     const float torqueCoeff = 0.2f;
     const float minTorque = 60f;
@@ -31,7 +32,10 @@ public class JetEngine : Engine
             thrust = densityCoeff * trueThrottle * preset.maxThrust;
             rb.AddForceAtPosition(thrust * transform.forward, transform.position);
         }
-
+    }
+    private void Update()
+    {
+        inlet.Rotate(Vector3.forward * rps * Mathf.Rad2Deg * Time.deltaTime);
     }
 }
 #if UNITY_EDITOR
@@ -51,7 +55,7 @@ public class JetEngineEditor : EngineEditor
         GUI.color = Color.cyan;
         EditorGUILayout.HelpBox("Jey Engine Properties", MessageType.None);
         GUI.color = backgroundColor;
-        
+        engine.inlet = EditorGUILayout.ObjectField("Spinning Inlet", engine.inlet, typeof(Transform), true) as Transform;
 
 
         serializedObject.ApplyModifiedProperties();

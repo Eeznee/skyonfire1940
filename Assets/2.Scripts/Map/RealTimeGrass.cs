@@ -22,21 +22,20 @@ public class RealTimeGrass : MonoBehaviour
     {
         return Instantiate(chunkPrefab, pos, Quaternion.identity, transform);
     }
-    void Start()
+    void Awake()
     {
-        maxCompDistanceDestroy = Mathf.Pow((boardSize - 0.95f) * chunkSize, 2);
-        maxCompDistanceSpawn = Mathf.Pow((boardSize - 1.05f) * chunkSize, 2);
+        maxCompDistanceDestroy = Mathv.SmoothStart((boardSize - 0.95f) * chunkSize, 2);
+        maxCompDistanceSpawn = Mathv.SmoothStart((boardSize - 1.05f) * chunkSize, 2);
         fullGrassDistance = maxCompDistanceSpawn / 4f;
-        chunkPrefab = InstantiateChunk(GameManager.player.tr.position);
+        chunkPrefab = InstantiateChunk(Vector3.zero);
         chunkPrefab.CreateChunk(chunkSize, chunkDensity);
         sides = 2 * boardSize + 1;
-
-        Initialize();
     }
 
     private void Initialize()
     {
-        refChunk = InstantiateChunk(GameManager.player.tr.position);
+        refChunk = InstantiateChunk(PlayerManager.player.tr.position);
+        refChunk.WakeChunk();
         chunks = new GrassChunk[sides][];
 
         for (int x = 0; x < sides; x++)
@@ -61,7 +60,12 @@ public class RealTimeGrass : MonoBehaviour
 
     void Update()
     {
-        Vector3 playerPos = GameManager.player.tr ? GameManager.player.tr.position : Camera.main.transform.position;
+        if (!refChunk)
+        {
+            if (PlayerManager.player.tr) Initialize();
+            else return;
+        }
+        Vector3 playerPos = PlayerManager.player.tr ? PlayerManager.player.tr.position : PlayerCamera.camPos;
         playerPos.y = GameManager.map.HeightAtPoint(playerPos);
 
         int closestX = boardSize;

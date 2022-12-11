@@ -20,8 +20,12 @@ public class SofAudioType
     {
         group = g;
         mixer = m;
-        local = new SofAudio(avm, null, g, false, false);
-        global = new SofAudio(avm, null, g, true, false);
+        local = new SofAudio(avm, null, g, false);
+        global = new SofAudio(avm, null, g, true);
+        local.Stop();
+        global.Stop();
+        local.source.playOnAwake = global.source.playOnAwake = false;
+        local.source.volume = global.source.volume = 1f;
     }
 }
 public class AVM : ObjectElement
@@ -34,12 +38,15 @@ public class AVM : ObjectElement
     [HideInInspector] public GameObject globalHolder;
 
     private List<SofAudio> sofAudios = new List<SofAudio>(0);
+    private List<SofAudio> sofAudiosCockpit = new List<SofAudio>(0);
 
-    private bool use3dSound;
+    [HideInInspector] public bool localActive;
+    private bool use3dSound = false;
 
     public void AddSofAudio(SofAudio sa)
     {
         sofAudios.Add(sa);
+        if (sa.group == SofAudioGroup.Cockpit) sofAudiosCockpit.Add(sa);
     }
 
     private void Awake()
@@ -59,18 +66,19 @@ public class AVM : ObjectElement
     }
     private void Start()
     {
-        UpdatePlayer(GameManager.player.sofObj == sofObject);
+        UpdatePlayer(PlayerManager.player.sofObj == sofObject);
     }
     private void Update()
     {
-        bool newUse3dSound = GameManager.player.sofObj != sofObject || (GameManager.gm.vr ? false : PlayerCamera.customCam.pos == CamPosition.Free);
+        bool newUse3dSound = PlayerManager.player.sofObj != sofObject || (GameManager.gm.vr ? false : PlayerCamera.customCam.pos == CamPosition.Free);
         if (newUse3dSound != use3dSound)
             UpdatePlayer(newUse3dSound);
     }
     public void UpdatePlayer(bool newUse3dSound)
     {
         use3dSound = newUse3dSound;
-        localHolder.SetActive(!use3dSound);
+        localActive = !use3dSound;
+        localHolder.SetActive(localActive);
         foreach (SofAudio sa in sofAudios) sa.source.spatialBlend = sa.source.dopplerLevel = use3dSound ? 1f : 0f;
     }
 }

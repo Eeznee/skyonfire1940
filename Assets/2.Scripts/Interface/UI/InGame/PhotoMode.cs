@@ -16,20 +16,19 @@ public class PhotoMode : MonoBehaviour
     private void Start()
     {
         speed = minSpeed;
-        GameManager.gm.actions.General.CameraSpeed.performed += t => ChangeSpeed(t.ReadValue<float>());
+        PlayerActions.instance.actions.General.CameraSpeed.performed += t => ChangeSpeed(t.ReadValue<float>());
     }
 
     private void OnEnable()
     {
-        worldPos = GameManager.gm.mapTr.InverseTransformPoint(PlayerCamera.instance.camTr.position);
-        PlayerCamera.instance.SetView(2);
+        worldPos = GameManager.gm.mapTr.InverseTransformPoint(PlayerCamera.camTr.position);
     }
 
     private CustomCam currentCam = null;
 
     public void ResetPositions()
     {
-        worldPos = GameManager.gm.mapTr.InverseTransformPoint(GameManager.AvailablePlayer().sofObj.transform.position);
+        worldPos = GameManager.gm.mapTr.InverseTransformPoint(PlayerManager.player.sofObj.transform.position);
     }
     private void ChangeSpeed(float input)
     {
@@ -51,14 +50,14 @@ public class PhotoMode : MonoBehaviour
             PlayerCamera.instance.free.freeResetting = false;
         }
 
-        Transform camTr = PlayerCamera.instance.camTr;
-        Actions.GeneralActions actions = GameManager.gm.actions.General;
+        Transform camTr = PlayerCamera.camTr;
+        Actions.GeneralActions actions = PlayerActions.instance.actions.General;
         Vector3 moveAxis = new Vector3(actions.CameraHorizontal.ReadValue<Vector2>().x, actions.CameraVertical.ReadValue<float>(), actions.CameraHorizontal.ReadValue<Vector2>().y);
         speeds = Vector3.MoveTowards(speeds, moveAxis, Time.unscaledDeltaTime * 2f);
 
         Vector3 moveVector = camTr.forward * speeds.z + camTr.right * speeds.x + Vector3.up * speeds.y;
         float actualSpeed = speed;
-        if (GameManager.gm.actions.General.CameraFast.ReadValue<float>() > 0.5f) actualSpeed = maxSpeed;
+        if (PlayerActions.instance.actions.General.CameraFast.ReadValue<float>() > 0.5f) actualSpeed = maxSpeed;
         moveVector *= actualSpeed * Time.unscaledDeltaTime;
         worldPos += moveVector;
     }

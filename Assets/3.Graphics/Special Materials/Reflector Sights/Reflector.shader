@@ -12,9 +12,10 @@ Shader "Sof/Reflector"
 		SubShader
 		{
 			Tags { "Queue" = "Transparent" "RenderType" = "Transparent" "IgnoreProjector" = "True" }
-			Blend SrcAlpha OneMinusSrcAlpha
+
 			LOD 100
-			ZWrite On
+			ZWrite Off
+			Blend SrcAlpha OneMinusSrcAlpha
 
 			Pass
 			{

@@ -23,7 +23,7 @@ public class CrashEffect : ObjectElement
 
         //Two methods to check for crash (both are not reliable 100%)
         //Method 1 : use acceleration value
-        if (data.acceleration.sqrMagnitude > mult * Mathf.Pow(minGThreshold * -Physics.gravity.y, 2) && data.relativeAltitude < 30f)
+        if (data.acceleration.sqrMagnitude > mult * Mathv.SmoothStart(minGThreshold * -Physics.gravity.y, 2) && data.relativeAltitude < 30f)
         {
             Crash(data.acceleration.magnitude / (-Physics.gravity.y * mult));
         }
@@ -54,7 +54,7 @@ public class CrashEffect : ObjectElement
 
         foreach (CrewMember c in aircraft.GetComponentsInChildren<CrewMember>())
             c.Damage(c.maxHp * Mathf.InverseLerp(humanGTolerance,humanGLethal, g * Random.Range(0.9f, 1.1f)));
-        if (GameManager.player.tr != transform.root) return;
+        if (PlayerManager.player.tr != transform.root) return;
         foreach (Airframe frame in aircraft.GetComponentsInChildren<Airframe>())
             if (g > airframeGTolerance * Random.Range(0.8f, 1.2f)) frame.Rip();
     }

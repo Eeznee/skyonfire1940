@@ -9,6 +9,7 @@ public class ObjectElement : MonoBehaviour
     [HideInInspector] public SofComplex complex;
     [HideInInspector] public SofAircraft aircraft;
     [HideInInspector] public ObjectData data;
+    [HideInInspector] public Transform tr;
     public virtual float Mass()
     {
         return 0f;
@@ -26,6 +27,7 @@ public class ObjectElement : MonoBehaviour
         simple = data.simple;
         complex = data.complex;
         aircraft = data.aircraft;
+        tr = transform;
     }
 }
 

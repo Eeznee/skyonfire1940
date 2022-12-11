@@ -56,7 +56,7 @@ public class PostProcessFX : MonoBehaviour
 
         //Lightweight
         fullScreenFilter.color = veins.color = vignetteFilter.color = empty;
-        PlayerCamera.instance.camTr.localRotation = Quaternion.identity;
+        PlayerCamera.camTr.localRotation = Quaternion.identity;
 
         //Post FX
         colors.colorFilter.value = Color.white;
@@ -71,7 +71,7 @@ public class PostProcessFX : MonoBehaviour
         //Screen Color Change
         Color fullColor = Color.Lerp(Color.black, Color.red * 0.65f, -blackout * 3f);
         fullColor = Color.Lerp(damageFilterLW, fullColor, Mathf.Abs(blackout));
-        fullColor.a = Mathf.Max(Mathf.Abs(blackout), (1f - GameManager.player.crew.structureDamage) * damageVignetteIntensityLW);
+        fullColor.a = Mathf.Max(Mathf.Abs(blackout), (1f - PlayerManager.player.crew.structureDamage) * damageVignetteIntensityLW);
         fullColor = Mathv.CombineColors(fullColor, new Color(0.4f, 0.4f, 0.4f, body.Sickness() * 0.5f));
         if (body.Gloc()) fullColor = Color.black;
         fullScreenFilter.color = Vector4.Lerp(fullScreenFilter.color, fullColor, Time.deltaTime);
@@ -83,7 +83,7 @@ public class PostProcessFX : MonoBehaviour
         vignetteFilter.color = vignetteColor;
 
         //Sickness
-        Transform camTr = PlayerCamera.instance.camTr;
+        Transform camTr = PlayerCamera.camTr;
         camTr.localRotation = Quaternion.identity;
         Vector3 rot = Vector3.one * body.Sickness();
         rot.x *= 4f * Mathf.Sin(Time.time);
@@ -95,19 +95,19 @@ public class PostProcessFX : MonoBehaviour
     {
         //Vignette
         Color blackOutColor = Color.Lerp(Color.white, blackout > 0f ? Color.black : Color.red, Mathf.Abs(blackout * 2f));
-        Color damageColor = Color.Lerp(damageVignette, Color.white, GameManager.player.crew.structureDamage);
+        Color damageColor = Color.Lerp(damageVignette, Color.white, PlayerManager.player.crew.structureDamage);
         vignette.color.value = Color.Lerp(damageColor, blackOutColor, Mathf.Abs(blackout));
-        vignette.intensity.value = Mathf.Max(Mathf.Abs(blackout), (1f - GameManager.player.crew.structureDamage) * damageVignetteIntensity); ;
+        vignette.intensity.value = Mathf.Max(Mathf.Abs(blackout), (1f - PlayerManager.player.crew.structureDamage) * damageVignetteIntensity); ;
 
         //Color Filter
         Color targetFilter = Color.Lerp(Color.white, blackout > 0f ? blackoutFilter : redoutFilter, blackout > 0f ? blackout * blackout : -blackout * 2f);
-        damageColor = Color.Lerp(damageFilter, Color.white, GameManager.player.crew.structureDamage);
+        damageColor = Color.Lerp(damageFilter, Color.white, PlayerManager.player.crew.structureDamage);
         targetFilter = Color.Lerp(damageColor, targetFilter, Mathf.Abs(blackout));
         if (body.Gloc()) targetFilter = Color.black;
         colors.colorFilter.value = Vector4.Lerp(colors.colorFilter.value, targetFilter, Time.deltaTime);
 
         //Black And White
-        colors.saturation.value = -100f * Mathf.Clamp01(blackout * Mathf.Abs(blackout) + (1f - GameManager.player.crew.structureDamage) / 2f);
+        colors.saturation.value = -100f * Mathf.Clamp01(blackout * Mathf.Abs(blackout) + (1f - PlayerManager.player.crew.structureDamage) / 2f);
 
         //Pain Effects
         aberration.intensity.value = body.Pain();
@@ -123,17 +123,18 @@ public class PostProcessFX : MonoBehaviour
     }
     void Update()
     {
-        if (GameManager.player.crew == null || GameManager.paused || !(PlayerCamera.viewMode == 0 || PlayerCamera.viewMode == 1))
+        if (PlayerManager.player.crew == null || TimeManager.paused || !(PlayerCamera.viewMode == 0 || PlayerCamera.viewMode == 1))
         {
             ClearEffects();
             return;
         }
 
-        body = GameManager.player.crew.body;
+        body = PlayerManager.player.crew.body;
         blackout = Mathf.Clamp(body.Blood() * (1f - body.Stamina()), -1f, 1f);
 
-        veins.color = new Color(veins.color.r, veins.color.g, veins.color.b, Mathf.Lerp(0f, veinsTransparencyMax, Mathf.Pow(1f - GameManager.player.crew.structureDamage, 2)));
-        if (kiaText.enabled != GameManager.player.crew.ripped) kiaText.enabled = GameManager.player.crew.ripped;
+        float a = veinsTransparencyMax * Mathv.SmoothStart(1f - PlayerManager.player.crew.structureDamage, 2);
+        veins.color = new Color(veins.color.r, veins.color.g, veins.color.b, a);
+        if (kiaText.enabled != PlayerManager.player.crew.ripped) kiaText.enabled = PlayerManager.player.crew.ripped;
         if (lightWeight) UpdateLightWeight();
         else UpdatePostFx();
     }

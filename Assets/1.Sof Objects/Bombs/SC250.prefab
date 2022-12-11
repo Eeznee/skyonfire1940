@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 643791862224920740}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.65}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -53,7 +53,6 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -111,10 +110,11 @@ MonoBehaviour:
   structureDamage: 1
   ripped: 0
   burning: 0
-  explosiveMass: 125
-  explosion: {fileID: 1126181125208960, guid: ed27c50bbe0b06548b4009b7cfc994ba, type: 3}
-  waterSplosion: {fileID: 1126181125208960, guid: 4bfd758c0a9a02645a3120598fdb787e,
-    type: 3}
+  droppedMesh: {fileID: 0}
+  filler:
+    mass: 125
+    explosive: {fileID: 11400000, guid: df53517dde664404fba037ca4782e0f3, type: 2}
+    fx: {fileID: 1942529869341703528, guid: 2840ed706407ad24abf8e0196502234d, type: 3}
 --- !u!136 &3396918718882278964
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -123,7 +123,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 643791862224920740}
   m_Material: {fileID: 13400000, guid: dcc5ea1e08dee414aaa4c6055bb14c26, type: 2}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.18
   m_Height: 1.28

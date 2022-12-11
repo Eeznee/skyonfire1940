@@ -44,7 +44,7 @@ public class PilotSeat : CrewSeat
         base.PlayerUpdate(crew);
         AiUpdate(crew);
         return;
-        Actions.PilotActions pilot = GameManager.gm.actions.Pilot;
+        Actions.PilotActions pilot = PlayerActions.instance.actions.Pilot;
         if (pilot.FirePrimaries.ReadValue<float>() > 0.1f) aircraft.FirePrimaries();
         if (pilot.FireSecondaries.ReadValue<float>() > 0.7f) aircraft.FireSecondaries();
         aircraft.SetFlaps(Mathf.RoundToInt(pilot.Flaps.ReadValue<float>()));
@@ -52,7 +52,7 @@ public class PilotSeat : CrewSeat
         
         if (Input.mouseScrollDelta.y != 0f)
         {
-            float thr = GameManager.player.aircraft.engines[0].throttleInput;
+            float thr = PlayerManager.player.aircraft.engines[0].throttleInput;
             float input = Input.mouseScrollDelta.y * throttleIncrement;
             aircraft.SetThrottle(thr + input);
             aircraft.boost = (thr == 1f && input > 0f) || aircraft.boost;
@@ -68,7 +68,7 @@ public class PilotSeat : CrewSeat
         base.PlayerFixed(crew);
         AiFixed(crew);
         return;
-        Actions actions = GameManager.gm.actions;
+        Actions actions = PlayerActions.instance.actions;
         Vector3 axis = AircraftControl.AutoTargetFlight(aircraft.transform.position + PlayerCamera.directionInput, aircraft, aircraft.transform.right, 1f, 1f);
         bool pitching = actions.Pilot.Pitch.phase == InputActionPhase.Started;
         bool yawing = actions.Pilot.Rudder.phase == InputActionPhase.Started;

@@ -16,10 +16,6 @@ public class CrewMember : Part
     public CrewSeat[] seats;
     public Parachute parachute;
 
-    private SkinnedMeshRenderer meshRend;
-    public Mesh headLessModel;
-    private Mesh defaultModel;
-
     public HumanBody body;
 
     private float bailingCount;
@@ -39,44 +35,37 @@ public class CrewMember : Part
         base.Initialize(d, firstTime);
         if (firstTime)
         {
-            meshRend = GetComponentInChildren<SkinnedMeshRenderer>();
-            defaultModel = meshRend.sharedMesh;
             body = new HumanBody(this);
+            SwitchSeat(currentSeat);
         }
-        SwitchSeat(0);
     }
 
     private void Update()
     {
-        //LOD
-        bool firstPerson = GameManager.player.crew == this && (GameManager.gm.vr || PlayerCamera.customCam.pos == CamPosition.FirstPerson);
-        bool isFirstPerson = meshRend.sharedMesh == headLessModel;
-        if (firstPerson != isFirstPerson) meshRend.sharedMesh = firstPerson ? headLessModel : defaultModel;
         //Audio
-        audioCockpitRatio = seats[currentSeat].CockpitAudio();
+        if (PlayerManager.player.crew == this) audioCockpitRatio = Seat().CockpitAudio();
 
         //Conscious or dead conditions
         if (ripped || Time.timeScale == 0f || !sofObject) return;
         body.ApplyForces(data.gForce, Time.deltaTime);
-        if ((GameManager.player.crew == this && GameManager.gm.vr) || body.Gloc()) return;
+        if ((PlayerManager.player.crew == this && GameManager.gm.vr) || body.Gloc()) return;
 
         //Bailout sequence
         bool bailing = bailingOut;
         bailing &= data.relativeAltitude + data.VerticalSpeed * minCrashTime > minBailOutAltitude;
-        if (Seat().canopy) bailing &= Seat().canopy.state > 0.5f || Seat().canopy.Destroyed();
+        if (Seat().canopy) bailing &= Seat().canopy.state > 0.5f || Seat().canopy.disabled;
         if (bailing)
         {
             bailingCount -= Time.deltaTime;
             if (bailingCount < 0f) Bailout();
-            if (GameManager.player.crew == this) Log.Print("Bailout in " + bailingCount.ToString("0.0") + " s", "bailout");
+            if (PlayerManager.player.crew == this) Log.Print("Bailout in " + bailingCount.ToString("0.0") + " s", "bailout");
         }
-
         //Actions in delta time
-        if (GameManager.player.crew == this) seats[currentSeat].PlayerUpdate(this);
+        if (PlayerManager.player.crew == this)  seats[currentSeat].PlayerUpdate(this);
         else
         {
             //Automatic bail out
-            if (aircraft && (aircraft.burning || aircraft.destroyed) && GameManager.player.aircraft != aircraft) StartBailout(Random.Range(1f,3f));
+            if (aircraft && (aircraft.burning || aircraft.destroyed) && PlayerManager.player.aircraft != aircraft) StartBailout(Random.Range(1f, 3f));
             //Pick the seat with highest priority
             currentSeat = 0;
             for (int i = 1; i < seats.Length; i++) if (seats[i].Priority() > seats[currentSeat].Priority()) currentSeat = i;
@@ -86,8 +75,8 @@ public class CrewMember : Part
     private void FixedUpdate()
     {
         //Actions in fixed delta time
-        if ((GameManager.player.crew == this && GameManager.gm.vr) || body.Gloc() || ripped || Time.timeScale == 0f || !sofObject) return;
-        if (GameManager.player.crew == this) seats[currentSeat].PlayerFixed(this); else seats[currentSeat].AiFixed(this);
+        if ((PlayerManager.player.crew == this && GameManager.gm.vr) || body.Gloc() || ripped || Time.timeScale == 0f || !sofObject) return;
+        if (PlayerManager.player.crew == this) seats[currentSeat].PlayerFixed(this); else seats[currentSeat].AiFixed(this);
     }
     public void SwitchSeat(int seat)
     {
@@ -95,9 +84,8 @@ public class CrewMember : Part
         seats[currentSeat].ResetSeat();
         currentSeat = seat;
         seats[seat].ResetSeat();
-        if (GameManager.player.crew == this) PlayerCamera.instance.ResetView(false);
+        if (PlayerManager.player.crew == this) PlayerCamera.instance.ResetView(false);
     }
-    public void SwitchSeat(){ SwitchSeat((currentSeat +1)%seats.Length);}
     public override void Rip()
     {
         structureDamage = 0f;
@@ -122,18 +110,7 @@ public class CrewMember : Part
         if (!aircraft || ripped) return;
         bailingOut = false;
         if (this == aircraft.crew[0]) { aircraft.hasPilot = false; aircraft.destroyed = true; }
-        Parachute para = Instantiate(parachute, transform.position, transform.rotation);
-        para.tag = sofObject.tag;
-        para.data.rb.velocity = rb.velocity + transform.up * 5f;
-        transform.parent = para.transform;
-        Seat().ResetSeat();
-        seats = new CrewSeat[1] { para.GetComponentInChildren<CrewSeat>() };
-        currentSeat = 0;
-        seats[0].ResetSeat();
-        para.data.Initialize(false);
-        meshRend.enabled = true;
-        if (GameManager.player.crew == this)
-            PlayerCamera.instance.ResetView(false);
+        Instantiate(parachute, transform.position, transform.rotation).TriggerParachute(aircraft,this);
     }
 }
 
@@ -148,9 +125,9 @@ public class CrewMemberEditor : Editor
         CrewMember crew = (CrewMember)target;
 
         crew.material = EditorGUILayout.ObjectField("Part Material", crew.material, typeof(PartMaterial), true) as PartMaterial;
+        crew.currentSeat = EditorGUILayout.IntField("Default Seat", crew.currentSeat);
         SerializedProperty seats = serializedObject.FindProperty("seats");
         EditorGUILayout.PropertyField(seats, true);
-        crew.headLessModel = EditorGUILayout.ObjectField("Head Less Model", crew.headLessModel, typeof(Mesh), false) as Mesh;
         crew.parachute = EditorGUILayout.ObjectField("Parachute", crew.parachute, typeof(Parachute), false) as Parachute;
         GUILayout.Space(15f);
         GUI.color = Color.yellow;

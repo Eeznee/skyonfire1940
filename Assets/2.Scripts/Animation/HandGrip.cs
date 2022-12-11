@@ -16,10 +16,10 @@ public class HandGrip : MonoBehaviour
     public Vector3 leftHintPos;
 
     public bool fixedRotation = false;
-    public float grip;
-    public float trigger;
-    public float thumbDown;
-    public float thumbIn;
+    [HideInInspector]public float grip;
+    [HideInInspector] public float trigger;
+    [HideInInspector] public float thumbDown;
+    [HideInInspector] public float thumbIn;
 
     public void SetGrip(float gr)
     {
@@ -49,6 +49,12 @@ public class HandGripEditor : Editor
 
         HandGrip grip = (HandGrip)target;
         GUI.color = GUI.backgroundColor;
+
+        grip.grip = EditorGUILayout.Slider("Grip", grip.grip, 0f, 1f);
+        grip.trigger = EditorGUILayout.Slider("Trigger", grip.trigger, 0f, 1f);
+        grip.thumbDown = EditorGUILayout.Slider("Thumb Down", grip.thumbDown, 0f, 1f);
+        grip.thumbIn = EditorGUILayout.Slider("Thumb In",grip.thumbIn, 0f, 1f);
+
         GUILayout.Space(30f);
         if (GUILayout.Button("Apply Symmetry From Right"))
         {

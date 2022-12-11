@@ -18,7 +18,11 @@ public class AircraftsList : ScriptableObject
         {
             SofAircraft aircraft = list[i].aircraft.GetComponent<SofAircraft>();
             if (list[i] != null)
+            {
                 list[i].id = i;
+                if (list[i].aircraft) list[i].sofAircraft = list[i].aircraft.GetComponent<SofAircraft>();
+            }
+
 
             aircraft.emptyCOG.x = 0f;
         }

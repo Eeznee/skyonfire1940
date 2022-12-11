@@ -63,8 +63,7 @@ public static class AI
             turret = _turret;
             target = _target;
 
-            Transform tr = turret.transform;
-            dir = target.position -tr.position;
+            dir = target.position - turret.transform.position;
             distance = dir.magnitude;
             relativeVel = target.velocity - turret.rb.velocity;
             closure = Vector3.Dot(target.velocity - turret.rb.velocity, dir/distance);

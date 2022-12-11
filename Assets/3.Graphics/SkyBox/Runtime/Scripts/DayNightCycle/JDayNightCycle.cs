@@ -292,7 +292,7 @@ namespace Pinwheel.Jupiter
             //AnimateSky();
         }
 
-        private void Update()
+        private void Start() //Update()
         {
             AnimateSky();
             if (ShouldUpdateEnvironmentReflection)

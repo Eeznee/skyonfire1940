@@ -76,7 +76,7 @@ public class CameraEditor : MonoBehaviour
         player.options = new List<Dropdown.OptionData> { new Dropdown.OptionData("Position Target"), new Dropdown.OptionData("Direction Target"), new Dropdown.OptionData("None") };
 
         speed = minSpeed;
-        GameManager.gm.actions.General.CameraSpeed.performed += t => ChangeSpeed(t.ReadValue<float>());
+        PlayerActions.instance.actions.General.CameraSpeed.performed += t => ChangeSpeed(t.ReadValue<float>());
     }
 
     private void OnEnable()
@@ -121,14 +121,14 @@ public class CameraEditor : MonoBehaviour
 
         if (freeResetting.gameObject.activeSelf != (position.value == 2)) freeResetting.gameObject.SetActive(position.value == 2);
 
-        Transform camTr = PlayerCamera.instance.camTr;
-        Actions.GeneralActions actions = GameManager.gm.actions.General;
+        Transform camTr = PlayerCamera.camTr;
+        Actions.GeneralActions actions = PlayerActions.instance.actions.General;
         Vector3 moveAxis = new Vector3(actions.CameraHorizontal.ReadValue<Vector2>().x, actions.CameraVertical.ReadValue<float>(), actions.CameraHorizontal.ReadValue<Vector2>().y);
         speeds = Vector3.MoveTowards(speeds, moveAxis, Time.unscaledDeltaTime * 2f);
 
         Vector3 moveVector = camTr.forward * speeds.z + camTr.right * speeds.x + Vector3.up * speeds.y;
         float actualSpeed = speed;
-        if (GameManager.gm.actions.General.CameraFast.ReadValue<float>() > 0.5f) actualSpeed = maxSpeed;
+        if (PlayerActions.instance.actions.General.CameraFast.ReadValue<float>() > 0.5f) actualSpeed = maxSpeed;
         moveVector *= actualSpeed * Time.unscaledDeltaTime;
 
         if (position.value == 0) relativePos += posTarget.current.transform.InverseTransformDirection(moveVector);

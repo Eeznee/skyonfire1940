@@ -14,6 +14,8 @@ namespace UnityStandardAssets.Utility
         const string display = "{0} FPS";
         private Text m_Text;
 
+        private float timeCounter = 0f;
+
 
         private void Start()
         {
@@ -26,11 +28,12 @@ namespace UnityStandardAssets.Utility
         {
             // measure average frames per second
             fpsCounter++;
-            if (Time.realtimeSinceStartup > fpsNextPeriod)
+            timeCounter += Time.unscaledDeltaTime;
+            if (timeCounter > fpsMeasurePeriod)
             {
-                currentFPS = (int) (fpsCounter / fpsMeasurePeriod);
-                fpsCounter = 0;
-                fpsNextPeriod += fpsMeasurePeriod;
+                currentFPS = (int) (fpsCounter / timeCounter);
+                fpsCounter = 1;
+                timeCounter = 0f;
                 m_Text.text = string.Format(display, currentFPS);
             }
         }

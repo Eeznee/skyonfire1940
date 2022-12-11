@@ -10,6 +10,8 @@ public class SofAudioListener : MonoBehaviour
     public AudioMixerGroup persistent;
 
     public static AudioListener listener;
+    public static Vector3 position;
+    public static Transform tr;
     AudioMixer mixer;
     float cockpitRatio = 1f;
 
@@ -18,6 +20,7 @@ public class SofAudioListener : MonoBehaviour
         mixer = GameManager.gm.mixer;
         StartCoroutine(FadeVolumeIn());
         listener = gameObject.AddComponent<AudioListener>();
+        tr = transform;
     }
     public static AudioMixerGroup GetAudioMixer(SofAudioGroup group)
     {
@@ -31,32 +34,32 @@ public class SofAudioListener : MonoBehaviour
     }
     private Transform CurrentParent()
     {
-        if (GameManager.gm.vr) return GameManager.player.crew.transform;
-        if (PlayerCamera.customCam.pos == CamPosition.Free || GameManager.player.crew == null)
-            return PlayerCamera.instance.camTr;
+        if (GameManager.gm.vr) return PlayerManager.player.crew.transform;
+        if (PlayerCamera.customCam.pos == CamPosition.Free || PlayerManager.player.crew == null)
+            return PlayerCamera.camTr;
 
-        return GameManager.player.crew.transform;
+        return PlayerManager.player.crew.transform;
     }
 
     void Update()
     {
         //Cockpit volume
         bool firstPerson = GameManager.gm.vr || PlayerCamera.customCam.pos == CamPosition.FirstPerson;
-        float targetRatio = firstPerson ? GameManager.player.crew.audioCockpitRatio : 0f;
+        float targetRatio = firstPerson ? PlayerManager.player.crew.audioCockpitRatio : 0f;
         cockpitRatio = Mathf.MoveTowards(cockpitRatio, targetRatio, 5f * Time.deltaTime);
         mixer.SetFloat("CockpitVolume", Mathf.Log10(cockpitRatio + 0.0001f) * 20);
         float externalVol = Mathf.Log10(1f - cockpitRatio + 0.0001f) * 20;
         mixer.SetFloat("ExternalVolume", externalVol);
 
         mixer.SetFloat("Pitch", Mathf.Max(1/32f,Time.timeScale));
-        
 
-        if (transform.parent != CurrentParent())
+        if (tr.parent != CurrentParent())
         {
-            transform.parent = CurrentParent();
-            transform.localPosition = Vector3.zero;
-            transform.localRotation = Quaternion.identity;
+            tr.parent = CurrentParent();
+            tr.localPosition = Vector3.zero;
+            tr.localRotation = Quaternion.identity;
         }
+        position = tr.position;
     }
 
     IEnumerator FadeVolumeIn()

@@ -11,15 +11,15 @@ public class Crosshair : MonoBehaviour
     }
     void LateUpdate()
     {
-        if (GameManager.player.aircraft && !GameManager.player.crew.ripped && !GameManager.player.crew.body.Gloc())
+        if (PlayerManager.player.aircraft && !PlayerManager.player.crew.ripped && !PlayerManager.player.crew.body.Gloc())
         {
-            Vector3 worldPos = GameManager.player.crew.transform.position;
-            if (GameManager.playerGunner && GameManager.playerGunner.turret) worldPos += GameManager.playerGunner.turret.FiringDirection() * 500f;
-            else worldPos += GameManager.player.tr.forward * GameManager.player.aircraft.convergeance;
+            Vector3 worldPos = PlayerManager.player.crew.transform.position;
+            if (PlayerManager.playerGunner && PlayerManager.playerGunner.turret) worldPos += PlayerManager.playerGunner.turret.FiringDirection() * 500f;
+            else worldPos += PlayerManager.player.tr.forward * PlayerManager.player.aircraft.convergeance;
             transform.position = Camera.main.WorldToScreenPoint(worldPos);
             bool enabled = PlayerCamera.customCam.pos != CamPosition.FirstPerson;   //Camera must be external
             enabled &= PlayerCamera.customCam.player != PlayerIs.None;         //And must be controlling the player
-            enabled &= !GameManager.paused;                                         //The game must be playing
+            enabled &= !TimeManager.paused;                                         //The game must be playing
             enabled &= transform.position.z > 0f;                                   //The crosshair can't be behind
             enabled &= GameManager.seatInterface == SeatInterface.Pilot || GameManager.seatInterface == SeatInterface.Gunner;
             image.enabled = enabled;

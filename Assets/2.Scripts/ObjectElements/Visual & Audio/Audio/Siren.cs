@@ -19,7 +19,7 @@ public class Siren : AudioVisual
         base.Initialize(d, firstTime);
         if (firstTime)
         {
-            siren = new SofAudio(avm, sirenClip, SofAudioGroup.Persistent, true, true);
+            siren = new SofAudio(avm, sirenClip, SofAudioGroup.Persistent, true);
         }
     }
 

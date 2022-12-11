@@ -24,12 +24,12 @@ public class Flap : Airframe
     public override float MaxSpeed()
     {
         float input = aircraft ? aircraft.flapsInput : 0f;
-        return Mathf.Lerp(base.MaxSpeed(), extendedRipSpeed, Mathf.Sqrt(input)); 
+        return Mathf.Lerp(base.MaxSpeed(), extendedRipSpeed, Mathv.SmoothStop(input,2)); 
     }
     void FixedUpdate()
     {
         if (aircraft && data.ias > MaxSpeed() && Random.value < Time.fixedDeltaTime / 2f) Rip();
-        else miniFoil.ApplyForces(this);
+        if (ripped) miniFoil.ApplyForces(this);
     }
 #if UNITY_EDITOR
     //GIZMOS

@@ -9,16 +9,18 @@ public class AmbientAudio : AudioVisual
 
     SofAudio rural;
 
-    public void Start()
+    public override void Initialize(ObjectData d, bool firstTime)
     {
-        avm = sofObject.avm;
-        rural = new SofAudio(avm, ruralClip, SofAudioGroup.External,false, true);
-        rural.source.volume = 0f;
+        base.Initialize(d, firstTime);
+        if (firstTime)
+        {
+            rural = new SofAudio(avm, ruralClip, SofAudioGroup.External, false);
+        }
     }
 
     public void Update()
     {
-        if (aircraft != GameManager.player.aircraft) return;
+        if (aircraft != PlayerManager.player.aircraft) return;
         float targetVolume = Mathf.InverseLerp(50f, 0f, data.relativeAltitude) * 0.1f;
         rural.source.volume = Mathf.MoveTowards(rural.source.volume, targetVolume, Time.deltaTime);
     }

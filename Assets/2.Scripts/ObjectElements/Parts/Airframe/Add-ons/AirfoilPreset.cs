@@ -8,7 +8,7 @@ using UnityEditor.SceneManagement;
 [System.Serializable]
 public class Quadrangle
 {
-    public Quadrangle(Vector3 lt, Vector3 lb,Vector3 tt,Vector3 tb)
+    public Quadrangle(Vector3 lt, Vector3 lb, Vector3 tt, Vector3 tb)
     {
         leadingTop = lt;
         leadingBot = lb;
@@ -58,8 +58,8 @@ public class MiniAirfoil
 
         float cl = airfoil ? airfoil.Cl(alpha) : SimplifiedAirfoil.ClSymmetric(alpha);
         float cd = airfoil ? airfoil.Cd(alpha) : SimplifiedAirfoil.CdSymmetric(alpha);
-        Vector3 liftForce = Aerodynamics.ComputeLift(velocity, part.data.tas,tr.right, density, mainQuad.area, cl, part.structureDamage);
-        Vector3 dragForce = Aerodynamics.ComputeDrag(velocity, part.data.tas,density, mainQuad.area, cd, part.structureDamage);
+        Vector3 liftForce = Aerodynamics.ComputeLift(velocity, part.data.tas, tr.right, density, mainQuad.area, cl, part.structureDamage);
+        Vector3 dragForce = Aerodynamics.ComputeDrag(velocity, part.data.tas, density, mainQuad.area, cd, part.structureDamage);
         //Apply forces
         part.rb.AddForceAtPosition(liftForce + dragForce, tr.position, ForceMode.Force);
     }
@@ -69,6 +69,8 @@ public class SimuFoil
 {
     private Transform tr;
     private AirfoilPreset airfoil;
+    private AirfoilSection section;
+    private AirfoilSection.SpecificVariables v;
     private Airframe frame;
     private Airfoil wing;
 
@@ -94,11 +96,12 @@ public class SimuFoil
         maxSub = Mathf.Min(maxSub, max);
         return Mathf.Clamp01((maxSub - minSub) / (max - min));
     }
-    public void Init(Transform _tr, AirfoilPreset _foil, Vector3 _pos, float _area, float _span)
+    public void Init(Transform _tr, AirfoilPreset _foil, AirfoilSection _section, Vector3 _pos, float _area, float _span)
     {
         tr = _tr;
         frame = tr.parent.GetComponent<Airframe>();
         airfoil = _foil;
+        section = _section;
 
         pos = _pos;
         area = _area;
@@ -111,7 +114,6 @@ public class SimuFoil
         totalArea = wing ? wing.totalArea : frame.area;
         if (wing && wing.skin) frame = wing.skin;
     }
-
     public void AutoSubSurfaces()
     {
         slat = null; flap = null; control = null;
@@ -125,9 +127,9 @@ public class SimuFoil
         if (controlSqrt == 0f && control) controlSqrt = Mathf.Sqrt(control.miniFoil.tr.localScale.z / length);
         float flapsInput = frame.aircraft ? frame.aircraft.flapsInput : 0f;
 
-        Vector3 center = Airfoil.TransformPointUnscaled(tr, pos);
+        Vector3 center = tr.TransformDirection(pos) + tr.position;
         Vector3 velocity = frame.rb.GetPointVelocity(center);
-        float alpha =  Vector3.SignedAngle(tr.forward, velocity, tr.right);
+        float alpha = Vector3.SignedAngle(tr.forward, velocity, tr.right);
 
         //Coefficient of Lift
         if (slat && !slat.ripped) alpha -= slat.extend * slat.aoaEffect * Mathf.InverseLerp(15f, 15f + slat.aoaEffect * 2f, alpha);                 //Slat Effect
@@ -139,6 +141,30 @@ public class SimuFoil
         float wingSpan = frame.aircraft ? frame.aircraft.wingSpan : 5f;
         if (wing) cd += cl * cl * totalArea * 2f / (wingSpan * wingSpan * Mathf.PI * wing.oswald);                                   //Induced Drag
         cd *= frame.data.groundEffect;
+
+        if (section)
+        {
+            float flapAngle = 0f;
+            float flapFraction = 0f;
+            if (control)
+            {
+                flapAngle = control.controlAngle;
+                flapFraction = control.miniFoil.tr.localScale.z / length;
+            }
+            if (flap)
+            {
+                flapAngle = flapsInput * -60f;
+                flapFraction = flap.miniFoil.tr.localScale.z / length;
+            }
+            v.Compute(true, section, section.zeroAoA == 0f ? 2f : 5.6f, flapFraction, -flapAngle * Mathf.Deg2Rad);
+            Vector3 coefs = section.Coefficients(alpha * Mathf.Deg2Rad, v);
+            cl = coefs.x;
+            cd = coefs.y;
+            Debug.DrawRay(tr.TransformPoint(pos), cl * tr.up, Color.red);
+
+            if (control) Debug.Log(frame.data.angleOfAttack + ", " + alpha + ", " + controlSqrt * airfoil.gradient * control.sinControlAngle + ", " + section.testPlot.Evaluate(alpha));
+        }
+
 
         Vector3 force = Aerodynamics.ComputeLift(velocity, frame.data.tas, rootTip, frame.data.airDensity, area, cl, frame.structureDamage);
         force += Aerodynamics.ComputeDrag(velocity, frame.data.tas, frame.data.airDensity, area, cd, frame.structureDamage);
@@ -191,7 +217,7 @@ public class AirfoilPreset : ScriptableObject
 
     public TrailRenderer tipTrail;
 
-    public float gradient { get { return (clMax - clZero) / (maxAngle*Mathf.Deg2Rad); } }
+    public float gradient { get { return (clMax - clZero) / (maxAngle * Mathf.Deg2Rad); } }
 
     public float Cl(float aoa) { return liftCurve.Evaluate(aoa); }
     public float Cl(float aoa, float flapFactor) { return Mathf.Lerp(liftCurve.Evaluate(aoa), liftCurveFlaps.Evaluate(aoa), flapFactor); }
@@ -233,7 +259,7 @@ public class AirfoilPresetEditor : Editor
             foil.flapClMin = EditorGUILayout.FloatField("Minimum Cl , Flaps", foil.flapClMin);
             foil.flapMinAngle = EditorGUILayout.FloatField("At angle , Flaps", foil.flapMinAngle);
             foil.flapCdMin = EditorGUILayout.FloatField("Cd Minimum , Flaps", foil.flapCdMin);
-            foil.tipTrail = EditorGUILayout.ObjectField("Wingtip Trail", foil.tipTrail, typeof(TrailRenderer),false) as TrailRenderer;
+            foil.tipTrail = EditorGUILayout.ObjectField("Wingtip Trail", foil.tipTrail, typeof(TrailRenderer), false) as TrailRenderer;
         }
         else
         {
@@ -245,7 +271,7 @@ public class AirfoilPresetEditor : Editor
             foil.cdMin = EditorGUILayout.FloatField("Cd Minimum", foil.cdMin);
         }
 
-        
+
 
         if (GUILayout.Button("Apply Simplified Physics"))
         {

@@ -14,53 +14,84 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   caliber: 15
   caseLength: 96
-  mass: 57
-  noRicochetAlpha: 50
-  ricochetAlpha: 80
+  mass: 0.058
   defaultMuzzleVel: 960
   bulletHits: {fileID: 11400000, guid: 873a057f0ff35fd4a856f136743cdea3, type: 2}
-  tracerColor: {r: 0.62866235, g: 1, b: 0.5424528, a: 1}
-  tracerMaterial: {fileID: 2100000, guid: 123ac6dc79004e54b8b352a7e64acdca, type: 2}
   trailEffect: {fileID: 3423757417953530738, guid: 083c2cff9635ff046b1516b8bc6833d0,
     type: 3}
-  tracerLength: 7
-  tracerWidth: 0.15
-  tracerScatter: 2.5
+  tracer:
+    material: {fileID: 2100000, guid: 123ac6dc79004e54b8b352a7e64acdca, type: 2}
+    color: {r: 0.62866235, g: 1, b: 0.5424528, a: 1}
+    length: 7
+    width: 0.15
+    scatter: 2.5
   bullets:
-  - name: HEF-T
-    ammunition: {fileID: 11400000}
-    penetration: 0.5
-    fireMultiplier: 4
-    tntMass: 2.8
-    muzzleVelocity: 960
-    mass: 57
-    armorPiercing: 0
+  - name: HE
+    diameter: 15
+    mass: 0.058
+    baseVelocity: 960
+    basePenetration: 0.5
+    bulletHits: {fileID: 11400000, guid: 873a057f0ff35fd4a856f136743cdea3, type: 2}
+    ap: 0
     explosive: 1
-    fuze: 0
-    adjusting: 0
-    tracer: 1
-  - name: I-T
-    ammunition: {fileID: 11400000}
-    penetration: 15
-    fireMultiplier: 7
-    tntMass: 0
-    muzzleVelocity: 960
-    mass: 57
-    armorPiercing: 1
+    incendiary: 0
+    tracer: 0
+    filler:
+      mass: 0.004
+      explosive: {fileID: 11400000, guid: c958f8cd67246f54487db14f6622e0d9, type: 2}
+      fx: {fileID: 1942529869341703528, guid: 5c67bd16cfde8b24ca3400171a27ec13, type: 3}
+    fuze: 3
+    displayAsBullet: 1
+    approximated: 1
+  - name: I
+    diameter: 15
+    mass: 0.058
+    baseVelocity: 960
+    basePenetration: 23.659634
+    bulletHits: {fileID: 11400000, guid: 873a057f0ff35fd4a856f136743cdea3, type: 2}
+    ap: 0
     explosive: 0
+    incendiary: 1
+    tracer: 0
+    filler:
+      mass: 0
+      explosive: {fileID: 0}
+      fx: {fileID: 1942529869341703528, guid: 5c67bd16cfde8b24ca3400171a27ec13, type: 3}
     fuze: 0
-    adjusting: 1
-    tracer: 1
+    displayAsBullet: 1
+    approximated: 1
   - name: AP-T
-    ammunition: {fileID: 11400000}
-    penetration: 35
-    fireMultiplier: 2
-    tntMass: 0
-    muzzleVelocity: 850
-    mass: 72
-    armorPiercing: 1
+    diameter: 15
+    mass: 0.072
+    baseVelocity: 850
+    basePenetration: 30
+    bulletHits: {fileID: 11400000, guid: 873a057f0ff35fd4a856f136743cdea3, type: 2}
+    ap: 1
     explosive: 0
-    fuze: 0
-    adjusting: 1
+    incendiary: 0
     tracer: 1
+    filler:
+      mass: 0
+      explosive: {fileID: 0}
+      fx: {fileID: 1942529869341703528, guid: 5c67bd16cfde8b24ca3400171a27ec13, type: 3}
+    fuze: 0
+    displayAsBullet: 1
+    approximated: 0
+  - name: APCR
+    diameter: 15
+    mass: 0.053
+    baseVelocity: 1040
+    basePenetration: 50
+    bulletHits: {fileID: 11400000, guid: 873a057f0ff35fd4a856f136743cdea3, type: 2}
+    ap: 1
+    explosive: 0
+    incendiary: 0
+    tracer: 1
+    filler:
+      mass: 0
+      explosive: {fileID: 0}
+      fx: {fileID: 1942529869341703528, guid: 5c67bd16cfde8b24ca3400171a27ec13, type: 3}
+    fuze: 0
+    displayAsBullet: 1
+    approximated: 0
   defaultBelt: 000000000100000002000000

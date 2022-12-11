@@ -18,15 +18,16 @@ public class MissionCreator : MonoBehaviour
     public Toggle war;
 
     [Header("Squadron Data")]
-    public AircraftScrollableList aircraftList;
+    public AircraftsDropdown aircraft;
     public Toggle ally;
     public Toggle axis;
     public InputField amount;
     public Toggle player;
+    public TexturesDropdown texture;
+    public ModsDropdown mods;
 
     [Header("Other")]
     public GameObject playerLabel;
-    public GameObject buyAircraft;
     public Button startGame;
 
     Vector2 squadPos;
@@ -54,21 +55,12 @@ public class MissionCreator : MonoBehaviour
             player.interactable = true;
             startGame.interactable = false;
             playerLabel.SetActive(true);
-            buyAircraft.SetActive(false);
-        }
-        else if (!squadrons[squadrons.FindIndex(x => x.hiddenId == playerId)].aircraftCard.Available())
-        {
-            player.interactable = player.isOn = false;
-            startGame.interactable = false;
-            playerLabel.SetActive(false);
-            buyAircraft.SetActive(true);
         }
         else
         {
             player.interactable = player.isOn = false;
             startGame.interactable = true;
             playerLabel.SetActive(false);
-            buyAircraft.SetActive(false);
         }
 
 #if MOBILE_INPUT
@@ -83,10 +75,10 @@ public class MissionCreator : MonoBehaviour
             float heightScaling = Screen.width / GetComponentInParent<CanvasScaler>().referenceResolution.x;
             squadPos.x = (Input.mousePosition.x - minimapTr.position.x) / minimapTr.sizeDelta.x / widthScaling + 0.5f;
             squadPos.y = (Input.mousePosition.y - minimapTr.position.y) / minimapTr.sizeDelta.y / heightScaling + 0.5f;
-
+            squadPos = mapData.RealMapPosition(squadPos);
             //Create the new squad
             Game.Team team = ally.isOn ? Game.Team.Ally : Game.Team.Axis;
-            squad = new Game.Squadron(aircraftList.SelectedCard, team, 1,lastDifficulty * 100f, false);
+            squad = new Game.Squadron(aircraft.SelectedCard, team, 1,lastDifficulty * 100f, false);
             squad.startPosition.y = lastAltitude;
             squad.startHeading = lastHeading;
             squadrons.Add(squad);
@@ -96,21 +88,36 @@ public class MissionCreator : MonoBehaviour
             icon.Create(squad);
         }
     }
+    public void LoadValues(Game.Squadron toLoad)
+    {
+        squadPos = new Vector2(toLoad.startPosition.x, toLoad.startPosition.z);
+        amount.text = toLoad.amount.ToString();
+        ally.isOn = toLoad.team == Game.Team.Ally;
+        axis.isOn = toLoad.team == Game.Team.Axis;
+        aircraft.Reset(toLoad.aircraftCard.id);
+        texture.Reset(toLoad.textureName);
+        mods.Reset(toLoad.stations);
+        player.isOn = toLoad.player;
+        if (player.isOn) playerId = -1;
+    }
 
     public void Confirm(float heading, float altitude, float difficulty, int id)
     {
         squad = squadrons.Find(x => x.hiddenId == id);
-        squad.startPosition = mapData.RealMapPosition(squadPos, altitude);
+        squad.startPosition = new Vector3(squadPos.x,altitude,squadPos.y);
         squad.startHeading = heading;
         squad.difficulty = difficulty;
-        squad.amount = Mathf.Min(int.Parse(amount.text), aircraftList.SelectedCard.formation.aircraftPositions.Length);
+        squad.amount = Mathf.Min(int.Parse(amount.text), aircraft.SelectedCard.formation.aircraftPositions.Length);
         squad.team = ally.isOn ? Game.Team.Ally : Game.Team.Axis;
-        squad.aircraftCard = aircraftList.SelectedCard;
-        squad.includePlayer = (player.isOn && !squad.includePlayer) || (squad.includePlayer && startGame.interactable);
+        squad.aircraftCard = aircraft.SelectedCard;
+        squad.textureName = texture.SelectedName;
+        squad.stations = mods.SelectedMods;
+        squad.player = player.isOn;
+        squad.airfield = -1;
+        if (squad.player)
+            playerId = squad.hiddenId;
 
         squadrons[squadrons.FindIndex(x => x.hiddenId == id)] = squad;
-        if (player.isOn)
-            playerId = squad.hiddenId;
 
         lastAltitude = altitude;
         lastHeading = heading;
@@ -128,21 +135,8 @@ public class MissionCreator : MonoBehaviour
         PlayerPrefs.SetInt("Winter", winter.isOn ? 1 : 0);
         PlayerPrefs.SetInt("War", war.isOn ? 1 : 0);
         PlayerPrefs.SetFloat("Hour", hour.value);
-
         PlayerPrefs.SetInt("SquadronsAmount", squadrons.Count);
-        for (int i = 0; i < squadrons.Count; i++)
-        {
-            PlayerPrefs.SetInt("Squadron" + i + "Team", (int)squadrons[i].team);
-            PlayerPrefs.SetInt("Squadron" + i + "Aircraft", squadrons[i].aircraftCard.id);
-            PlayerPrefs.SetInt("Squadron" + i + "Amount", squadrons[i].amount);
-            PlayerPrefs.SetInt("Squadron" + i + "Player", squadrons[i].includePlayer ? 1 : 0);
-            PlayerPrefs.SetFloat("Squadron" + i + "PosX", squadrons[i].startPosition.x);
-            PlayerPrefs.SetFloat("Squadron" + i + "PosY", squadrons[i].startPosition.y);
-            PlayerPrefs.SetFloat("Squadron" + i + "PosZ", squadrons[i].startPosition.z);
-            PlayerPrefs.SetFloat("Squadron" + i + "Heading", squadrons[i].startHeading);
-            PlayerPrefs.SetFloat("Squadron" + i + "Difficulty", squadrons[i].difficulty);
-            PlayerPrefs.SetInt("Squadron" + i + "Airfield", -1); //Airfield are not supported yet on mission editor
-        }
+        for (int i = 0; i < squadrons.Count; i++) squadrons[i].SaveSquadron(i);
 
         SceneManager.LoadScene(mapData.assignedScene);
     }

@@ -65,6 +65,7 @@ public class FloatingOrigin : MonoBehaviour
             float physicsThreshold2 = physicsThreshold * physicsThreshold; // simplify check on threshold
             foreach (Rigidbody r in FindObjectsOfType(typeof(Rigidbody)))
                 r.sleepThreshold = r.transform.position.sqrMagnitude > physicsThreshold2 ? float.MaxValue : defaultSleepThreshold;
+            Physics.SyncTransforms();
         }
     }
 }

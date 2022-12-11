@@ -12,13 +12,14 @@ public class BombsightUI : MonoBehaviour
     public float span = 270f;
     public float refAngle = 40f;
     public float tanSmoothing = 0.8f;
-    float totalDistance;
+    private float totalDistance;
 
     //Traverse indicator
     public float maxTraverseDistance;
     Vector3 defaultTraversePos;
 
     public RectTransform wheel;
+    public RectTransform markingsHolder;
     public RectTransform indicator;
     public RectTransform traverse;
     public Text marking;
@@ -32,14 +33,22 @@ public class BombsightUI : MonoBehaviour
 
     bool bombBayState;
 
-
-    private void Start()
+    private void OnEnable()
     {
-        if (!GameManager.player.aircraft.bombSight) return;
-        BombardierSeat sight = GameManager.player.aircraft.bombSight;
+        if (PlayerManager.player.aircraft) Reload();
+    }
+    private void Reload()
+    {
+        BombardierSeat sight = PlayerManager.player.aircraft.bombSight;
+        if (sight == null) return;
+
         defaultTraversePos = traverse.localPosition;
 
+        for (int i = 0; i < markingsHolder.childCount; i++)
+            Destroy(markingsHolder.GetChild(i).gameObject);
+
         totalDistance = Mathf.Tan(sight.maxAngle * Mathf.Deg2Rad * tanSmoothing) - Mathf.Tan(sight.minAngle * Mathf.Deg2Rad * tanSmoothing);
+
         for (int i = 0; i < markings.Length; i++)
         {
             float distance = Mathf.Tan(markings[i] * Mathf.Deg2Rad * tanSmoothing) - Mathf.Tan(sight.minAngle * Mathf.Deg2Rad * tanSmoothing);
@@ -48,25 +57,25 @@ public class BombsightUI : MonoBehaviour
             Vector3 position = Vector3.zero;
             position.x = -Mathf.Cos(angle * Mathf.Deg2Rad) * wheel.sizeDelta.x / 2f;
             position.y = Mathf.Sin(angle * Mathf.Deg2Rad) * wheel.sizeDelta.x / 2f;
-
-            Text mark = Instantiate(marking, wheel);
+            Text mark = Instantiate(marking, markingsHolder);
+            mark.gameObject.SetActive(true);
             mark.text = "- " + Mathf.Abs(markings[i]);
             mark.rectTransform.localPosition = position;
             mark.rectTransform.localRotation = Quaternion.Euler(0f, 0f, -angle);
         }
-        Destroy(marking);
+        marking.gameObject.SetActive(false);
 
         //Bomb bay toggle
-        bombBayState = GameManager.player.aircraft.bombBay.state == 0f;
+        bombBayState = PlayerManager.player.aircraft.bombBay.state == 0f;
         bombBayToggle.Toggle(bombBayState);
 
         foreach (MaskableGraphic g in GetComponentsInChildren<Graphic>()) g.maskable = false;
     }
     void Update()
     {
-        if (!GameManager.player.aircraft.bombSight) return;
+        if (!PlayerManager.player.aircraft.bombSight) return;
 
-        BombardierSeat sight = GameManager.player.aircraft.bombSight;
+        BombardierSeat sight = PlayerManager.player.aircraft.bombSight;
         float wheelAngle = SightToWheelAngle(sight.angle);
         wheel.rotation = Quaternion.Euler(0f, 0f, wheelAngle + refAngle);
         float indicatorAngle = SightToWheelAngle(sight.dropAngle);
@@ -76,11 +85,11 @@ public class BombsightUI : MonoBehaviour
         traverse.localPosition = defaultTraversePos + transform.right * offset;
 
         //Bomb bay Toggle
-        bombBayState = GameManager.player.aircraft.bombBay.stateInput == 0f;
+        bombBayState = PlayerManager.player.aircraft.bombBay.stateInput == 0f;
         bombBayToggle.Toggle(bombBayState);
 
         //Bombs alert and release sequence
-        bombsAlertToggle.Toggle(GameManager.player.aircraft.bombBay.state == 1f);
+        bombsAlertToggle.Toggle(PlayerManager.player.aircraft.bombBay.state == 1f);
         releaseSequenceToggle.Toggle(sight.releaseSequence);
 
         //Interval and Amount
@@ -91,12 +100,12 @@ public class BombsightUI : MonoBehaviour
 
     float SightToWheelAngle(float angle)
     {
-        float distance = Mathf.Tan(angle * Mathf.Deg2Rad * tanSmoothing) - Mathf.Tan(GameManager.player.aircraft.bombSight.minAngle * Mathf.Deg2Rad * tanSmoothing);
+        float distance = Mathf.Tan(angle * Mathf.Deg2Rad * tanSmoothing) - Mathf.Tan(PlayerManager.player.aircraft.bombSight.minAngle * Mathf.Deg2Rad * tanSmoothing);
         return span * distance / totalDistance;
     }
 
     public void DropBombs()
     {
-        GameManager.player.aircraft.bombSight.StartReleaseSequence();
+        PlayerManager.player.aircraft.bombSight.StartReleaseSequence();
     }
 }

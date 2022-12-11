@@ -46,6 +46,16 @@ public class PilotSeat : CrewSeat
         breakFormation = new BreakFormation();
         perlinRandomizer = Random.Range(0f, 1000f);
     }
+    public override Vector3 HeadPosition(bool player)
+    {
+        Vector3 pov = defaultPOV.position;
+        if (player && PlayerCamera.zoomed)
+        {
+            float lerp = 1f - Vector3.Angle(PlayerCamera.camTr.forward, data.forward)/45f;
+            pov = Vector3.Lerp(pov, zoomedPOV.position,lerp);
+        }
+        return pov;
+    }
     public override void PlayerUpdate(CrewMember crew)
     {
         base.PlayerUpdate(crew);
@@ -76,6 +86,7 @@ public class PilotSeat : CrewSeat
 
         if (!brokeFormation) { breakFormation.Initialize(bfmData); brokeFormation = true; }
         if (!breakFormation.done) { breakFormation.Execute(bfmData); return; }
+
 
         if (maneuver != null && maneuver.done) maneuver = null;
         if (bfmCounter == 0f) //Pick new Maneuver

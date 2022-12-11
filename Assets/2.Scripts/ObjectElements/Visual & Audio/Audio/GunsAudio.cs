@@ -5,7 +5,8 @@ using UnityEngine.Audio;
 
 public class GunsAudio : AudioVisual
 {
-    bool firing = false;
+    private bool firing = false;
+    private bool smoothOut = false;
 
     public Gun[] references;
 
@@ -17,8 +18,9 @@ public class GunsAudio : AudioVisual
     public bool vibrate = false;
     public float vibrationsIntensity = 0.2f;
 
-    SofAudio gunSource;
-    SofAudio cockpitGunSource;
+    private bool singleFire;
+    private SofAudio gunSource;
+    private SofAudio cockpitGunSource;
 
     public override void Initialize(ObjectData d, bool firstTime)
     {
@@ -28,36 +30,51 @@ public class GunsAudio : AudioVisual
         {
             if (references.Length == 0) Debug.LogError("This Gun Audio has no reference gun", this);
 
-            gunSource = new SofAudio(avm, gunLoop, SofAudioGroup.External, true, false);
-            cockpitGunSource = new SofAudio(avm, cockpitGunLoop, SofAudioGroup.Cockpit, false, false);
-            gunSource.source.dopplerLevel = cockpitGunSource.source.dopplerLevel = 0f;
+            if (vibrate) foreach(Gun gun in references) gun.OnFireEvent += Vibrate;
+
+            singleFire = references[0].gunPreset.FireRate <= 150f;
+            if (singleFire)
+            {
+                references[0].OnFireEvent += PlaySingleShot;
+            } else
+            {
+                gunSource = new SofAudio(avm, gunLoop, SofAudioGroup.External, true);
+                cockpitGunSource = new SofAudio(avm, cockpitGunLoop, SofAudioGroup.Cockpit, false);
+            }
         }
     }
-
+    private void PlaySingleShot()
+    {
+        avm.external.global.PlayOneShot(gunLoop);
+        avm.cockpit.local.PlayOneShot(cockpitGunLoop);
+    }
+    private void Vibrate()
+    {
+        VibrationsManager.SendVibrations(vibrationsIntensity, 0.15f, aircraft);
+    }
+    
     public void Update()
     {
-        if (Time.deltaTime == 0f) return;
+        if (Time.timeScale == 0f || singleFire) return;
 
         bool updateFiring = false;
         foreach (Gun gun in references)
             updateFiring = gun.Firing() || updateFiring;
         
-        if (updateFiring != firing) Trigger(updateFiring && Time.timeScale > 0f);
+        if (updateFiring != firing) Trigger(updateFiring);
 
-        if (firing)
+        if (!firing && smoothOut)
         {
-            if (vibrate) VibrationsManager.SendVibrations(vibrationsIntensity, 0.15f, aircraft);
-        } else 
-        {
-            gunSource.source.volume = cockpitGunSource.source.volume = Mathf.Clamp01(gunSource.source.volume - Time.deltaTime * references[0].gunPreset.FireRate/60f);
-            if (gunSource.source.volume == 0f)
+            float volume = Mathf.Clamp01(gunSource.source.volume - Time.deltaTime * references[0].gunPreset.FireRate / 60f);
+            gunSource.source.volume = cockpitGunSource.source.volume = volume;
+            if (volume <= 0f)
             {
                 gunSource.Stop();
                 cockpitGunSource.Stop();
+                smoothOut = false;
             }
         }
     }
-
     public void Trigger(bool f)
     {
         firing = f;
@@ -69,6 +86,8 @@ public class GunsAudio : AudioVisual
             if (references[0].gunPreset.FireRate < 400f) delay = 60f / references[0].gunPreset.FireRate;
             gunSource.source.time = cockpitGunSource.source.time = delay;
             gunSource.source.volume = cockpitGunSource.source.volume = 1f;
+
+            smoothOut = true;
         } else
         {
             avm.external.global.PlayOneShot(gunEnd);

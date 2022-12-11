@@ -34,7 +34,7 @@ public class Clouds : MonoBehaviour
         clouds[index] = new GameObject("Cloud " + index).AddComponent<MeshFilter>();
         MeshRenderer meshRend = clouds[index].gameObject.AddComponent<MeshRenderer>();
         meshRend.sharedMaterial = cloudMat;
-        meshRend.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+        meshRend.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
 
         //Mesh
         Mesh mesh = new Mesh();

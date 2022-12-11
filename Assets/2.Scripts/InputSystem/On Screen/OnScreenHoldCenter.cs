@@ -15,6 +15,7 @@ namespace UnityEngine.InputSystem.OnScreen
         [InputControl(layout = "Button")]
         [SerializeField] private string m_ControlPath;
         private float downAt = -100f;
+        private Vector2 downPos = Vector2.zero;
         private bool down;
 
         [SerializeField] private float holdTime = 1f;
@@ -30,11 +31,20 @@ namespace UnityEngine.InputSystem.OnScreen
             {
                 downAt = Time.unscaledTime;
                 down = true;
+                downPos = eventData.position;
             }
         }
+
         private void Update()
         {
-            if (down && Time.unscaledTime > downAt + holdTime) { down = false; SendValueToControl(1.0f); }
+            if (Input.touchCount > 0)
+            {
+                Touch touch = Input.GetTouch(0);
+                if (down && (touch.position - downPos).magnitude > 50f) down = false;
+            }
+            bool time = Time.unscaledTime > downAt + holdTime;
+
+            if (down && time) { down = false; SendValueToControl(1.0f); }
             else SendValueToControl(0f);
         }
 

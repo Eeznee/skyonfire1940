@@ -59,14 +59,11 @@ public class AircraftScrollableList : MonoBehaviour
         }
         baseAircraftUI = aircraftSelections[selected];
     }
-
     public void Toggle()
     {
         if (extended) Retract();
         else Extend();
     }
-
-
     private void Awake()
     {
         scroller = GetComponentInChildren<ScrollRect>();

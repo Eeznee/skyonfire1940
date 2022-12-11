@@ -10,17 +10,18 @@ public class Part : ObjectElement
     [HideInInspector] protected AudioSource burningAudio;
 
     //Damage model
-    public float[] burningRatios;
+    [HideInInspector] public float[] burningRatios;
     public PartMaterial material;
     public float emptyMass = 0f;
-    public float maxHp;
-    public float hp;
+    [HideInInspector] public float maxHp;
+    [HideInInspector] public float hp;
     [HideInInspector] public float structureDamage = 1f;
     [HideInInspector] public bool ripped;
     [HideInInspector] public bool burning;
 
     public override float Mass() { return emptyMass; }
     public override float EmptyMass() { return emptyMass; }
+    public virtual float StructureIntegrity() { return Mathf.Max(structureDamage,0f); }
 
 
     public override void Initialize(ObjectData d,bool firstTime)
@@ -37,16 +38,29 @@ public class Part : ObjectElement
 
         if (structureDamage <= 0f && !ripped) Rip(); 
     }
+    const float explosionCoeff = 500f;
+    const float holeCoeff = 10f;
+    public virtual void ExplosionDamage(Vector3 center, float tnt)
+    {
+        float sqrDis = (center - transform.position).sqrMagnitude;
+        if (tnt > sqrDis / 500f)
+        {
+            float dmg = explosionCoeff * tnt / sqrDis * Random.Range(0.65f, 1.5f);
+            float hole = dmg * holeCoeff;
+            Damage(dmg,hole,0f);
+        }
+    }
     public virtual void Damage(float damage)
     {
         Damage(damage, 0f, 0f);
     }
 
-    public void TryBurn(float fireCoeff)
+    public void TryBurn(float caliber,float fireCoeff)
     {
         if (material.ignitable && !burning && structureDamage < 0.8f)
         {
-            float burnChance = (1f-Mathf.Pow(structureDamage,3)) *  material.burningChance * fireCoeff;
+            float roundCoeff = fireCoeff * caliber * caliber / 60f;
+            float burnChance = (1f-Mathv.SmoothStart(structureDamage,1)) *  material.burningChance * roundCoeff;
             if (Random.value < burnChance) Burn();
         }
     }

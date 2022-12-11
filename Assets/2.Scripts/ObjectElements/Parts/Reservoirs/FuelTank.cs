@@ -25,8 +25,8 @@ public class FuelTank : LiquidTank
     }
     public override void Damage(float damage, float caliber, float fireCoeff)
     {
-        if (!burning) TryBurn(fireCoeff);
         base.Damage(damage, caliber, fireCoeff);
+        if (!burning) TryBurn(caliber, fireCoeff);
     }
 
     public void ConsumeControlled(float amount)

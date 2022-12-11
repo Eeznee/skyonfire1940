@@ -21,8 +21,8 @@ public class Propeller : Part
 
     //Data
     public float rps { get { return engine.rps * reductionGear; } }
-    public float MomentOfInertia { get { return emptyMass * Mathf.Pow(preset.diameter, 2) / 20f; } }
-    public float TotalSpeed { get { return Mathf.Sqrt(Mathf.Pow(rps * preset.diameter / 13f, 2) + Mathf.Pow(data.ias, 2)); } }
+    public float MomentOfInertia { get { return emptyMass * Mathv.SmoothStart(preset.diameter, 2) / 20f; } }
+    public float TotalSpeed { get { return Mathf.Sqrt(Mathv.SmoothStart(rps * preset.diameter / 13f, 2) + Mathv.SmoothStart(data.ias, 2)); } }
     //Forces
     public float torque = 0f;
     public float thrust = 0f;
@@ -42,12 +42,39 @@ public class Propeller : Part
             blurredProp.gameObject.layer = 1;
             prop.enabled = blurredProp.enabled = !ripped;
             brokenProp.enabled = ripped;
-            transform.Rotate(Vector3.forward * Random.value * 360f);
+            tr.Rotate(Vector3.forward * Random.value * 360f);
         }
     }
+    
     public void Update()
     {
-        //Forces Calculation
+        //Visual Effect
+        if (prop && blurredProp)
+        {
+            if (complex && complex.lod.LOD() <= 1)
+            {
+                Vector3 cameraDir = tr.position - PlayerCamera.camPos;
+                float angle = 1f - Mathf.Abs(Vector3.Angle(cameraDir, data.forward)/90f - 1f);
+
+                blurredProp.GetPropertyBlock(blurredBlock);
+                blurredBlock.SetFloat("_Rpm", rps * 30f / Mathf.PI);
+                blurredBlock.SetFloat("_CameraAngle", Mathv.SmoothStart(angle,5));
+                blurredProp.SetPropertyBlock(blurredBlock);
+
+                blurredProp.enabled = true;
+                prop.enabled = engine.rps * (Time.timeScale == 0f ? 1f : Time.timeScale) < enginePreset.idleRPS * 0.8f && !ripped;
+
+                tr.Rotate(-Vector3.forward * Time.deltaTime * rps * 57.3f);
+            } else
+            {
+                prop.enabled = false;
+                blurredProp.enabled = false;
+            }
+        }
+    }
+    //
+    void FixedUpdate()
+    {
         if (Time.timeScale != 0f && aircraft)
         {
             Vector2 tweakedForces = new Vector2();
@@ -61,28 +88,10 @@ public class Propeller : Part
 
             thrust = Mathf.Lerp(simulatedForces.x, tweakedForces.x, engine.trueThrottle);
             torque = engine.Working() ? tweakedForces.y : simulatedForces.y * reductionGear;
-
-            transform.Rotate(-Vector3.forward * Time.deltaTime * rps * 57.3f);
         }
-        //Visual Effect
-        if (prop && blurredProp)
-        {
-            Vector3 cameraDir = transform.position - Camera.main.transform.position;
-            float angle = 90f - Mathf.Abs(Vector3.Angle(cameraDir, transform.forward) - 90f);
 
-            blurredProp.GetPropertyBlock(blurredBlock);
-            blurredBlock.SetFloat("_Rpm", rps * 30f / Mathf.PI);
-            blurredBlock.SetFloat("_CameraAngle", angle);
-            blurredProp.SetPropertyBlock(blurredBlock);
-
-            prop.enabled = engine.rps * (Time.timeScale == 0f ? 1f : Time.timeScale) < enginePreset.idleRPS * 0.8f && !ripped;
-        }
-    }
-    //
-    void FixedUpdate()
-    {
         if (aircraft && TotalSpeed > 0f && !float.IsNaN(thrust)) rb.AddForceAtPosition(transform.forward * thrust, transform.position, ForceMode.Force);
-        if (aircraft && TotalSpeed > 0f && !float.IsNaN(torque))
+        if (false && aircraft && TotalSpeed > 0f && !float.IsNaN(torque))
         {
             Vector3 upForce = transform.root.up * torque / preset.diameter; //The diameter and torque are divided by 2, cancelling each other
             Vector3 upPosition = transform.position - transform.root.right * preset.diameter / 2f;

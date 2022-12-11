@@ -37,7 +37,6 @@ public class Fuselage : Airframe
             float cd = hydraulics ? maxDrag * hydraulics.state : maxDrag;
             if (cd > 0f)
             {
-
                 Vector3 velocity = rb.velocity;
                 Vector3 drag = Aerodynamics.ComputeDrag(velocity, data.tas, data.airDensity, 1f, cd, 1f);
                 rb.AddForceAtPosition(drag, transform.position, ForceMode.Force);
@@ -47,7 +46,7 @@ public class Fuselage : Airframe
     private void FixedUpdate()
     {
         ForcesStress(true, customRipSpeed);
-        Floating(transform.position);
+        Floating();
         Drag();
     }
     public override void Rip()

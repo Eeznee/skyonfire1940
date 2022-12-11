@@ -14,41 +14,67 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   caliber: 30
   caseLength: 184
-  mass: 800
-  noRicochetAlpha: 50
-  ricochetAlpha: 80
-  defaultMuzzleVel: 900
+  mass: 0.5
+  defaultMuzzleVel: 800
   bulletHits: {fileID: 11400000, guid: 5e876b023c9798849a6364f5f7a56975, type: 2}
-  tracerColor: {r: 1, g: 0.032592587, b: 0.0039215684, a: 1}
-  tracerMaterial: {fileID: 2100000, guid: 123ac6dc79004e54b8b352a7e64acdca, type: 2}
   trailEffect: {fileID: 3423757417953530738, guid: e6c9fd457861562448daaa786711503f,
     type: 3}
-  tracerLength: 10
-  tracerWidth: 0.3
-  tracerScatter: 3
+  tracer:
+    material: {fileID: 2100000, guid: 123ac6dc79004e54b8b352a7e64acdca, type: 2}
+    color: {r: 1, g: 0.23113209, b: 0.23113209, a: 1}
+    length: 10
+    width: 0.2
+    scatter: 3
   bullets:
-  - name: HE
-    ammunition: {fileID: 11400000}
-    penetration: 1
-    fireMultiplier: 20
-    tntMass: 80
-    muzzleVelocity: 900
-    mass: 800
-    armorPiercing: 0
+  - name: HE-T
+    diameter: 30
+    mass: 0.5
+    baseVelocity: 800
+    basePenetration: 0.5
+    bulletHits: {fileID: 11400000, guid: 5e876b023c9798849a6364f5f7a56975, type: 2}
+    ap: 0
     explosive: 1
-    fuze: 0
-    adjusting: 0
+    incendiary: 0
     tracer: 1
-  - name: AP-T
-    ammunition: {fileID: 11400000}
-    penetration: 50
-    fireMultiplier: 10
-    tntMass: 0
-    muzzleVelocity: 900
-    mass: 800
-    armorPiercing: 1
+    filler:
+      mass: 0.12
+      explosive: {fileID: 11400000, guid: c958f8cd67246f54487db14f6622e0d9, type: 2}
+      fx: {fileID: 1942529869341703528, guid: 5c67bd16cfde8b24ca3400171a27ec13, type: 3}
+    fuze: 3
+    displayAsBullet: 1
+    approximated: 1
+  - name: AP-I-T
+    diameter: 30
+    mass: 0.5
+    baseVelocity: 800
+    basePenetration: 56.337173
+    bulletHits: {fileID: 11400000, guid: 5e876b023c9798849a6364f5f7a56975, type: 2}
+    ap: 1
     explosive: 0
-    fuze: 0
-    adjusting: 0
+    incendiary: 1
     tracer: 1
+    filler:
+      mass: 0
+      explosive: {fileID: 0}
+      fx: {fileID: 1942529869341703528, guid: 5c67bd16cfde8b24ca3400171a27ec13, type: 3}
+    fuze: 0
+    displayAsBullet: 1
+    approximated: 1
+  - name: APCR
+    diameter: 30
+    mass: 0.36
+    baseVelocity: 960
+    basePenetration: 80
+    bulletHits: {fileID: 11400000, guid: 5e876b023c9798849a6364f5f7a56975, type: 2}
+    ap: 1
+    explosive: 0
+    incendiary: 1
+    tracer: 1
+    filler:
+      mass: 0
+      explosive: {fileID: 0}
+      fx: {fileID: 1942529869341703528, guid: 5c67bd16cfde8b24ca3400171a27ec13, type: 3}
+    fuze: 0
+    displayAsBullet: 1
+    approximated: 0
   defaultBelt: 0000000001000000

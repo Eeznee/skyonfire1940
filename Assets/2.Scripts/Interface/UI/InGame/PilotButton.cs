@@ -9,9 +9,9 @@ public class PilotButton : MonoBehaviour
     SofAircraft playerAircraft;
     void Update()
     {
-        if (playerAircraft != GameManager.player.aircraft)
+        if (playerAircraft != PlayerManager.player.aircraft)
         {
-            playerAircraft = GameManager.player.aircraft;
+            playerAircraft = PlayerManager.player.aircraft;
             image.sprite = playerAircraft.card.icon;
         }
     }

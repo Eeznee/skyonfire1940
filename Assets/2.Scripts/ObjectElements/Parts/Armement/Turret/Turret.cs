@@ -23,7 +23,12 @@ abstract public class Turret : ObjectElement
     protected Gun[] guns;
 
     public Vector3 FiringDirection() { return guns[0].transform.forward; }
-
+    public bool IsFiring()
+    {
+        bool firing = false;
+        foreach (Gun gun in guns) firing |= gun.Firing();
+        return firing;
+    }
 
     public virtual float TargetAvailability(Vector3 pos)
     {

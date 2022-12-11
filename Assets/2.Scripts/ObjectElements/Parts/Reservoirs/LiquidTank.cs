@@ -26,7 +26,7 @@ public class LiquidTank : Part
 
         public void Damage(float caliber)
         {
-            holesArea += Mathf.Pow(caliber / 2000f, 2) * Mathf.PI;
+            holesArea += Mathv.SmoothStart(caliber / 2000f, 2) * Mathf.PI;
         }
         public void Leaking()
         {
@@ -67,7 +67,7 @@ public class LiquidTank : Part
         {
             massLost = 0f;
             currentAmount = capacity;
-            hp = material.hpPerSq * Mathf.Pow(capacity, 2 / 3f);
+            hp = material.hpPerSq * Mathf.Pow(capacity, 2f / 3f);
             circuit = new LiquidCircuit(this, this, escapeSpeed);
             emptyMass = 0f;
         }

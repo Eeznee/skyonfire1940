@@ -21,7 +21,7 @@ public class Magazine : ObjectElement
 
     public override float Mass()
     {
-        return gunPreset.ammunition.FullMass * ammo / 1000f;
+        return gunPreset.ammunition.FullMass * ammo;
     }
 
     public override void Initialize(ObjectData d, bool firstTime)

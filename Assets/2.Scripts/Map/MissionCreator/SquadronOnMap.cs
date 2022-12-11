@@ -41,12 +41,16 @@ public class SquadronOnMap : MonoBehaviour
         Submenu.SetActive(false);
         positionner.EditSquad(this);
     }
+    public void LoadValues()
+    {
+        positionner.missionCreator.LoadValues(assignedSquad);
+    }
 
     public void StopEdit()
     {
         Submenu.SetActive(true);
         aircrafts.text = assignedSquad.aircraftCard.completeName + " x " + assignedSquad.amount;
-        player.gameObject.SetActive(assignedSquad.includePlayer);
+        player.gameObject.SetActive(assignedSquad.player);
         altitude.text = "Alt : " + assignedSquad.startPosition.y * UnitsConverter.altitude.Multiplier + " " + UnitsConverter.altitude.Symbol;
         difficulty.text = "Difficulty : " + (assignedSquad.difficulty * 100f).ToString("0");
     }

@@ -14,7 +14,7 @@ public class VibrationsManager : MonoBehaviour
 
     private void Start()
     {
-        active = PlayerPrefs.GetInt("Vibrations", 1) == 1;
+        active = PlayerPrefs.GetInt("Vibrations", 0) == 1;
         intensity = 0f;
         currentDuration = 0f;
     }
@@ -24,7 +24,7 @@ public class VibrationsManager : MonoBehaviour
         intensity = targetIntensity * Mathf.Sqrt(Mathf.Max(currentDuration,0f) / duration);
         if (currentDuration > 0f)
         {
-            PlayerCamera.instance.camTr.position += Random.insideUnitSphere * intensity * intensityToVibration;
+            PlayerCamera.camTr.position += Random.insideUnitSphere * intensity * intensityToVibration;
             currentDuration -= Time.deltaTime;
 #if MOBILE_INPUT
             if (active) Handheld.Vibrate();
@@ -34,7 +34,7 @@ public class VibrationsManager : MonoBehaviour
 
     public static void SendVibrations(float i, float d,SofAircraft a)
     {
-        if (a == GameManager.player.aircraft && i >= intensity && i > 0.05f)
+        if (a == PlayerManager.player.aircraft && i >= intensity && i > 0.05f)
         {
             targetIntensity = Mathf.Clamp01(i);
             duration = currentDuration = Mathf.Max(d,0.05f);

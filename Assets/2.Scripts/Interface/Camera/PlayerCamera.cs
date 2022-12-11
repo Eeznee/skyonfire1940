@@ -6,10 +6,12 @@ public class PlayerCamera : MonoBehaviour
 {
     //References
     public static PlayerCamera instance;
-    public Transform camTr;
+    public static Transform camTr;
     public Camera cam;
     public CustomCam[] customs;
     public static CustomCam customCam;
+    public static Vector3 camPos;
+    public static Plane[] frustrumPlanes;
 
     //Parameters
     [Header("Distances/FOV")]
@@ -43,26 +45,13 @@ public class PlayerCamera : MonoBehaviour
 
     public static Vector3 directionInput;           //Aircraft and turret guns will track this direction when controlled by the player
     public static Quaternion camTarget;
-    public static bool Zoomed() { return fov < (instance.fieldOfView + instance.zoomedFieldOfView) * 0.5f; }
+
+    public static bool zoomed;
     void Awake()
     {
         touchSensitivity = PlayerPrefs.GetFloat("TouchSensitivity", 1f);
         sensPilot = PlayerPrefs.GetFloat("PilotSensitivity", sensPilot);
         sensGunner = PlayerPrefs.GetFloat("GunnerSensitivity", sensGunner);
-
-        Actions actions = GameManager.gm.actions;
-        actions.General.Aim.performed += _ => fov = Zoomed() ? fieldOfView : zoomedFieldOfView;
-        actions.General.ZoomAxis.performed += zoom => SetFov(Mathf.InverseLerp(-1f, 1f, zoom.ReadValue<float>()));
-        actions.General.LookAround.canceled += _ => camTarget = Quaternion.LookRotation(directionInput,Vector3.up);
-        actions.General.ResetCamera.performed += _ => TryResetView();
-        actions.Pilot.Dynamic.performed += _ => dynamic = !dynamic;
-        actions.General.ToggleViewMode.performed += _ => SetView(viewMode == 0 ? 1 : 0);
-        actions.General.CustomCam1.performed += _ => SetView(-1);
-        actions.General.CustomCam2.performed += _ => SetView(-2);
-        actions.General.CustomCam3.performed += _ => SetView(-3);
-        actions.General.CustomCam4.performed += _ => SetView(-4);
-        actions.General.CustomCam5.performed += _ => SetView(-5);
-        actions.General.CustomCam6.performed += _ => SetView(-6);
 
         inverted = PlayerPrefs.GetInt("InvertTouch", 0) == 1;
 
@@ -79,7 +68,30 @@ public class PlayerCamera : MonoBehaviour
 
         customs = new CustomCam[6];
         viewMode = 0;
+        SetView(0);
         customCam = external;
+    }
+    private void Start()
+    {
+        Actions actions = PlayerActions.instance.actions;
+        Actions.GeneralActions general = actions.General;
+        general.Aim.performed += _ => Zoom();
+        general.ZoomAxis.performed += zoom => SetFov(Mathf.InverseLerp(-1f, 1f, zoom.ReadValue<float>()));
+        general.LookAround.canceled += _ => camTarget = Quaternion.LookRotation(directionInput, Vector3.up);
+        general.ResetCamera.performed += _ => TryResetView();
+        actions.Pilot.Dynamic.performed += _ => dynamic = !dynamic;
+        general.ToggleViewMode.performed += _ => SetView(viewMode == 0 ? 1 : 0);
+        general.CustomCam1.performed += _ => SetView(-1);
+        general.CustomCam2.performed += _ => SetView(-2);
+        general.CustomCam3.performed += _ => SetView(-3);
+        general.CustomCam4.performed += _ => SetView(-4);
+        general.CustomCam5.performed += _ => SetView(-5);
+        general.CustomCam6.performed += _ => SetView(-6);
+    }
+    private void Zoom()
+    {
+        zoomed = !zoomed;
+        fov = zoomed ? zoomedFieldOfView : fieldOfView;
     }
     private float FovFactor()
     {
@@ -95,9 +107,8 @@ public class PlayerCamera : MonoBehaviour
 #if MOBILE_INPUT
         dynamic = true;
 #endif
-        Vector2 cameraInput = Sensitivity() * GameManager.gm.actions.General.Camera.ReadValue<Vector2>() / 10f;
+        Vector2 cameraInput = Sensitivity() * PlayerActions.instance.actions.General.Camera.ReadValue<Vector2>() / 10f;
         if (inverted) cameraInput = -cameraInput;
-        SofAircraft pa = GameManager.ogPlayer.aircraft;
 
         UpdateGameCams();
 
@@ -105,49 +116,55 @@ public class PlayerCamera : MonoBehaviour
 
         CustomCam ccam = customCam;
         bool lookAround = true;
-#if !UNITY_MOBILE
-        if (GameManager.gameUI != GameUI.Game && GameManager.gm.actions.General.UnlockCamera.ReadValue<float>() < 0.5f) lookAround = false;
-        float zoomRelativeInput = GameManager.gm.actions.General.ZoomRelativeAxis.ReadValue<float>() * Time.unscaledDeltaTime * 0.2f;
+#if !MOBILE_INPUT
+        if (GameManager.gameUI != GameUI.Game && PlayerActions.instance.actions.General.UnlockCamera.ReadValue<float>() < 0.5f) lookAround = false;
+        float zoomRelativeInput = PlayerActions.instance.actions.General.ZoomRelativeAxis.ReadValue<float>() * Time.unscaledDeltaTime * 0.2f;
         SetFov(zoomRelativeInput + FovFactor());
 #endif
 
         if (GameManager.seatInterface == SeatInterface.Bombardier) {    //The bombsight case
+            SofAircraft pa = PlayerManager.player.aircraft;
             ccam = bombSight;
             bombSight.relativePos = pa.transform.InverseTransformPoint(pa.bombSight.zoomedPOV.position);
-            cam.fieldOfView = GameManager.ogPlayer.aircraft.bombSight.fov;
+            cam.fieldOfView = pa.bombSight.fov;
             camTarget = DefaultRotation(ccam);
             lookAround = false;
         }
         else
         {
             if (!lookAround) cameraInput = Vector2.zero;
-
             if (ccam.WorldLookAround()) WorldLookAround(cameraInput, DefaultRotation(ccam));
             else RelativeLookAround(cameraInput, DefaultRotation(ccam));
         }
 
-        if (ccam.Player() != GameManager.player.sofObj && ccam.Player() == null) GameManager.PlayerNull();
-        else if (ccam.Player() != GameManager.player.sofObj) GameManager.SetPlayer(ccam.Player(),GameManager.seatInterface == SeatInterface.Bombardier);
+        if (ccam.Player() != PlayerManager.player.sofObj && ccam.Player() == null) PlayerManager.PlayerNull();
+        else if (ccam.Player() != PlayerManager.player.sofObj) PlayerManager.SetPlayer(ccam.Player(),GameManager.seatInterface == SeatInterface.Bombardier);
 
         //Rotate using Cam Tracker
-        if (ccam.smooth) transform.rotation = Mathv.Damp(transform.rotation, camTarget, SmoothSpeed(), false);
+        if (ccam.smooth) transform.rotation = Mathv.Damp(transform.rotation, camTarget, SmoothSpeed());
         else transform.rotation = camTarget;
 
         //Position
         transform.position = Position(ccam);
         camTr.localPosition = new Vector3(0f, ccam.height, -ccam.distance);
 
+        camPos = camTr.position;
         //Prevents ground clipping
-        LayerMask mask = LayerMask.GetMask("Terrain", "Default", "Water");
-        float dis = new Vector2(ccam.height, ccam.distance).magnitude + 0.05f;
-        if (Physics.Raycast(transform.position, camTr.position - transform.position, out RaycastHit hit, dis, mask))
+        if (camPos.y - GameManager.map.HeightAtPoint(camPos) < ccam.height + ccam.distance)
         {
-            camTr.position = hit.point + camTr.forward * 0.05f + Vector3.up * 0.05f;
+            LayerMask mask = LayerMask.GetMask("Terrain", "Default", "Water");
+            float dis = new Vector2(ccam.height, ccam.distance).magnitude + 0.05f;
+            if (Physics.Raycast(transform.position, camTr.position - transform.position, out RaycastHit hit, dis, mask))
+            {
+                camTr.position = hit.point + camTr.forward * 0.05f + Vector3.up * 0.05f;
+            }
         }
 
+        frustrumPlanes = GeometryUtility.CalculateFrustumPlanes(cam);
+
         //Setup Direction Input
-        if (GameManager.gm.actions.General.LookAround.ReadValue<float>() < 0.5f) directionInput = camTarget * Vector3.forward;
-        else if (GameManager.gm.actions.Pilot.Pitch.phase == InputActionPhase.Started) directionInput = GameManager.player.tr.forward;
+        if (PlayerActions.instance.actions.General.LookAround.ReadValue<float>() < 0.5f) directionInput = camTarget * Vector3.forward;
+        else if (PlayerActions.instance.actions.Pilot.Pitch.phase == InputActionPhase.Started) directionInput = PlayerManager.player.tr.forward;
     }
     public float SmoothSpeed()
     {
@@ -165,7 +182,7 @@ public class PlayerCamera : MonoBehaviour
         switch (cam.pos)
         {
             case CamPosition.FirstPerson:
-                CrewMember crew = viewMode > 0 ? GameManager.player.crew : cam.posTarget.crew[0];
+                CrewMember crew = viewMode > 0 ? PlayerManager.player.crew : cam.posTarget.crew[0];
                 return crew.transform.position + crew.Seat().headLookDirection * 0.05f;
             case CamPosition.ObjectRelative:
                 return cam.posTarget.transform.TransformPoint(cam.relativePos);
@@ -200,9 +217,9 @@ public class PlayerCamera : MonoBehaviour
             case CamDirection.Free:
                 return camTr.forward;
             case CamDirection.Game:
-                return GameManager.ogPlayer.crew.Seat().DefaultDirection();
+                return PlayerManager.player.crew.Seat().DefaultDirection();
             case CamDirection.Bombsight:
-                return GameManager.ogPlayer.aircraft.bombSight.zoomedPOV.forward;
+                return PlayerManager.player.aircraft.bombSight.zoomedPOV.forward;
         }
         return Vector3.forward;
     }
@@ -236,12 +253,14 @@ public class PlayerCamera : MonoBehaviour
     }
     private void UpdateGameCams()
     {
-        firstPerson.SetTarget(GameManager.ogPlayer.sofObj);
-        external.SetTarget(GameManager.ogPlayer.sofObj);
+        SofObject player = PlayerManager.player.sofObj;
+        if (player == null) return;
+        firstPerson.SetTarget(player);
+        external.SetTarget(player);
         external.up = dynamic ? CamUp.ObjectRelative : CamUp.World;
-        external.distance = -GameManager.ogPlayer.sofObj.viewPoint.z;
-        external.height = GameManager.ogPlayer.sofObj.viewPoint.y;
-        bombSight.SetTarget(GameManager.ogPlayer.sofObj);
+        external.distance = -player.viewPoint.z;
+        external.height = player.viewPoint.y;
+        bombSight.SetTarget(player);
     }
     public void ResetView(bool instant)
     {
@@ -266,16 +285,11 @@ public class PlayerCamera : MonoBehaviour
     }
     public void SetView(int vm) //Negative are the custom cams, 0 is external, 1 is first person, 2 is free
     {
+        if (GameManager.seatInterface == SeatInterface.Bombardier) return;
         int oldVm = viewMode;
         customCam = CamByViewMode(vm);
         viewMode = vm;
         customCam.Initialize();
-
-        if (GameManager.seatInterface == SeatInterface.Bombardier)
-        {
-            if (customCam.Player() == null) GameManager.PlayerNull();
-            else GameManager.SetPlayer(customCam.Player(), GameManager.seatInterface == SeatInterface.Bombardier);
-        }
 
         if (viewMode < 0 || oldVm < 0) ResetView(true);
     }

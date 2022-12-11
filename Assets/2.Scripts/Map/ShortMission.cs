@@ -12,8 +12,10 @@ public class ShortMission : MonoBehaviour
     public bool war = false;
     public Game.Squadron[] squads;
 
-    public AircraftScrollableList playerAircraft;
-    public AircraftScrollableList ennemyAircraft;
+    public AircraftsDropdown playerAircraft;
+    public AircraftsDropdown ennemyAircraft;
+    public TexturesDropdown playerTexture;
+    public ModsDropdown playerMods;
     public InputField playerAmount;
     public InputField ennemyAmount;
     public InputField altitude;
@@ -42,8 +44,11 @@ public class ShortMission : MonoBehaviour
         PlayerPrefs.SetInt("SquadronsAmount", squads.Length);
 
         if (playerAircraft) squads[0].aircraftCard = playerAircraft.SelectedCard;
-        if (ennemyAircraft) squads[1].aircraftCard = ennemyAircraft.SelectedCard;
         if (playerAmount) squads[0].amount = int.Parse(playerAmount.text);
+        if (playerMods) squads[0].stations = playerMods.SelectedMods;
+        if (playerTexture) squads[0].textureName = playerTexture.SelectedName;
+
+        if (ennemyAircraft) squads[1].aircraftCard = ennemyAircraft.SelectedCard;
         if (ennemyAmount) squads[1].amount = int.Parse(ennemyAmount.text);
         if (altitude)
         {
@@ -58,18 +63,7 @@ public class ShortMission : MonoBehaviour
             squads[1].difficulty = dif;
         }
         for (int i = 0; i < squads.Length; i++)
-        {
-            PlayerPrefs.SetInt("Squadron" + i + "Team", (int)squads[i].team);
-            PlayerPrefs.SetInt("Squadron" + i + "Aircraft", squads[i].aircraftCard.id);
-            PlayerPrefs.SetInt("Squadron" + i + "Amount", squads[i].amount);
-            PlayerPrefs.SetInt("Squadron" + i + "Player", squads[i].includePlayer ? 1 : 0);
-            PlayerPrefs.SetFloat("Squadron" + i + "PosX", squads[i].startPosition.x);
-            PlayerPrefs.SetFloat("Squadron" + i + "PosY", squads[i].startPosition.y);
-            PlayerPrefs.SetFloat("Squadron" + i + "PosZ", squads[i].startPosition.z);
-            PlayerPrefs.SetFloat("Squadron" + i + "Heading", squads[i].startHeading);
-            PlayerPrefs.SetFloat("Squadron" + i + "Difficulty", squads[i].difficulty);
-            PlayerPrefs.SetInt("Squadron" + i + "Airfield", squads[i].airfield); //Airfield are not supported yet on mission editor
-        }
+            squads[i].SaveSquadron(i);
 
         SceneManager.LoadScene(mapData.assignedScene);
     }

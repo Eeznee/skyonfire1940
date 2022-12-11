@@ -12,7 +12,7 @@ public class LodModule : ObjectElement
     private float simpleSqr;
     private float halfSqr;
 
-    //0 is full fidelity, 1 is simplified, 2 is half and 3 is minimum
+    //0 is full fidelity, 1 is simplified, 2 is half, 3 is minimum, and 4 is invisible
     private int lod = 0;
     private bool switched = false;
     public int LOD(){ return lod; }
@@ -27,13 +27,18 @@ public class LodModule : ObjectElement
     void Update()
     {
         switched = false;
-        float dis = (transform.position - Camera.main.transform.position).sqrMagnitude;
+        float dis = (data.position - PlayerCamera.camPos).sqrMagnitude;
 
         int newLod = 0;
         if (dis > fullSqr) newLod++;
         if (dis > simpleSqr) newLod++;
         if (dis > halfSqr) newLod++;
-        if (GameManager.player.aircraft == aircraft || PlayerCamera.viewMode < 0 || Time.timeScale == 0f) newLod = 0;
+        if (newLod < 3)
+        {
+            Bounds bounds = new Bounds(data.position, Vector3.one * 10f);
+            if (!GeometryUtility.TestPlanesAABB(PlayerCamera.frustrumPlanes, bounds)) newLod = 4;
+        }
+        if (PlayerManager.player.aircraft == aircraft || PlayerCamera.viewMode < 0 || Time.timeScale == 0f) newLod = 0;
 
         if (newLod != lod) {
             lod = newLod;

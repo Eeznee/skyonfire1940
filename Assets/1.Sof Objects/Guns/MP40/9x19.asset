@@ -14,40 +14,49 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   caliber: 9
   caseLength: 19
-  mass: 8
-  noRicochetAlpha: 50
-  ricochetAlpha: 80
+  mass: 0.008
   defaultMuzzleVel: 360
   bulletHits: {fileID: 11400000, guid: 26c8e555ab7ade9439dcdb4264fc4545, type: 2}
-  tracerColor: {r: 1, g: 0.06505073, b: 0, a: 1}
-  tracerMaterial: {fileID: 2100000, guid: 123ac6dc79004e54b8b352a7e64acdca, type: 2}
   trailEffect: {fileID: 0}
-  tracerLength: 0.4
-  tracerWidth: 0.15
-  tracerScatter: 0
+  tracer:
+    material: {fileID: 2100000, guid: 123ac6dc79004e54b8b352a7e64acdca, type: 2}
+    color: {r: 1, g: 0.06505073, b: 0, a: 1}
+    length: 0.1
+    width: 0.05
+    scatter: 0
   bullets:
-  - name: FMJ
-    ammunition: {fileID: 11400000}
-    penetration: 9
-    fireMultiplier: 1
-    tntMass: 0
-    muzzleVelocity: 360
-    mass: 8
-    armorPiercing: 1
+  - name: Ball
+    diameter: 9
+    mass: 0.008
+    baseVelocity: 360
+    basePenetration: 1.0971429
+    bulletHits: {fileID: 11400000, guid: 26c8e555ab7ade9439dcdb4264fc4545, type: 2}
+    ap: 0
     explosive: 0
-    fuze: 0
-    adjusting: 0
+    incendiary: 0
     tracer: 0
-  - name: T
-    ammunition: {fileID: 11400000}
-    penetration: 6
-    fireMultiplier: 1
-    tntMass: 0
-    muzzleVelocity: 360
-    mass: 8
-    armorPiercing: 1
-    explosive: 0
+    filler:
+      mass: 0
+      explosive: {fileID: 0}
+      fx: {fileID: 0}
     fuze: 0
-    adjusting: 0
+    displayAsBullet: 1
+    approximated: 1
+  - name: T
+    diameter: 9
+    mass: 0.008
+    baseVelocity: 360
+    basePenetration: 0.9874286
+    bulletHits: {fileID: 11400000, guid: 26c8e555ab7ade9439dcdb4264fc4545, type: 2}
+    ap: 0
+    explosive: 0
+    incendiary: 0
     tracer: 1
+    filler:
+      mass: 0
+      explosive: {fileID: 0}
+      fx: {fileID: 0}
+    fuze: 0
+    displayAsBullet: 1
+    approximated: 1
   defaultBelt: 0000000001000000

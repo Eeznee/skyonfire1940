@@ -30,7 +30,7 @@ public class GunnerSeat : CrewSeat
 
     public override int Priority()
     {
-        if (mainGun && aircraft && aircraft.crew[0] == GameManager.player.crew) return -1;
+        if (mainGun && aircraft && aircraft.crew[0] == PlayerManager.player.crew) return -1;
         if (target) return 2;
         return 0;
     }
@@ -59,9 +59,9 @@ public class GunnerSeat : CrewSeat
 
     public override Vector3 HeadPosition(bool player)
     {
-        bool useGunPov = gunPovTarget && gunPovTarget.root == transform.root && !(player && PlayerCamera.Zoomed());
+        bool useGunPov = gunPovTarget && gunPovTarget.root == transform.root && !(player && PlayerCamera.zoomed);
         if (useGunPov)  return (gunPovTarget.position + defaultPOV.position) * 0.5f;
-        return base.HeadPosition(player);
+        else return base.HeadPosition(player);
     }
     public override void PlayerUpdate(CrewMember crew)
     {
@@ -69,24 +69,25 @@ public class GunnerSeat : CrewSeat
 
         if (progressiveHydraulic)
         {
-            float input = GameManager.gm.actions.Gunner.Hydraulics.ReadValue<float>();
+            float input = PlayerActions.instance.actions.Gunner.Hydraulics.ReadValue<float>();
             progressiveHydraulic.SetDirection(Mathf.RoundToInt(input));
         }
         if (!turret) return;
         if (!handsBusy) NewGrips(defaultRightHand, defaultLeftHand);
 
-        Vector2 basic = GameManager.gm.actions.Gunner.BasicAxis.ReadValue<Vector2>();
-        float special = GameManager.gm.actions.Gunner.SpecialAxis.ReadValue<float>();
+        Vector2 basic = PlayerActions.instance.actions.Gunner.BasicAxis.ReadValue<Vector2>();
+        float special = PlayerActions.instance.actions.Gunner.SpecialAxis.ReadValue<float>();
         turret.SetDirectionSemi(PlayerCamera.directionInput,special);
-        bool firing = GameManager.gm.actions.Gunner.Fire.ReadValue<float>() > 0.5f;
+        bool firing = PlayerActions.instance.actions.Gunner.Fire.ReadValue<float>() > 0.5f;
         turret.Operate(firing,false);
+        if (turret.Firing()) VibrationsManager.SendVibrations(0.2f, 0.1f, aircraft);
     }
     public override void AiUpdate(CrewMember crew)
     {
         base.AiUpdate(crew);
 
         if (handsBusy || !turret) return;
-        if (mainGun && GameManager.player.crew == aircraft.crew[0]) return;
+        if (mainGun && PlayerManager.player.crew == aircraft.crew[0]) return;
 
         bool firing = false;
 
@@ -122,7 +123,7 @@ public class GunnerSeat : CrewSeat
         float minAngle = Mathf.Max(target.wingSpan / targetData.distance * Mathf.Rad2Deg,1f);
 
         //Solution temporaire pour 40 mm
-        if (!aircraft) turret.SetFuze(targetData.distance * Random.Range(0.9f,1.25f));
+        if (!aircraft) turret.SetFuze(targetData.distance);
 
         if (gunsAngle > minAngle || targetData.distance > (aircraft ? maxRange : maxRangeAA)) return false;
         return Mathf.PerlinNoise(perlinRandomizer, Time.time) < Mathf.Lerp(burstPerlinNoob, burstPerlinExpert, difficulty);

@@ -14,17 +14,17 @@ public class AircraftSwitcher : MonoBehaviour
     public void OffsetSquadron(int offset)
     {
         if (!current) current = GameManager.squadrons[0][0];
-        current = GameManager.OffsetSquadron(offset, current.squadronId);
+        current = PlayerManager.OffsetSquadron(offset, current.squadronId);
     }
     public void OffsetWing(int offset)
     {
         if (!current) current = GameManager.squadrons[0][0];
-        current = GameManager.OffsetWing(offset, current.placeInSquad,current.squadronId);
+        current = PlayerManager.OffsetWing(offset, current.placeInSquad,current.squadronId);
     }
 
     public void SelectPlayerCamera()
     {
-        Transform camTr = PlayerCamera.instance.camTr;
+        Transform camTr = PlayerCamera.camTr;
         float minAngle = 10f;
         SofObject nearest = null;
         foreach(SofObject so in GameManager.sofObjects)
@@ -41,7 +41,7 @@ public class AircraftSwitcher : MonoBehaviour
 
     void Update()
     {
-        if (playerAuto) current = GameManager.ogPlayer.aircraft;
+        if (playerAuto) current = PlayerManager.player.aircraft;
 
         if (current)
         {

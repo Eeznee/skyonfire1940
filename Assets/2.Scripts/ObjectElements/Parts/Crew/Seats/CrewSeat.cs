@@ -39,13 +39,13 @@ public class CrewSeat : BasicSeat
 
     public Vector3 DefaultDirection()
     {
-        return transform.root.TransformDirection(localDirection);
+        return data.tr.TransformDirection(localDirection);
     }
     public override float CockpitAudio()
     {
         if (!aircraft) return 0f;
-        if (canopy && !canopy.Destroyed()) {
-            return Mathf.Lerp(audioRatio, closedRatio, Mathf.Pow(1f - canopy.state,5));
+        if (canopy && !canopy.disabled) {
+            return Mathf.Lerp(audioRatio, closedRatio, Mathv.SmoothStart(1f - canopy.state,5));
         }
         else return audioRatio;
     }
@@ -66,9 +66,10 @@ public class CrewSeat : BasicSeat
     public override void AiUpdate(CrewMember crew)
     {
         base.AiUpdate(crew);
+        if (handsBusy) return;
         foreach (Gun gun in reloadableGuns)
         {
-            if (!gun.ShotReady() && !handsBusy && gun.transform.root == transform.root) StartCoroutine(Reload(gun));  //Check Reloadable guns
+            if (!gun.PossibleFire() && !gun.reloading) { StartCoroutine(Reload(gun)); ; return;  }  //Check Reloadable guns
         }
     }
     public void TryReload()
@@ -76,9 +77,9 @@ public class CrewSeat : BasicSeat
         if (handsBusy) return;
         for (int i = 0; i < reloadableGuns.Length; i++)
         {
-            bool reloadable = reloadableGuns[i].magazine.ammo < reloadableGuns[i].magazine.capacity - 1;
+            bool reloadable = reloadableGuns[i].magazine.ammo < reloadableGuns[i].magazine.capacity - 1 || !reloadableGuns[i].PossibleFire();
             reloadable &= reloadableGuns[i].transform.root == transform.root;
-            if (reloadable)
+            if (reloadable && !reloadableGuns[i].reloading)
             {
                 StartCoroutine(Reload(reloadableGuns[i]));
                 return;
@@ -90,9 +91,10 @@ public class CrewSeat : BasicSeat
         if (gun.magStock.MagsCount() == 0) yield break;
 
         handsBusy = true;
+        gun.reloading = true;
 
         //If mag change
-        if (gun.magazine.ammo == 0 || gun.chambered)
+        if (gun.magazine.ammo == 0 || gun.PossibleFire())
         {
             //PART !: Remove Old Magazine
             Magazine oldMagRef = gun.magazine;
@@ -161,24 +163,22 @@ public class CrewSeat : BasicSeat
         }
 
         //PART 3: Cock the gun
-        if (!gun.chambered)
+        if (!gun.PossibleFire())
         {
-            yield return new WaitForSeconds(0.3f);
             if (gun.bolt)
             {
                 rightHandGrip = gun.bolt.grip;
+                yield return new WaitForSeconds(0.3f);
                 gun.bolt.CycleBoltAnimation();
-                while (!gun.chambered)
+
+                while (gun.bolt.animatedPulling)
                 {
                     yield return null;
                 }
-            } else
-            {
-                yield return new WaitForSeconds(1f);
-                gun.Chamber();
+                rightHandGrip = defaultRightHand;
             }
         }
-
+        gun.reloading = false;
         handsBusy = false;
     }
 }

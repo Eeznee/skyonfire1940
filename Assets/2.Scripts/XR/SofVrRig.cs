@@ -102,7 +102,7 @@ public class SofVrRig : MonoBehaviour
     public void ResetView()
     {
         GetReferences();
-        Transform pov = GameManager.player.crew.Seat().defaultPOV;
+        Transform pov = PlayerManager.player.crew.Seat().defaultPOV;
         transform.parent = pov;
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.identity;

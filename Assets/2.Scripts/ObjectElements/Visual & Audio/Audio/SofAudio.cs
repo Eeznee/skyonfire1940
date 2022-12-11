@@ -7,18 +7,20 @@ public class SofAudio
 {
     public AudioSource source;
     public SofAudioGroup group;
+    private AVM avm;
     private bool global;
-    private bool playAtStart;
 
-    public SofAudio(AVM avm,  AudioClip clip,SofAudioGroup g, bool _global, bool play)
+    public SofAudio(AVM _avm,  AudioClip clip,SofAudioGroup g, bool _global)
     {
+        avm = _avm;
         global = _global;
         group = g;
         
         GameObject holder = global ? avm.globalHolder : avm.localHolder;
         source = holder.AddComponent<AudioSource>();
+        source.playOnAwake = true;
         source.clip = clip;
-        source.volume = 1f;
+        source.volume = 0f;
         source.loop = true;
         source.minDistance = 300f;
         source.maxDistance = 2000f;
@@ -26,9 +28,14 @@ public class SofAudio
         source.rolloffMode = AudioRolloffMode.Logarithmic;
         source.spatialBlend = source.dopplerLevel = global ? 1f : 0f;
         if (source.clip) source.time = Random.Range(0f, clip.length);
-        if (play && holder.activeSelf) source.PlayDelayed(0.05f);
+        if (holder.activeInHierarchy) source.Play();
 
         avm.AddSofAudio(this);
+    }
+
+    public bool Enabled()
+    {
+        return global ? true : avm.localActive;
     }
 
     public void PlayOneShot(AudioClip clip, float volume)
@@ -52,7 +59,7 @@ public class SofAudio
     }
     public void Play()
     {
-        if (source.enabled && source.gameObject.activeInHierarchy) source.Play();
+        if (source.enabled && source.gameObject.activeInHierarchy)source.Play();
     }
     public void Stop()
     {

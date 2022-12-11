@@ -14,52 +14,80 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   caliber: 7.5
   caseLength: 54
-  mass: 9
-  noRicochetAlpha: 50
-  ricochetAlpha: 80
+  mass: 0.009
   defaultMuzzleVel: 850
   bulletHits: {fileID: 11400000, guid: 26c8e555ab7ade9439dcdb4264fc4545, type: 2}
-  tracerColor: {r: 1, g: 1, b: 1, a: 1}
-  tracerMaterial: {fileID: 2100000, guid: 123ac6dc79004e54b8b352a7e64acdca, type: 2}
   trailEffect: {fileID: 3423757417953530738, guid: 27b6bef6acaba2743802ff2b8ebd36cc,
     type: 3}
-  tracerLength: 7
-  tracerWidth: 0.05
+  tracer:
+    material: {fileID: 2100000, guid: 123ac6dc79004e54b8b352a7e64acdca, type: 2}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    length: 5
+    width: 0.04
+    scatter: 3
   bullets:
-  - name: FMJ
-    ammunition: {fileID: 11400000}
-    penetration: 7
-    fireMultiplier: 1
-    tntMass: 0
-    muzzleVelocity: 850
-    mass: 9
-    armorPiercing: 1
+  - name: Ball
+    diameter: 7.5
+    mass: 0.009
+    baseVelocity: 850
+    basePenetration: 9.045246
+    bulletHits: {fileID: 11400000, guid: 26c8e555ab7ade9439dcdb4264fc4545, type: 2}
+    ap: 0
     explosive: 0
-    fuze: 0
-    adjusting: 0
+    incendiary: 0
     tracer: 0
-  - name: T
-    ammunition: {fileID: 11400000}
-    penetration: 6
-    fireMultiplier: 1
-    tntMass: 0
-    muzzleVelocity: 830
-    mass: 10
-    armorPiercing: 1
+    filler:
+      mass: 0
+      explosive: {fileID: 0}
+      fx: {fileID: 0}
+    displayAsBullet: 1
+    approximated: 1
+  - name: AP
+    diameter: 7.5
+    mass: 0.009
+    baseVelocity: 850
+    basePenetration: 11.306558
+    bulletHits: {fileID: 11400000, guid: 26c8e555ab7ade9439dcdb4264fc4545, type: 2}
+    ap: 1
     explosive: 0
-    fuze: 0
-    adjusting: 1
-    tracer: 1
+    incendiary: 0
+    tracer: 0
+    filler:
+      mass: 0
+      explosive: {fileID: 0}
+      fx: {fileID: 0}
+    displayAsBullet: 1
+    approximated: 1
   - name: I
-    ammunition: {fileID: 11400000}
-    penetration: 4
-    fireMultiplier: 2.5
-    tntMass: 0
-    muzzleVelocity: 830
-    mass: 10
-    armorPiercing: 0
+    diameter: 7.5
+    mass: 0.009
+    baseVelocity: 850
+    basePenetration: 8.140721
+    bulletHits: {fileID: 11400000, guid: 26c8e555ab7ade9439dcdb4264fc4545, type: 2}
+    ap: 0
     explosive: 0
-    fuze: 0
-    adjusting: 1
+    incendiary: 1
     tracer: 0
-  defaultBelt: 000000000100000002000000
+    filler:
+      mass: 0
+      explosive: {fileID: 0}
+      fx: {fileID: 0}
+    displayAsBullet: 1
+    approximated: 1
+  - name: T
+    diameter: 7.5
+    mass: 0.009
+    baseVelocity: 850
+    basePenetration: 8.140721
+    bulletHits: {fileID: 11400000, guid: 26c8e555ab7ade9439dcdb4264fc4545, type: 2}
+    ap: 0
+    explosive: 0
+    incendiary: 0
+    tracer: 1
+    filler:
+      mass: 0
+      explosive: {fileID: 0}
+      fx: {fileID: 0}
+    displayAsBullet: 1
+    approximated: 1
+  defaultBelt: 00000000010000000200000003000000

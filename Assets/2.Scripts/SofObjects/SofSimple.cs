@@ -21,20 +21,20 @@ public class SofSimple : SofObject
 
     float hp;
 
-    public override void Awake()
+    public override void Initialize()
     {
-        base.Awake();
+        base.Initialize();
         hp = tntHp;
     }
-    public override void Explosion(Vector3 center, float kg,float totalKg)
+    public override void Explosion(Vector3 center, float tnt)
     {
         float distance = (transform.position - center).magnitude;
-        if (distance < radius + Ballistics.ExplosionRangeSimple(kg))
+        if (distance < radius + Ballistics.ExplosionRangeSimple(tnt))
         {
-            hp -= kg;
-        } else if (distance < radius + Ballistics.HalfExplosionRangeSimple(kg))
+            hp -= tnt;
+        } else if (distance < radius + Ballistics.HalfExplosionRangeSimple(tnt))
         {
-            hp -= kg / 2f;
+            hp -= tnt / 2f;
         }
         if (hp <= 0f) SofDestroy();
     }

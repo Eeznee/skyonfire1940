@@ -28,7 +28,7 @@ public class IndicatorsList : MonoBehaviour
 
     public string Text()
     {
-        SofAircraft player = GameManager.player.aircraft ? GameManager.player.aircraft : GameManager.ogPlayer.aircraft;
+        SofAircraft player = PlayerManager.player.aircraft;
         ObjectData playerData = player.data;
 
         string finalText = "";

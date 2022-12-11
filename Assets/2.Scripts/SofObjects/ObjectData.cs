@@ -38,8 +38,13 @@ public class ObjectData : MonoBehaviour
     protected Vector3 prevVel = Vector3.zero;
 
     //Air
+    public Transform tr;
+    public Vector3 forward;
+    public Vector3 up;
+    public Vector3 right;
     public float relativeAltitude = 5f;
     public float altitude = 5f;
+    public Vector3 position = Vector3.zero;
     public float airDensity = 1.3f;
     public float seaLevelAirDensity = 1.3f;
     public float ambientTemperature = 20f;
@@ -58,6 +63,7 @@ public class ObjectData : MonoBehaviour
     public void Initialize(bool firstTime)
     {
         //Type
+        tr = transform;
         sofObject = GetComponent<SofObject>();
         simple = GetComponent<SofSimple>();
         complex = GetComponent<SofComplex>();
@@ -113,9 +119,10 @@ public class ObjectData : MonoBehaviour
     {
         rb.mass = mass;
         //Direction
-        altitude = Mathf.Max(transform.position.y, 0f);
-        relativeAltitude = Mathf.Max(altitude - GameManager.map.HeightAtPoint(transform.position),0.5f);
-        headingDirection = rb.transform.eulerAngles.y;
+        position = tr.position;
+        altitude = Mathf.Max(position.y, 0f);
+        relativeAltitude = Mathf.Max(altitude - GameManager.map.HeightAtPoint(position),0.5f);
+        headingDirection = tr.eulerAngles.y;
 
         //Speed
         gsp = rb.velocity.magnitude;
@@ -132,16 +139,20 @@ public class ObjectData : MonoBehaviour
         seaLevelAirDensity = Aerodynamics.GetAirDensity(weather.localTemperature, Aerodynamics.SeaLvlPressure);
 
         //Directions
-        pitchAngle = Vector3.Angle(transform.forward, Vector3.ProjectOnPlane(transform.forward, Vector3.up));
-        if (transform.forward.y < 0f) pitchAngle *= -1f;
+        forward = tr.forward;
+        up = tr.up;
+        right = tr.right;
+        pitchAngle = Vector3.Angle(forward, Vector3.ProjectOnPlane(forward, Vector3.up));
+        if (forward.y < 0f) pitchAngle *= -1f;
 
-        bankAngle = transform.root.eulerAngles.z;
+
+        bankAngle = tr.root.eulerAngles.z;
         bankAngle = (bankAngle > 180f) ? bankAngle - 360f : bankAngle;
-        Vector3 slipVelocity = Vector3.ProjectOnPlane(rb.velocity, transform.up);
-        Vector3 attackVelocity = Vector3.ProjectOnPlane(rb.velocity, transform.right);
-        angleOfSlip = Vector3.SignedAngle(transform.forward, slipVelocity, transform.up);
-        angleOfAttack = Vector3.SignedAngle(transform.forward, attackVelocity, transform.right);
-        bool submerged = transform.position.y < 1f;
+        Vector3 slipVelocity = Vector3.ProjectOnPlane(rb.velocity, up);
+        Vector3 attackVelocity = Vector3.ProjectOnPlane(rb.velocity, right);
+        angleOfSlip = Vector3.SignedAngle(forward, slipVelocity, up);
+        angleOfAttack = Vector3.SignedAngle(forward, attackVelocity, right);
+        bool submerged = altitude < 1f;
         rb.angularDrag = submerged ? 0.5f : 0f;
         rb.drag = submerged ? 1f : 0f;
 
@@ -153,8 +164,8 @@ public class ObjectData : MonoBehaviour
 
         //Acceleration
         acceleration = (rb.velocity - prevVel) / Time.fixedDeltaTime;
-        acceleration = transform.InverseTransformDirection(acceleration);
-        truegForce = acceleration.y / 9.81f + transform.up.y;
+        acceleration = tr.InverseTransformDirection(acceleration);
+        truegForce = acceleration.y / 9.81f + up.y;
         prevVel = rb.velocity;
 
         //Average G forces

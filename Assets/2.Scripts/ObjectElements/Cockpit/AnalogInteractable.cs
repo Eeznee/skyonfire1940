@@ -14,6 +14,7 @@ public class AnalogInteractable : CockpitInteractable
     }
     public float animationTime = 0f;
     public bool switchInput = false;
+    public bool clicking = false;
     public Mode mode = Mode.Lever;
 
     public Vector3 axis = new Vector3(1f, 0f, 0f);
@@ -44,7 +45,6 @@ public class AnalogInteractable : CockpitInteractable
         if (GroupSelect()) return groupGrip;
         return base.CurrentGrip();
     }
-
     public override void Initialize(ObjectData d, bool firstTime)
     {
         base.Initialize(d, firstTime);
@@ -76,7 +76,7 @@ public class AnalogInteractable : CockpitInteractable
             case Mode.Knob:
                 break;
         }
-        if (switchInput) input = input > 0.5f ? 1f : 0f;
+        if (switchInput && clicking) input = input > 0.5f ? 1f : 0f;
     }
     protected override void CockpitInteractableUpdate()
     {
@@ -105,6 +105,11 @@ public class AnalogInteractable : CockpitInteractable
             case Mode.Knob:
                 break;
         }
+    }
+    protected override void OnRelease()
+    {
+        base.OnRelease();
+        if (switchInput) input = input > 0.5f ? 1f : 0f;
     }
     private void Update()
     {
@@ -139,6 +144,7 @@ public class AnalogInteractableEditor : CockpitInteractableEditor
         GUI.color = GUI.backgroundColor;
 
         analog.switchInput = EditorGUILayout.Toggle("Switch (binary)", analog.switchInput);
+        if (analog.switchInput) analog.clicking = EditorGUILayout.Toggle("Clicking", analog.clicking);
         analog.mode = (AnalogInteractable.Mode)EditorGUILayout.EnumPopup("Mode", analog.mode);
         switch (analog.mode)
         {

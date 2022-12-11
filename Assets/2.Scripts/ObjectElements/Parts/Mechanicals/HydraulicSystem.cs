@@ -22,6 +22,7 @@ public class HydraulicSystem : ObjectElement
     public float volume = 0.3f;
     public float pitch = 1f;
 
+    public bool disabled;
     public float state;
     public float stateInput;
     private float previousState;
@@ -40,29 +41,25 @@ public class HydraulicSystem : ObjectElement
         if (firstTime)
         {
             anim = GetComponentInParent<Animator>();
-            sofAudio = new SofAudio(sofObject.avm, clip, SofAudioGroup.Persistent, false, false);
+            sofAudio = new SofAudio(sofObject.avm, clip, SofAudioGroup.Persistent, false);
             sofAudio.source.pitch = pitch;
             SetInstant(defaultState);
         }
     }
 
-    public bool Destroyed() //returns destroyed only if there are essential parts and all essential parts are destroyed
-    {
-        bool destroyed = essentialParts.Length > 0;
-        foreach (Part p in essentialParts) if (p.transform.root == transform.root && !p.ripped) destroyed = false;
-        return destroyed;
-    }
 
-    protected virtual void Update()
+    private void Update()
     {
-        bool animating = (state != stateInput || anim.GetFloat(animParameter) != state) && !Destroyed();
+        disabled = essentialParts.Length > 0;
+        foreach (Part p in essentialParts) if (p && p.data == data && !p.ripped) disabled = false;
+
+        bool animating = (state != stateInput) && !disabled;
         if (animating)
         {
             state = Mathf.MoveTowards(state, stateInput, Time.deltaTime / (stateInput > state ? loweringTime : retractingTime));
-            anim.SetFloat(animParameter, state);
+            if (state != previousState) anim.SetFloat(animParameter, state);
         }
-
-        if (sofAudio.source && sofAudio.source.isActiveAndEnabled)
+        if (sofAudio.Enabled())
         {
             bool play = animating && !(extendOnly && stateInput < state);
             if (play != sofAudio.source.isPlaying)
@@ -97,10 +94,6 @@ public class HydraulicSystem : ObjectElement
         if (speed == -1) stateInput = 0f;
         if (speed == 0 && !binary) stateInput = state;
     }
-    public virtual void Stop()
-    {
-        stateInput = state;
-    }
     public virtual void SetInstant(bool lowered)
     {
         SetInstant(lowered ? 1f : 0f);
@@ -108,6 +101,7 @@ public class HydraulicSystem : ObjectElement
     public virtual void SetInstant(float input)
     {
         state = stateInput = previousState = Mathf.Clamp01(input);
+        anim.SetFloat(animParameter, state);
     }
 }
 

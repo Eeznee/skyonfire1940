@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.InputSystem;
-public class BailOut : CockpitTwoHands
+#if UNITY_EDITOR
+using UnityEditor;
+using UnityEditor.SceneManagement;
+#endif
+public class BailOut : CockpitInteractable
 {
-    const float minDis = 0.2f;
     public Transform bailOutPoint;
 
     public override void Initialize(ObjectData d, bool firstTime)
@@ -19,15 +22,42 @@ public class BailOut : CockpitTwoHands
     protected override void OnRelease()
     {
         base.OnRelease();
-        if (GameManager.player.crew.transform.root != GameManager.player.aircraft.transform) return;
+        if (PlayerManager.player.crew.transform.root != PlayerManager.player.aircraft.transform) return;
         Vector3 camLocal = bailOutPoint.InverseTransformPoint(Camera.main.transform.position);
-        if (camLocal.y > 0f) GameManager.player.crew.Bailout();
+        if (camLocal.y > 0f) PlayerManager.player.crew.Bailout();
         else SofVrRig.instance.ResetView();
     }
 
     private void LateUpdate()
     {
         CockpitInteractableUpdate();
+        if (xrGrab && PlayerManager.player.crew.Seat().canopy)
+        {
+            xrGrab.enabled = PlayerManager.player.crew.Seat().canopy.state > 0.7f;
+            if (!xrGrab.enabled) outline.OutlineColor = new Color(0f, 0f, 0f, 0f);
+        }
     }
 }
 
+#if UNITY_EDITOR
+[CustomEditor(typeof(BailOut))]
+public class BailOutInteractable : CockpitInteractableEditor
+{
+    public override void OnInspectorGUI()
+    {
+        base.OnInspectorGUI();
+        serializedObject.Update();
+
+        BailOut bailOut = (BailOut)target;
+        bailOut.bailOutPoint = EditorGUILayout.ObjectField("Bail Out Point", bailOut.bailOutPoint, typeof(Transform), true) as Transform;
+
+
+        if (GUI.changed)
+        {
+            EditorUtility.SetDirty(bailOut);
+            EditorSceneManager.MarkSceneDirty(bailOut.gameObject.scene);
+        }
+        serializedObject.ApplyModifiedProperties();
+    }
+}
+#endif

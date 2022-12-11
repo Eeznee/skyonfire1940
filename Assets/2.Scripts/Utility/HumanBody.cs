@@ -7,15 +7,18 @@ public class HumanBody
     const float maxStamina = 15f;
     const float sustain = 4.7f;
     const float staminaRegenFactor = 2f;
-    const float negSustain = -2.3f;
+    const float invertNegSustain = -1f/2.3f;
     const float bloodSustain = 3f;
     const float bloodMax = 3f;
 
     const float bufferMax = 2f;
-    const float glocTime = 3f;
+    const float invertGlocTime = 1f/3f;
     const float gSwitchSustain = 0.2f;
     const float sicknessTrigger = 4f;
     const float painRecoveryRate = 0.07f;
+
+    private float invertMaxStamina;
+    private float invertBloodMax;
 
     private float blood = 0f;
     private float stamina = 15f;
@@ -29,8 +32,8 @@ public class HumanBody
     private CrewMember crew;
 
     public static float Weight() { return 70f; }
-    public float Stamina() { return stamina/maxStamina; }
-    public float Blood() { return blood/bloodMax; }
+    public float Stamina() { return stamina* invertMaxStamina; }
+    public float Blood() { return blood* invertBloodMax; }
     public bool Gloc() { return gloc; }
     public float Sickness(){ return crew.structureDamage <= 0f ? 0f : sicknessFeeling; }
     public float Pain() { return crew.structureDamage <= 0f ? 0f : pain; }
@@ -38,10 +41,12 @@ public class HumanBody
     public HumanBody(CrewMember _crew)
     {
         crew = _crew;
+        invertMaxStamina = 1f/maxStamina;
+        invertBloodMax = 1f / bloodMax;
     }
     public void ApplyForces(float g, float dt)
     {
-        float staminaGain = sustain - (g > 0f ? g : g * sustain / negSustain);
+        float staminaGain = sustain - (g > 0f ? g : g * sustain * invertNegSustain);
         if (staminaGain > 0f) staminaGain *= staminaRegenFactor;
         stamina = Mathf.Min(stamina + dt * staminaGain,maxStamina);
         if (stamina <= 0f)
@@ -51,7 +56,7 @@ public class HumanBody
         } 
         else
         {
-            buffer = Mathf.MoveTowards(buffer,0f,dt* bufferMax / glocTime);
+            buffer = Mathf.MoveTowards(buffer,0f,dt* bufferMax * invertGlocTime);
             if (buffer == 0f) gloc = false;
         }
         blood += (g - 1f) * dt;

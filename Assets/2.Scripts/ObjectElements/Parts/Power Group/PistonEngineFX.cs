@@ -43,7 +43,7 @@ public class PistonEngineFX : ObjectElement
 
     private void Update()
     {
-        if (complex.lod.LOD() == 3)
+        if (complex && complex.lod.LOD() == 3)
         {
             if (complex.lod.Switched())
             {

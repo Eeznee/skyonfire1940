@@ -25,15 +25,13 @@ public class MapData : MonoBehaviour
     [HideInInspector] public Vector2 defaultSize = new Vector2 (1024f,1024f);
     RectTransform rect;
 
-    public Vector3 RealMapPosition(Vector2 relativePosition,float altitude)
+    public Vector2 RealMapPosition(Vector2 relativePosition)
     {
-        Vector3 output = Vector3.zero;
+        Vector2 output = Vector3.zero;
         output.x = Mathf.Lerp(leftRef, rightRef, relativePosition.x);
-        output.z = Mathf.Lerp(downRef, upRef, relativePosition.y);
-        output.y = altitude;
+        output.y = Mathf.Lerp(downRef, upRef, relativePosition.y);
         return output;
     }
-
 
     private void Start()
     {

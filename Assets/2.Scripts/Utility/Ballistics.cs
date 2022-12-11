@@ -4,23 +4,38 @@ using UnityEngine;
 
 public static class Ballistics
 {
-    /*
-    public static Vector3 BallisticTrajectory(Vector3 initPos, Vector3 initSpeed, float t,float a)
+    public static Quaternion Spread(Quaternion rotation, float maxAngle)
     {
-        Vector3 pos = initPos;
-        pos += Vector3.down * Mathf.Log(Mathv.Cosh(Mathf.Sqrt(a * -Physics.gravity.y) * (initPos.y + t))) / a;
-
-        return pos;
-    }
-    */
-    public static Vector3 BallisticTrajectory(Vector3 initPos, Vector3 initSpeed, float t, float a)
-    {
-        Vector3 pos = initPos;
-        pos += Physics.gravity / 2f * Mathf.Pow(t, 2);
-        pos += initSpeed.normalized * (Mathf.Log(a * t + 1f / initSpeed.magnitude) / a - Mathf.Log(1f / initSpeed.magnitude) / a);
-        return pos;
+        rotation *= Quaternion.Euler(0f, 0f, Random.Range(-90, 90));
+        rotation *= Quaternion.Euler(Random.Range(-1f, 1f) * maxAngle, 0f, 0f);
+        return rotation;
     }
 
+    public static float ApproximatePenetration(float mass, float vel, float diameter)
+    {
+        return mass * vel * vel / (Mathf.Pow(diameter, 1.5f) * 35f);
+    }
+    public static Vector3[] BallisticPath(Vector3 startPos, Vector3 dir, float speed, float dragCoeff, int points, float lifetime)
+    {
+        float logConst = Mathf.Log(1f / speed) / dragCoeff;
+        Vector3[] worldPos = new Vector3[points];
+        for (int i = 0; i < points; i++)
+        {
+            float t = (float)i / points * lifetime;
+            worldPos[i] = startPos;
+            worldPos[i] += Physics.gravity / 2f * t * t;
+            worldPos[i] += dir * (Mathf.Log(dragCoeff * t + 1f / speed) / dragCoeff - logConst);
+        }
+        return worldPos;
+    }
+    public static RaycastHit[] RaycastAndSort(Vector3 pos, Vector3 dir, float range, int layerMask)
+    {
+        RaycastHit[] hits = Physics.RaycastAll(pos, dir, range, layerMask);
+        for (int i = 0; i < hits.Length - 1; i++) //Sort hits in order
+            for (int j = 0; j < hits.Length - i - 1; j++)
+                if (hits[j].distance > hits[j + 1].distance) { RaycastHit jplus1 = hits[j + 1]; hits[j + 1] = hits[j]; hits[j] = jplus1; }
+        return hits;
+    }
     public static float ExplosionRangeSimple(float kg)
     {
         return Mathf.Sqrt(kg);
@@ -29,7 +44,7 @@ public static class Ballistics
     {
         return Mathf.Sqrt(kg) * 2f;
     }
-    public static float InterceptionTime(float shotSpeed, Vector3 relativePos,Vector3 relativeVel)
+    public static float InterceptionTime(float shotSpeed, Vector3 relativePos, Vector3 relativeVel)
     {
         float velocitySquared = relativeVel.sqrMagnitude;
         if (velocitySquared < 0.001f)
@@ -40,7 +55,7 @@ public static class Ballistics
         //handle similar velocities
         if (Mathf.Abs(a) < 0.001f)
         {
-            float t = -relativePos.sqrMagnitude /(2f * Vector3.Dot ( relativeVel, relativePos ) );
+            float t = -relativePos.sqrMagnitude / (2f * Vector3.Dot(relativeVel, relativePos));
             return Mathf.Max(t, 0f); //don't shoot back in time
         }
 

@@ -12,6 +12,6 @@ public abstract class DynamicUI : MonoBehaviour
     public virtual void ResetProperties()
     {
         bool active = IsActive();
-        gameObject.SetActive(active);
+        if (active != gameObject.activeSelf) gameObject.SetActive(active);
     }
 }

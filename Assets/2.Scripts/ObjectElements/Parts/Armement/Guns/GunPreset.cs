@@ -17,7 +17,8 @@ public class GunPreset : ScriptableObject
     public AmmunitionPreset ammunition;
     public FiringMode WeaponType;
     public bool openBolt = false;
-    public bool boltCatch = false;
+    //public bool boltCatch = false;
+    public bool fullAuto = true;
     public float FireRate = 600f;
     public float dispersion = 1f;
     public float overHeatDispersion = 4f;
@@ -25,7 +26,6 @@ public class GunPreset : ScriptableObject
     public float coolingFactor = 0.05f;
     public float cyclingTime = 0.3f;
 
-    public float FireMass { get { return ammunition.mass / (60 / FireRate) * 1000; } }
     public GameObject FireFX;
     public GameObject casingsFX;
 }

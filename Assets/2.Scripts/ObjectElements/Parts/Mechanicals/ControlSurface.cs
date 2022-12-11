@@ -12,6 +12,11 @@ public class ControlSurface : Airframe
     public Type type;
     public MiniAirfoil miniFoil;
 
+    //Control angle model rotation cheating variables
+    const float controlAngleStep = 0.5f;
+    private Vector3 localRotateAxis = Vector3.right;
+    private float controlAngleVisual = 0f;
+
     //Input
     public float controlState = 0f;
     public float controlAngle = 0f;
@@ -32,6 +37,7 @@ public class ControlSurface : Airframe
         if (firstTime)
         {
             right = Mathv.SignNoZero(transform.root.InverseTransformPoint(miniFoil.tr.position).x);
+            localRotateAxis = transform.parent.InverseTransformDirection(miniFoil.tr.right);
             miniFoil.Init(transform);
             constantPos = Mathf.Sin(Mathf.Deg2Rad * Mathf.Abs(maxDeflection)) * effectiveSpeed * effectiveSpeed;
             constantNeg = Mathf.Sin(Mathf.Deg2Rad * Mathf.Abs(minDeflection)) * effectiveSpeed * effectiveSpeed;
@@ -41,11 +47,6 @@ public class ControlSurface : Airframe
             else if (Mathf.Abs(Mathf.Abs(miniFoil.tr.localRotation.eulerAngles.z) - 90f) < 20f) type = Type.Rudder;
             else type = Type.Ruddervator;
         }
-    }
-    private void Update()
-    {
-        transform.localRotation = Quaternion.identity;
-        transform.Rotate(miniFoil.tr.right, controlAngle, Space.World);
     }
     public float ControlState()
     {
@@ -57,6 +58,7 @@ public class ControlSurface : Airframe
         }
         return 0f;
     }
+
     void FixedUpdate()
     {
         if (aircraft)
@@ -69,6 +71,12 @@ public class ControlSurface : Airframe
             controlAngle = controlState * maxAngle;
             controlAngle = Mathf.Clamp(controlAngle, -maxAngleDeflection, maxAngleDeflection);
             sinControlAngle = Mathv.QuickSin(-controlAngle * Mathf.Deg2Rad);
+
+            if (Mathf.Abs(controlAngle - controlAngleVisual) > controlAngleStep)
+            {
+                controlAngleVisual = controlAngle;
+                transform.localRotation = Quaternion.AngleAxis(controlAngle, localRotateAxis);
+            }
         }
         else
             miniFoil.ApplyForces(this);

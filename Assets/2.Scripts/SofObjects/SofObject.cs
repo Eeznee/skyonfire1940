@@ -18,7 +18,11 @@ public class SofObject : MonoBehaviour
     public bool destroyed = false;
     public bool burning = false;
 
-    public virtual void Awake()
+    private void Start()
+    {
+        Initialize();
+    }
+    public virtual void Initialize()
     {
         avm = GetComponentInChildren<AVM>();
         data = GetComponent<ObjectData>() ? GetComponent<ObjectData>() : gameObject.AddComponent<ObjectData>();
@@ -26,7 +30,7 @@ public class SofObject : MonoBehaviour
         if (warOnly && !GameManager.war) { Destroy(gameObject); return; }
         GameManager.sofObjects.Add(this);
     }
-    public virtual void Explosion(Vector3 center, float kg, float totalKg)
+    public virtual void Explosion(Vector3 center, float tnt)
     {
 
     }

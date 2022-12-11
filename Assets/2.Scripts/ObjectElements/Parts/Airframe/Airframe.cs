@@ -10,7 +10,6 @@ public class Airframe : Part
     public Part[] ripOnRip;
     public bool vital = false;
 
-
     //Damage model
     public float area = 5f;
 
@@ -43,8 +42,6 @@ public class Airframe : Part
     {
         float a = area;
         Vector3 bounds = Bounds();
-        //if (bounds != Vector3.zero) a = bounds.x * bounds.y * bounds.z / Mathf.Min(bounds.x, bounds.y, bounds.z);
-        //if (bounds != Vector3.zero) a = bounds.x * bounds.y + bounds.y * bounds.z + bounds.z * bounds.x;
         if (bounds != Vector3.zero) a = bounds.z * Mathf.PI / Mathf.Sqrt(2f) * Mathf.Sqrt(bounds.x * bounds.x + bounds.y * bounds.y);
         return a;
     }
@@ -58,6 +55,7 @@ public class Airframe : Part
         base.Initialize(d, firstTime);
         if (firstTime && aircraft)
         {
+            vital = !(GetComponent<Airfoil>() || GetComponent<Stabilizer>()) && (GetComponentInChildren<Airfoil>() || GetComponentInChildren<Stabilizer>());
             maxG = aircraft.maxG * 1.5f;
             randToughness = Random.Range(0.8f, 1.3f);
             maxHp = hp = area * material.hpPerSq;
@@ -69,7 +67,7 @@ public class Airframe : Part
         if (ripped || !Detachable()) return;
 
         //Compute torque and stress
-        float damageCoeff = Mathf.Sqrt(Mathf.Abs(structureDamage));
+        float damageCoeff = Mathv.SmoothStop(StructureIntegrity(),2);
         float excessG = g ? Mathf.Abs(data.gForce) - maxG * damageCoeff : 0f;
         float excessSpeed = spd ? data.ias - MaxSpeed() * damageCoeff : 0f;
         stress += Mathf.Max(excessG / maxG * 5f * Time.fixedDeltaTime, excessSpeed / MaxSpeed() * 10f * Time.fixedDeltaTime);
@@ -79,11 +77,13 @@ public class Airframe : Part
         //Rip if structure is too damaged
         if (structureDamage < 0f) Rip();
     }
-    public void Floating(Vector3 center)
+    public void Floating()
     {
-        if (transform.position.y < 0f)
+        if (data.altitude > 10f) return;
+        Vector3 center = transform.position;
+        if (center.y < 0f)
         {
-            float displacementMultiplier = Mathf.Clamp(-transform.position.y,0f,0.5f);
+            float displacementMultiplier = Mathf.Clamp(-center.y,0f,0.5f);
             float force = displacementMultiplier * Mass() * 10f * floatLevel;
             if (!aircraft) force /= 7f;
             rb.AddForceAtPosition(Vector3.up * force, center);
@@ -93,7 +93,7 @@ public class Airframe : Part
     private void FixedUpdate()
     {
         ForcesStress(true, false);
-        Floating(transform.position);
+        Floating();
     }
     public override void Rip()
     {

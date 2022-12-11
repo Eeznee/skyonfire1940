@@ -11,6 +11,7 @@ public class AircraftCard : ScriptableObject
     public bool baseGameIncluded = true;
     public bool workshopIncluded = false;
     public GameObject aircraft;
+    public SofAircraft sofAircraft;
     public GameObject fixedModel;
     public Game.Team team = Game.Team.Ally;
     public bool bomb;
@@ -31,6 +32,7 @@ public class AircraftCard : ScriptableObject
         bool purchased = PlayerPrefs.GetInt(fileName, 0) == 1;
         if (purchased) return true;
 
+        if (workshopIncluded) return false;
         bool workshop = PlayerPrefs.GetInt("workshop", 0) == 1 && workshopIncluded;
         if (workshop) return true;
 

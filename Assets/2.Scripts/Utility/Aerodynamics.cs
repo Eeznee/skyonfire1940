@@ -6,13 +6,13 @@ public static class Aerodynamics
 {
     // Air parameters -----------------------------------------------------------------------------------------------------------------------------------------------------------------
     const float atmosphericLayerHeight = 12000f;
-    const float temperatureLapseRate = 0.0065f;
+    const float temperatureLapseRate = 0.0068f;
     const float airConstant = 287f;
     const float kelvin = 273.15f;
     public const float SeaLvlPressure = 101325f;
 
     public static float GetTemperature(float alt, float sealLvlTemp) { return sealLvlTemp - alt * temperatureLapseRate; }
-    public static float GetPressure(float alt,float seaLvlTemp) { return SeaLvlPressure * Mathf.Pow(1f - temperatureLapseRate/(seaLvlTemp+kelvin) * alt,5.25f) ; }
+    public static float GetPressure(float alt,float seaLvlTemp) { return SeaLvlPressure * Mathv.SmoothStart(1f - temperatureLapseRate/(seaLvlTemp+kelvin) * alt,5); }
     public static float GetAirDensity(float temp, float press) { return press / ((temp + kelvin) * airConstant); }
 
 

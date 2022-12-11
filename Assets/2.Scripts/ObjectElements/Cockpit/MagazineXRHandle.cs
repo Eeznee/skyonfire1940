@@ -26,15 +26,15 @@ public class MagazineXRHandle : CockpitInteractable
 
     protected override void VRInteraction(Vector3 gripPos, Quaternion gripRot)
     {
-        transform.SetPositionAndRotation(gripPos, gripRot);
         if (mag.attachedGun)
         {
             //Remove the magazine if it's pulled too far
-            if ((mag.attachedGun.MagazinePosition() - transform.position).sqrMagnitude > 0.01f)
+            if ((mag.attachedGun.MagazinePosition() - gripPos).sqrMagnitude > 0.01f)
                 mag.attachedGun.RemoveMagazine();
         } 
         else
         {
+            transform.SetPositionAndRotation(gripPos, gripRot);
             //Check every gun to load into
             foreach (Gun gun in guns)
             {

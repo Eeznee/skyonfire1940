@@ -57,8 +57,8 @@ public class BombardierSeat : CrewSeat
         base.PlayerUpdate(crew);
 
         //Player inputs
-        float elevationInput = -GameManager.gm.actions.Bombardier.Vertical.ReadValue<float>();
-        float sideInput = GameManager.gm.actions.Bombardier.Horizontal.ReadValue<float>();
+        float elevationInput = -PlayerActions.instance.actions.Bombardier.Vertical.ReadValue<float>();
+        float sideInput = PlayerActions.instance.actions.Bombardier.Horizontal.ReadValue<float>();
 
         //Bomb drop angle calculations
         float timeToFall = Mathf.Sqrt(2f / -Physics.gravity.y * relativeAltSetting);
@@ -106,7 +106,7 @@ public class BombardierSeat : CrewSeat
     public override void PlayerFixed(CrewMember crew)
     {
         base.PlayerFixed(crew);
-        aircraft.controlInput.y = -GameManager.gm.actions.Bombardier.Rudder.ReadValue<float>() * maxYawInput;
+        aircraft.controlInput.y = -PlayerActions.instance.actions.Bombardier.Rudder.ReadValue<float>() * maxYawInput;
     }
     public override void AiUpdate(CrewMember crew)
     {
@@ -120,7 +120,7 @@ public class BombardierSeat : CrewSeat
         amountSelection = leadSight.amountSelection;
 
         if (aircraft.bombBay.stateInput != leader.bombBay.stateInput) aircraft.SetBombBay();
-        if (leadSight.releaseSequence && !releaseSequence) StartCoroutine(ReleaseSequence());
+        if (leadSight.releaseSequence && !releaseSequence) StartReleaseSequence();
     }
     public void ToggleInterval()
     {
@@ -141,8 +141,7 @@ public class BombardierSeat : CrewSeat
 
     IEnumerator ReleaseSequence()
     {
-        HardPoint hardPoint = aircraft.hardPoints[0].BestHardPoint();
-        if (releaseSequence || !hardPoint) yield break;
+        if (releaseSequence) yield break;
 
         releaseSequence = true;
         int totalBombs = dropAmounts[amountSelection];
@@ -155,7 +154,7 @@ public class BombardierSeat : CrewSeat
         {
             while ((interval == 0f || bombsReleased <= counter / interval) && bombsReleased < totalBombs)
             {
-                if (!hardPoint.Drop()) { releaseSequence = false; yield break; }
+                aircraft.DropBomb();
                 bombsReleased++;
             }
             counter += Time.deltaTime;

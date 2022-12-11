@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.Purchasing;
 using UnityEngine.UI;
+using System;
+using Unity.Services.Core;
+using Unity.Services.Core.Environments;
 public class MyBoutique : MonoBehaviour, IStoreListener 
 {
     public Button spitfire;
@@ -28,14 +31,14 @@ public class MyBoutique : MonoBehaviour, IStoreListener
         builder.AddProduct("aircrafts.spitfire_mki_cannons", ProductType.NonConsumable);
         builder.AddProduct("pack.workshop", ProductType.NonConsumable);
 
+        UnityServices.InitializeAsync();
         UnityPurchasing.Initialize(this, builder);
-
-
     }
-    /// <summary>
-    /// Called when Unity IAP is ready to make purchases.
-    /// </summary>
-    public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
+
+/// <summary>
+/// Called when Unity IAP is ready to make purchases.
+/// </summary>
+public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
     {
         this.controller = controller;
         this.extensions = extensions;

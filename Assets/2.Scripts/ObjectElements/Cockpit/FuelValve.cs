@@ -8,7 +8,7 @@ using UnityEditor.SceneManagement;
 
 public class FuelValve : AnalogInteractable
 {
-    public PistonEngine engine;
+    public Engine engine;
 
     protected override void VRInteraction(Vector3 gripPos, Quaternion gripRot)
     {
@@ -34,7 +34,7 @@ public class FuelValveEditor : AnalogInteractableEditor
         GUI.color = Color.red;
         EditorGUILayout.HelpBox("Starter Configuration", MessageType.None);
         GUI.color = GUI.backgroundColor;
-        valve.engine = EditorGUILayout.ObjectField("Piston Engine", valve.engine, typeof(PistonEngine), true) as PistonEngine;
+        valve.engine = EditorGUILayout.ObjectField("Piston Engine", valve.engine, typeof(Engine), true) as Engine;
 
         if (GUI.changed)
         {

@@ -11,6 +11,7 @@ public class Airfoil : Airframe
     //1.Main Settings
     public float right = 1f;
     public AirfoilPreset airfoil;
+    public AirfoilSection section;
     public float oswald = 0.75f;
     public AirfoilSkin skin;
     public Mesh skinMesh;
@@ -19,7 +20,7 @@ public class Airfoil : Airframe
     public Airfoil root;
 
     //Shape
-    public Transform tr;
+    public Transform shapeTr;
     public float angle = 0f;
     public float tipWidth = 100.0f;
     public float totalArea;
@@ -37,18 +38,18 @@ public class Airfoil : Airframe
 
     private TrailRenderer tipTrail;
 
-    public static Vector3 TransformPointUnscaled(Transform t, Vector3 position)
-    {
-        var localToWorldMatrix = Matrix4x4.TRS(t.position, t.rotation, Vector3.one);
-        return localToWorldMatrix.MultiplyPoint3x4(position);
-    }
-
     public void RootInitialize(Airfoil rootAirfoil)
     {
         root = rootAirfoil;
         airfoil = root.airfoil;
+        section = root.section;
         controlSurface = root.controlSurface;
         flaps = root.flaps;
+    }
+    public override float StructureIntegrity()
+    {
+        if (skin) return base.StructureIntegrity() * skin.StructureIntegrity();
+        return base.StructureIntegrity();
     }
     public override float MaxSpeed()
     {
@@ -57,15 +58,14 @@ public class Airfoil : Airframe
     }
     public override float RecalculateArea()
     {
-        return Mathf.Abs(tr.localScale.x) * tr.localScale.z * 0.5f * (1f + tipWidth / 100f);
+        return Mathf.Abs(shapeTr.localScale.x) * shapeTr.localScale.z * 0.5f * (1f + tipWidth / 100f);
     }
     private void GetReferences()
     {
-        tr = FlightModel.AirfoilShapeTransform(transform, tr);
+        shapeTr = FlightModel.AirfoilShapeTransform(transform, shapeTr);
         child = transform.GetChild(0).GetComponent<Airfoil>();
         parent = transform.parent.GetComponent<Airfoil>();
     }
-
     public override void Initialize(ObjectData d, bool firstTime)
     {
         base.Initialize(d, firstTime);
@@ -98,7 +98,8 @@ public class Airfoil : Airframe
                 skin.transform.SetPositionAndRotation(transform.position, transform.rotation);
                 MeshCollider meshCo = skin.gameObject.AddComponent<MeshCollider>();
                 meshCo.sharedMesh = skinMesh;
-                meshCo.isTrigger = meshCo.convex = true;
+                meshCo.isTrigger = false;
+                meshCo.convex = true;
                 skin.material = aircraft.materials.Material(skin);
                 skin.gameObject.layer = 9;
                 skin.Initialize(data, true);
@@ -106,7 +107,7 @@ public class Airfoil : Airframe
 
             if (!child) //Tip
             {
-                Vector3 tipPos = tr.TransformPoint(rootTipLocal * 0.55f);
+                Vector3 tipPos = shapeTr.TransformPoint(rootTipLocal * 0.55f);
                 if (airfoil.tipTrail && controlSurface)
                 {
                     tipTrail = Instantiate(airfoil.tipTrail, tipPos, transform.rotation, transform);
@@ -121,59 +122,58 @@ public class Airfoil : Airframe
     {
         GetReferences();
 
-        right = Mathv.SignNoZero(tr.root.InverseTransformPoint(tr.position).x);
-        float xScale = (right == 0f ? 1f : right) * Mathf.Abs(tr.localScale.x);
-        tr.localScale = new Vector3(xScale, 1f, tr.localScale.z);
+        right = Mathv.SignNoZero(shapeTr.root.InverseTransformPoint(shapeTr.position).x);
+        float xScale = (right == 0f ? 1f : right) * Mathf.Abs(shapeTr.localScale.x);
+        shapeTr.localScale = new Vector3(xScale, 1f, shapeTr.localScale.z);
 
-        rootTipLocal = ((Vector3.right * Mathf.Abs(tr.localScale.x)) + (Vector3.forward * Mathf.Abs(tr.localScale.x) / Mathf.Tan((90 - angle) * Mathf.Deg2Rad))).normalized;
+        rootTipLocal = ((Vector3.right * Mathf.Abs(shapeTr.localScale.x)) + (Vector3.forward * Mathf.Abs(shapeTr.localScale.x) / Mathf.Tan((90 - angle) * Mathf.Deg2Rad))).normalized;
 
         if (parent) //Snap to parent
         {
-            tr.localScale = new Vector3(tr.localScale.x, 1f, parent.tr.localScale.z * parent.tipWidth / 100f);
+            shapeTr.localScale = new Vector3(shapeTr.localScale.x, 1f, parent.shapeTr.localScale.z * parent.tipWidth / 100f);
             Quaternion rot = Quaternion.identity;
-            rot.eulerAngles = new Vector3(parent.tr.localRotation.eulerAngles.x, parent.tr.localRotation.eulerAngles.y, tr.localRotation.eulerAngles.z);
-            tr.localRotation = rot;
-            Vector3 pos = parent.tr.position;
-            pos += parent.tr.right * parent.tr.localScale.x * 0.5f;                                                             //Offset for parent airfoil scale
-            pos += tr.localScale.x * tr.right * 0.5f;                                                                           //Offset for airfoil scale
-            pos += parent.tr.forward * Mathf.Abs(parent.tr.localScale.x) / Mathf.Tan((90f - parent.angle) * Mathf.Deg2Rad);     //Offset for wing angle
-            tr.position = pos;
+            rot.eulerAngles = new Vector3(parent.shapeTr.localRotation.eulerAngles.x, parent.shapeTr.localRotation.eulerAngles.y, shapeTr.localRotation.eulerAngles.z);
+            shapeTr.localRotation = rot;
+            Vector3 pos = parent.shapeTr.position;
+            pos += parent.shapeTr.right * parent.shapeTr.localScale.x * 0.5f;                                                             //Offset for parent airfoil scale
+            pos += shapeTr.localScale.x * shapeTr.right * 0.5f;                                                                           //Offset for airfoil scale
+            pos += parent.shapeTr.forward * Mathf.Abs(parent.shapeTr.localScale.x) / Mathf.Tan((90f - parent.angle) * Mathf.Deg2Rad);     //Offset for wing angle
+            shapeTr.position = pos;
         }
-        Vector3 rootPos = -Vector3.right * tr.localScale.x * 0.5f;
-        area = Mathf.Abs(tr.localScale.x) * tr.localScale.z * 0.5f * (1f + tipWidth / 100f);
+        Vector3 rootPos = -Vector3.right * shapeTr.localScale.x * 0.5f;
+        area = Mathf.Abs(shapeTr.localScale.x) * shapeTr.localScale.z * 0.5f * (1f + tipWidth / 100f);
 
         int subs = subdivisions.Length;
-        float subX = Mathf.Abs(tr.localScale.x) / subs;
+        float subX = Mathf.Abs(shapeTr.localScale.x) / subs;
 
         for (int i = 0; i < subs; i++)
         {
-            float pos = tr.localScale.x * (i + 0.5f) / subs;
+            float pos = shapeTr.localScale.x * (i + 0.5f) / subs;
             Vector3 subPos = rootPos + Vector3.right * pos + Vector3.forward * Mathf.Abs(pos) / Mathf.Tan((90f - angle) * Mathf.Deg2Rad);
 
-            float chord = Mathf.Lerp(tr.localScale.z, tr.localScale.z * tipWidth / 100f, (i + 0.5f) / (subs + 1f));
+            float chord = Mathf.Lerp(shapeTr.localScale.z, shapeTr.localScale.z * tipWidth / 100f, (i + 0.5f) / (subs + 1f));
             float area = subX * chord;  //Z axis
-            subdivisions[i].Init(tr, airfoil, subPos, area, subX);
+            subdivisions[i].Init(shapeTr, airfoil,section, subPos, area, subX);
             subdivisions[i].AutoSubSurfaces();
         }
         if (child) child.CalculateAerofoilStructure();
     }
     void FixedUpdate()
     {
-        Vector3 rootTip = tr.TransformDirection(rootTipLocal);
+        Vector3 rootTip = shapeTr.TransformDirection(rootTipLocal);
         //FOR EACH SUBDIVISION
         float alpha = 0f;
         for (int i = 0; i < subdivisions.Length; i++)
             alpha = subdivisions[i].ApplyForces(rootTip);
 
-        if (tr.position.y < 0f)
-        {
-            Floating(rb.worldCenterOfMass + transform.root.right * transform.root.InverseTransformPoint(tr.position).x * 0.5f);
-            if (data.tas > 300f / 3.6f && !ripped) Rip();
-        }
+        Floating();
         ForcesStress(true, true);
 
-        if (tipTrail && aircraft) 
-            tipTrail.emitting = data.ias > 20f && alpha * Mathf.Min(data.ias/50f,1f) > airfoil.maxAngle * 0.8f && complex.lod.LOD() <= 2;
+        if (tipTrail && aircraft)
+        {
+            bool emitting = data.ias > 20f && alpha * Mathf.Min(data.ias / 50f, 1f) > airfoil.maxAngle * 0.8f && complex.lod.LOD() <= 2;
+            if (tipTrail.emitting != emitting) tipTrail.emitting = emitting;
+        }
     }
 
 
@@ -182,16 +182,16 @@ public class Airfoil : Airframe
 #if UNITY_EDITOR
     public void OnDrawGizmos()
     {
-        if (!tr) return;
+        if (!shapeTr) return;
         GetReferences();
         if (!parent) CalculateAerofoilStructure();
 
-        Vector3 rootLiftPos = tr.position - (tr.right * (tr.localScale.x * 0.5f));
-        Vector3 tipLiftPos = rootLiftPos + (tr.right * tr.localScale.x) + (tr.forward * Mathf.Abs(tr.localScale.x) / Mathf.Tan((90 - angle) * Mathf.Deg2Rad));
-        Vector3 leadingBot = rootLiftPos + (tr.forward * tr.localScale.z * (1f - Quadrangle.liftLine));
-        Vector3 trailingBot = rootLiftPos - (tr.forward * tr.localScale.z * Quadrangle.liftLine);
-        Vector3 leadingTop = tipLiftPos + (tr.forward * tr.localScale.z * (1f - Quadrangle.liftLine) * tipWidth / 100f);
-        Vector3 trailingTop = tipLiftPos - (tr.forward * tr.localScale.z * Quadrangle.liftLine * tipWidth / 100f);
+        Vector3 rootLiftPos = shapeTr.position - (shapeTr.right * (shapeTr.localScale.x * 0.5f));
+        Vector3 tipLiftPos = rootLiftPos + (shapeTr.right * shapeTr.localScale.x) + (shapeTr.forward * Mathf.Abs(shapeTr.localScale.x) / Mathf.Tan((90 - angle) * Mathf.Deg2Rad));
+        Vector3 leadingBot = rootLiftPos + (shapeTr.forward * shapeTr.localScale.z * (1f - Quadrangle.liftLine));
+        Vector3 trailingBot = rootLiftPos - (shapeTr.forward * shapeTr.localScale.z * Quadrangle.liftLine);
+        Vector3 leadingTop = tipLiftPos + (shapeTr.forward * shapeTr.localScale.z * (1f - Quadrangle.liftLine) * tipWidth / 100f);
+        Vector3 trailingTop = tipLiftPos - (shapeTr.forward * shapeTr.localScale.z * Quadrangle.liftLine * tipWidth / 100f);
 
         int subs = subdivisions.Length;
         for (int i = 0; i < subs; i++)
@@ -231,12 +231,13 @@ public class AerofoilReEditor : Editor
         EditorGUILayout.HelpBox("Airfoil Configuration", MessageType.None); //Airfoil shape configuration
         GUI.color = backgroundColor;
 
-        airfoil.tr = FlightModel.AirfoilShapeTransform(airfoil.transform, airfoil.tr);
+        airfoil.shapeTr = FlightModel.AirfoilShapeTransform(airfoil.transform, airfoil.shapeTr);
         airfoil.CalculateAerofoilStructure();
         airfoil.skinMesh = EditorGUILayout.ObjectField("Airfoil Skin", airfoil.skinMesh, typeof(Mesh), true) as Mesh;
         if (!airfoil.parent)
         {
             airfoil.airfoil = EditorGUILayout.ObjectField("Airfoil", airfoil.airfoil, typeof(AirfoilPreset), false) as AirfoilPreset;
+            airfoil.section = EditorGUILayout.ObjectField("Airfoil Section", airfoil.section, typeof(AirfoilSection), false) as AirfoilSection;
             airfoil.oswald = EditorGUILayout.Slider("Oswald Coef", airfoil.oswald, 0f, 1f);
             EditorGUILayout.LabelField("Wing Section Area", airfoil.totalArea.ToString("0.00") + " m2");
         }

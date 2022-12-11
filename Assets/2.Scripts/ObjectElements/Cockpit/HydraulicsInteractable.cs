@@ -3,54 +3,83 @@
 using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
+
 public class HydraulicsInteractable : AnalogInteractable
 {
+    public enum HydraulicsInteractableType
+    {
+        State,
+        Direction,
+        Dual
+    }
     public HydraulicSystem hydraulics;
+    public HydraulicsInteractableType type = HydraulicsInteractableType.State;
     public AnalogInteractable opposite;
 
     public override void Initialize(ObjectData d, bool firstTime)
     {
         base.Initialize(d, firstTime);
-        if (opposite)
+        if (type == HydraulicsInteractableType.Dual)
         {
             opposite.switchInput = switchInput;
             opposite.animationTime = animationTime;
         }
+        if (type == HydraulicsInteractableType.Direction)
+            switchInput = false;
     }
     protected override void VRInteraction(Vector3 gripPos, Quaternion gripRot)
     {
         base.VRInteraction(gripPos, gripRot);
-        if (opposite) opposite.input = Mathf.Clamp(opposite.input, 0f, 1f - input);
+        if (type == HydraulicsInteractableType.Dual) opposite.input = Mathf.Clamp(opposite.input, 0f, 1f - input);
+        if (type == HydraulicsInteractableType.Direction) input = 0.5f * Mathf.Round(input * 2f);
         SendToHydraulics();
     }
 
     private void SendToHydraulics()
     {
-        if (!opposite)
+        switch (type)
         {
-            hydraulics.Set(input);
-            return;
+            case HydraulicsInteractableType.State:
+                hydraulics.Set(input);
+                break;
+            case HydraulicsInteractableType.Direction:
+                int intInput = input < 0.5f ? -1 : (input == 0.5f ? 0 : 1);
+                hydraulics.SetDirection(intInput);
+                break;
+            case HydraulicsInteractableType.Dual:
+                if (input > 0.5f && opposite.input < input) hydraulics.Set(1f);
+                if (opposite.input > 0.5f && opposite.input > input) hydraulics.Set(0f);
+                if (opposite.input < 0.5f && input < 0.5f) hydraulics.SetDirection(0);
+                break;
         }
-        if (input > 0.5f && opposite.input < input) hydraulics.Set(1f);
-        if (opposite.input > 0.5f && opposite.input > input) hydraulics.Set(0f);
-        if (opposite.input < 0.5f && input < 0.5f) hydraulics.Stop();
     }
 
-    private void Update()
+    protected override void CockpitInteractableUpdate()
     {
-        CockpitInteractableUpdate();
+        base.CockpitInteractableUpdate();
+
+    }
+
+    protected override void Animate(float animInput)
+    {
         //Twin
-        if (opposite)
+        if (type == HydraulicsInteractableType.Dual)
         {
             if (opposite.xrGrab && opposite.xrGrab.isSelected)
             {
                 input = Mathf.Clamp(input, 0f, 1f - opposite.input);
                 SendToHydraulics();
             }
-            Animate(hydraulics.state == hydraulics.stateInput ? 0f : hydraulics.stateInput);
+            base.Animate(hydraulics.state == hydraulics.stateInput ? 0f : hydraulics.stateInput);
         }
-        else 
-            Animate(hydraulics.stateInput);
+        else
+            base.Animate(hydraulics.stateInput);
+    }
+
+    private void Update()
+    {
+        CockpitInteractableUpdate();
+        Animate(hydraulics.stateInput);
     }
 }
 
@@ -68,7 +97,9 @@ public class HydraulicsInteractableEditor : AnalogInteractableEditor
         EditorGUILayout.HelpBox("Hydraulics Configuration", MessageType.None);
         GUI.color = GUI.backgroundColor;
         inter.hydraulics = EditorGUILayout.ObjectField("Hydraulics", inter.hydraulics, typeof(HydraulicSystem), true) as HydraulicSystem;
-        inter.opposite = EditorGUILayout.ObjectField("Opposite Input (Optional)", inter.opposite, typeof(AnalogInteractable), true) as AnalogInteractable;
+        inter.type = (HydraulicsInteractable.HydraulicsInteractableType)EditorGUILayout.EnumPopup("Type", inter.type);
+        if (inter.type == HydraulicsInteractable.HydraulicsInteractableType.Dual)
+            inter.opposite = EditorGUILayout.ObjectField("Opposite Hydraulic", inter.opposite, typeof(AnalogInteractable), true) as AnalogInteractable;
 
         if (GUI.changed)
         {

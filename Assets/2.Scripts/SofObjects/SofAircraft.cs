@@ -9,6 +9,7 @@ public class SofAircraft : SofComplex
 {
     //References
     public AircraftCard card;
+    public Game.Squadron squadron;
     public Engine[] engines;
     public WheelCollider[] wheels;
     public HydraulicSystem gear;
@@ -21,7 +22,11 @@ public class SofAircraft : SofComplex
     public FuelTank[] fuelTanks;
     public Gun[] primaries;
     public Gun[] secondaries;
-    public HardPoint[] hardPoints;
+    public Station[] stations;
+    public OrdnanceLoad[] bombs;
+    public OrdnanceLoad[] rockets;
+    public OrdnanceLoad[] torpedoes;
+
     public Stabilizer hStab;
     public Stabilizer vStab;
     public AirfoilPreset foil;
@@ -42,6 +47,7 @@ public class SofAircraft : SofComplex
     //Auto pilot
     public float cruiseSpeed = 400f / 3.6f;
     public float convergeance = 500f;
+    public bool verticalConvergence = true;
     public float bankTurnAngle = 15f;
     public float optiAlpha = 12f;
     public float turnRadius = 250f;
@@ -60,30 +66,18 @@ public class SofAircraft : SofComplex
     public float difficulty;
     public string deletePassWord;
 
-    public void SpawnInitialization(Spawner.Type spawntype, Game.Team _team, int _squadId, int _wing,float _diff)
+    public override void Initialize()
     {
-        tag = (_team == Game.Team.Ally) ? "Ally" : (_team == Game.Team.Axis) ? "Axis" : "Neutral";
-        if (_team == Game.Team.Ally) GameManager.allyAircrafts.Add(this);
-        else GameManager.axisAircrafts.Add(this);
+        for (int i = 0; i < stations.Length; i++) stations[i].ChooseOption(squadron.stations[i]);
 
-        squadronId = _squadId;
-        placeInSquad = _wing;
-        difficulty = _diff;
-
-        throttle = spawntype == Spawner.Type.InAir ? 1f : 0f;
-        SetEngines(spawntype != Spawner.Type.Parked, true);
-        if (gear) { gear.SetInstant(spawntype != Spawner.Type.InAir); }
-        foreach (HardPoint point in hardPoints) point.LoadGroup();
-
-        if (GameManager.ui) GameManager.ui.CreateMarker(this);
-    }
-    public override void Awake()
-    {
         gunsPointer = new GameObject("Guns Pointer").transform;
         gunsPointer.parent = transform;
         gunsPointer.SetPositionAndRotation(transform.position, transform.rotation);
         wheels = GetComponentsInChildren<WheelCollider>();
         engines = GetComponentsInChildren<Engine>();
+
+        rockets = Station.GetOrdnances<RocketsLoad>(stations);
+        bombs = Station.GetOrdnances<BombLoad>(stations);
 
         primaries = GetComponentsInChildren<PrimaryGun>();
         secondaries = GetComponentsInChildren<SecondaryGun>();
@@ -95,9 +89,25 @@ public class SofAircraft : SofComplex
             else hStab = stab;
         }
 
-        base.Awake();
+        base.Initialize();
         data.rb.centerOfMass = emptyCOG;
         data.rb.inertiaTensor = emptyCOI * data.mass;
+
+        squadronId = squadron.id;
+        difficulty = squadron.difficulty;
+
+        tag = (squadron.team == Game.Team.Ally) ? "Ally" : (squadron.team == Game.Team.Axis) ? "Axis" : "Neutral";
+        if (squadron.team == Game.Team.Ally) GameManager.allyAircrafts.Add(this);
+        else GameManager.axisAircrafts.Add(this);
+        GameManager.ui.CreateMarker(this);
+
+        bool grounded = squadron.airfield >= 0;
+        throttle = grounded ? 0f : 1f;
+        if (gear) gear.SetInstant(grounded);
+        if (!grounded) data.rb.velocity = transform.forward * card.startingSpeed / 3.6f;
+        SetEngines(!grounded, true);
+
+        if (squadron.textureName != "") TextureTool.ChangeAircraftTexture(this, squadron.textureName);
     }
     private void OnCollisionEnter(Collision col)
     {
@@ -120,7 +130,7 @@ public class SofAircraft : SofComplex
     public bool secondaryFire = false;
     public bool gunnersFire = true;
     private float correction = 1f;
-
+    
     void Update()
     {
         flapsInput = flaps ? flaps.state : 0f;
@@ -149,7 +159,6 @@ public class SofAircraft : SofComplex
         controlInput.x = Mathf.MoveTowards(controlInput.x, target.x, controlSpeed.x * Time.fixedDeltaTime);
         controlInput.y = Mathf.MoveTowards(controlInput.y, target.y, controlSpeed.y * Time.fixedDeltaTime);
         controlInput.z = Mathf.MoveTowards(controlInput.z, target.z, controlSpeed.z * Time.fixedDeltaTime);
-
         controlSent = false;
     }
     //Axis
@@ -182,7 +191,7 @@ public class SofAircraft : SofComplex
                 pe.throttleInput = throttle;
                 pe.Set(on, instant);
             }
-            if (GameManager.player.aircraft == this) Log.Print((engines.Length == 1 ? "Engine " : "Engines ") + (on ? "On" : "Off"), "engines");
+            if (PlayerManager.player.aircraft == this) Log.Print((engines.Length == 1 ? "Engine " : "Engines ") + (on ? "On" : "Off"), "engines");
         }
     }
     public void SetEngines()
@@ -203,11 +212,11 @@ public class SofAircraft : SofComplex
         if (flaps && hasPilot)
         {
             flaps.SetDirection(input);
-            if (GameManager.player.aircraft == this && input != 0)
+            if (PlayerManager.player.aircraft == this && input != 0)
             {
                 float state = flaps.binary ? flaps.stateInput * 100f : flaps.state * 100f;
                 string txt = "Flaps : " + state.ToString("0") + " %";
-                if (flaps.Destroyed()) txt = "Flaps Unoperational";
+                if (flaps.disabled) txt = "Flaps Unoperational";
                 Log.Print(txt, "flaps");
             }
         }
@@ -217,10 +226,10 @@ public class SofAircraft : SofComplex
         if (gear && hasPilot && data.relativeAltitude > 4f)
         {
             gear.Set();
-            if (GameManager.player.aircraft == this)
+            if (PlayerManager.player.aircraft == this)
             {
                 string txt = "Landing Gear " + (gear.stateInput == 1f ? "Deploying" : "Retracting");
-                if (gear.Destroyed()) txt = "Landing Gear Unoperational";
+                if (gear.disabled) txt = "Landing Gear Damaged";
                 Log.Print(txt, "gear");
             }
         }
@@ -230,10 +239,10 @@ public class SofAircraft : SofComplex
         if (airBrakes && hasPilot)
         {
             airBrakes.Set();
-            if (GameManager.player.aircraft == this)
+            if (PlayerManager.player.aircraft == this)
             {
                 string txt = "Airbrakes " + (airBrakes.stateInput == 1f ? "Deploying" : "Retracting");
-                if (airBrakes.Destroyed()) txt = "Air Brakes Unoperational";
+                if (airBrakes.disabled) txt = "Air Brakes Unavailable";
                 Log.Print(txt, "airbrakes");
             }
         }
@@ -243,7 +252,7 @@ public class SofAircraft : SofComplex
         if (bombBay && hasPilot)
         {
             bombBay.Set();
-            if (GameManager.player.aircraft == this) Log.Print("Bomb Bay " + (bombBay.stateInput == 1f ? "Opening" : "Closing"), "bombbay");
+            if (PlayerManager.player.aircraft == this) Log.Print("Bomb Bay " + (bombBay.stateInput == 1f ? "Opening" : "Closing"), "bombbay");
         }
     }
     public void SetCannopy()
@@ -251,30 +260,62 @@ public class SofAircraft : SofComplex
         if (cannopy && hasPilot)
         {
             cannopy.Set();
-            if (GameManager.player.aircraft == this)
+            if (PlayerManager.player.aircraft == this)
             {
                 string txt = "Canopy " + (cannopy.stateInput == 1f ? "Opening" : "Closing");
-                if (cannopy.Destroyed()) txt = "Canopy Is Gone";
+                if (cannopy.disabled) txt = "Canopy Is Missing";
                 Log.Print(txt, "canopy");
             }
         }
     }
-    public void FirePrimaries() { if (hasPilot && !(primaries.Length > 20 && bombBay.state < 0.8f)) foreach (Gun g in primaries) g.Trigger(); }
-    public void FireSecondaries() { if (hasPilot) foreach (Gun g in secondaries) g.Trigger(); }
+    public void FirePrimaries() { if (hasPilot) foreach (Gun g in primaries) if (g.data == data && (g.gunPreset.name != "MP40" || bombBay.state > 0.8f)) g.Trigger(); }
+    public void FireSecondaries() { if (hasPilot) foreach (Gun g in secondaries) if (g.data == data) g.Trigger(); }
     public void ToggleGunners() { gunnersFire = !gunnersFire; }
+    public void PointGuns()
+    {
+        Vector3 point = crew[0].Seat().zoomedPOV.position + transform.forward * convergeance;
+        gunsPointer.LookAt(point, transform.up);
+
+        foreach (Gun pg in secondaries)
+            if (pg && !pg.noConvergeance)
+            {
+                Transform tr = pg.transform;
+                tr.localRotation = Quaternion.identity;
+                Vector3 direction = point - tr.position;
+                if (verticalConvergence) {
+                    float t = convergeance / pg.gunPreset.ammunition.defaultMuzzleVel;
+                    direction -= t * t * Physics.gravity.y / 2f * tr.up;
+                }
+                tr.forward = Vector3.RotateTowards(tr.forward, direction ,Mathf.Deg2Rad * 180f, 0f);
+            }
+
+        foreach (Gun pg in primaries)
+            if (pg && !pg.noConvergeance)
+            {
+                Transform tr = pg.transform;
+                tr.localRotation = Quaternion.identity;
+                Vector3 direction = point - tr.position;
+                if (verticalConvergence)
+                {
+                    float t = convergeance / pg.gunPreset.ammunition.defaultMuzzleVel;
+                    direction -= t * t * Physics.gravity.y / 2f * tr.up;
+                }
+                tr.forward = Vector3.RotateTowards(tr.forward, direction, Mathf.Deg2Rad * 180f, 0f);
+            }
+    }
     public void PointGuns(Vector3 position,float factor)
     {
-        position = Vector3.Lerp(transform.position + transform.forward * 300f, position, factor);
+        Vector3 defaultConvergence = transform.position + transform.forward * convergeance;
+
+        position = Vector3.Lerp(defaultConvergence, position, factor);
         gunsPointer.LookAt(position, transform.up);
         foreach (Gun pg in primaries)
-        {
             if (pg && !pg.noConvergeance)
             {
                 Transform t = pg.transform;
                 t.localRotation = Quaternion.identity;
                 t.forward = Vector3.RotateTowards(t.forward, position - t.position, Mathf.Deg2Rad * 10f, 0f);
             }
-        }
 
         foreach (Gun sg in secondaries)
             if (sg && !sg.noConvergeance)
@@ -284,16 +325,19 @@ public class SofAircraft : SofComplex
                 t.forward = Vector3.RotateTowards(t.forward, position - t.position, Mathf.Deg2Rad * 10f, 0f);
             }
     }
-    public void PointGuns()
-    {
-        PointGuns(transform.position + transform.forward * 300f,1f);
-    }
+
     public void DropBomb()
     {
-        HardPoint best = hardPoints[0].BestHardPoint();
-        if (best) best.Drop();
+        OrdnanceLoad.LaunchOptimal(bombs, 5f);
     }
-
+    public void FireRocket()
+    {
+        OrdnanceLoad.LaunchOptimal(rockets, 0f);
+    }
+    public void DropTorpedo()
+    {
+        OrdnanceLoad.LaunchOptimal(torpedoes, 0f);
+    }
     public bool CanPairUp()
     {
         if (card.forwardGuns || placeInSquad % 2 == 0) return false ;
@@ -349,7 +393,8 @@ public class SofAircraftEditor : Editor
         GUI.color = GUI.backgroundColor;
         aircraft.viewPoint = EditorGUILayout.Vector3Field("External Camera ViewPoint", aircraft.viewPoint);
         aircraft.cruiseSpeed = EditorGUILayout.FloatField("Cruise Speed", aircraft.cruiseSpeed * 3.6f) / 3.6f;
-        aircraft.convergeance = EditorGUILayout.FloatField("Gun Convergeance", aircraft.convergeance);
+        aircraft.convergeance = EditorGUILayout.FloatField("Gun Convergence", aircraft.convergeance);
+        aircraft.verticalConvergence = EditorGUILayout.Toggle("Vertical Convergence", aircraft.verticalConvergence);
         aircraft.bankTurnAngle = EditorGUILayout.FloatField("Bank Turn Angle", aircraft.bankTurnAngle);
         aircraft.optiAlpha = EditorGUILayout.FloatField("Optimum Alpha", aircraft.optiAlpha);
         aircraft.turnRadius = EditorGUILayout.FloatField("Turn Radius", aircraft.turnRadius);
@@ -381,8 +426,8 @@ public class SofAircraftEditor : Editor
             EditorGUILayout.PropertyField(bombardierPath, true);
         }
 
-        SerializedProperty hardPoints = serializedObject.FindProperty("hardPoints");
-        EditorGUILayout.PropertyField(hardPoints, true);
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("stations"), true);
+        foreach (Station s in aircraft.stations) if (aircraft.stations != null && s != null) s.UpdateOptions();
         SerializedProperty crew = serializedObject.FindProperty("crew");
         EditorGUILayout.PropertyField(crew, true);
         SerializedProperty fuelTanks = serializedObject.FindProperty("fuelTanks");
@@ -398,8 +443,6 @@ public class SofAircraftEditor : Editor
         {
             if (GUILayout.Button("Delete all parts"))
             {
-                foreach (DragSurface d in aircraft.GetComponentsInChildren<DragSurface>())
-                    DestroyImmediate(d);
                 foreach (ObjectElement p in aircraft.GetComponentsInChildren<ObjectElement>())
                     DestroyImmediate(p);
                 DestroyImmediate(aircraft.data.rb);

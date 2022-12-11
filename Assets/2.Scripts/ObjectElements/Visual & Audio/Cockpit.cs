@@ -12,13 +12,14 @@ public class Cockpit : ObjectElement
 
     void Start()
     {
-        originalGlass = glass[0].material;
+        originalGlass = glass[0].sharedMaterial;
     }
 
     void SwitchMode(int mode)
     {
         foreach (Renderer mr in glass)
         {
+            if (!mr) continue;
             mr.sharedMaterial = mode >= 2 ? noCockpitGlass : originalGlass;
             mr.gameObject.layer = mode >= 2 ? 0 : 1;
         }

@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public static class Mathv
 {
     public static float Angle180(float angle)
@@ -10,10 +9,9 @@ public static class Mathv
         if (angle > 180f) angle -= 360f;
         return angle;
     }
-    public static Quaternion Damp(Quaternion a, Quaternion b, float lambda, bool scaledTime)
+    public static Quaternion Damp(Quaternion a, Quaternion b, float lambda)
     {
-        float dt = scaledTime ? Time.deltaTime : Time.unscaledDeltaTime;
-        return Quaternion.Slerp(a, b, 1 - Mathf.Exp(-lambda * dt));
+        return Quaternion.Slerp(a, b, 1 - Mathf.Exp(-lambda * Time.unscaledDeltaTime));
     }
     public static float SquareArea(Vector3 A, Vector3 B, Vector3 C, Vector3 D)
     {
@@ -61,6 +59,22 @@ public static class Mathv
         float AC = (A - C).magnitude;
 
         return TriangleArea(AB, BC, AC);
+    }
+    public static float SmoothStop(float x, int p)
+    {
+        float powered = 1f;
+        for (int i = 0; i < p; i++) powered *= 1f - x;
+        return 1f - powered;
+    }
+    public static float SmoothStart(float x, int p)
+    {
+        float powered = 1f;
+        for (int i = 0; i < p; i++) powered *= x;
+        return powered;
+    }
+    public static float SmoothStep(float x, int p)
+    {
+        return SmoothStart(x, p) * (1f - x) + SmoothStop(x, p) * x;
     }
 
     public static float SignNoZero(float f)

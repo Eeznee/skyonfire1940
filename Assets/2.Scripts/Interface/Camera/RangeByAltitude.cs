@@ -16,6 +16,8 @@ public class RangeByAltitude : MonoBehaviour
 
     void Update()
     {
+        bool cockpit = GameManager.gm.vr || PlayerCamera.viewMode != 0;
+        cam.nearClipPlane = cockpit ? 0.1f : 1f;
         cam.farClipPlane = Mathf.Lerp(altitudeZeroFactor * maxRange, maxRange, cam.transform.position.y / 6000f);
     }
 }

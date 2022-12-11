@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public enum GameUI
 {
@@ -8,7 +9,6 @@ public enum GameUI
     CamerasEditor,
     PhotoMode
 }
-
 public class UIManager : MonoBehaviour
 {
     public GameObject gameMenu;
@@ -26,7 +26,7 @@ public class UIManager : MonoBehaviour
 
     private SeatInterface seatInterface;
 
-    public DynamicUI[] dynamicUIs;
+    public List<DynamicUI> dynamicUis;
     private CrewMember crew;
 
     IndicatorsList currentIndicator;
@@ -34,21 +34,18 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
 #if MOBILE_INPUT
-        if (PlayerPrefs.GetInt("TiltInput", 1) == 1) GameManager.SetPause(true, false);
+        if (PlayerPrefs.GetInt("TiltInput", 1) == 1) TimeManager.SetPause(true,GameUI.Game);
 #endif
-        dynamicUIs = GetComponentsInChildren<DynamicUI>(true);
-        ResetInterface();
+        dynamicUis = new List<DynamicUI>(GetComponentsInChildren<DynamicUI>(true));
+        PlayerManager.OnPlayerChangeEvent += ResetInterface;
+        TimeManager.OnPauseEvent += ResetInterface;
     }
 
     public void ResetInterface()
     {
-        crew = GameManager.player.crew;
-        foreach (DynamicUI dui in dynamicUIs) dui.ResetProperties();
-
         seatInterface = GameManager.seatInterface;
-        pilotIndicators.gameObject.SetActive(false);
-        gunnerIndicators.gameObject.SetActive(false);
-        bomberIndicators.gameObject.SetActive(false);
+        crew = PlayerManager.player.crew;
+        foreach (DynamicUI dui in dynamicUis) dui.ResetProperties();
 
 #if !MOBILE_INPUT
         bool cursor = seatInterface == SeatInterface.Bombardier || GameManager.gameUI != GameUI.Game;
@@ -56,11 +53,12 @@ public class UIManager : MonoBehaviour
         Cursor.lockState = cursor ? CursorLockMode.None : CursorLockMode.Locked;
 #endif
 
+        currentIndicator = null;
         switch (seatInterface)
         {
-            case SeatInterface.Pilot: pilotIndicators.gameObject.SetActive(true); currentIndicator = pilotIndicators; break;
-            case SeatInterface.Gunner: gunnerIndicators.gameObject.SetActive(true); currentIndicator = gunnerIndicators; break;
-            case SeatInterface.Bombardier: bomberIndicators.gameObject.SetActive(true); currentIndicator = bomberIndicators; break;
+            case SeatInterface.Pilot:currentIndicator = pilotIndicators; break;
+            case SeatInterface.Gunner: currentIndicator = gunnerIndicators; break;
+            case SeatInterface.Bombardier:currentIndicator = bomberIndicators; break;
         }
         gameMenu.SetActive(GameManager.gameUI == GameUI.Game);
         pauseMenu.SetActive(GameManager.gameUI == GameUI.PauseMenu);
@@ -70,23 +68,19 @@ public class UIManager : MonoBehaviour
     //Used by UI buttons
     public void SetPause(bool pause)
     {
-        GameManager.SetPause(pause, pause);
+        TimeManager.SetPause(pause, pause ? GameUI.PauseMenu : GameUI.Game);
     }
     public void CreateMarker(SofAircraft aircraft)
     {
         AircraftMarker marker = Instantiate(aircraftMarkerPrefab, gameMenu.transform);
         marker.Init(aircraft);
+        dynamicUis.Add(marker);
         marker = Instantiate(aircraftMarkerPrefab, camerasEditor.transform);
         marker.Init(aircraft);
+        dynamicUis.Add(marker);
     }
-
     void Update()
     {
-        if (seatInterface != GameManager.seatInterface) ResetInterface();
-        if (crew != GameManager.player.crew) ResetInterface();
-
-        //User interface
-        if (seatInterface == SeatInterface.Empty) return;
-        indicators.text = currentIndicator.Text();
+        if (currentIndicator) indicators.text = currentIndicator.Text();
     }
 }

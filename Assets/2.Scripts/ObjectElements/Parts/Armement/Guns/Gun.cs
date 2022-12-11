@@ -7,8 +7,8 @@ public class Gun : Part
 {
     //Settings
     public Transform ejection;
-    public Transform muzzle;
-    public Transform muzzleBulletSpawn;
+    public Transform muzzleEffects;
+    public Transform bulletSpawn;
     public GunPreset gunPreset;
     public MagazineStock magStock;
     public Magazine magazine;
@@ -18,26 +18,37 @@ public class Gun : Part
     public bool noConvergeance = false;
 
     //References
-    protected AmmunitionPreset ammuPreset;
-    protected ParticleSystem[] muzzleFlashes;
-    protected ParticleSystem casings;
-    protected ParticleSystem.ForceOverLifetimeModule casingsDrag;
+    protected AmmunitionPreset ammunition;
     protected GameObject bubble;
-    protected Bullet[] bullets;
+    protected Projectile[] bullets;
 
     //Data
+    public delegate void CycleEvent();
+    public CycleEvent OnFireEvent;
+    public CycleEvent OnEjectEvent;
+    public CycleEvent OnChamberEvent;
+    public CycleEvent OnTriggerEvent;
     public float temperature;
-    public bool chambered; //for open bolt, this is boltCocked
+
     public int clips;
     protected int currentBullet = 0;
-    public float fuzeDistance;
+    public float fuzeDistance = 0f;
+    public bool reloading = false;
 
-    protected float counter;
+    public float cycleState = 1f;
+    protected bool chambered;
+    protected bool ejected;
+    protected bool lockedBolt = true;
+    protected bool trigger = false;
+    protected bool reset = true;
+    protected bool blockedBolt = false;
+    protected float lastFired = 0f;
+
+    private float invertFireRate = 1f;
 
     const float critTemperature = 450f;
-    const float maxDispersionTemperature = 550f;
     const float absoluteTemperature = 800f;
-    const float dispersionFactor = 4f;
+    //const float maxDispersionTemperature = 550f;
 
     public override float EmptyMass()
     {
@@ -45,7 +56,7 @@ public class Gun : Part
     }
     public override float Mass()
     {
-        return EmptyMass() + (magazine ? 0f : gunPreset.ammunition.FullMass * 0.001f * clipAmmo);
+        return EmptyMass() + (magazine ? 0f : gunPreset.ammunition.FullMass * clipAmmo);
     }
     public static int AmmunitionCount(Gun[] guns)
     {
@@ -59,38 +70,30 @@ public class Gun : Part
         if (magazine) a += magazine.ammo;
         return a;
     }
-    public bool ShotReady()
+    public bool PossibleFire()
     {
-        return gunPreset.openBolt ? magazine && magazine.ammo > 0 && chambered : chambered;
-    }
-    private bool PossibleFire()
-    {
-        return ShotReady() && data.type > 0 && transform.position.y > 0f;
+        bool shotReady = magazine && magazine.ammo > 0 && !(!chambered && cycleState == 1f);
+        return (shotReady && data.type > 0 && transform.position.y > 0f) || Firing();
     }
     public bool Firing()
     {
-        return counter != -Mathf.Infinity && PossibleFire();
+        return Time.time - lastFired <= 60f * invertFireRate;
     }
-
     public Vector3 MagazinePosition()
     {
         return transform.TransformPoint(magazineLocalPos);
     }
-
     public override void Initialize(ObjectData d, bool firstTime)
     {
         material = gunPreset.material;
         base.Initialize(d, firstTime);
         if (firstTime)
         {
-            ammuPreset = gunPreset.ammunition;
-            bullets = new Bullet[ammuPreset.bullets.Length];
+            ammunition = gunPreset.ammunition;
+            bullets = new Projectile[ammunition.bullets.Length];
             for (int i = 0; i < bullets.Length; i++)
-            {
-                bullets[i] = gunPreset.ammunition.bullets[i].CreateBullet();
-                bullets[i].gameObject.SetActive(false);
-                bullets[i].transform.parent = transform;
-            }
+                bullets[i] = gunPreset.ammunition.CreateProjectile(i, transform);
+
             if (!magazine) //Create a hidden magazine if there is none available
             {
                 magazine = new GameObject(gunPreset.name + " Magazine").AddComponent<Magazine>();
@@ -98,99 +101,127 @@ public class Gun : Part
                 magazine.Initialize(data, true);
                 magazine.gunPreset = gunPreset;
             }
-            if (!muzzle) muzzle = transform;
-            counter = -Mathf.Infinity;
-            currentBullet = Random.Range(0, ammuPreset.defaultBelt.Length);
+            if (!muzzleEffects) muzzleEffects = transform;
+            if (!bulletSpawn) bulletSpawn = transform;
+
+            cycleState = gunPreset.openBolt ? 0.5f : 1f;
+            chambered = !gunPreset.openBolt;
+            ejected = true;
+
+            currentBullet = Random.Range(0, ammunition.defaultBelt.Length);
             temperature = data.ambientTemperature;
             emptyMass = gunPreset.mass;
+
+            LoadMagazine(magazine);
+            chambered = true;
+
+            OnFireEvent += LaunchBullet;
+            OnFireEvent += HeatUp;
+            OnFireEvent += Recoil;
+            OnFireEvent += OnFire;
+            OnChamberEvent += OnChamber;
+            OnEjectEvent += OnEject;
+            OnEjectEvent += TryLockBolt;
+            OnTriggerEvent += OnTrigger;
+
+            fuzeDistance = 0f;
+            invertFireRate = 1f / gunPreset.FireRate;
+
+            gameObject.AddComponent<GunFX>();
         }
-    }
-    private void Start()
-    {
-        LoadMagazine(magazine);
-        chambered = true;
-
-        if (gunPreset.casingsFX && ejection)
-        {
-            casings = Instantiate(gunPreset.casingsFX, ejection.position, ejection.rotation, ejection).GetComponent<ParticleSystem>();
-            casingsDrag = casings.forceOverLifetime;
-        }
-
-
-        muzzleFlashes = Instantiate(gunPreset.FireFX, muzzle.position, muzzle.rotation, muzzle).GetComponentsInChildren<ParticleSystem>();
-        muzzleFlashes[0].transform.localScale = Vector3.one * Mathf.Pow(gunPreset.ammunition.caliber / 7.62f, 0.8f);
-        fuzeDistance = 1200f;
-        if (muzzleBulletSpawn) muzzle = muzzleBulletSpawn;
     }
     //Must be called each frame to fire
     public void Trigger()
     {
-        while (PossibleFire() && counter <= 0f && Time.timeScale > 0f)
-        {
-            FireBullet();
-            if (counter == -Mathf.Infinity) counter = 0f;
-            counter = 60f / gunPreset.FireRate + counter;
-        }
+        if (reset)
+            OnTriggerEvent();
+        reset = false;
+        trigger = true;
     }
     public virtual void Update()
     {
-        if (counter <= 0f) counter = -Mathf.Infinity;
-        else if (counter > 0f) counter -= Time.deltaTime;
-
+        if (!lockedBolt && !blockedBolt) Cycle(cycleState + gunPreset.FireRate / 60f * TimeManager.deltaTime);
         float delta = Mathf.Max(temperature - data.ambientTemperature, 150f);
-        temperature = Mathf.MoveTowards(temperature, data.ambientTemperature, delta * gunPreset.coolingFactor * Time.deltaTime);
-        if (casings)
-            casingsDrag.z = -data.ias * data.ias / (ammuPreset.caliber * 150f);
+        temperature = Mathf.MoveTowards(temperature, data.ambientTemperature, delta * gunPreset.coolingFactor * TimeManager.deltaTime);
+
+        if (!trigger) reset = true;
+        else trigger = false;
+        blockedBolt = false;
     }
-    private void IgniteCartridge()
+    public void ManualCycle(float state)
     {
-        Bullet bullet = Instantiate(bullets[ammuPreset.defaultBelt[currentBullet]], muzzle.position, muzzle.rotation);
+        Cycle(state);
+        TryLockBolt();
+        blockedBolt = true;
+    }
+    protected void Cycle(float state)
+    {
+        cycleState = state;
+        do
+        {
+            if (cycleState >= 1f)
+            {
+                if (ejected) OnChamberEvent();
+                bool autoFire = gunPreset.openBolt || (trigger && gunPreset.fullAuto);
+                if (chambered && autoFire) OnFireEvent();
+                else cycleState = 1f;
+            }
+            if (!ejected && cycleState >= 0.5f) OnEjectEvent();
+        }
+        while (cycleState >= 1f && !lockedBolt);
+    }
+    protected void OnTrigger()
+    {
+        if (gunPreset.openBolt && cycleState == 0.5f) lockedBolt = false;
+        if (!gunPreset.openBolt && chambered && cycleState == 1f) OnFireEvent();
+    }
+    protected void OnChamber()
+    {
+        float jamChance = Mathv.SmoothStart(Mathf.InverseLerp(critTemperature, absoluteTemperature, temperature), 4);
+        chambered = magazine && magazine.EjectRound() && Random.value > jamChance;
+        if (chambered) currentBullet = (currentBullet + 1) % ammunition.defaultBelt.Length;
+        lockedBolt = true;
+    }
+    protected void OnEject()
+    {
+        ejected = true;
+    }
+    protected void TryLockBolt()
+    {
+        //bool catchBolt = magazine.ammo <= 0 && gunPreset.boltCatch;
+        bool openBoltStop = gunPreset.openBolt && (!trigger || !gunPreset.fullAuto);
+        if (openBoltStop && cycleState >= 0.5f) { lockedBolt = true; cycleState = 0.5f; }
+        else lockedBolt = false;
+    }
+    protected void OnFire()
+    {
+        cycleState -= 1f;
+        ejected = false;
+        chambered = false;
+        lockedBolt = false;
+        lastFired = Time.time;
+    }
+    protected void LaunchBullet()
+    {
+        Projectile bullet = Instantiate(bullets[ammunition.defaultBelt[currentBullet]], bulletSpawn.position, bulletSpawn.rotation);
         bullet.gameObject.SetActive(true);
 
-        float dispersion = gunPreset.dispersion * Mathf.Lerp(1f, gunPreset.overHeatDispersion, Mathf.Pow(temperature / maxDispersionTemperature, 3));
-        bullet.transform.Rotate(Vector3.forward * Random.Range(-90, 90));
-        bullet.transform.Rotate(Vector3.right * Random.Range(-1f, 1f) * dispersion);
-        GameObject bubble = data.complex ? data.complex.bubble.gameObject : null;
-        bullet.bubbleShotFrom = bubble;
-        bullet.BulletAction(bullet.bullet.muzzleVelocity,bullet.transform.forward, 10f);
-        bullet.InitializeTrajectory(bullet.transform.forward * bullet.bullet.muzzleVelocity + rb.velocity);
-        if (fuzeDistance > 50f) bullet.SetFuze(fuzeDistance);
-        //Recoil and temperature
-        float energy = bullet.bullet.mass / 500f * bullet.bullet.muzzleVelocity;
-        rb.AddForceAtPosition(-transform.forward * energy / rb.mass, transform.position, ForceMode.VelocityChange);
-        //Temperature
+        //float dispersion = gunPreset.dispersion * Mathf.Lerp(1f, gunPreset.overHeatDispersion, Mathv.SmoothStart(temperature / maxDispersionTemperature, 3));
+        bullet.transform.rotation = Ballistics.Spread(bulletSpawn.rotation, gunPreset.dispersion);
+        bullet.RaycastDamage(bullet.p.baseVelocity * bullet.transform.forward + rb.velocity, rb.velocity, 10f);
+        bullet.InitializeTrajectory(bullet.transform.forward * bullet.p.baseVelocity + rb.velocity, transform.forward, complex ? complex.bubble : null);
+        if (fuzeDistance > 50f) bullet.StartFuze(fuzeDistance / bullet.p.baseVelocity);
+    }
+    protected void HeatUp()
+    {
         temperature += gunPreset.temperaturePerShot;
     }
-    private void FireBullet()
+    protected void Recoil()
     {
-        IgniteCartridge();
-        float jamChance = Mathf.Pow(Mathf.InverseLerp(critTemperature, absoluteTemperature, temperature), 4);
-        if (gunPreset.openBolt)
-        {
-            Chamber();
-            if (Random.value > jamChance) Eject();
-        }
-        else
-        {
-            Eject();
-            if (Random.value > jamChance) Chamber();
-        }
+        float energy = ammunition.mass * 2f * ammunition.defaultMuzzleVel;
+        rb.AddForceAtPosition(-transform.forward * energy / rb.mass, transform.position, ForceMode.VelocityChange);
+    }
 
-        //Firing effect
-        if (complex && complex.lod.LOD() < 2) foreach (ParticleSystem ps in muzzleFlashes) ps.Emit(1);
-        if (complex && complex.lod.LOD() == 0) if (casings && ejection) casings.Emit(1);
-    }
-    //Used after each shot and when cycling the bolt
-    public void Eject()
-    {
-        chambered = gunPreset.openBolt && magazine.ammo > 0;
-    }
-    public void Chamber()
-    {
-        chambered = magazine && magazine.EjectRound();
-        currentBullet = (currentBullet + 1) % ammuPreset.defaultBelt.Length;
-        if (gunPreset.openBolt) chambered = false;
-    }
     public void LoadMagazine(Magazine mag)
     {
         if (gunPreset == mag.gunPreset)
@@ -225,8 +256,8 @@ public class GunEditor : Editor
         GUI.color = GUI.backgroundColor;
 
         gun.ejection = EditorGUILayout.ObjectField("Ejection Transform", gun.ejection, typeof(Transform), true) as Transform;
-        gun.muzzle = EditorGUILayout.ObjectField("Muzzle Transform", gun.muzzle, typeof(Transform), true) as Transform;
-        gun.muzzleBulletSpawn = EditorGUILayout.ObjectField("Bullet Spawn Transform", gun.muzzleBulletSpawn, typeof(Transform), true) as Transform;
+        gun.muzzleEffects = EditorGUILayout.ObjectField("Muzzle Effects Transform", gun.muzzleEffects, typeof(Transform), true) as Transform;
+        gun.bulletSpawn = EditorGUILayout.ObjectField("Bullet Spawn Transform", gun.bulletSpawn, typeof(Transform), true) as Transform;
         gun.gunPreset = EditorGUILayout.ObjectField("Gun Preset", gun.gunPreset, typeof(GunPreset), false) as GunPreset;
         gun.noConvergeance = EditorGUILayout.Toggle("No Gun Auto Convergeance", gun.noConvergeance);
         gun.magazine = EditorGUILayout.ObjectField("Magazine", gun.magazine, typeof(Magazine), true) as Magazine;

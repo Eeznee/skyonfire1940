@@ -23,7 +23,7 @@ public class PistonEngine : Engine
     public float Power(float thr, bool boost, float radSec)
     {
         float basePower = preset.gear1.Evaluate(data.altitude) * 745.7f;
-        float efficiency = preset.RpmPowerEffectiveness(radSec, boost) * Mathf.Pow(structureDamage, 2);
+        float efficiency = preset.RpmPowerEffectiveness(radSec, boost) * Mathv.SmoothStart(structureDamage, 2);
         return basePower * (boost ? preset.Boost(data.altitude) : thr) * efficiency;
     }
     public override void Initialize(ObjectData obj, bool firstTime)
@@ -59,9 +59,8 @@ public class PistonEngine : Engine
     public override void Damage(float damage, float caliber, float fireCoeff)
     {
         base.Damage(damage, caliber, fireCoeff);
-        TryBurn(fireCoeff);
         if (Random.value < leakChance) oilCircuit.Damage(caliber);
-        if (Random.value < leakChance && waterCooled) waterCircuit.Damage(caliber);
+        //if (Random.value < leakChance && waterCooled) waterCircuit.Damage(caliber);
     }
 }
 

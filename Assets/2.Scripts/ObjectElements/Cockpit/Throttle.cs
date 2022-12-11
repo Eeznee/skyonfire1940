@@ -34,7 +34,7 @@ public class ThrottleEditor : AnalogInteractableEditor
         GUI.color = Color.red;
         EditorGUILayout.HelpBox("Starter Configuration", MessageType.None);
         GUI.color = GUI.backgroundColor;
-        throttle.engine = EditorGUILayout.ObjectField("Piston Engine", throttle.engine, typeof(PistonEngine), true) as PistonEngine;
+        throttle.engine = EditorGUILayout.ObjectField("Piston Engine", throttle.engine, typeof(Engine), true) as Engine;
 
         if (GUI.changed)
         {

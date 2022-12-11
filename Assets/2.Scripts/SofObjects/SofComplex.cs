@@ -7,42 +7,22 @@ using UnityEditor.SceneManagement;
 
 public class SofComplex : SofObject
 {
-    const float explosionCoeff = 100f;
     //References
     public SphereCollider bubble;
     public LodModule lod;
 
-    public override void Awake()
+    public override void Initialize()
     {
         lod = gameObject.AddComponent<LodModule>();
-        base.Awake();
+        base.Initialize();
         if (bubble) bubble.gameObject.layer = 11;
     }
-    public override void Explosion(Vector3 center, float kg, float totalKg)
+    public override void Explosion(Vector3 center, float tnt)
     {
-        base.Explosion(center, kg, totalKg);
-        float dis = (center - transform.position).sqrMagnitude;
-        if (kg * 2000f < dis) return;   //no calculations if too far
-        foreach (Part p in data.parts)
-        {
-            if (p)
-            {
-                dis = (center - p.transform.position).sqrMagnitude;
-                if (kg * 500f > dis)
-                {
-                    float realDis = Mathf.Max(1f, Mathf.Sqrt(dis));
-                    p.Damage(explosionCoeff * kg / dis * Random.Range(0.5f, 2f));
-                    //Shrapnel
-                    float shrapnel = (totalKg - kg) / realDis;
-                    bool shrapnelhit = Random.value * 10f < shrapnel;
-                    if (shrapnelhit)
-                    {
-                        float shrapnelDamage = Mathf.Lerp(Mathf.Sqrt(totalKg) / 5f, 0f, dis / (kg * 1000f));
-                        p.Damage(shrapnelDamage * Random.Range(0.5f, 2f), 20f, 0f);
-                    }
-                }
-            }
-        }
+        base.Explosion(center, tnt);
+        float sqrDis = (center - transform.position).sqrMagnitude;
+        if (tnt < sqrDis / 2000f) return;   //no calculations if too far
+        foreach (Part p in data.parts) if (p) p.ExplosionDamage(center, tnt);
     }
 }
 

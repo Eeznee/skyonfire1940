@@ -28,6 +28,11 @@ public class Wheel : Fuselage
     Vector3 rootPos;
     MeshCollider meshCollider;
 
+    private bool isGrounded;
+    private float rpm;
+    private bool wheelDisabled = false;
+    private bool brakeFxPlaying = false;
+
 
     public override void Initialize(ObjectData d, bool firstTime)
     {
@@ -49,6 +54,9 @@ public class Wheel : Fuselage
     {
         if (!wheel || Time.timeScale == 0f) return;
 
+        rpm = wheel.rpm;
+        isGrounded = wheel.isGrounded;
+
         if (steering && aircraft)
         {
             float speedEff = Mathf.InverseLerp(maxSteerSpeed, 0f, data.gsp);
@@ -58,7 +66,7 @@ public class Wheel : Fuselage
             transform.parent.Rotate(Vector3.up * wheel.steerAngle);
         }
 
-        if (wheel.isGrounded)
+        if (isGrounded)
         {
             wheel.GetGroundHit(out WheelHit hit);
             float force = hit.force;
@@ -76,33 +84,36 @@ public class Wheel : Fuselage
         if (wheel.radius == 0f) brakeInput = 0f;
 
         //Braking
-        wheel.motorTorque = wheel.isGrounded ? 1f : 0f;
+        wheel.motorTorque = isGrounded ? 1f : 0f;
         wheel.brakeTorque = brakeInput * brakeTorque;
-        if (wheel.isGrounded) rb.AddTorque(-transform.root.right * wheel.brakeTorque);
+        if (isGrounded) rb.AddTorque(-transform.root.right * wheel.brakeTorque);
     }
     private void Update()
     {
         if (aircraft && aircraft.gear && rootPos.x != 0f)
         {
-            float rad = aircraft.gear.state > 0.8f ? radius : 0f;
-            if (rad != wheel.radius) wheel.radius = rad;
+            bool newWheelDisabled = aircraft.gear.state < 0.8f;
+            if (newWheelDisabled != wheelDisabled) {  wheelDisabled = newWheelDisabled; wheel.radius = wheelDisabled? 0f: radius; }
         }
-
         //Roll
+        /*
         Vector3 targetPos = transform.parent.TransformPoint(defaultLocalPos);
         if (wheel.isGrounded)
             wheel.GetWorldPose(out targetPos, out Quaternion quat);
         transform.position = Vector3.MoveTowards(transform.position, targetPos, 0.02f * Time.deltaTime);
-        transform.Rotate(Vector3.up * wheel.rpm * 60f * Time.deltaTime);
+        */
+        if (rpm > 1f) transform.Rotate(Vector3.up * rpm * 60f * Time.deltaTime);
 
         if (!aircraft || !brake) return;
-
         //Effects
-        bool effect = brakeInput > 0.1f && wheel.isGrounded && complex.lod.LOD() <= 1;
-        if (effect && !brakeEffect.isPlaying)
-            brakeEffect.Play();
-        if (!effect && brakeEffect.isPlaying)
-            brakeEffect.Stop();
+        bool effect = brakeInput > 0.1f && isGrounded && complex.lod.LOD() <= 1;
+        if (effect != brakeFxPlaying)
+        {
+            brakeFxPlaying = effect;
+            if (brakeFxPlaying) brakeEffect.Play();
+            else brakeEffect.Stop();
+        }
+        return;
     }
     public override void Rip()
     {
@@ -145,7 +156,7 @@ public class WheelEditor : Editor
         {
             wheel.wheel.mass = wheel.emptyMass;
 
-            wheel.area = Mathf.Pow(wheel.wheel.radius, 2) * Mathf.PI;
+            wheel.area = Mathv.SmoothStart(wheel.wheel.radius, 2) * Mathf.PI;
             EditorGUILayout.LabelField("Area : " + wheel.area.ToString("0.00") + " m²");
 
             //Brakes

@@ -41,7 +41,7 @@ public class Slat : Airframe
         if (aircraft)
         {
             Vector3 velocity = rb.GetPointVelocity(transform.position);
-            float alpha = Vector3.SignedAngle(parentFoil.tr.forward, velocity, parentFoil.tr.right);
+            float alpha = Vector3.SignedAngle(parentFoil.shapeTr.forward, velocity, parentFoil.shapeTr.right);
             if (data.ias < 1f) alpha = 0f;
 
             float straightFactor = lockedSpeed / straightLockedSpeed;
