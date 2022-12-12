@@ -44,7 +44,9 @@ public class PlayerManager : MonoBehaviour
         if (!GameManager.gm.playableScene) return;
 
         if (player.crew == null)
+        {
             SetPlayer(GameManager.squadrons[PlayerPrefs.GetInt("PlayerSquadron", 0)][0], true);
+        }
     }
     public static void NextSquadron(int offset)
     {

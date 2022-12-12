@@ -21,7 +21,7 @@ public class Projectile : MonoBehaviour //Follows a trajectory using drag, weigh
 
     private float dragCoeff;
     private float counter = 0f;
-    private float lifeTimeCounter = 0f;
+    private float lastInitialize = 0f;
     private float detonationTime = 0f;
 
     private Vector3[] worldPos;
@@ -48,7 +48,7 @@ public class Projectile : MonoBehaviour //Follows a trajectory using drag, weigh
     }
     public void InitializeTrajectory(Vector3 vel, Vector3 _tracerDir, Collider ignore)
     {
-        counter = 0f;
+        lastInitialize = counter;
         previousPos = initPosition = transform.position;
         velocity = vel;
         initSpeed = vel.magnitude;
@@ -66,21 +66,31 @@ public class Projectile : MonoBehaviour //Follows a trajectory using drag, weigh
         box.enabled = true;
         ignoreCollider = ignore;
     }
+    public Vector3 Pos(float t)
+    {
+        t -= lastInitialize;
+        int prevIndex = Mathf.FloorToInt(t * points / lifetime);
+        if (prevIndex > worldPos.Length - 2) return worldPos[worldPos.Length - 1];
+        Vector3 prev = worldPos[prevIndex];
+        Vector3 next = worldPos[prevIndex + 1];
+        Vector3 pos = Vector3.Lerp(prev, next, t * points / lifetime - prevIndex);
+        return pos;
+    }
+    public Vector3 Vel(float t)
+    {
+        t -= lastInitialize;
+        return initDir / (dragCoeff * t + 1f / initSpeed) + Physics.gravity * t;
+    }
     private void UpdateTrajectory()
     {
         counter += Time.fixedDeltaTime;
-        lifeTimeCounter += Time.fixedDeltaTime;
-        if (lifeTimeCounter > lifetime) { Destroy(gameObject); return; }
-        int prevIndex = Mathf.FloorToInt(counter * points / lifetime);
-        if (prevIndex + 1 >= points) { Destroy(gameObject); return; }
-        Vector3 prev = worldPos[prevIndex];
-        Vector3 next = worldPos[prevIndex + 1];
-        Vector3 pos = Vector3.Lerp(prev, next, counter * points / lifetime - prevIndex);
+        if (counter > lifetime) { Destroy(gameObject); return; }
+        Vector3 pos = Pos(counter);
         transform.position += pos - previousPos;
         transform.forward = pos - previousPos;
         previousPos = pos;
 
-        velocity = initDir / (dragCoeff * counter + 1f / initSpeed) + Physics.gravity * counter;
+        velocity = Vel(counter);
     }
     private void FixedUpdate()
     {

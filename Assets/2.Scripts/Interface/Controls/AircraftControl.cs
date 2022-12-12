@@ -104,7 +104,7 @@ public static class AircraftControl
     public static void PlayerFixed(SofAircraft aircraft)
     {
         Actions.PilotActions actions = PlayerActions.instance.actions.Pilot;
-
+        Actions.GeneralActions general = PlayerActions.instance.actions.General;
         Vector3 axis = Vector3.zero;
         bool canUseTracking = PlayerCamera.customCam.dir == CamDirection.Game || PlayerCamera.customCam.dir == CamDirection.Free;
         if (GameManager.trackingControl && canUseTracking) //Tracking input, mouse
@@ -114,20 +114,20 @@ public static class AircraftControl
             axis = TrackingInputs(targetPos, aircraft, 0f, PlayerCamera.dynamic ? 0f : 1f,false);
 
             //override conditions
-            bool pitching = actions.Pitch.phase == InputActionPhase.Started;
-            bool rolling = actions.Roll.phase == InputActionPhase.Started;
-            if (rolling || pitching) axis.z = actions.Roll.ReadValue<float>();
-            if (pitching) axis.x = -actions.Pitch.ReadValue<float>();
-            axis.y = -actions.Rudder.ReadValue<float>();
+            bool pitching = general.Pitch.phase == InputActionPhase.Started;
+            bool rolling = general.Roll.phase == InputActionPhase.Started;
+            if (rolling || pitching) axis.z = general.Roll.ReadValue<float>();
+            if (pitching) axis.x = -general.Pitch.ReadValue<float>();
+            axis.y = -general.Rudder.ReadValue<float>();
 
             aircraft.SetControls(axis, true, false);
         }
         else //Direct input, joystick, phone
         {
-            axis.x = -actions.Pitch.ReadValue<float>();
+            axis.x = -general.Pitch.ReadValue<float>();
             if (PlayerPrefs.GetInt("InvertPitch", 0) == 1) axis.x = -axis.x;
-            axis.z = actions.Roll.ReadValue<float>();
-            axis.y = -actions.Rudder.ReadValue<float>();
+            axis.z = general.Roll.ReadValue<float>();
+            axis.y = -general.Rudder.ReadValue<float>();
 
             aircraft.SetControls(axis, PlayerPrefs.GetInt("FullElevatorControl", 0) == 0, false);
         }

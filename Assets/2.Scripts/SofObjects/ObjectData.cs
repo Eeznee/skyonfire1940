@@ -90,6 +90,7 @@ public class ObjectData : MonoBehaviour
         rb.drag = 0f;
         rb.isKinematic = false;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        rb.interpolation = aircraft ?  RigidbodyInterpolation.Extrapolate : RigidbodyInterpolation.Extrapolate;
 
         //New parts might have been created
         parts = GetComponentsInChildren<Part>();

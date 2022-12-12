@@ -58,7 +58,7 @@ public class PlayerCamera : MonoBehaviour
         dynamic = false;
         rotations = Vector2.zero;
         instance = this;
-        cam = Camera.main;
+        cam = GetComponentInChildren<Camera>();
         camTr = cam.transform;
 
         external = new CustomCam(CamPosition.ObjectRelative, CamDirection.Game, CamUp.ObjectRelative, PlayerIs.PosTarget, true);
@@ -102,7 +102,7 @@ public class PlayerCamera : MonoBehaviour
         factor = Mathf.Max(0f, factor);
         fov = minFov * Mathf.Pow(2f, Mathf.Log(maxFov / minFov, 2) * (1f-factor));
     }
-    void LateUpdate()
+    private void LateUpdate()
     {
 #if MOBILE_INPUT
         dynamic = true;
@@ -164,7 +164,7 @@ public class PlayerCamera : MonoBehaviour
 
         //Setup Direction Input
         if (PlayerActions.instance.actions.General.LookAround.ReadValue<float>() < 0.5f) directionInput = camTarget * Vector3.forward;
-        else if (PlayerActions.instance.actions.Pilot.Pitch.phase == InputActionPhase.Started) directionInput = PlayerManager.player.tr.forward;
+        else if (GameManager.seatInterface == SeatInterface.Pilot && PlayerActions.instance.actions.General.Pitch.phase == InputActionPhase.Started) directionInput = PlayerManager.player.tr.forward;
     }
     public float SmoothSpeed()
     {
@@ -268,7 +268,7 @@ public class PlayerCamera : MonoBehaviour
 
         camTarget = DefaultRotation(customCam);
         rotations = Vector2.zero;
-        if (instant) instance.transform.rotation = camTarget;
+        if (instant) transform.rotation = camTarget;
     }
     private CustomCam CamByViewMode(int vm)
     {

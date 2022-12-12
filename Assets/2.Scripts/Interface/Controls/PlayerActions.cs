@@ -89,14 +89,10 @@ public class PlayerActions : MonoBehaviour
         actions.General.Enable();
         bool paused = TimeManager.paused;
         SeatInterface si = GameManager.seatInterface;
-        actions.Seat.Disable();
-        actions.Gunner.Disable();
-        actions.Pilot.Disable();
-        actions.Bombardier.Disable();
-        if (!paused && GameManager.gameUI == GameUI.Game) actions.Seat.Enable();// else actions.Seat.Disable();
-        if (!paused && si == SeatInterface.Pilot) actions.Pilot.Enable();// else actions.Pilot.Disable();
-        if (!paused && si == SeatInterface.Gunner) actions.Gunner.Enable();// else actions.Gunner.Disable();
-        if (!paused && si == SeatInterface.Bombardier) actions.Bombardier.Enable();// else actions.Bombardier.Disable();
+        if (!paused && GameManager.gameUI == GameUI.Game) actions.Seat.Enable();else actions.Seat.Disable();
+        if (!paused && si == SeatInterface.Pilot) actions.Pilot.Enable(); else actions.Pilot.Disable();
+        if (!paused && si == SeatInterface.Gunner) actions.Gunner.Enable(); else actions.Gunner.Disable();
+        if (!paused && si == SeatInterface.Bombardier) actions.Bombardier.Enable(); else actions.Bombardier.Disable();
     }
     private void Action(string action)
     {

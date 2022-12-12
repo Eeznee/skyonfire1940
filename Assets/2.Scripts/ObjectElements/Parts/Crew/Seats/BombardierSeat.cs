@@ -57,8 +57,8 @@ public class BombardierSeat : CrewSeat
         base.PlayerUpdate(crew);
 
         //Player inputs
-        float elevationInput = -PlayerActions.instance.actions.Bombardier.Vertical.ReadValue<float>();
-        float sideInput = PlayerActions.instance.actions.Bombardier.Horizontal.ReadValue<float>();
+        float elevationInput = PlayerActions.instance.actions.General.Pitch.ReadValue<float>();
+        float sideInput = PlayerActions.instance.actions.General.Roll.ReadValue<float>();
 
         //Bomb drop angle calculations
         float timeToFall = Mathf.Sqrt(2f / -Physics.gravity.y * relativeAltSetting);
@@ -106,7 +106,7 @@ public class BombardierSeat : CrewSeat
     public override void PlayerFixed(CrewMember crew)
     {
         base.PlayerFixed(crew);
-        aircraft.controlInput.y = -PlayerActions.instance.actions.Bombardier.Rudder.ReadValue<float>() * maxYawInput;
+        aircraft.controlInput.y = -PlayerActions.instance.actions.General.Rudder.ReadValue<float>() * maxYawInput;
     }
     public override void AiUpdate(CrewMember crew)
     {

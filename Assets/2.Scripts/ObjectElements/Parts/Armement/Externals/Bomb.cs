@@ -15,14 +15,7 @@ public class Bomb : Part
     public virtual void Drop(float delayFuse, bool bay)
     {
         if (dropped) return;
-        Detach();
-        if (droppedMesh) GetComponent<MeshFilter>().sharedMesh = droppedMesh;
-        rb.velocity += Random.insideUnitSphere * 0.4f;
-        rb.inertiaTensor = new Vector3(emptyMass, emptyMass, emptyMass);
         dropped = true;
-        GetComponent<Collider>().isTrigger = bay;
-        GetComponent<Collider>().enabled = true;
-
         StartCoroutine(DropSequence(delayFuse));
     }
     public override void Initialize(ObjectData d, bool firstTime)
@@ -34,23 +27,24 @@ public class Bomb : Part
             GetComponent<Collider>().enabled = false;
         }
     }
-
+    private void Drop()
+    {
+        Detach();
+        if (droppedMesh) GetComponent<MeshFilter>().sharedMesh = droppedMesh;
+        rb.velocity += Random.insideUnitSphere * 0.4f;
+        rb.inertiaTensor = new Vector3(emptyMass, emptyMass, emptyMass);
+        gameObject.layer = 10;
+        GetComponent<Collider>().enabled = true;
+    }
     private void FixedUpdate()
     {
         if (dropped)
         {
-            Vector3 forward = Vector3.RotateTowards(transform.forward, rb.velocity.normalized, Time.fixedDeltaTime * Mathf.PI * 2f / 10f, 0f);
+            if (aircraft) Drop();
+
+            Vector3 forward = Vector3.RotateTowards(transform.forward, rb.velocity.normalized, Time.fixedDeltaTime * 0.5f, 0f);
             transform.rotation = Quaternion.LookRotation(forward, transform.up);
         }
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        StartCoroutine(TriggerOff());
-    }
-    private IEnumerator TriggerOff()
-    {
-        yield return new WaitForSeconds(0.1f);
-        GetComponent<Collider>().isTrigger = false;
     }
     protected virtual IEnumerator DropSequence(float delayFuse)
     {

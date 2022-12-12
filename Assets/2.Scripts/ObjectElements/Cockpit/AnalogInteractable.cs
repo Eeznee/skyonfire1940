@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -36,9 +35,10 @@ public class AnalogInteractable : CockpitInteractable
     protected bool GroupSelect()
     {
         if (!xrGrab || !group) return false;
-        bool groupSelect = SofVrRig.instance.rightHandTarget == this && SofVrRig.instance.rightHand.enabled;
-        groupSelect |= SofVrRig.instance.leftHandTarget == this && SofVrRig.instance.leftHand.enabled;
-        return groupSelect;
+        return true;
+        //bool groupSelect = SofVrRig.instance.rightHandTarget == this && SofVrRig.instance.rightHand.enabled;
+        //groupSelect |= SofVrRig.instance.leftHandTarget == this && SofVrRig.instance.leftHand.enabled;
+        //return groupSelect;
     }
     public override HandGrip CurrentGrip()
     {
@@ -51,6 +51,7 @@ public class AnalogInteractable : CockpitInteractable
         animSpeed = (mode == Mode.Push ? pushOn.magnitude : Mathf.Abs(angleOn)) / Mathf.Max(0.001f, animationTime);
         defaultUp = transform.parent.InverseTransformDirection(grip.transform.position - transform.position);
     }
+    /*
     public override void EnableVR(XRGrabInteractable xrPrefab)
     {
         base.EnableVR(xrPrefab);
@@ -60,6 +61,7 @@ public class AnalogInteractable : CockpitInteractable
             xrGrab.gameObject.layer = 0;
         }
     }
+    */
     protected override void VRInteraction(Vector3 gripPos, Quaternion gripRot)
     {
         gripPosition = gripPos;

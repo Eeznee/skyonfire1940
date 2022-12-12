@@ -22,6 +22,8 @@ public class Tracer : MonoBehaviour
     private float tracerOffset;
 
     public LineRenderer line;
+
+    private float spawnTime = 0f;
     public void InitializeTracer(TracerProperties _properties)
     {
         properties = _properties;
@@ -38,18 +40,18 @@ public class Tracer : MonoBehaviour
         line.positionCount = 4;
         line.useWorldSpace = true;
     }
-
     private void Start()
     {
         float updateDis = projectile.p.baseVelocity * Time.fixedDeltaTime;
         tracerOffset = Random.Range(0.2f, updateDis);
-        FixedUpdate();
+        spawnTime = Time.time;
+        Update();
     }
-    private void FixedUpdate()
+    private void Update()
     {
         if (line && Time.timeScale != 0f)
         {
-            Vector3 tailPos = transform.position + projectile.tracerDir * tracerOffset;
+            Vector3 tailPos = projectile.Pos(Time.time - spawnTime) + projectile.tracerDir * tracerOffset;
             float length = properties.length * Time.timeScale + properties.width * 3f;
             Vector3 frontPos = tailPos + projectile.tracerDir * length;
             line.SetPosition(0, tailPos);

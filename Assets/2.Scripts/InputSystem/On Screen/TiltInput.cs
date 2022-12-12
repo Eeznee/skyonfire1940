@@ -25,6 +25,8 @@ namespace UnityEngine.InputSystem.OnScreen
         public Vector3[] rawInputs;
         const int averageAmount = 4;
 
+        private float lastPitch = 0f;
+
         private void AddInput()
         {
             for(int i = rawInputs.Length -1; i > 0; i--)
@@ -56,6 +58,7 @@ namespace UnityEngine.InputSystem.OnScreen
             tilt.y = Mathf.Clamp(tilt.y - pitchZeroing, -fullPitchAngle, fullPitchAngle) / fullPitchAngle;
             tilt.x = Mathf.Clamp(tilt.x, -fullRollAngle, fullRollAngle) / fullRollAngle;
             SendValueToControl(tilt);
+            lastPitch = tilt.y;
         }
 
         public void Recalibrate()
@@ -66,7 +69,7 @@ namespace UnityEngine.InputSystem.OnScreen
         private Vector2 GetTilt()
         {
             Vector2 tilt = Vector2.zero;
-            Vector3 input = Input.acceleration;
+            Vector3 input = Vector3.Lerp(AverageInput(),Input.acceleration,Mathf.Abs(lastPitch));
             if (input != Vector3.zero)
             {
                 tilt.x = Mathf.Atan2(input.x, new Vector2(input.z, input.y).magnitude) * Mathf.Rad2Deg;

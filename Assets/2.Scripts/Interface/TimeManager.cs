@@ -7,7 +7,6 @@ using System.Collections.Generic;
 public class TimeManager : MonoBehaviour
 {
     private static float timeScale = 1f;
-    public static float deltaTime = 0f;
     public static bool paused;
 
     public delegate void OnPause();
@@ -39,9 +38,8 @@ public class TimeManager : MonoBehaviour
         input *= Time.unscaledDeltaTime * 0.25f;
         SetSlowMo(TimeScaleFactor() + input);
 
-        deltaTime = Time.deltaTime;
         Time.timeScale = paused ? 0f : timeScale;
-        Time.fixedDeltaTime = 1f / 60f * Time.timeScale;
+        Time.fixedDeltaTime = Time.timeScale * 0.0166667f;
     }
     public static void SetPause(bool _paused, GameUI _ui)
     {

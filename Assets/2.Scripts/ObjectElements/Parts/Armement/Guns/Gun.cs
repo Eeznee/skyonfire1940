@@ -77,7 +77,7 @@ public class Gun : Part
     }
     public bool Firing()
     {
-        return Time.time - lastFired <= 60f * invertFireRate;
+        return Time.time - lastFired <= 60f * invertFireRate + 0.1f;
     }
     public Vector3 MagazinePosition()
     {
@@ -138,11 +138,11 @@ public class Gun : Part
         reset = false;
         trigger = true;
     }
-    public virtual void Update()
+    public virtual void FixedUpdate()
     {
-        if (!lockedBolt && !blockedBolt) Cycle(cycleState + gunPreset.FireRate / 60f * TimeManager.deltaTime);
+        if (!lockedBolt && !blockedBolt) Cycle(cycleState + gunPreset.FireRate / 60f * Time.fixedDeltaTime);
         float delta = Mathf.Max(temperature - data.ambientTemperature, 150f);
-        temperature = Mathf.MoveTowards(temperature, data.ambientTemperature, delta * gunPreset.coolingFactor * TimeManager.deltaTime);
+        temperature = Mathf.MoveTowards(temperature, data.ambientTemperature, delta * gunPreset.coolingFactor * Time.fixedDeltaTime);
 
         if (!trigger) reset = true;
         else trigger = false;
@@ -209,6 +209,7 @@ public class Gun : Part
         //float dispersion = gunPreset.dispersion * Mathf.Lerp(1f, gunPreset.overHeatDispersion, Mathv.SmoothStart(temperature / maxDispersionTemperature, 3));
         bullet.transform.rotation = Ballistics.Spread(bulletSpawn.rotation, gunPreset.dispersion);
         bullet.RaycastDamage(bullet.p.baseVelocity * bullet.transform.forward + rb.velocity, rb.velocity, 10f);
+        bullet.transform.position += rb.velocity * Time.fixedDeltaTime;
         bullet.InitializeTrajectory(bullet.transform.forward * bullet.p.baseVelocity + rb.velocity, transform.forward, complex ? complex.bubble : null);
         if (fuzeDistance > 50f) bullet.StartFuze(fuzeDistance / bullet.p.baseVelocity);
     }

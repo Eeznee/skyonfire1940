@@ -47,7 +47,7 @@ public class AircraftMarker : DynamicUI
         marker.color = direction.color = infos.color = color;
 
         //Rect
-        Vector3 screenPoint = PlayerCamera.instance.cam.WorldToScreenPoint(target.data.position);
+        Vector3 screenPoint = PlayerCamera.instance.cam.WorldToScreenPoint(target.transform.position);
         float offset = rect.sizeDelta.x;
         rect.position = screenPoint;
         rect.position = new Vector3(rect.position.x, rect.position.y, 1f);

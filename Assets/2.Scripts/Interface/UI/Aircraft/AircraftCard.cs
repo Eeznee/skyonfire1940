@@ -32,7 +32,6 @@ public class AircraftCard : ScriptableObject
         bool purchased = PlayerPrefs.GetInt(fileName, 0) == 1;
         if (purchased) return true;
 
-        if (workshopIncluded) return false;
         bool workshop = PlayerPrefs.GetInt("workshop", 0) == 1 && workshopIncluded;
         if (workshop) return true;
 

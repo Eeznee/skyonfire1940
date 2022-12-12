@@ -16,6 +16,5 @@ public class Settings : MonoBehaviour
     public void SetTargetFramerate(int target)
     {
         PlayerPrefs.SetInt("TargetFrameRate", target);
-        Application.targetFrameRate = target;
     }
 }

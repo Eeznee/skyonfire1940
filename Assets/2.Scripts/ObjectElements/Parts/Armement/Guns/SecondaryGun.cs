@@ -7,10 +7,7 @@ using UnityEditor;
 
 public class SecondaryGun : Gun
 {
-    public override void Update()
-    {
-        base.Update();
-    }
+
 }
 #if UNITY_EDITOR
 [CustomEditor(typeof(SecondaryGun)), CanEditMultipleObjects]
