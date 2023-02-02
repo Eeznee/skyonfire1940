@@ -23,7 +23,7 @@ public class HideUI : MonoBehaviour
         if (!mask)
         {
             mask = GetComponent<Mask>();
-            PlayerActions.instance.actions.General.HideUI.performed += _ => Toggle();
+            PlayerActions.General().HideUI.performed += _ => Toggle();
         }
         mask.enabled = hidden;
     }

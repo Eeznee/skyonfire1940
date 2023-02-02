@@ -29,11 +29,11 @@ public class CameraEditor : MonoBehaviour
     private Vector3 relativePos = Vector3.zero;
     private Vector3 worldPos = Vector3.zero;
 
-    private void LoadProperties(CustomCam cam)
+    private void LoadProperties(SubCam cam)
     {
         position.value = (int)cam.pos;
         direction.value = (int)cam.dir;
-        up.value = (int)cam.up;
+        up.value = cam.relativeRotation ? 0 : 1;
         player.value = (int)cam.player;
 
         freeResetting.isOn = cam.freeResetting;
@@ -48,11 +48,11 @@ public class CameraEditor : MonoBehaviour
         posTarget.current = cam.posTarget.data.aircraft;
         dirTarget.current = cam.dirTarget.data.aircraft;
     }
-    private void SendProperties(CustomCam cam)
+    private void SendProperties(SubCam cam)
     {
         cam.pos = (CamPosition)position.value;
         cam.dir = (CamDirection)direction.value;
-        cam.up = (CamUp)up.value;
+        cam.relativeRotation = up.value == 0;
         cam.player = (PlayerIs)player.value;
 
         cam.freeResetting = freeResetting.isOn;
@@ -76,16 +76,16 @@ public class CameraEditor : MonoBehaviour
         player.options = new List<Dropdown.OptionData> { new Dropdown.OptionData("Position Target"), new Dropdown.OptionData("Direction Target"), new Dropdown.OptionData("None") };
 
         speed = minSpeed;
-        PlayerActions.instance.actions.General.CameraSpeed.performed += t => ChangeSpeed(t.ReadValue<float>());
+        PlayerActions.General().CameraSpeed.performed += t => ChangeSpeed(t.ReadValue<float>());
     }
 
     private void OnEnable()
     {
         if (PlayerCamera.viewMode >= 0)
-            PlayerCamera.instance.SetView(-1);
+            PlayerCamera.SetView(-1);
     }
 
-    private CustomCam currentCam = null;
+    private SubCam currentCam = null;
 
     public void SaveCurrentCam()
     {
@@ -95,7 +95,7 @@ public class CameraEditor : MonoBehaviour
 
     private void ResetCustomCam()
     {
-        currentCam = PlayerCamera.customCam;
+        currentCam = PlayerCamera.subCam;
         LoadProperties(currentCam);
 
         foreach(Button button in camButtons) button.interactable = false;
@@ -104,7 +104,7 @@ public class CameraEditor : MonoBehaviour
     public void ResetPositions()
     {
         relativePos = Vector3.zero;
-        worldPos = GameManager.gm.mapTr.InverseTransformPoint(PlayerCamera.customCam.Player().transform.position);
+        worldPos = GameManager.gm.mapTr.InverseTransformPoint(PlayerCamera.subCam.Player().transform.position);
     }
     private void ChangeSpeed(float input)
     {
@@ -115,20 +115,20 @@ public class CameraEditor : MonoBehaviour
     {
         if (PlayerCamera.viewMode < 0)
         {
-            if (currentCam != PlayerCamera.customCam)  ResetCustomCam();
+            if (currentCam != PlayerCamera.subCam)  ResetCustomCam();
             SendProperties(currentCam);
         }
 
         if (freeResetting.gameObject.activeSelf != (position.value == 2)) freeResetting.gameObject.SetActive(position.value == 2);
 
         Transform camTr = PlayerCamera.camTr;
-        Actions.GeneralActions actions = PlayerActions.instance.actions.General;
+        Actions.GeneralActions actions = PlayerActions.General();
         Vector3 moveAxis = new Vector3(actions.CameraHorizontal.ReadValue<Vector2>().x, actions.CameraVertical.ReadValue<float>(), actions.CameraHorizontal.ReadValue<Vector2>().y);
         speeds = Vector3.MoveTowards(speeds, moveAxis, Time.unscaledDeltaTime * 2f);
 
         Vector3 moveVector = camTr.forward * speeds.z + camTr.right * speeds.x + Vector3.up * speeds.y;
         float actualSpeed = speed;
-        if (PlayerActions.instance.actions.General.CameraFast.ReadValue<float>() > 0.5f) actualSpeed = maxSpeed;
+        if (actions.CameraFast.ReadValue<float>() > 0.5f) actualSpeed = maxSpeed;
         moveVector *= actualSpeed * Time.unscaledDeltaTime;
 
         if (position.value == 0) relativePos += posTarget.current.transform.InverseTransformDirection(moveVector);

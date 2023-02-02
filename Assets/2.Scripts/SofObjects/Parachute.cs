@@ -38,7 +38,7 @@ public class Parachute : SofComplex
         _crew.Initialize(data, false);
         _crew.transform.parent = seat.transform.parent;
         _crew.seats = new CrewSeat[1] { seat };
-        if (_crew == PlayerManager.player.crew) PlayerManager.SetPlayer(_crew, 0, false);
+        if (_crew == PlayerManager.player.crew) PlayerManager.SetPlayer(_crew);
         else _crew.currentSeat = 0;
     }
     public override void Initialize()
@@ -58,7 +58,7 @@ public class Parachute : SofComplex
         if (PlayerManager.player.crew.Seat() == this)
         {
             if (GameManager.gm.vr) SofVrRig.instance.ResetView();
-            else PlayerCamera.instance.ResetView(false);
+            else PlayerCamera.ResetView(false);
         }
     }
     private void FixedUpdate()

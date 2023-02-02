@@ -40,7 +40,7 @@ public class BasicSeat : ObjectElement
     public virtual int Priority() { return 0; }
     public virtual Vector3 HeadPosition(bool player)
     {
-        Transform pov = player && PlayerCamera.zoomed ? zoomedPOV : defaultPOV;
+        Transform pov = player && CameraFov.zoomed ? zoomedPOV : defaultPOV;
         if (pov.root == transform.root) return pov.position;
         else return transform.position + data.up * 0.75f;
     }

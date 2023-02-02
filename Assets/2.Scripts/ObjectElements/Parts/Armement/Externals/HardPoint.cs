@@ -25,7 +25,7 @@ public class HardPoint : ObjectElement
         weightCarried = 0f;
         selected = Mathf.Clamp(option, 0, options.Length);
         selectedGroup = Instantiate(options[selected - 1], transform);
-        foreach (Part p in GetComponentsInChildren<Part>())
+        foreach (Module p in GetComponentsInChildren<Module>())
         {
             if (p != this)  weightCarried += p.Mass();
             p.Initialize(data,true);

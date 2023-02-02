@@ -49,7 +49,7 @@ public class MiniAirfoil
         Vector3 tb = rootLiftPos - (tr.forward * tr.localScale.z * Quadrangle.liftLine);
         mainQuad = new Quadrangle(lt, lb, tt, tb);
     }
-    public void ApplyForces(Part part)
+    public void ApplyForces(Module part)
     {
         Vector3 velocity = part.rb.GetPointVelocity(tr.position);
         float alpha = Vector3.SignedAngle(tr.forward, velocity.normalized, tr.right);//  * Mathv.SignNoZero(tr.root.InverseTransformPoint(tr.position).x);

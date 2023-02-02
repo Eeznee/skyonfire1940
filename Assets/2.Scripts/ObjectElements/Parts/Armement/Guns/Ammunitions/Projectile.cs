@@ -24,16 +24,16 @@ public class Projectile : MonoBehaviour //Follows a trajectory using drag, weigh
     private float lastInitialize = 0f;
     private float detonationTime = 0f;
 
+    [HideInInspector] public Transform tr;
     private Vector3[] worldPos;
-    private Vector3 previousPos;
-    private Vector3 initPosition;
+    private Vector3 initPos;
 
-    private Vector3 velocity;
     private Vector3 initDir;
     private float initSpeed;
 
     public void Setup(ProjectileProperties properties)
     {
+        tr = transform;
         p = properties;
         if (p.bulletHits) p.filler.fx = p.bulletHits.explosion;
         gameObject.layer = 10;
@@ -46,19 +46,18 @@ public class Projectile : MonoBehaviour //Follows a trajectory using drag, weigh
         box.center = new Vector3(0f, 0f, size/2f);
         box.enabled = false;
     }
-    public void InitializeTrajectory(Vector3 vel, Vector3 _tracerDir, Collider ignore)
+    public void InitializeTrajectory(Vector3 _vel, Vector3 _tracerDir, Collider ignore)
     {
         lastInitialize = counter;
-        previousPos = initPosition = transform.position;
-        velocity = vel;
-        initSpeed = vel.magnitude;
-        initDir = transform.forward = vel / initSpeed;
+        initPos = tr.position - GameManager.refPos;
+        initSpeed = _vel.magnitude;
+        initDir = tr.forward = _vel / initSpeed;
         tracerDir = _tracerDir;
         dragCoeff = Mathv.SmoothStart(p.diameter / 2000f, 2) * Mathf.PI * 0.1f / p.mass;
-        lifetime = Mathf.Lerp(3f, 10f, Mathf.InverseLerp(7.62f, 40f, p.diameter));
-        if (p.diameter == 9f) lifetime = 2f;
+        lifetime = Mathf.Lerp(2f, 10f, Mathf.InverseLerp(7.62f, 40f, p.diameter));
+        if (p.diameter == 9f) lifetime = 1.5f;
         points = Mathf.RoundToInt(lifetime * pointsPerSecond);
-        worldPos = Ballistics.BallisticPath(initPosition, initDir, initSpeed, dragCoeff, points, lifetime);
+        worldPos = Ballistics.BallisticPath(initDir, initSpeed, dragCoeff, points, lifetime);
         if (p.fuze > 0f) StartFuze(p.fuze);
 
         if (inert && fired) { inert.enabled = false; fired.enabled = true; }
@@ -69,46 +68,39 @@ public class Projectile : MonoBehaviour //Follows a trajectory using drag, weigh
     public Vector3 Pos(float t)
     {
         t -= lastInitialize;
-        int prevIndex = Mathf.FloorToInt(t * points / lifetime);
-        if (prevIndex > worldPos.Length - 2) return worldPos[worldPos.Length - 1];
-        Vector3 prev = worldPos[prevIndex];
-        Vector3 next = worldPos[prevIndex + 1];
-        Vector3 pos = Vector3.Lerp(prev, next, t * points / lifetime - prevIndex);
-        return pos;
+        float progress = points * t / lifetime;
+        int prevPos = Mathf.Clamp(Mathf.FloorToInt(progress), 0, worldPos.Length - 2);
+        Vector3 prev = worldPos[prevPos];
+        Vector3 next = worldPos[prevPos + 1];
+        float interpolation = progress > points ? progress - points + 1f : progress % 1f;
+        Vector3 pos = Vector3.LerpUnclamped(prev, next, interpolation);
+        return initPos + GameManager.refPos +pos;
     }
-    public Vector3 Vel(float t)
+    private Vector3 Vel(float t)
     {
         t -= lastInitialize;
         return initDir / (dragCoeff * t + 1f / initSpeed) + Physics.gravity * t;
     }
-    private void UpdateTrajectory()
+    private void FixedUpdate()
     {
         counter += Time.fixedDeltaTime;
         if (counter > lifetime) { Destroy(gameObject); return; }
         Vector3 pos = Pos(counter);
-        transform.position += pos - previousPos;
-        transform.forward = pos - previousPos;
-        previousPos = pos;
+        tr.position = pos;
 
-        velocity = Vel(counter);
+        if (pos.y < 0f) CollideWater();
+        if (detonationTime != 0f && Time.time > detonationTime) Detonate(tr.position,null);
     }
-    private void FixedUpdate()
+    public void Ricochet(RaycastHit hit, float speed)
     {
-        UpdateTrajectory();
-
-        if (transform.position.y < 0f) CollideWater();
-        if (detonationTime != 0f && Time.time > detonationTime) Detonate(transform.position,null);
-    }
-    public void Ricochet(RaycastHit hit, float vel)
-    {
-        transform.position = hit.point;
-        float alpha = Vector3.Angle(transform.forward, -hit.normal);
+        tr.position = hit.point;
+        float alpha = Vector3.Angle(tr.forward, -hit.normal);
         float chance = Mathf.InverseLerp(noRicochetAlpha, ricochetAlpha, alpha);
         if (Random.value < chance)
         {
-            transform.forward = Vector3.Reflect(transform.forward, hit.normal);
-            transform.rotation = Ballistics.Spread(transform.rotation, 7f);
-            InitializeTrajectory(transform.forward * vel * 0.4f * Mathf.Sin(alpha * Mathf.Deg2Rad),transform.forward,ignoreCollider);
+            tr.forward = Vector3.Reflect(tr.forward, hit.normal);
+            tr.rotation = Ballistics.Spread(tr.rotation, 7f);
+            InitializeTrajectory(tr.forward * speed * 0.4f * Mathf.Sin(alpha * Mathf.Deg2Rad),tr.forward,ignoreCollider);
         }
         else Destroy(gameObject);
     }
@@ -127,25 +119,25 @@ public class Projectile : MonoBehaviour //Follows a trajectory using drag, weigh
 
         foreach (RaycastHit h in hits)
         {
-            if (!TryPenPart(h.collider.GetComponent<Part>(), h, ref sqrVelocity)) { return; }
+            if (!TryPenPart(h.collider.GetComponent<Module>(), h, ref sqrVelocity)) { return; }
         }
 
         float spread = Mathf.Lerp(5f,0f,sqrVelocity / relativeVelocity.sqrMagnitude);
-        Vector3 vel = Mathf.Sqrt(sqrVelocity) * (Ballistics.Spread(transform.rotation, spread) * Vector3.forward);
-        InitializeTrajectory(vel, Vector3.zero,ignoreCollider);
+        Vector3 newVelocity = Mathf.Sqrt(sqrVelocity) * (Ballistics.Spread(transform.rotation, spread) * Vector3.forward);
+        InitializeTrajectory(newVelocity, Vector3.zero,ignoreCollider);
     }
     void OnTriggerEnter(Collider obj)
     {
         if (obj.gameObject.layer != 11)  //fixed objects have been hit
             CollideTerrain(obj);
         else if (obj != ignoreCollider)
-            RaycastDamage(velocity, obj.transform.root.GetComponent<Rigidbody>().velocity, 35f);
+            RaycastDamage(Vel(counter), obj.transform.root.GetComponent<Rigidbody>().velocity, 35f);
     }
-    private bool TryPenPart(Part part, RaycastHit hit, ref float sqrVelocity)
+    private bool TryPenPart(Module part, RaycastHit hit, ref float sqrVelocity)
     {
         if (part == null) return true;
         float penetrationPower = p.basePenetration * sqrVelocity / (p.baseVelocity * p.baseVelocity);
-        float alpha = Vector3.Angle(-hit.normal, transform.forward);
+        float alpha = Vector3.Angle(-hit.normal, tr.forward);
         float armor = Random.Range(0.8f, 1.2f) * part.material.armor / Mathf.Cos(alpha * Mathf.Deg2Rad);
         if (penetrationPower > armor)//If penetration occurs
         {
@@ -163,9 +155,10 @@ public class Projectile : MonoBehaviour //Follows a trajectory using drag, weigh
     }
     private void CollideTerrain(Collider obj)
     {
-        Ray ray = new Ray(transform.position, transform.forward);
+        Ray ray = new Ray(tr.position, tr.forward);
         if (!Physics.Raycast(ray, out RaycastHit hit, 20f, LayerMask.GetMask("Default", "Terrain"))) return;
 
+        Vector3 velocity = Vel(counter);
         SofSimple sofSimple = hit.collider.transform.parent ? hit.collider.transform.parent.GetComponent<SofSimple>() : null;
         if (sofSimple && sofSimple.bulletAffected)
             sofSimple.BulletDamage(p.mass * velocity.sqrMagnitude / 2f);
@@ -179,11 +172,11 @@ public class Projectile : MonoBehaviour //Follows a trajectory using drag, weigh
     }
     private void CollideWater()
     {
-        if (p.explosive) Detonate(transform.position - transform.position.y * Vector3.up, null);
-        else if (p.bulletHits) p.bulletHits.CreateHit("Water", Vector3.Scale(transform.position, new Vector3(1f, 0f, 1f)), Quaternion.identity, null);
+        if (p.explosive) Detonate(tr.position - tr.position.y * Vector3.up, null);
+        else if (p.bulletHits) p.bulletHits.CreateHit("Water", Vector3.Scale(tr.position, new Vector3(1f, 0f, 1f)), Quaternion.identity, null);
         Destroy(gameObject);
     }
-    public void Detonate(Vector3 pos, Transform tr) { if (p.explosive) p.filler.Detonate(pos, p.mass, tr); Destroy(gameObject); }
+    public void Detonate(Vector3 pos, Transform tran) { if (p.explosive) p.filler.Detonate(pos, p.mass, tran); Destroy(gameObject); }
 }
 
 /*
@@ -196,7 +189,7 @@ public void SetFuze(float dis)
 }
         if (fuzeDisSquared > 50f * 50f)
     {
-        float dis = (transform.position - initPosition).sqrMagnitude;
+        float dis = (tr.position - initPosition).sqrMagnitude;
         if (dis > fuzeDisSquared) SelfDestruct(false);
     }
     else if (counter > lifetime)

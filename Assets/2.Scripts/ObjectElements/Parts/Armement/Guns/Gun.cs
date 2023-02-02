@@ -3,9 +3,27 @@
 using UnityEditor;
 #endif
 
-public class Gun : Part
+public enum GunController
 {
+    Gunner,
+    PilotPrimary,
+    PilotSecondary,
+}
+public class Gun : Module
+{
+    public static Gun[] FilterByController(GunController controller, Gun[] guns)
+    {
+        int counter = 0;
+        foreach (Gun gun in guns) if (gun && gun.controller == controller) counter++;
+        Gun[] filtered = new Gun[counter];
+
+        counter = 0;
+        foreach (Gun gun in guns) if (gun && gun.controller == controller) { filtered[counter] = gun; counter++; }
+
+        return filtered;
+    }
     //Settings
+    public GunController controller = GunController.Gunner;
     public Transform ejection;
     public Transform muzzleEffects;
     public Transform bulletSpawn;
@@ -77,7 +95,7 @@ public class Gun : Part
     }
     public bool Firing()
     {
-        return Time.time - lastFired <= 60f * invertFireRate + 0.1f;
+        return Time.time - lastFired <= 60f * invertFireRate + Time.deltaTime * 3;
     }
     public Vector3 MagazinePosition()
     {
@@ -222,7 +240,6 @@ public class Gun : Part
         float energy = ammunition.mass * 2f * ammunition.defaultMuzzleVel;
         rb.AddForceAtPosition(-transform.forward * energy / rb.mass, transform.position, ForceMode.VelocityChange);
     }
-
     public void LoadMagazine(Magazine mag)
     {
         if (gunPreset == mag.gunPreset)
@@ -256,6 +273,7 @@ public class GunEditor : Editor
         EditorGUILayout.HelpBox("General Settings", MessageType.None);
         GUI.color = GUI.backgroundColor;
 
+        gun.controller = (GunController)EditorGUILayout.EnumPopup("Controller", gun.controller);
         gun.ejection = EditorGUILayout.ObjectField("Ejection Transform", gun.ejection, typeof(Transform), true) as Transform;
         gun.muzzleEffects = EditorGUILayout.ObjectField("Muzzle Effects Transform", gun.muzzleEffects, typeof(Transform), true) as Transform;
         gun.bulletSpawn = EditorGUILayout.ObjectField("Bullet Spawn Transform", gun.bulletSpawn, typeof(Transform), true) as Transform;

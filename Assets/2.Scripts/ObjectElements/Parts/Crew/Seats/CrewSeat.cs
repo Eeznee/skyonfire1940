@@ -41,6 +41,10 @@ public class CrewSeat : BasicSeat
     {
         return data.tr.TransformDirection(localDirection);
     }
+    public virtual Vector3 CrosshairDirection()
+    {
+        return DefaultDirection() * 500f;
+    }
     public override float CockpitAudio()
     {
         if (!aircraft) return 0f;

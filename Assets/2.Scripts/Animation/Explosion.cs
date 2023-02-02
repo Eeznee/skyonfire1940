@@ -62,7 +62,7 @@ public struct ExplosiveFiller
         float sqrVelocity = fragmentsVelocity * fragmentsVelocity;
         foreach (RaycastHit h in hits)
         {
-            Part part = h.collider.GetComponent<Part>();
+            Module part = h.collider.GetComponent<Module>();
             if (part == null) continue;
             float penetrationPower = pen * sqrVelocity / (fragmentsVelocity * fragmentsVelocity);
             float alpha = Vector3.Angle(-h.normal, vel);

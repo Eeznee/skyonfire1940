@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(PistonEngine))]
-public class PistonEngineFX : ObjectElement
+public class PistonEngineFX : AudioVisual
 {
-    private EnginesAudio enginesAudio;
     private PistonEngine engine;
     private EnginePreset preset;
     public Mesh exhaustMesh;
@@ -23,7 +22,6 @@ public class PistonEngineFX : ObjectElement
         base.Initialize(d, firstTime);
         if (firstTime)
         {
-            enginesAudio = data.GetComponentInChildren<EnginesAudio>();
             engine = GetComponent<PistonEngine>();
             preset = engine.preset;
 
@@ -40,7 +38,10 @@ public class PistonEngineFX : ObjectElement
         }
     }
 
-
+    private void Pop()
+    {
+        avm.persistent.global.PlayOneRandom(preset.enginePops, 0.4f);
+    }
     private void Update()
     {
         if (complex && complex.lod.LOD() == 3)
@@ -58,7 +59,7 @@ public class PistonEngineFX : ObjectElement
             if (popCooldown < 0f)
             {
                 overHeatEffect.Emit(1);
-                enginesAudio.Pop();
+                Pop();
                 float frequency = minPopFrequency + popFrequencyGrowth * excess;
                 popCooldown = Random.Range(0.7f, 1.5f) / frequency;
             }

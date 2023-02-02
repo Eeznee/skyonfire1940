@@ -41,7 +41,7 @@ public class AVM : ObjectElement
     private List<SofAudio> sofAudiosCockpit = new List<SofAudio>(0);
 
     [HideInInspector] public bool localActive;
-    private bool use3dSound = false;
+    [HideInInspector] public bool use3dSound = false;
 
     public void AddSofAudio(SofAudio sa)
     {
@@ -70,7 +70,7 @@ public class AVM : ObjectElement
     }
     private void Update()
     {
-        bool newUse3dSound = PlayerManager.player.sofObj != sofObject || (GameManager.gm.vr ? false : PlayerCamera.customCam.pos == CamPosition.Free);
+        bool newUse3dSound = PlayerManager.player.sofObj != sofObject || (!GameManager.gm.vr && PlayerCamera.subCam.pos == CamPosition.Free);
         if (newUse3dSound != use3dSound)
             UpdatePlayer(newUse3dSound);
     }

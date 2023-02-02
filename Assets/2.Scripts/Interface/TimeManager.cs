@@ -7,6 +7,7 @@ using System.Collections.Generic;
 public class TimeManager : MonoBehaviour
 {
     private static float timeScale = 1f;
+    public static float invertFixedDelta = 1f;
     public static bool paused;
 
     public delegate void OnPause();
@@ -34,12 +35,13 @@ public class TimeManager : MonoBehaviour
     }
     private void Update()
     {
-        float input = -PlayerActions.instance.actions.General.TimeScaleRelative.ReadValue<float>();
+        float input = -PlayerActions.General().TimeScaleRelative.ReadValue<float>();
         input *= Time.unscaledDeltaTime * 0.25f;
         SetSlowMo(TimeScaleFactor() + input);
 
         Time.timeScale = paused ? 0f : timeScale;
         Time.fixedDeltaTime = Time.timeScale * 0.0166667f;
+        invertFixedDelta = 1f / Time.fixedDeltaTime;
     }
     public static void SetPause(bool _paused, GameUI _ui)
     {

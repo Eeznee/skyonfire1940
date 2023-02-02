@@ -8,6 +8,23 @@ public class PlayerActions : MonoBehaviour
     public Actions actions;
     public MenuActions menuActions;
 
+    public static Actions.GeneralActions General()
+    {
+        return instance.actions.General;
+    }
+    public static Actions.PilotActions Pilot()
+    {
+        return instance.actions.Pilot;
+    }
+    public static Actions.GunnerActions Gunner()
+    {
+        return instance.actions.Gunner;
+    }
+    public static Actions.BombardierActions Bombardier()
+    {
+        return instance.actions.Bombardier;
+    }
+
     private void Awake()
     {
         instance = this;
@@ -33,32 +50,33 @@ public class PlayerActions : MonoBehaviour
         Actions.BombardierActions bombardier = actions.Bombardier;
         Actions.SeatActions seat = actions.Seat;
         Actions.GeneralActions general = actions.General;
-        pilot.LandingGear.performed += ctx => Action("LandingGear");
-        pilot.BombBay.performed += ctx => Action("BombBay"); ;
-        pilot.Airbrakes.performed += ctx => Action("AirBrakes");
-        pilot.Canopy.performed += ctx => Action("Canopy");
-        pilot.EngineToggle.performed += ctx => Action("Engines");
-        pilot.Bomb.performed += ctx => Action("Bomb");
-        pilot.Rocket.performed += ctx => Action("Rocket");
-        pilot.Throttle.performed += ctx => SetThrottle(ctx.ReadValue<float>());
+        pilot.LandingGear.performed += _ => Action("LandingGear");
+        pilot.BombBay.performed += _ => Action("BombBay"); ;
+        pilot.Airbrakes.performed += _ => Action("AirBrakes");
+        pilot.Canopy.performed += _ => Action("Canopy");
+        pilot.EngineToggle.performed += _ => Action("Engines");
+        pilot.Bomb.performed += _ => Action("Bomb");
+        pilot.Rocket.performed += _ => Action("Rocket");
+        pilot.Throttle.performed += val => SetThrottle(val.ReadValue<float>());
+        pilot.Dynamic.performed += _ => PlayerCamera.ToggleDynamic();
 
-        bombardier.BombBay.performed += ctx => Action("BombBay");
-        bombardier.Bomb.performed += ctx => Action("Bomb");
-        bombardier.Mode.performed += ctx => Action("BombsightMode");
-        bombardier.Interval.performed += ctx => Action("BombsightInterval");
-        bombardier.Quantity.performed += ctx => Action("BombsightQuantity");
+        bombardier.BombBay.performed += _ => Action("BombBay");
+        bombardier.Bomb.performed += _ => Action("Bomb");
+        bombardier.Mode.performed += _ => Action("BombsightMode");
+        bombardier.Interval.performed += _ => Action("BombsightInterval");
+        bombardier.Quantity.performed += _ => Action("BombsightQuantity");
 
-        seat.Reload.performed += ctx => Action("Reload");
-        seat.BailOut.performed += ctx => Action("StartBailout");
-        seat.BailOut.canceled += ctx => Action("CancelBailout");
+        seat.Reload.performed += _ => Action("Reload");
+        seat.BailOut.performed += _ => Action("StartBailout");
+        seat.BailOut.canceled += _ => Action("CancelBailout");
 
-        general.SwitchSeat.performed += ctx => PlayerManager.SetPlayer(PlayerManager.player.crew, (PlayerManager.player.crew.currentSeat + 1) % PlayerManager.player.crew.seats.Length, false); ;
-        general.SwitchPilot.performed += _ => PlayerManager.SetPlayer(Player().crew[0], true);
-        general.SwitchGunner1.performed += _ => PlayerManager.SetPlayer(Player().crew[1], true);
-        general.SwitchGunner2.performed += _ => PlayerManager.SetPlayer(Player().crew[2], true);
-        general.SwitchGunner3.performed += _ => PlayerManager.SetPlayer(Player().crew[3], true);
-        general.SwitchGunner4.performed += _ => PlayerManager.SetPlayer(Player().crew[4], true);
-        general.BombardierView.performed += _ => PlayerManager.SetPlayer(Player(), PlayerManager.player.aircraft.bombardierPath, true);
+        general.SwitchSeat.performed += _ => PlayerManager.SetSeat((PlayerManager.player.crew.currentSeat + 1) % PlayerManager.player.crew.seats.Length);
+        general.SwitchPilot.performed += _ => PlayerManager.SetPlayer(Player().crew[0]);
+        general.SwitchGunner1.performed += _ => PlayerManager.SetPlayer(Player().crew[1]);
+        general.SwitchGunner2.performed += _ => PlayerManager.SetPlayer(Player().crew[2]);
+        general.SwitchGunner3.performed += _ => PlayerManager.SetPlayer(Player().crew[3]);
+        general.SwitchGunner4.performed += _ => PlayerManager.SetPlayer(Player().crew[4]);
+        general.BombardierView.performed += _ => PlayerManager.SetSeat(PlayerManager.player.aircraft.bombardierPath);
         general.NextSquadron.performed += _ => PlayerManager.NextSquadron(1);
         general.PreviousSquadron.performed += _ => PlayerManager.NextSquadron(-1);
         general.NextWing.performed += _ => PlayerManager.NextWing(1);
@@ -70,39 +88,46 @@ public class PlayerActions : MonoBehaviour
         general.TimeScale.performed += t => TimeManager.SetSlowMo(Mathf.InverseLerp(1f, -1f, t.ReadValue<float>()));
         menuActions.General.Cancel.performed += _ => Escape();
 
-        PlayerManager.OnPlayerChangeEvent += UpdateActions;
+        general.CustomCam1.performed += _ => PlayerCamera.SetView(-1);
+        general.CustomCam2.performed += _ => PlayerCamera.SetView(-2);
+        general.CustomCam3.performed += _ => PlayerCamera.SetView(-3);
+        general.CustomCam4.performed += _ => PlayerCamera.SetView(-4);
+        general.CustomCam5.performed += _ => PlayerCamera.SetView(-5);
+        general.CustomCam6.performed += _ => PlayerCamera.SetView(-6);
+        general.LookAround.performed += val => PlayerCamera.ToggleLookAround(true);
+        general.LookAround.canceled += val => PlayerCamera.ToggleLookAround(false);
+        general.ResetCamera.performed += _ => PlayerCamera.ResetView(false);
+        general.ToggleViewMode.performed += _ => PlayerCamera.SetView(PlayerCamera.viewMode == 0 ? 1 : 0);
+
+        PlayerManager.OnSeatChangeEvent += UpdateActions;
         TimeManager.OnPauseEvent += UpdateActions;
     }
     private void Escape()
     {
         bool pause = GameManager.gameUI != GameUI.PauseMenu;
         TimeManager.SetPause(pause, pause ? GameUI.PauseMenu : GameUI.Game);
-        if (!pause) PlayerCamera.instance.SetView(PlayerCamera.viewMode == 1 ? 1 : 0);
+        if (!pause) PlayerCamera.SetView(PlayerCamera.viewMode == 1 ? 1 : 0);
     }
     private void PhotoMode()
     {
         TimeManager.SetPause(true, GameUI.PhotoMode);
-        PlayerCamera.instance.SetView(2);
+        PlayerCamera.SetView(2);
     }
     private void UpdateActions()
     {
         actions.General.Enable();
         bool paused = TimeManager.paused;
-        SeatInterface si = GameManager.seatInterface;
+        SeatInterface si = PlayerManager.seatInterface;
         if (!paused && GameManager.gameUI == GameUI.Game) actions.Seat.Enable();else actions.Seat.Disable();
         if (!paused && si == SeatInterface.Pilot) actions.Pilot.Enable(); else actions.Pilot.Disable();
         if (!paused && si == SeatInterface.Gunner) actions.Gunner.Enable(); else actions.Gunner.Disable();
         if (!paused && si == SeatInterface.Bombardier) actions.Bombardier.Enable(); else actions.Bombardier.Disable();
     }
-    private void Action(string action)
+    public static void Action(string action)
     {
         if (PlayerManager.player.aircraft == null || PlayerManager.player.crew.ripped || PlayerManager.player.crew.body.Gloc()) return;
         switch (action)
         {
-            case "SwitchSeat":
-                CrewMember crew = PlayerManager.player.crew;
-                PlayerManager.SetPlayer(crew, (crew.currentSeat + 1) % crew.seats.Length, false);
-                break;
             case "Reload":
                 PlayerManager.player.crew.Seat().TryReload();
                 break;

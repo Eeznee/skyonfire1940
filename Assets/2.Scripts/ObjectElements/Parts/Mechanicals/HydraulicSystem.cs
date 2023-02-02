@@ -30,7 +30,7 @@ public class HydraulicSystem : ObjectElement
     private float targetVolume;
 
     //References
-    public Part[] essentialParts;
+    public Module[] essentialParts;
     private Animator anim;
     private SofAudio sofAudio;
 
@@ -51,7 +51,7 @@ public class HydraulicSystem : ObjectElement
     private void Update()
     {
         disabled = essentialParts.Length > 0;
-        foreach (Part p in essentialParts) if (p && p.data == data && !p.ripped) disabled = false;
+        foreach (Module p in essentialParts) if (p && p.data == data && !p.ripped) disabled = false;
 
         bool animating = (state != stateInput) && !disabled;
         if (animating)

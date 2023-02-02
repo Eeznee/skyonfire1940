@@ -28,6 +28,11 @@ public class GunnerSeat : CrewSeat
     const float burstPerlinExpert = 0.52f;
     public override SeatInterface SeatUI() { return SeatInterface.Gunner; }
 
+    public override Vector3 CrosshairDirection()
+    {
+        if (turret) return turret.FiringDirection() * 500f;
+        return base.CrosshairDirection();
+    }
     public override int Priority()
     {
         if (mainGun && aircraft && aircraft.crew[0] == PlayerManager.player.crew) return -1;
@@ -59,7 +64,7 @@ public class GunnerSeat : CrewSeat
 
     public override Vector3 HeadPosition(bool player)
     {
-        bool useGunPov = gunPovTarget && gunPovTarget.root == transform.root && !(player && PlayerCamera.zoomed);
+        bool useGunPov = gunPovTarget && gunPovTarget.root == transform.root && !(player && CameraFov.zoomed);
         if (useGunPov)  return (gunPovTarget.position + defaultPOV.position) * 0.5f;
         else return base.HeadPosition(player);
     }
@@ -69,16 +74,16 @@ public class GunnerSeat : CrewSeat
 
         if (progressiveHydraulic)
         {
-            float input = PlayerActions.instance.actions.Gunner.Hydraulics.ReadValue<float>();
+            float input = PlayerActions.Gunner().Hydraulics.ReadValue<float>();
             progressiveHydraulic.SetDirection(Mathf.RoundToInt(input));
         }
         if (!turret) return;
         if (!handsBusy) NewGrips(defaultRightHand, defaultLeftHand);
 
-        Vector2 basic = PlayerActions.instance.actions.Gunner.BasicAxis.ReadValue<Vector2>();
-        float special = PlayerActions.instance.actions.Gunner.SpecialAxis.ReadValue<float>();
+        Vector2 basic = PlayerActions.Gunner().BasicAxis.ReadValue<Vector2>();
+        float special = PlayerActions.Gunner().SpecialAxis.ReadValue<float>();
         turret.SetDirectionSemi(PlayerCamera.directionInput,special);
-        bool firing = PlayerActions.instance.actions.Gunner.Fire.ReadValue<float>() > 0.5f;
+        bool firing = PlayerActions.Gunner().Fire.ReadValue<float>() > 0.5f;
         turret.Operate(firing,false);
         if (turret.Firing()) VibrationsManager.SendVibrations(0.2f, 0.1f, aircraft);
     }

@@ -29,15 +29,15 @@ public class PlayerManager : MonoBehaviour
     //Player References
     public static SeatInterface seatInterface = SeatInterface.Empty;
     public static AircraftReferences player = new AircraftReferences();
-    public static GunnerSeat playerGunner;
     private static int squad = 0;
     private static int wing = 0;
-    public delegate void PlayerChange();
-    public static PlayerChange OnPlayerChangeEvent;
+    public delegate void SeatChange();
+    public static SeatChange OnSeatChangeEvent;
 
     private void Awake()
     {
-        OnPlayerChangeEvent = null;
+        OnSeatChangeEvent = null;
+        seatInterface = SeatInterface.Empty;
     }
     private void Update()
     {
@@ -45,18 +45,18 @@ public class PlayerManager : MonoBehaviour
 
         if (player.crew == null)
         {
-            SetPlayer(GameManager.squadrons[PlayerPrefs.GetInt("PlayerSquadron", 0)][0], true);
+            SetPlayer(GameManager.squadrons[PlayerPrefs.GetInt("PlayerSquadron", 0)][0]);
         }
     }
     public static void NextSquadron(int offset)
     {
-        SetPlayer(OffsetSquadron(offset, squad), true);
-        if (PlayerCamera.viewMode < 0) PlayerCamera.instance.SetView(0);
+        SetPlayer(OffsetSquadron(offset, squad));
+        if (PlayerCamera.viewMode < 0) PlayerCamera.SetView(0);
     }
     public static void NextWing(int offset)
     {
-        SetPlayer(OffsetWing(offset, wing, squad), true);
-        if (PlayerCamera.viewMode < 0) PlayerCamera.instance.SetView(0);
+        SetPlayer(OffsetWing(offset, wing, squad));
+        if (PlayerCamera.viewMode < 0) PlayerCamera.SetView(0);
     }
     public static SofAircraft OffsetSquadron(int offset, int squad)
     {
@@ -79,41 +79,25 @@ public class PlayerManager : MonoBehaviour
             return OffsetWing(offset + (int)Mathf.Sign(offset),wing,squad);
         return null;
     }
-    public static void PlayerNull()
-    {
-        //player.Set(null);
-        //PlayerCamera.instance.ResetView(true);
-    }
-    public static void SetPlayer(SofObject obj, bool original){ SetPlayer(obj.crew[0],original); }
-    public static void SetPlayer(CrewMember tCrew, bool original){ SetPlayer(tCrew, 0,original); }
-    public static void SetPlayer(SofObject obj, SeatPath path, bool original){ SetPlayer(path.Crew(obj), path.seat, original); }
-    public static void SetPlayer(CrewMember tCrew, int seat,bool original)
-    {
-        if (tCrew == null) return;
+    public static void PlayerNull(){ }
+    public static void SetPlayer(SofObject obj){ SetPlayer(obj.crew[0]); }
+    public static void SetPlayer(CrewMember tCrew){
 
-        CrewMember oldPlayer = player.crew;
+        if (tCrew == null) return;
         player.Set(tCrew);
         if (player.aircraft)
         {
             squad = player.aircraft.squadronId;
             wing = player.aircraft.placeInSquad;
+            player.aircraft.PointGuns();
         }
-        playerGunner = tCrew.seats[0].GetComponent<GunnerSeat>();
-        if (tCrew.aircraft) tCrew.aircraft.PointGuns();
-        tCrew.SwitchSeat(seat);
-        GameManager.seatInterface = player.crew == null ? SeatInterface.Empty : player.crew.Interface();
-        if (GameManager.gm.vr)
-        {
-            SofVrRig.instance.ResetView();
-            if (!oldPlayer || oldPlayer.sofObject != player.sofObj)
-            {
-                if (oldPlayer) SofVrRig.DisableVR(oldPlayer.sofObject);
-                SofVrRig.EnableVR(player.sofObj);
-            }
-        }
-        else
-            PlayerCamera.instance.ResetView(true);
+        SetSeat(0); }
+    public static void SetSeat(SeatPath path){ SetPlayer(path.Crew(player.aircraft));  SetSeat(path.seat); }
+    public static void SetSeat(int seat)
+    {
+        player.crew.SwitchSeat(seat);
+        seatInterface = player.crew.Interface();
 
-        if (OnPlayerChangeEvent != null) OnPlayerChangeEvent();
+        if (OnSeatChangeEvent != null) OnSeatChangeEvent();
     }
 }

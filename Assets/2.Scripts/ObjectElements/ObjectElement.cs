@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class ObjectElement : MonoBehaviour
+public class ObjectElement : MonoBehaviour  //Objects elements are the building blocks of Sof Objects
 {
     //References
     [HideInInspector] public Rigidbody rb;
@@ -10,15 +10,7 @@ public class ObjectElement : MonoBehaviour
     [HideInInspector] public SofAircraft aircraft;
     [HideInInspector] public ObjectData data;
     [HideInInspector] public Transform tr;
-    public virtual float Mass()
-    {
-        return 0f;
-    }
 
-    public virtual float EmptyMass()
-    {
-        return 0f;
-    }
     public virtual void Initialize(ObjectData d,bool firstTime)
     {
         data = d;

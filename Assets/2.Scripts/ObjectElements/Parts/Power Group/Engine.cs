@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
-public class Engine : Part
+public class Engine : Module
 {
     public enum EnginesState
     {

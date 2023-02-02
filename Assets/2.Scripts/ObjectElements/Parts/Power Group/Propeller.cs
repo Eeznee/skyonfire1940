@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 //
-public class Propeller : Part
+public class Propeller : Module
 {
     //Settings
     public float reductionGear = 0.477f;

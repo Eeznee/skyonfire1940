@@ -30,6 +30,8 @@ public class SofVrRig : MonoBehaviour
     private Vector3 previousRightHandPos = Vector3.zero;
     private Vector3 previousLeftHandPos = Vector3.zero;
 
+    private SofObject currentObject;
+
     public static void EnableVR(SofObject obj)
     {
         CockpitInteractable[] interactables = obj.GetComponentsInChildren<CockpitInteractable>();
@@ -77,7 +79,7 @@ public class SofVrRig : MonoBehaviour
         if (ixr == leftHand.firstInteractableSelected) return actions.LeftHand.Stick.ReadValue<Vector2>();
         return Vector2.zero;
     }
-    void Awake()
+    private void Awake()
     {
         GetReferences();
         actions.LeftHand.Menu.performed += _ => SceneManager.LoadScene("MainMenu");
@@ -89,7 +91,21 @@ public class SofVrRig : MonoBehaviour
         if (actions == null)
             actions = new XRActions();
     }
-    void Update()
+    private void Start()
+    {
+        PlayerManager.OnSeatChangeEvent += ResetPlayer;
+    }
+    private void ResetPlayer()
+    {
+        ResetView();
+        if (!currentObject || currentObject != PlayerManager.player.sofObj)
+        {
+            if (currentObject) DisableVR(currentObject);
+            currentObject = PlayerManager.player.sofObj;
+            EnableVR(currentObject);
+        }
+    }
+    private void Update()
     {
         rightHandDelta = transform.TransformDirection(rightHand.transform.localPosition - previousRightHandPos);
         previousRightHandPos = rightHand.transform.localPosition;

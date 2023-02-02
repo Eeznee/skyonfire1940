@@ -7,7 +7,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
-public class CrewMember : Part
+public class CrewMember : Module
 {
     //State
     public float audioCockpitRatio = 1f;
@@ -24,7 +24,9 @@ public class CrewMember : Part
     const float bailOutTime = 3f;
     const float minBailOutAltitude = 30f;
     const float minCrashTime = 2f;
-
+    public Vector3 headLookAt = Vector3.forward;
+    public const float eyeShift = 0.05f;
+    public Vector3 EyesPosition() { return transform.position + transform.parent.up * eyeShift; }
     public override float Mass() { return HumanBody.Weight(); }
     public override float EmptyMass() { return 0f; }
     public CrewSeat Seat() { return seats[currentSeat]; }
@@ -84,7 +86,6 @@ public class CrewMember : Part
         seats[currentSeat].ResetSeat();
         currentSeat = seat;
         seats[seat].ResetSeat();
-        if (PlayerManager.player.crew == this) PlayerCamera.instance.ResetView(false);
     }
     public override void Rip()
     {

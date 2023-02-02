@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using System;
 using Unity.Services.Core;
 using Unity.Services.Core.Environments;
-public class MyBoutique : MonoBehaviour, IStoreListener 
+public class MyBoutique : MonoBehaviour, IStoreListener
 {
     public Button spitfire;
     public Button bf110;
@@ -13,17 +13,17 @@ public class MyBoutique : MonoBehaviour, IStoreListener
     private IStoreController controller;
     private IExtensionProvider extensions;
 
-    public string spitfireId = "aircrafts.spitfire_mki_cannons"; 
+    public string spitfireId = "aircrafts.spitfire_mki_cannons";
     public string bf110Id = "aircrafts.bf110_c6";
     public string workshopId = "pack.workshop";
+    const string k_Environment = "production";
 
-    void Start()
+    void Awake()
     {
-        InitializePurchasing();
-        UpdateButtons();
+        var options = new InitializationOptions().SetEnvironmentName(k_Environment);
+        UnityServices.InitializeAsync(options);
     }
-
-    private void InitializePurchasing()
+    void Start()
     {
         var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
 
@@ -31,14 +31,14 @@ public class MyBoutique : MonoBehaviour, IStoreListener
         builder.AddProduct("aircrafts.spitfire_mki_cannons", ProductType.NonConsumable);
         builder.AddProduct("pack.workshop", ProductType.NonConsumable);
 
-        UnityServices.InitializeAsync();
         UnityPurchasing.Initialize(this, builder);
+        UpdateButtons();
     }
 
-/// <summary>
-/// Called when Unity IAP is ready to make purchases.
-/// </summary>
-public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
+    /// <summary>
+    /// Called when Unity IAP is ready to make purchases.
+    /// </summary>
+    public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
     {
         this.controller = controller;
         this.extensions = extensions;
@@ -79,7 +79,7 @@ public void OnInitialized(IStoreController controller, IExtensionProvider extens
     /// May be called at any time after OnInitialized().
     /// </summary>
     public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs e)
-    { 
+    {
         //Retrieve the purchased product
         var product = e.purchasedProduct;
 

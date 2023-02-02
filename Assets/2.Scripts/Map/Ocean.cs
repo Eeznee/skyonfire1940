@@ -6,11 +6,9 @@ public class Ocean : MonoBehaviour
 {
     public Material simple;
     public Material complex;
-    public int index = 0;
     void Awake()
     {
-        Material[] mats = GetComponent<Renderer>().sharedMaterials;
-        mats[index] = QualitySettings.GetQualityLevel() == 3 ? complex : simple;
-        GetComponent<Renderer>().sharedMaterials = mats;
+        Material mat = QualitySettings.GetQualityLevel() == 3 ? complex : simple;
+        GetComponent<Renderer>().sharedMaterial = mat;
     }
 }

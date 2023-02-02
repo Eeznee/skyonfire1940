@@ -7,9 +7,10 @@ public class SettingsSpecific : DynamicUI
     public string key;
     public int expectedValue = 0;
     public int defaultValue = 0;
-
+    public bool negate;
     public override bool IsActive()
     {
+        if (negate) return PlayerPrefs.GetInt(key, defaultValue) != expectedValue;
         return PlayerPrefs.GetInt(key, defaultValue) == expectedValue;
     }
 }

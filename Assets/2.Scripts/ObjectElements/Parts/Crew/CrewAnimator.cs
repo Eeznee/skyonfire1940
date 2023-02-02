@@ -5,8 +5,6 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class CrewAnimator : MonoBehaviour
 {
-    public Transform head;
-
     public Mesh headLessModel;
     private Mesh defaultModel;
     private bool noHead = false;
@@ -21,11 +19,6 @@ public class CrewAnimator : MonoBehaviour
     private FootRest standingLeftFoot;
     public HandGrip restingGrip;
     private Animator animator;
-
-    private Vector3 headLookAt;
-    private Vector3 accelerationOffset = Vector3.zero;
-    private Vector3 accelerationCompensation = Vector3.zero;
-    private Vector3 vel = Vector3.zero;
 
     const float standingButtHead = 0.88f;
     const float leaningButtHead = 0.68f;
@@ -50,11 +43,13 @@ public class CrewAnimator : MonoBehaviour
         rightHand = hands[0].ikGoal == AvatarIKGoal.RightHand ? hands[0] : hands[1];
         leftHand = hands[0].ikGoal == AvatarIKGoal.RightHand ? hands[1] : hands[0];
         
-
         FootRest[] feet = GetComponentsInChildren<FootRest>();
         standingRightFoot = feet[0].transform.localPosition.x > 0f ? feet[0] : feet[1];
         standingLeftFoot = feet[0].transform.localPosition.x > 0f ? feet[1] : feet[0];
     }
+
+    private Vector3 accelerationCompensation = Vector3.zero;
+    private Vector3 vel = Vector3.zero;
     private void Update()
     {
         if (!Application.isPlaying)
@@ -62,7 +57,7 @@ public class CrewAnimator : MonoBehaviour
             GetReferences();
             animator.Update(0f);
         }
-        bool firstPerson = PlayerManager.player.crew == crew && (GameManager.gm.vr || PlayerCamera.customCam.pos == CamPosition.FirstPerson);
+        bool firstPerson = PlayerManager.player.crew == crew && (GameManager.gm.vr || PlayerCamera.subCam.pos == CamPosition.FirstPerson);
         bool newDisabled = (crew.aircraft && crew.aircraft.lod.LOD() > 1) || (firstPerson && !firstPersonModel);
         if (newDisabled != disabled)
         {
@@ -89,13 +84,14 @@ public class CrewAnimator : MonoBehaviour
         if (seat)
         {
             pos = vrPlayer ? PlayerCamera.camPos : seat.HeadPosition(player);
-            if (data && firstPerson && !vrPlayer)
+            if (data && PlayerManager.player.sofObj == crew.sofObject && !vrPlayer)
             {
                 Vector3 gOffsetLocal = data.acceleration / Physics.gravity.y;
                 gOffsetLocal.y *= 0.5f;
-                accelerationOffset = data.tr.TransformDirection(gOffsetLocal);
+                Vector3 accelerationOffset = data.tr.TransformDirection(gOffsetLocal);
                 accelerationOffset += (data.tr.up - Vector3.up) * 4f;
                 accelerationCompensation = Vector3.MoveTowards(accelerationCompensation, accelerationOffset, Time.deltaTime * 2f);
+                accelerationCompensation = Vector3.ClampMagnitude(accelerationCompensation, accelerationOffset.magnitude);
                 pos += (accelerationOffset - accelerationCompensation) / 50f;
             }
             if (!Application.isPlaying) seat.tr = seat.transform;
@@ -103,14 +99,15 @@ public class CrewAnimator : MonoBehaviour
             rot *= Quaternion.Euler(-90f, 0f, 0f);
 
             pos = tr.parent.InverseTransformPoint(pos);
+            pos += CrewMember.eyeShift * Vector3.down;
         }
-        tr.localPosition = Vector3.SmoothDamp(tr.localPosition, pos, ref vel, smoothTime, headMoveSpeed, Time.deltaTime);
+        tr.localPosition = Vector3.SmoothDamp(tr.localPosition, pos, ref vel, smoothTime, headMoveSpeed, Time.deltaTime) ;
         tr.rotation = rot;
     }
     private void OnAnimatorIK()
     {
         if (Application.isPlaying)
-            if (!head || crew.seats.Length == 0 || crew.seats[0] == null || !crew.complex || crew.complex.lod.LOD() > 1) return;
+            if (crew.seats.Length == 0 || crew.seats[0] == null || !crew.complex || crew.complex.lod.LOD() > 1) return;
 
         //References
         Transform tr = crew.transform;
@@ -123,17 +120,15 @@ public class CrewAnimator : MonoBehaviour
     }
     private void AnimateHead(Transform tr, CrewSeat seat)
     {
-        head.forward = seat.headLookDirection + seat.transform.forward * 0.05f;
-        head.localPosition = Vector3.zero;
-        Vector3 localDir = tr.InverseTransformDirection(head.forward);
+        Vector3 localDir = tr.InverseTransformDirection(seat.headLookDirection + seat.transform.forward * 0.05f);
         localDir.y *= 0.35f;
         localDir.z = Mathf.Abs(localDir.z);
         Vector3 dir = tr.TransformDirection(localDir) * 100f;
         if (crew.ripped) dir = tr.forward - tr.up * 2f;
-        headLookAt = tr.position + dir;
+        crew.headLookAt = tr.position + dir;
 
         animator.SetLookAtWeight(1);
-        animator.SetLookAtPosition(headLookAt);
+        animator.SetLookAtPosition(crew.headLookAt);
     }
     private void AnimateBody(Transform tr, CrewSeat seat)
     {

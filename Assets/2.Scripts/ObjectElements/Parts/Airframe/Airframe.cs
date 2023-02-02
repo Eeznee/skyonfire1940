@@ -4,10 +4,10 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
-public class Airframe : Part
+public class Airframe : Module
 {
     //Attachements and links
-    public Part[] ripOnRip;
+    public Module[] ripOnRip;
     public bool vital = false;
 
     //Damage model

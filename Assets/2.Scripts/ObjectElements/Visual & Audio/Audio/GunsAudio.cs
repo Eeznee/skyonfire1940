@@ -1,97 +1,113 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Audio;
 
+public class GunsGroupAudio : MonoBehaviour
+{
+    public GunPreset preset;
+    public GunAudioSample sample;
+    public List<Gun> guns;
+    private AVM avm;
+
+    private SofAudio outSource;
+    private SofAudio inSource;
+
+    private bool firing = false;
+
+    public void Initialize(Gun firstGun, AVM _avm)
+    {
+        guns = new List<Gun>();
+        guns.Add(firstGun);
+        preset = firstGun.gunPreset;
+        avm = _avm;
+        sample = preset.audioSamples[0];
+    }
+    private void Start()
+    {
+        outSource = new SofAudio(avm, null, SofAudioGroup.External, true);
+        inSource = new SofAudio(avm, null, SofAudioGroup.Cockpit, false);
+
+        foreach(Gun gun in guns)
+            gun.OnFireEvent += ShotFired;
+    }
+    private int GunsFiring()
+    {
+        int amount = 0;
+        foreach (Gun gun in guns) if (gun && gun.Firing()) amount++;
+        return amount;
+    }
+    IEnumerator AudioCycle()
+    {
+        //Guns Started Firing
+        firing = true;
+        yield return null;
+        sample = GunAudioSample.GetBestSample(preset.audioSamples, GunsFiring());
+        outSource.source.clip = sample.autoOut;
+        inSource.source.clip = sample.autoIn;
+        outSource.source.Play();
+        inSource.source.Play();
+        float delay = Random.Range(0f, Mathf.Min(outSource.source.clip.length, inSource.source.clip.length));
+        delay -= delay % (60f / preset.FireRate);
+        outSource.source.time = inSource.source.time = delay;
+        outSource.source.volume = inSource.source.volume = 1f;
+
+        do yield return new WaitForSeconds(60f / preset.FireRate);
+        while (GunsFiring() > 0);
+
+        //Guns Stopped Firing
+
+        PlayEndClips();
+        float volume = outSource.source.volume;
+        while (volume > 0f)
+        {
+            volume -= Time.deltaTime * preset.FireRate / 30f;
+            volume = Mathf.Clamp01(volume);
+            outSource.source.volume = inSource.source.volume = volume;
+            yield return null;
+        }
+        outSource.Stop();
+        inSource.Stop();
+        firing = false;
+    }
+    private void PlayEndClips()
+    {
+        if (sample.endOut) avm.external.global.PlayOneShot(sample.endOut);
+        if (sample.endIn) avm.cockpit.local.PlayOneShot(sample.endIn);
+    }
+    private void ShotFired()
+    {
+        if (preset.singleShotsAudio)
+            PlayEndClips();
+        else if (!firing) StartCoroutine(AudioCycle());
+    }
+}
 public class GunsAudio : AudioVisual
 {
-    private bool firing = false;
-    private bool smoothOut = false;
-
-    public Gun[] references;
-
-    public AudioClip gunLoop;
-    public AudioClip gunEnd;
-    public AudioClip cockpitGunLoop;
-    public AudioClip cockpitGunEnd;
-
-    public bool vibrate = false;
-    public float vibrationsIntensity = 0.2f;
-
-    private bool singleFire;
-    private SofAudio gunSource;
-    private SofAudio cockpitGunSource;
+    private List<GunsGroupAudio> groups;
 
     public override void Initialize(ObjectData d, bool firstTime)
     {
-        base.Initialize(d,firstTime);
+        base.Initialize(d, firstTime);
 
         if (firstTime)
         {
-            if (references.Length == 0) Debug.LogError("This Gun Audio has no reference gun", this);
-
-            if (vibrate) foreach(Gun gun in references) gun.OnFireEvent += Vibrate;
-
-            singleFire = references[0].gunPreset.FireRate <= 150f;
-            if (singleFire)
+            groups = new List<GunsGroupAudio>();
+            Gun[] allGuns = sofObject.GetComponentsInChildren<Gun>();
+            for (int i = 0; i < allGuns.Length; i++)
             {
-                references[0].OnFireEvent += PlaySingleShot;
-            } else
-            {
-                gunSource = new SofAudio(avm, gunLoop, SofAudioGroup.External, true);
-                cockpitGunSource = new SofAudio(avm, cockpitGunLoop, SofAudioGroup.Cockpit, false);
+                Gun gun = allGuns[i];
+                GunPreset preset = gun.gunPreset;
+
+                bool isNewPreset = true;
+                foreach (GunsGroupAudio group in groups)
+                    if (group.preset == preset) { isNewPreset = false; group.guns.Add(gun); }
+                if (isNewPreset)
+                {
+                    GunsGroupAudio newGroup = gameObject.AddComponent<GunsGroupAudio>();
+                    newGroup.Initialize(gun, avm);
+                    groups.Add(newGroup);
+                }
             }
-        }
-    }
-    private void PlaySingleShot()
-    {
-        avm.external.global.PlayOneShot(gunLoop);
-        avm.cockpit.local.PlayOneShot(cockpitGunLoop);
-    }
-    private void Vibrate()
-    {
-        VibrationsManager.SendVibrations(vibrationsIntensity, 0.15f, aircraft);
-    }
-    
-    public void Update()
-    {
-        if (Time.timeScale == 0f || singleFire) return;
-
-        bool updateFiring = false;
-        foreach (Gun gun in references)
-            updateFiring = gun.Firing() || updateFiring;
-        
-        if (updateFiring != firing) Trigger(updateFiring);
-
-        if (!firing && smoothOut)
-        {
-            float volume = Mathf.Clamp01(gunSource.source.volume - Time.deltaTime * references[0].gunPreset.FireRate / 60f);
-            gunSource.source.volume = cockpitGunSource.source.volume = volume;
-            if (volume <= 0f)
-            {
-                gunSource.Stop();
-                cockpitGunSource.Stop();
-                smoothOut = false;
-            }
-        }
-    }
-    public void Trigger(bool f)
-    {
-        firing = f;
-        if (firing)
-        {
-            gunSource.Play();
-            cockpitGunSource.Play();
-            float delay = Random.Range(0f, Mathf.Min(gunLoop.length,cockpitGunLoop.length));
-            if (references[0].gunPreset.FireRate < 400f) delay = 60f / references[0].gunPreset.FireRate;
-            gunSource.source.time = cockpitGunSource.source.time = delay;
-            gunSource.source.volume = cockpitGunSource.source.volume = 1f;
-
-            smoothOut = true;
-        } else
-        {
-            avm.external.global.PlayOneShot(gunEnd);
-            avm.cockpit.local.PlayOneShot(cockpitGunEnd);
         }
     }
 }

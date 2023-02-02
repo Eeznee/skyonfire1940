@@ -15,15 +15,14 @@ public static class Ballistics
     {
         return mass * vel * vel / (Mathf.Pow(diameter, 1.5f) * 35f);
     }
-    public static Vector3[] BallisticPath(Vector3 startPos, Vector3 dir, float speed, float dragCoeff, int points, float lifetime)
+    public static Vector3[] BallisticPath(Vector3 dir, float speed, float dragCoeff, int points, float lifetime)
     {
         float logConst = Mathf.Log(1f / speed) / dragCoeff;
-        Vector3[] worldPos = new Vector3[points];
-        for (int i = 0; i < points; i++)
+        Vector3[] worldPos = new Vector3[points + 1];
+        for (int i = 0; i <= points; i++)
         {
             float t = (float)i / points * lifetime;
-            worldPos[i] = startPos;
-            worldPos[i] += Physics.gravity / 2f * t * t;
+            worldPos[i] = Physics.gravity / 2f * t * t;
             worldPos[i] += dir * (Mathf.Log(dragCoeff * t + 1f / speed) / dragCoeff - logConst);
         }
         return worldPos;

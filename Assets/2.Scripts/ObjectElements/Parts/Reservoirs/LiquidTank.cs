@@ -5,11 +5,11 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
-public class LiquidTank : Part
+public class LiquidTank : Module
 {
     public class LiquidCircuit
     {
-        public LiquidCircuit(Part _part, LiquidTank _tank, float _escapeSpeed)
+        public LiquidCircuit(Module _part, LiquidTank _tank, float _escapeSpeed)
         {
             holesArea = 0f;
             part = _part;
@@ -17,7 +17,7 @@ public class LiquidTank : Part
             escapeSpeed = _escapeSpeed;
             leak = Instantiate(mainTank.leakEffect, part.transform).GetComponent<ParticleSystem>();
         }
-        public Part part;
+        public Module part;
         public LiquidTank mainTank;
 
         public float holesArea;

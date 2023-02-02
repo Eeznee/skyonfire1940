@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnginesAudio : AudioVisual
+public class EnginesGroupAudio : MonoBehaviour
 {
     //References
-    public Engine[] engines;
-    private EnginePreset preset;
+    public List<Engine> engines;
+    public EnginePreset preset;
 
     //Sources
     private SofAudio idleCockpit;
@@ -14,7 +14,7 @@ public class EnginesAudio : AudioVisual
     private SofAudio idleExternal;
     private SofAudio fullExternal;
     private SofAudio spatial;
-
+    private AVM avm;
 
 
     private float invertIdleRPS;
@@ -23,28 +23,28 @@ public class EnginesAudio : AudioVisual
     private const float togglingInterval = 0.15f;
     private bool[,] enginesPreviousStates;
 
-
-    public override void Initialize(ObjectData d, bool firstTime)
+    public void Initialize(Engine firstEngine, AVM _avm)
     {
-        base.Initialize(d, firstTime);
-        if (firstTime)
-        {
-            if (engines.Length == 0) engines = aircraft.engines;
-            enginesPreviousStates = new bool[aircraft.engines.Length, 2];
-            preset = engines[0].preset;
-            invertIdleRPS = 1f / preset.idleRPS;
-            invertFullRPS = 1f / preset.fullRps;
+        engines = new List<Engine>();
+        engines.Add(firstEngine);
+        preset = firstEngine.preset;
+        avm = _avm;
+    }
+    private void Start()
+    {
+        enginesPreviousStates = new bool[engines.Count, 2];
 
+        invertIdleRPS = 1f / preset.idleRPS;
+        invertFullRPS = 1f / preset.fullRps;
 
-            //Audio
-            idleCockpit = new SofAudio(avm, preset.idleAudioCockpit, SofAudioGroup.Cockpit, false);
-            fullCockpit = new SofAudio(avm, preset.fullAudioCockpit, SofAudioGroup.Cockpit, false);
-            idleExternal = new SofAudio(avm, preset.idleAudioExtSelf, SofAudioGroup.External, true);
-            fullExternal = new SofAudio(avm, preset.fullAudioExtSelf, SofAudioGroup.External, true);
-            spatial = new SofAudio(avm, preset.spatialAudio, SofAudioGroup.External, true);
-            fullExternal.source.minDistance = idleExternal.source.minDistance = 300f;
-            spatial.source.minDistance = 600f;
-        }
+        //Audio
+        idleCockpit = new SofAudio(avm, preset.idleAudioCockpit, SofAudioGroup.Cockpit, false);
+        fullCockpit = new SofAudio(avm, preset.fullAudioCockpit, SofAudioGroup.Cockpit, false);
+        idleExternal = new SofAudio(avm, preset.idleAudioExtSelf, SofAudioGroup.External, true);
+        fullExternal = new SofAudio(avm, preset.fullAudioExtSelf, SofAudioGroup.External, true);
+        spatial = new SofAudio(avm, preset.spatialAudio, SofAudioGroup.External, true);
+        fullExternal.source.minDistance = idleExternal.source.minDistance = 300f;
+        spatial.source.minDistance = 600f;
     }
     public void Toggle(bool on)
     {
@@ -53,10 +53,6 @@ public class EnginesAudio : AudioVisual
         counter = togglingInterval;
     }
 
-    public void Pop()
-    {
-        avm.persistent.global.PlayOneRandom(preset.enginePops, 0.4f);
-    }
     private float previousIdleVolume = 0f;
     private float previousFullVolume = 0f;
     private float previousSpacialVolume = 0f;
@@ -70,7 +66,7 @@ public class EnginesAudio : AudioVisual
         counter -= Time.deltaTime;
         float highestRPS = 0f;
         float highestVolume = 0f;
-        for (int i = 0; i < engines.Length; i++)
+        for (int i = 0; i < engines.Count; i++)
         {
             Engine engine = engines[i];
             highestRPS = Mathf.Max(highestRPS, engine.rps);
@@ -85,7 +81,7 @@ public class EnginesAudio : AudioVisual
         //Volume
         float idleVolume = Mathf.InverseLerp(preset.fullRps, preset.idleRPS, highestRPS) * highestVolume;
         float fullVolume = highestVolume - idleVolume;
-        float spacialVolume = highestVolume * 5f * Mathf.InverseLerp(300f * 300f, 2000f * 2000f, (data.position - SofAudioListener.position).sqrMagnitude);
+        float spacialVolume = highestVolume * 5f * Mathf.InverseLerp(300f * 300f, 2000f * 2000f, (avm.data.position - SofAudioListener.position).sqrMagnitude);
 
         if (Mathf.Abs(previousIdleVolume - idleVolume) > volumeStep) previousIdleVolume = idleCockpit.source.volume = idleExternal.source.volume = idleVolume;
         if (Mathf.Abs(previousFullVolume - fullVolume) > volumeStep) previousFullVolume = fullCockpit.source.volume = fullExternal.source.volume = fullVolume;
@@ -94,9 +90,39 @@ public class EnginesAudio : AudioVisual
         //Pitch
         float idlePitch = Mathf.Max(1f, highestRPS * invertIdleRPS) * (TimeManager.paused ? 1f : Time.timeScale);
         float fullPitch = idlePitch * preset.idleRPS * invertFullRPS;
-        if (aircraft.boost) fullPitch *= 1.03f;
-        if ((int)aircraft.enginesState <= 1) return;
+        if (avm.aircraft.boost && preset.type != EnginePreset.Type.Jet) fullPitch *= 1.125f;
+        if ((int)avm.aircraft.enginesState <= 1) return;
         if (Mathf.Abs(previousIdlePitch - idlePitch) > pitchStep) previousIdlePitch = idleCockpit.source.pitch = idleExternal.source.pitch = idlePitch;
         if (Mathf.Abs(previousFullPitch - fullPitch) > pitchStep) previousFullPitch = fullCockpit.source.pitch = fullExternal.source.pitch = fullPitch;
+    }
+}
+public class EnginesAudio : AudioVisual
+{
+    private List<EnginesGroupAudio> groups;
+
+    public override void Initialize(ObjectData d, bool firstTime)
+    {
+        base.Initialize(d, firstTime);
+
+        if (firstTime)
+        {
+            groups = new List<EnginesGroupAudio>();
+            Engine[] allEngines = sofObject.GetComponentsInChildren<Engine>();
+            for (int i = 0; i < allEngines.Length; i++)
+            {
+                Engine engine = allEngines[i];
+                EnginePreset preset = engine.preset;
+
+                bool isNewPreset = true;
+                foreach (EnginesGroupAudio group in groups)
+                    if (group.preset == preset) { isNewPreset = false; group.engines.Add(engine); }
+                if (isNewPreset)
+                {
+                    EnginesGroupAudio newGroup = gameObject.AddComponent<EnginesGroupAudio>();
+                    newGroup.Initialize(engine, avm);
+                    groups.Add(newGroup);
+                }
+            }
+        }
     }
 }

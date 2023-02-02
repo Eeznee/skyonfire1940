@@ -14,7 +14,7 @@ public class MaterialsList : ScriptableObject
     public PartMaterial wheelMat;
     public PhysicMaterial aircraftMat;
 
-    public PartMaterial Material(Part p)
+    public PartMaterial Material(Module p)
     {
         if (p.GetComponent<Wheel>()) return wheelMat;
         if (p.GetComponent<AirfoilSkin>()) return skinMat;

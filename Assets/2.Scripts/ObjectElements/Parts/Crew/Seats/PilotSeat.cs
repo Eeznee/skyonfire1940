@@ -46,10 +46,15 @@ public class PilotSeat : CrewSeat
         breakFormation = new BreakFormation();
         perlinRandomizer = Random.Range(0f, 1000f);
     }
+    public override Vector3 CrosshairDirection()
+    {
+        if (aircraft) return data.forward * aircraft.convergeance;
+        return data.forward * 500f;
+    }
     public override Vector3 HeadPosition(bool player)
     {
         Vector3 pov = defaultPOV.position;
-        if (player && PlayerCamera.zoomed)
+        if (player && CameraFov.zoomed)
         {
             float lerp = 1f - Vector3.Angle(PlayerCamera.camTr.forward, data.forward)/45f;
             pov = Vector3.Lerp(pov, zoomedPOV.position,lerp);

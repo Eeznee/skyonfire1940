@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OrdnanceLoad : Part
+public class OrdnanceLoad : Module
 {
     public Vector3[] launchPositions;
     public AudioClip[] launchClips;

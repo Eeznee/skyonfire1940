@@ -22,7 +22,7 @@ public class SofComplex : SofObject
         base.Explosion(center, tnt);
         float sqrDis = (center - transform.position).sqrMagnitude;
         if (tnt < sqrDis / 2000f) return;   //no calculations if too far
-        foreach (Part p in data.parts) if (p) p.ExplosionDamage(center, tnt);
+        foreach (Module p in data.parts) if (p) p.ExplosionDamage(center, tnt);
     }
 }
 

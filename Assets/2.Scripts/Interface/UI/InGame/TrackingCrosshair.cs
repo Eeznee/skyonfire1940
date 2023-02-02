@@ -21,16 +21,15 @@ public class TrackingCrosshair : MonoBehaviour
 
             bool active = pos.z > 0f;
             active &= !TimeManager.paused;
-            active &= PlayerCamera.customCam.WorldLookAround();
-            active &= GameManager.seatInterface != SeatInterface.Bombardier;
-            active &= !(GameManager.seatInterface == SeatInterface.Gunner && PlayerCamera.customCam.pos == CamPosition.FirstPerson);
-            bool dyn = PlayerCamera.dynamic || (GameManager.seatInterface == SeatInterface.Gunner);
+            active &= GameManager.Controls() == ControlsMode.Tracking || PlayerManager.seatInterface == SeatInterface.Gunner;
+            active &= !(PlayerManager.seatInterface == SeatInterface.Gunner && PlayerCamera.subCam.pos == CamPosition.FirstPerson);
+            bool dyn = PlayerCamera.dynamic || (PlayerManager.seatInterface == SeatInterface.Gunner);
             dynamic.gameObject.SetActive(dyn && active);
             level.gameObject.SetActive(!dyn && active);
 
             //Change alpha to not hide the gunsight
             Color c = dynamic.color;
-            if (PlayerManager.player.aircraft && PlayerCamera.customCam.pos == CamPosition.FirstPerson)
+            if (PlayerManager.player.aircraft && PlayerCamera.subCam.pos == CamPosition.FirstPerson)
             {
                 float angle = Vector3.Angle(PlayerCamera.directionInput, PlayerManager.player.aircraft.transform.forward);
                 c.a = Mathf.Clamp01((angle - 2f) / 2f);

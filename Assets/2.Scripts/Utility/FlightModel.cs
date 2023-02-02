@@ -5,9 +5,9 @@ using UnityEngine;
 public static class FlightModel
 {
     const float fireMaxDmg = 1.5f;
-    public static float[] BurningCollateralRatios(Part part)
+    public static float[] BurningCollateralRatios(Module part)
     {
-        Part[] parts = part.data.parts;
+        Module[] parts = part.data.parts;
         float[] dmgRatios = new float[parts.Length];
         for(int i = 0; i < parts.Length; i++) 
         {
@@ -40,19 +40,19 @@ public static class FlightModel
         tr.name = transform.name + " Shape";
         return tr;
     }
-    public static float TotalMass(Part[] parts,bool empty)
+    public static float TotalMass(Module[] parts,bool empty)
     {
         float total = 0f;
-        foreach (Part p in parts)
+        foreach (Module p in parts)
             total += empty ? p.EmptyMass() : p.Mass();
         return total;
     }
 
-    public static float StaticMoment(Part obj)
+    public static float StaticMoment(Module obj)
     {
-        Part[] attachedPart = obj.GetComponentsInChildren<Part>();
+        Module[] attachedPart = obj.GetComponentsInChildren<Module>();
         float load = 0f;
-        foreach (Part p in attachedPart)
+        foreach (Module p in attachedPart)
             load += p.Mass() * (p.transform.position - obj.transform.position).magnitude;
         return load + obj.Mass();
     }

@@ -3,6 +3,7 @@ using UnityStandardAssets.CrossPlatformInput;
 using UnityEngine.InputSystem;
 public static class AircraftControl
 {
+
     public const float futureTime = 1f;
     const float throttleIncrement = 0.0002f;
     const float minAltitude = 50f;
@@ -82,7 +83,7 @@ public static class AircraftControl
     }
     public static void PlayerUpdate(SofAircraft aircraft)
     {
-        Actions.PilotActions pilot = PlayerActions.instance.actions.Pilot;
+        Actions.PilotActions pilot = PlayerActions.Pilot();
         if (pilot.FirePrimaries.ReadValue<float>() > 0.1f) aircraft.FirePrimaries();
         if (pilot.FireSecondaries.ReadValue<float>() > 0.7f) aircraft.FireSecondaries();
         aircraft.SetFlaps(Mathf.RoundToInt(pilot.Flaps.ReadValue<float>()));
@@ -91,10 +92,10 @@ public static class AircraftControl
         aircraft.boost = pilot.Boost.ReadValue<float>() > 0.5f;
 #else
 
-        if(PlayerActions.instance.actions.General.Scroll.ReadValue<float>() != 0f)
+        if(PlayerActions.General().Scroll.ReadValue<float>() != 0f)
         {
             float thr = PlayerManager.player.aircraft.engines[0].throttleInput;
-            float input = PlayerActions.instance.actions.General.Scroll.ReadValue<float>() * throttleIncrement;
+            float input = PlayerActions.General().Scroll.ReadValue<float>() * throttleIncrement;
             aircraft.SetThrottle(thr + input);
             aircraft.boost = (thr == 1f && input > 0f) || aircraft.boost;
             if (aircraft.boost && input < 0f) { aircraft.boost = false; aircraft.SetThrottle(1f); }
@@ -103,11 +104,9 @@ public static class AircraftControl
     }
     public static void PlayerFixed(SofAircraft aircraft)
     {
-        Actions.PilotActions actions = PlayerActions.instance.actions.Pilot;
-        Actions.GeneralActions general = PlayerActions.instance.actions.General;
+        Actions.GeneralActions general = PlayerActions.General();
         Vector3 axis = Vector3.zero;
-        bool canUseTracking = PlayerCamera.customCam.dir == CamDirection.Game || PlayerCamera.customCam.dir == CamDirection.Free;
-        if (GameManager.trackingControl && canUseTracking) //Tracking input, mouse
+        if (GameManager.Controls() == ControlsMode.Tracking) //Tracking input, mouse
         {
             //track
             Vector3 targetPos = aircraft.transform.position + PlayerCamera.directionInput * 500f;
@@ -117,7 +116,10 @@ public static class AircraftControl
             bool pitching = general.Pitch.phase == InputActionPhase.Started;
             bool rolling = general.Roll.phase == InputActionPhase.Started;
             if (rolling || pitching) axis.z = general.Roll.ReadValue<float>();
-            if (pitching) axis.x = -general.Pitch.ReadValue<float>();
+            if (pitching) {
+                axis.x = -general.Pitch.ReadValue<float>();
+                if (PlayerPrefs.GetInt("InvertPitch", 0) == 1) axis.x = -axis.x;
+            }
             axis.y = -general.Rudder.ReadValue<float>();
 
             aircraft.SetControls(axis, true, false);
@@ -128,8 +130,9 @@ public static class AircraftControl
             if (PlayerPrefs.GetInt("InvertPitch", 0) == 1) axis.x = -axis.x;
             axis.z = general.Roll.ReadValue<float>();
             axis.y = -general.Rudder.ReadValue<float>();
-
-            aircraft.SetControls(axis, PlayerPrefs.GetInt("FullElevatorControl", 0) == 0, false);
+            bool fullElevator = GameManager.fullElevator;
+            if (GameManager.Controls() == ControlsMode.MouseStick && PlayerCamera.lookAround) fullElevator = false;
+            aircraft.SetControls(axis, !fullElevator, false);
         }
     }
 }

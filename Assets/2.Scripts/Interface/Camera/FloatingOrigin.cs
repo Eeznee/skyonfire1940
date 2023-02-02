@@ -51,22 +51,27 @@ public class FloatingOrigin : MonoBehaviour
         }
     }
 
+    private void Move(Vector3 cameraPosition)
+    {
+        foreach (GameObject g in SceneManager.GetActiveScene().GetRootGameObjects())
+            g.transform.position -= cameraPosition;
+
+        MoveParticles(cameraPosition);
+
+        float physicsThreshold2 = physicsThreshold * physicsThreshold; // simplify check on threshold
+        foreach (Rigidbody r in FindObjectsOfType(typeof(Rigidbody)))
+            r.sleepThreshold = r.transform.position.sqrMagnitude > physicsThreshold2 ? float.MaxValue : defaultSleepThreshold;
+        Physics.SyncTransforms();
+
+        GameManager.refPos = GameManager.gm.mapTr.position;
+    }
+
     void LateUpdate()
     {
         Vector3 cameraPosition = gameObject.transform.position;
         cameraPosition.y = 0f;
         if (cameraPosition.magnitude > threshold)
-        {
-            foreach (GameObject g in SceneManager.GetActiveScene().GetRootGameObjects())
-                g.transform.position -= cameraPosition;
-
-            MoveParticles(cameraPosition);
-
-            float physicsThreshold2 = physicsThreshold * physicsThreshold; // simplify check on threshold
-            foreach (Rigidbody r in FindObjectsOfType(typeof(Rigidbody)))
-                r.sleepThreshold = r.transform.position.sqrMagnitude > physicsThreshold2 ? float.MaxValue : defaultSleepThreshold;
-            Physics.SyncTransforms();
-        }
+            Move(cameraPosition);
     }
 }
 /*

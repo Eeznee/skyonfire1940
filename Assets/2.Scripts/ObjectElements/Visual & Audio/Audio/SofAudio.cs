@@ -26,7 +26,7 @@ public class SofAudio
         source.maxDistance = 2000f;
         source.outputAudioMixerGroup = SofAudioListener.GetAudioMixer(group);
         source.rolloffMode = AudioRolloffMode.Logarithmic;
-        source.spatialBlend = source.dopplerLevel = global ? 1f : 0f;
+        source.spatialBlend = source.dopplerLevel = avm.use3dSound ? 1f : 0f;
         if (source.clip) source.time = Random.Range(0f, clip.length);
         if (holder.activeInHierarchy) source.Play();
 

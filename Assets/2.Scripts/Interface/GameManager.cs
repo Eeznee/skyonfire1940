@@ -5,8 +5,22 @@ using System.Collections.Generic;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Rendering;
 
+public enum Device
+{
+    PC,
+    Mobile,
+    VR
+}
+public enum ControlsMode
+{
+    Direct,
+    Tracking,
+    MouseStick
+}
+
 public class GameManager : MonoBehaviour
 {
+    public static Device device;
     public bool playableScene = true;
     public bool vr = false;
     public UIStyle style;
@@ -22,7 +36,7 @@ public class GameManager : MonoBehaviour
 
     public static GameUI gameUI = GameUI.Game;
 
-    public static bool trackingControl;
+    private static ControlsMode controls;
     public static bool fullElevator;
 
     public static bool war;
@@ -35,23 +49,35 @@ public class GameManager : MonoBehaviour
     public static List<SofAircraft> axisAircrafts = new List<SofAircraft>(0);
     public static List<SofAircraft> allyAircrafts = new List<SofAircraft>(0);
 
-    public static SeatInterface seatInterface = SeatInterface.Empty;
     public UniversalRenderPipelineAsset urpAsset;
-    ///
 
+    public static Vector3 refPos;
 
+    public static ControlsMode Controls()
+    {
+        bool direct = gameUI != GameUI.Game;
+        direct |= PlayerManager.seatInterface != SeatInterface.Pilot;
+        direct |= controls == ControlsMode.Tracking && PlayerCamera.subCam.dir != CamDirection.Game;
+        if (direct) return ControlsMode.Direct;
+        return controls;
+    }
     public void Awake()
     {
         Application.targetFrameRate = PlayerPrefs.GetInt("TargetFrameRate", 60);
+        Application.targetFrameRate = -1;
         QualitySettings.SetQualityLevel(PlayerPrefs.GetInt("Quality", QualitySettings.GetQualityLevel()));
         float renderScale = PlayerPrefs.GetFloat("RenderScale", 100f) / 100f;
         ((UniversalRenderPipelineAsset)QualitySettings.renderPipeline).renderScale = renderScale;
 
         fullElevator = PlayerPrefs.GetInt("FullElevatorControl", 0) == 1;
-        trackingControl = true;
+        controls = (ControlsMode) PlayerPrefs.GetInt("ControlsMode",2);
 #if MOBILE_INPUT
-        trackingControl = false;
+        controls = ControlsMode.Direct;
+        device = Device.Mobile;
+#else 
+        device = Device.PC;
 #endif
+        if (vr) device = Device.VR;
         UnitsConverter.Initialize();
 
         if (!playableScene)
@@ -71,8 +97,6 @@ public class GameManager : MonoBehaviour
         sofObjects = new List<SofObject>(0);
         axisAircrafts = new List<SofAircraft>(0);
         allyAircrafts = new List<SofAircraft>(0);
-
-        seatInterface = SeatInterface.Empty;
 
         if (playableScene)
         {

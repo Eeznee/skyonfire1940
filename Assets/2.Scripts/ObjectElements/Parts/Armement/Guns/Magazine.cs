@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
-public class Magazine : ObjectElement
+public class Magazine : Module
 {
     public GunPreset gunPreset;
     public int capacity = 100;

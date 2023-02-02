@@ -37,13 +37,13 @@ public class UIManager : MonoBehaviour
         if (PlayerPrefs.GetInt("TiltInput", 1) == 1) TimeManager.SetPause(true,GameUI.Game);
 #endif
         dynamicUis = new List<DynamicUI>(GetComponentsInChildren<DynamicUI>(true));
-        PlayerManager.OnPlayerChangeEvent += ResetInterface;
+        PlayerManager.OnSeatChangeEvent += ResetInterface;
         TimeManager.OnPauseEvent += ResetInterface;
     }
 
     public void ResetInterface()
     {
-        seatInterface = GameManager.seatInterface;
+        seatInterface = PlayerManager.seatInterface;
         crew = PlayerManager.player.crew;
         foreach (DynamicUI dui in dynamicUis) dui.ResetProperties();
 

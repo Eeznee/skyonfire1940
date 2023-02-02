@@ -14,7 +14,7 @@ public class ObjectData : MonoBehaviour
     public SofSimple simple;
     public SofComplex complex;
     public SofAircraft aircraft;
-    public Part[] parts;
+    public Module[] parts;
     public Rigidbody rb;
     public Weather weather;
     public float mass = 3000f;
@@ -78,7 +78,7 @@ public class ObjectData : MonoBehaviour
 
         weather = GameManager.weather;
         rb = (type == 1) ? GameManager.gm.mapRb : (GetComponent<Rigidbody>() ? GetComponent<Rigidbody>() : gameObject.AddComponent<Rigidbody>());
-        parts = GetComponentsInChildren<Part>();
+        parts = GetComponentsInChildren<Module>();
 
         //First Initialization
         foreach (ObjectElement element in GetComponentsInChildren<ObjectElement>())
@@ -92,17 +92,19 @@ public class ObjectData : MonoBehaviour
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
         rb.interpolation = aircraft ?  RigidbodyInterpolation.Extrapolate : RigidbodyInterpolation.Extrapolate;
 
-        //New parts might have been created
-        parts = GetComponentsInChildren<Part>();
+
 
         //Final initialization
-        mass = 0f;
         foreach (ObjectElement element in GetComponentsInChildren<ObjectElement>())
         {
             element.gameObject.layer = 9;
             element.Initialize(this, false);
-            mass += element.Mass();
         }
+        //New parts might have been created
+        mass = 0f;
+        parts = GetComponentsInChildren<Module>();
+        foreach (Module part in parts)
+            mass += part.Mass();
     }
 
     private void Start()

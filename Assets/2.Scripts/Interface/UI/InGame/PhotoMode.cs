@@ -16,7 +16,7 @@ public class PhotoMode : MonoBehaviour
     private void Start()
     {
         speed = minSpeed;
-        PlayerActions.instance.actions.General.CameraSpeed.performed += t => ChangeSpeed(t.ReadValue<float>());
+        PlayerActions.General().CameraSpeed.performed += t => ChangeSpeed(t.ReadValue<float>());
     }
 
     private void OnEnable()
@@ -24,7 +24,7 @@ public class PhotoMode : MonoBehaviour
         worldPos = GameManager.gm.mapTr.InverseTransformPoint(PlayerCamera.camTr.position);
     }
 
-    private CustomCam currentCam = null;
+    private SubCam currentCam = null;
 
     public void ResetPositions()
     {
@@ -39,25 +39,25 @@ public class PhotoMode : MonoBehaviour
     {
         if (PlayerCamera.viewMode == 2)
         {
-            if (currentCam != PlayerCamera.customCam) //Reset
+            if (currentCam != PlayerCamera.subCam) //Reset
             {
-                currentCam = PlayerCamera.customCam;
-                tilt.text = PlayerCamera.instance.free.tilt.ToString("0.0");
+                currentCam = PlayerCamera.subCam;
+                tilt.text = PlayerCamera.free.tilt.ToString("0.0");
             }
             //Send values
-            PlayerCamera.instance.free.tilt = float.Parse(tilt.text);
-            PlayerCamera.instance.free.worldPos = worldPos;
-            PlayerCamera.instance.free.freeResetting = false;
+            PlayerCamera.free.tilt = float.Parse(tilt.text);
+            PlayerCamera.free.worldPos = worldPos;
+            PlayerCamera.free.freeResetting = false;
         }
 
         Transform camTr = PlayerCamera.camTr;
-        Actions.GeneralActions actions = PlayerActions.instance.actions.General;
+        Actions.GeneralActions actions = PlayerActions.General();
         Vector3 moveAxis = new Vector3(actions.CameraHorizontal.ReadValue<Vector2>().x, actions.CameraVertical.ReadValue<float>(), actions.CameraHorizontal.ReadValue<Vector2>().y);
         speeds = Vector3.MoveTowards(speeds, moveAxis, Time.unscaledDeltaTime * 2f);
 
         Vector3 moveVector = camTr.forward * speeds.z + camTr.right * speeds.x + Vector3.up * speeds.y;
         float actualSpeed = speed;
-        if (PlayerActions.instance.actions.General.CameraFast.ReadValue<float>() > 0.5f) actualSpeed = maxSpeed;
+        if (PlayerActions.General().CameraFast.ReadValue<float>() > 0.5f) actualSpeed = maxSpeed;
         moveVector *= actualSpeed * Time.unscaledDeltaTime;
         worldPos += moveVector;
     }

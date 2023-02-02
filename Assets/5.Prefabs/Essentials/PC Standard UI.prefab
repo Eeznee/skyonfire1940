@@ -2743,6 +2743,81 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Height
+--- !u!1 &1218435660231661998
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8956528377514500007}
+  - component: {fileID: 8679414226968322007}
+  - component: {fileID: 4835915232147753053}
+  m_Layer: 5
+  m_Name: Dot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &8956528377514500007
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1218435660231661998}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6072632443414614212}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 25, y: 25}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &8679414226968322007
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1218435660231661998}
+  m_CullTransparentMesh: 1
+--- !u!114 &4835915232147753053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1218435660231661998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.759, g: 0.759, b: 0.759, a: 0.56078434}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 4074b4e42cf49d74fab41ab5a4108eb2, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &1326613219042044706
 GameObject:
   m_ObjectHideFlags: 0
@@ -3758,7 +3833,6 @@ GameObject:
   - component: {fileID: 4560172511577547925}
   - component: {fileID: 2909395647374325294}
   - component: {fileID: 2506121170662911182}
-  - component: {fileID: 8540633224990639792}
   m_Layer: 5
   m_Name: Bomb Bay
   m_TagString: Untagged
@@ -3872,7 +3946,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 729550836118708713}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2460334134119722206}
+        m_TargetAssemblyTypeName: BombsightUI, Assembly-CSharp
+        m_MethodName: ToggleBombBay
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2506121170662911182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3887,19 +3973,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   first: {fileID: 23363851609623286}
   second: {fileID: 7409086108605394374}
---- !u!114 &8540633224990639792
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1793032488475556882}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d54531977ecb194c95e2d3aa7a5d72a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ControlPath: <Keyboard>/b
 --- !u!1 &1795632604348039390
 GameObject:
   m_ObjectHideFlags: 0
@@ -8300,7 +8373,6 @@ GameObject:
   - component: {fileID: 7709477818751239234}
   - component: {fileID: 1629025009993756447}
   - component: {fileID: 9103963187911137270}
-  - component: {fileID: 8689106638554430667}
   - component: {fileID: 5503923921485247130}
   m_Layer: 5
   m_Name: Bomb Interval Selector
@@ -8406,20 +8478,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2060070943594274471}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
---- !u!114 &8689106638554430667
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3508381093770326354}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d54531977ecb194c95e2d3aa7a5d72a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ControlPath: <Keyboard>/f
+      m_Calls:
+      - m_Target: {fileID: 2460334134119722206}
+        m_TargetAssemblyTypeName: BombsightUI, Assembly-CSharp
+        m_MethodName: ToggleInterval
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &5503923921485247130
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9728,7 +9799,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8059258865845765962
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10353,6 +10424,7 @@ RectTransform:
   - {fileID: 1370723162}
   - {fileID: 8499160624396648263}
   - {fileID: 4723546560347245806}
+  - {fileID: 6072632443414614212}
   m_Father: {fileID: 3271789077666420186}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -11083,6 +11155,115 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &4755429737292486916
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6072632443414614212}
+  - component: {fileID: 795453231485361952}
+  - component: {fileID: 2102184528742777567}
+  - component: {fileID: 4618513430165576374}
+  - component: {fileID: 7513450931030743638}
+  m_Layer: 5
+  m_Name: Mouse Joystick
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &6072632443414614212
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4755429737292486916}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 8956528377514500007}
+  - {fileID: 5963911398416864833}
+  m_Father: {fileID: 8425993915104310922}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0.2}
+  m_AnchorMax: {x: 1, y: 0.8}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &795453231485361952
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4755429737292486916}
+  m_CullTransparentMesh: 1
+--- !u!114 &2102184528742777567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4755429737292486916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.7607843, g: 0.7607843, b: 0.7607843, a: 0.56078434}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 17d6f0e4dd713234084919e7dde49363, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 1
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &4618513430165576374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4755429737292486916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7b8bfd9e3a488f4da657e2b88960287, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ControlPath: <Gamepad>/rightStick
+  size: 0.7
+  fixedDot: {fileID: 732706355275067350}
+  border: {fileID: 2102184528742777567}
+  dot: {fileID: 4835915232147753053}
+  dotTr: {fileID: 8956528377514500007}
+--- !u!114 &7513450931030743638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4755429737292486916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5bf5a2700dbf5340a9b439224920a64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4828422397034507585
 GameObject:
   m_ObjectHideFlags: 0
@@ -13477,6 +13658,81 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!1 &6135152179147320128
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5963911398416864833}
+  - component: {fileID: 6943323254624077014}
+  - component: {fileID: 732706355275067350}
+  m_Layer: 5
+  m_Name: Fixed Dot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5963911398416864833
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6135152179147320128}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6072632443414614212}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 50, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &6943323254624077014
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6135152179147320128}
+  m_CullTransparentMesh: 1
+--- !u!114 &732706355275067350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6135152179147320128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.7607843, g: 0.7607843, b: 0.7607843, a: 0.2}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 4074b4e42cf49d74fab41ab5a4108eb2, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &6163059337401211921
 GameObject:
   m_ObjectHideFlags: 0
@@ -14712,7 +14968,7 @@ GameObject:
   - component: {fileID: 6045141839898678410}
   - component: {fileID: 2460334134119722206}
   - component: {fileID: 1795499361991284249}
-  - component: {fileID: 4996119439556001567}
+  - component: {fileID: 3325492626098337506}
   m_Layer: 5
   m_Name: Bombardier UI
   m_TagString: Untagged
@@ -14798,7 +15054,7 @@ MonoBehaviour:
   gfr: 1
   hdg: 1
   temp: 0
---- !u!114 &4996119439556001567
+--- !u!114 &3325492626098337506
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -14810,7 +15066,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65510acc9f2b10d42b1f631762487be1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spec: 7
+  spec: 9
 --- !u!1 &6787601372765712012
 GameObject:
   m_ObjectHideFlags: 0
@@ -17666,7 +17922,6 @@ GameObject:
   - component: {fileID: 4715288702866306921}
   - component: {fileID: 459197329112544488}
   - component: {fileID: 1219533580529361085}
-  - component: {fileID: 2076406865094081902}
   m_Layer: 5
   m_Name: View Selector
   m_TagString: Untagged
@@ -17770,20 +18025,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 9177291336272435406}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
---- !u!114 &2076406865094081902
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7914895935309792677}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d54531977ecb194c95e2d3aa7a5d72a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ControlPath: <Keyboard>/v
+      m_Calls:
+      - m_Target: {fileID: 2460334134119722206}
+        m_TargetAssemblyTypeName: BombsightUI, Assembly-CSharp
+        m_MethodName: ToggleMode
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7916362406611050921
 GameObject:
   m_ObjectHideFlags: 0
@@ -18218,7 +18472,6 @@ GameObject:
   - component: {fileID: 8522364696090543074}
   - component: {fileID: 4661555448827751543}
   - component: {fileID: 3196383408229040606}
-  - component: {fileID: 7355673450867005643}
   - component: {fileID: 177405990434588813}
   m_Layer: 5
   m_Name: Bomb Amount Selector
@@ -18325,20 +18578,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4005153448604747996}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
---- !u!114 &7355673450867005643
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8286210688630526305}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d54531977ecb194c95e2d3aa7a5d72a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ControlPath: <Keyboard>/g
+      m_Calls:
+      - m_Target: {fileID: 2460334134119722206}
+        m_TargetAssemblyTypeName: BombsightUI, Assembly-CSharp
+        m_MethodName: ToggleQuantity
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &177405990434588813
 CanvasRenderer:
   m_ObjectHideFlags: 0

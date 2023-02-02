@@ -36,7 +36,7 @@ public class LodModule : ObjectElement
         if (newLod < 3)
         {
             Bounds bounds = new Bounds(data.position, Vector3.one * 10f);
-            if (!GeometryUtility.TestPlanesAABB(PlayerCamera.frustrumPlanes, bounds)) newLod = 4;
+            if (!GeometryUtility.TestPlanesAABB(CameraFov.frustrumPlanes, bounds)) newLod = 4;
         }
         if (PlayerManager.player.aircraft == aircraft || PlayerCamera.viewMode < 0 || Time.timeScale == 0f) newLod = 0;
 

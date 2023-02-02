@@ -79,8 +79,9 @@ public class SofAircraft : SofComplex
         rockets = Station.GetOrdnances<RocketsLoad>(stations);
         bombs = Station.GetOrdnances<BombLoad>(stations);
 
-        primaries = GetComponentsInChildren<PrimaryGun>();
-        secondaries = GetComponentsInChildren<SecondaryGun>();
+        Gun[] guns = GetComponentsInChildren<Gun>();
+        primaries = Gun.FilterByController(GunController.PilotPrimary, guns);
+        secondaries = Gun.FilterByController(GunController.PilotSecondary, guns);
         Stabilizer[] stabs = GetComponentsInChildren<Stabilizer>();
         foil = GetComponentInChildren<Airfoil>().airfoil;
         foreach (Stabilizer stab in stabs)
@@ -384,9 +385,9 @@ public class SofAircraftEditor : Editor
         aircraft.emptyCOG = EditorGUILayout.Vector3Field("Empty Center Of Gravity", aircraft.emptyCOG);
         aircraft.maxG = EditorGUILayout.FloatField("Maximum G Load", aircraft.maxG);
         aircraft.maxSpeed = EditorGUILayout.FloatField("Max Speed Kph", aircraft.maxSpeed * 3.6f) / 3.6f;
-        Part[] parts = aircraft.GetComponentsInChildren<Part>();
-        EditorGUILayout.LabelField("Empty Mass", FlightModel.TotalMass(aircraft.GetComponentsInChildren<Part>(), true) + " kg");
-        EditorGUILayout.LabelField("Loaded Mass", FlightModel.TotalMass(aircraft.GetComponentsInChildren<Part>(), false) + " kg");
+        Module[] parts = aircraft.GetComponentsInChildren<Module>();
+        EditorGUILayout.LabelField("Empty Mass", FlightModel.TotalMass(aircraft.GetComponentsInChildren<Module>(), true) + " kg");
+        EditorGUILayout.LabelField("Loaded Mass", FlightModel.TotalMass(aircraft.GetComponentsInChildren<Module>(), false) + " kg");
         GUILayout.Space(15f);
         GUI.color = Color.magenta;
         EditorGUILayout.HelpBox("Autopilot Sensiblity", MessageType.None);
@@ -439,7 +440,7 @@ public class SofAircraftEditor : Editor
 
 
         aircraft.deletePassWord = EditorGUILayout.PasswordField("Delete All Parts", aircraft.deletePassWord);
-        if (aircraft.deletePassWord == "i1s2n3i4")
+        if (aircraft.deletePassWord == "isni")
         {
             if (GUILayout.Button("Delete all parts"))
             {

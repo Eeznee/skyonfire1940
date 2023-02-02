@@ -108,4 +108,20 @@ public class BombsightUI : MonoBehaviour
     {
         PlayerManager.player.aircraft.bombSight.StartReleaseSequence();
     }
+    public void ToggleBombBay()
+    {
+        PlayerActions.Action("BombBay");
+    }
+    public void ToggleMode()
+    {
+        PlayerActions.Action("BombsightMode");
+    }
+    public void ToggleQuantity()
+    {
+        PlayerActions.Action("BombsightQuantity");
+    }
+    public void ToggleInterval()
+    {
+        PlayerActions.Action("BombsightInterval");
+    }
 }

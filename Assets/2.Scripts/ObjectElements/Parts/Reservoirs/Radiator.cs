@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
-public class Radiator : Part
+public class Radiator : Module
 {
     public LiquidTank mainTank;
     public LiquidTank.LiquidCircuit circuit;
