@@ -29,12 +29,12 @@ public class SofAircraft : SofComplex
 
     public Stabilizer hStab;
     public Stabilizer vStab;
-    public AirfoilPreset foil;
     public MaterialsList materials;
 
     //Physics
-    public Vector3 emptyCOI = new Vector3(5f, 5f, 3f);
+    public float cogForwardDistance = 0f;
     public Vector3 emptyCOG = Vector3.zero;
+    public float targetEmptyMass = 3000f;
     public float wingSpan = 1f;
     public float maxG = 8f;
     public float maxSpeed = 700 / 3.6f;
@@ -83,7 +83,6 @@ public class SofAircraft : SofComplex
         primaries = Gun.FilterByController(GunController.PilotPrimary, guns);
         secondaries = Gun.FilterByController(GunController.PilotSecondary, guns);
         Stabilizer[] stabs = GetComponentsInChildren<Stabilizer>();
-        foil = GetComponentInChildren<Airfoil>().airfoil;
         foreach (Stabilizer stab in stabs)
         {
             if (stab.rudder) vStab = stab;
@@ -91,8 +90,6 @@ public class SofAircraft : SofComplex
         }
 
         base.Initialize();
-        data.rb.centerOfMass = emptyCOG;
-        data.rb.inertiaTensor = emptyCOI * data.mass;
 
         squadronId = squadron.id;
         difficulty = squadron.difficulty;
@@ -114,8 +111,9 @@ public class SofAircraft : SofComplex
     {
         Transform tr = col.GetContact(0).thisCollider.transform;
         tr = tr.name.Contains("Skin") ? tr.parent : tr;
-        Airframe collided = tr.GetComponent<Airframe>();
+        AirframeBase collided = tr.GetComponent<AirframeBase>();
         if (collided && col.impulse.magnitude > 10000f) collided.Rip();
+        
     }
 
     //INPUTS __________________________________________________________________________
@@ -347,15 +345,12 @@ public class SofAircraft : SofComplex
     }
     public void OnDrawGizmos()
     {
-        Gizmos.color = Color.yellow;
-        Vector3 cog = transform.TransformPoint(emptyCOG);
-        Gizmos.DrawWireSphere(cog, 0.1f);
+        Mass emptyMass = new Mass(GetComponentsInChildren<Part>(), true);
+        Vector3 cog = transform.TransformPoint(emptyMass.center);
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(cog - transform.right * emptyCOI.x * 0.5f, cog + transform.right * emptyCOI.x * 0.5f);
+        Gizmos.DrawLine(cog - transform.right, cog + transform.right);
         Gizmos.color = Color.green;
-        Gizmos.DrawLine(cog - transform.up * emptyCOI.y * 0.5f, cog + transform.up * emptyCOI.y * 0.5f);
-        Gizmos.color = Color.blue;
-        Gizmos.DrawLine(cog - transform.forward * emptyCOI.z * 0.5f, cog + transform.forward * emptyCOI.z * 0.5f);
+        Gizmos.DrawLine(cog - transform.up, cog + transform.up);
     }
 }
 
@@ -376,19 +371,29 @@ public class SofAircraftEditor : Editor
         aircraft.controlSpeed = EditorGUILayout.Vector3Field("Controls Speed (P/Y/R)", aircraft.controlSpeed);
         GUILayout.Space(7f);
 
+        aircraft.maxG = EditorGUILayout.FloatField("Maximum G Load", aircraft.maxG);
+        aircraft.maxSpeed = EditorGUILayout.FloatField("Max Speed Kph", aircraft.maxSpeed * 3.6f) / 3.6f;
 
         GUILayout.Space(15f);
         GUI.color = Color.yellow;
         EditorGUILayout.HelpBox("Physics Settings", MessageType.None);
         GUI.color = GUI.backgroundColor;
-        aircraft.emptyCOI = EditorGUILayout.Vector3Field("Empty Coeff Of Inertia", aircraft.emptyCOI);
+
         aircraft.emptyCOG = EditorGUILayout.Vector3Field("Empty Center Of Gravity", aircraft.emptyCOG);
-        aircraft.maxG = EditorGUILayout.FloatField("Maximum G Load", aircraft.maxG);
-        aircraft.maxSpeed = EditorGUILayout.FloatField("Max Speed Kph", aircraft.maxSpeed * 3.6f) / 3.6f;
-        Module[] parts = aircraft.GetComponentsInChildren<Module>();
-        EditorGUILayout.LabelField("Empty Mass", FlightModel.TotalMass(aircraft.GetComponentsInChildren<Module>(), true) + " kg");
-        EditorGUILayout.LabelField("Loaded Mass", FlightModel.TotalMass(aircraft.GetComponentsInChildren<Module>(), false) + " kg");
+        Part[] parts = aircraft.GetComponentsInChildren<Part>();
+        Mass emptyMass = new Mass(parts, true);
+        Mass loadedMass = new Mass(parts, false);
+        EditorGUILayout.LabelField("Empty Mass", emptyMass.mass.ToString("0.0") + " kg");
+        EditorGUILayout.LabelField("Loaded Mass", loadedMass.mass.ToString("0.0") + " kg");
+        EditorGUILayout.LabelField("Empty COG", emptyMass.center.ToString("F2"));
+
+        aircraft.targetEmptyMass = EditorGUILayout.FloatField("Target Empty Mass", aircraft.targetEmptyMass);
+        aircraft.cogForwardDistance = EditorGUILayout.FloatField("Target COG Pos", aircraft.cogForwardDistance);
+        if (GUILayout.Button("Target AutoMass"))
+            Mass.ComputeAutoMass(aircraft, new Mass(aircraft.targetEmptyMass, Vector3.forward * aircraft.cogForwardDistance));
+
         GUILayout.Space(15f);
+
         GUI.color = Color.magenta;
         EditorGUILayout.HelpBox("Autopilot Sensiblity", MessageType.None);
         GUI.color = GUI.backgroundColor;
@@ -451,6 +456,7 @@ public class SofAircraftEditor : Editor
                 DestroyImmediate(aircraft);
             }
         }
+
 
 
         if (GUI.changed)

@@ -16,8 +16,8 @@ public class PropellerPreset : ScriptableObject
     public float diameter = 2.6f;
     public int bladesAmount = 3;
     public Vector2[] propShape;
-    public AirfoilPreset bladeShape;
-    public PartMaterial material;
+    public AirfoilProfile bladeShape;
+    public ModuleMaterial material;
     //Variable Pitch
     public float phiOff = 10f;
     public float pitchSpeed = 10f;

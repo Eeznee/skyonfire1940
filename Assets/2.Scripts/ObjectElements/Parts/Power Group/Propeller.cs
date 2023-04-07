@@ -101,7 +101,7 @@ public class Propeller : Module
         }
     }
 
-    public override void Damage(float damage, float caliber, float fireCoeff)
+    public override void KineticDamage(float damage, float caliber, float fireCoeff)
     {
         return;
     }

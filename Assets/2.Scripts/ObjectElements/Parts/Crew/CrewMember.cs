@@ -89,7 +89,6 @@ public class CrewMember : Module
     }
     public override void Rip()
     {
-        structureDamage = 0f;
         if (aircraft && this == aircraft.crew[0]) { aircraft.hasPilot = false; aircraft.destroyed = true; }
         base.Rip();
     }
@@ -125,7 +124,7 @@ public class CrewMemberEditor : Editor
         //
         CrewMember crew = (CrewMember)target;
 
-        crew.material = EditorGUILayout.ObjectField("Part Material", crew.material, typeof(PartMaterial), true) as PartMaterial;
+        crew.material = EditorGUILayout.ObjectField("Part Material", crew.material, typeof(ModuleMaterial), true) as ModuleMaterial;
         crew.currentSeat = EditorGUILayout.IntField("Default Seat", crew.currentSeat);
         SerializedProperty seats = serializedObject.FindProperty("seats");
         EditorGUILayout.PropertyField(seats, true);

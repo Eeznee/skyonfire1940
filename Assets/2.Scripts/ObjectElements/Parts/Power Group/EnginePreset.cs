@@ -27,7 +27,7 @@ public class EnginePreset : ScriptableObject
     public FuelMixerType fuelMixer = FuelMixerType.Carburettor;
     public int cylinders = 12;
     public float weight = 500f;
-    public PartMaterial material;
+    public ModuleMaterial material;
 
     //Performances
     public float nominalRPS = 314.1592653f;
@@ -128,7 +128,7 @@ public class EnginePresetEditor : Editor
         preset.fuelMixer = (EnginePreset.FuelMixerType)EditorGUILayout.EnumPopup("Fuel Mixer", preset.fuelMixer);
         preset.cylinders = EditorGUILayout.IntField("No of cylinders", preset.cylinders);
         preset.weight = EditorGUILayout.FloatField("Dry weight (NO Propeller)", preset.weight);
-        preset.material = EditorGUILayout.ObjectField("Part Material", preset.material, typeof(PartMaterial), false) as PartMaterial;
+        preset.material = EditorGUILayout.ObjectField("Part Material", preset.material, typeof(ModuleMaterial), false) as ModuleMaterial;
 
         //Performances settings
         GUILayout.Space(15f);

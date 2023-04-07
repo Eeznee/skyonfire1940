@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bomb : Module
+public class Bomb : Part
 {
     public override float EmptyMass() { return 0f; }
     public Mesh droppedMesh;

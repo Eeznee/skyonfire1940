@@ -10,25 +10,13 @@ public class FuelTank : LiquidTank
     public FuelTank symmetry;
     public bool selfSealing = true;
 
-    public override void Initialize(ObjectData d,bool firstTime)
-    {
-        base.Initialize(d,firstTime);
-        burningRatios = FlightModel.BurningCollateralRatios(this);
-    }
-
     private void Update()
     {
-        if (structureDamage != 1f)
+        if (Integrity != 1f)
             circuit.Leaking();
         Burning();
-        if (structureDamage > 0.85f && selfSealing) circuit.holesArea = 0f;
+        if (Integrity > 0.85f && selfSealing) circuit.holesArea = 0f;
     }
-    public override void Damage(float damage, float caliber, float fireCoeff)
-    {
-        base.Damage(damage, caliber, fireCoeff);
-        if (!burning) TryBurn(caliber, fireCoeff);
-    }
-
     public void ConsumeControlled(float amount)
     {
         if (symmetry && symmetry.currentAmount > 0f)

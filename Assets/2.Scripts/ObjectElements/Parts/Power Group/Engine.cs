@@ -51,11 +51,19 @@ public class Engine : Module
     const float minDpsOverHeat = 1f / 100f;
     const float dpsGrowthPerDegree = 1f / 600f;
     const float fullFrictionDps = 1f / 40f;
+
+    public override float EmptyMass()
+    {
+        return preset.weight;
+    }
+    public override float Mass()
+    {
+        return preset.weight;
+    }
     public override void Initialize(ObjectData obj, bool firstTime)
     {
         material = preset.material;
         base.Initialize(obj, firstTime);
-        burningRatios = FlightModel.BurningCollateralRatios(this);
         emptyMass = preset.weight;
         if (firstTime)
         {
@@ -103,18 +111,18 @@ public class Engine : Module
         if (temperature > maximumTemperature && Working())
         {
             float damagePerSecond = minDpsOverHeat + dpsGrowthPerDegree * (temperature - maximumTemperature);
-            Damage(damagePerSecond * Time.fixedDeltaTime);
+            SimpleDamage(damagePerSecond * Time.fixedDeltaTime);
         }
         //Friction damage
-        float frictionFactor = 1f - structureDamage * oil.fill;
+        float frictionFactor = 1f - Integrity * oil.fill;
         if (frictionFactor > 0.3f)
-            Damage(frictionFactor * trueThrottle * fullFrictionDps * Time.fixedDeltaTime);
+            SimpleDamage(frictionFactor * trueThrottle * fullFrictionDps * Time.fixedDeltaTime);
 
         //Leaks and destruction of engine
         oilCircuit.Leaking();
         if (waterCooled) waterCircuit.Leaking();
         Burning();
-        if (structureDamage <= 0f || temperature > maximumTemperature * 1.12f) Rip();
+        if (temperature > maximumTemperature * 1.12f) Rip();
     }
     public void Set(bool on, bool instant)
     {
@@ -159,37 +167,23 @@ public class Engine : Module
         Set(false, false);
         base.Rip();
     }
-    public override void Damage(float damage, float caliber, float fireCoeff)
-    {
-        base.Damage(damage, caliber, fireCoeff);
-        TryBurn(caliber, fireCoeff);
-    }
 }
 #if UNITY_EDITOR
 [CustomEditor(typeof(Engine))]
 public class EngineEditor : Editor
 {
-    Color backgroundColor;
-    //
     public override void OnInspectorGUI()
     {
-        backgroundColor = GUI.backgroundColor;
         serializedObject.Update();
-        //
+
         Engine engine = (Engine)target;
-        GUI.color = Color.cyan;
-        EditorGUILayout.HelpBox("Engine Properties", MessageType.None);
-        GUI.color = backgroundColor;
         engine.preset = EditorGUILayout.ObjectField("Engine Preset", engine.preset, typeof(EnginePreset), false) as EnginePreset;
-        engine.oil = EditorGUILayout.ObjectField("Oil Tank", engine.oil, typeof(LiquidTank), true) as LiquidTank;
 
         if (engine.preset)
         {
+            engine.oil = EditorGUILayout.ObjectField("Oil Tank", engine.oil, typeof(LiquidTank), true) as LiquidTank;
             if (engine.preset.type == EnginePreset.Type.V || engine.preset.type == EnginePreset.Type.Inverted) engine.water = EditorGUILayout.ObjectField("Water Tank", engine.water, typeof(LiquidTank), true) as LiquidTank;
-            GUILayout.Space(20f);
-            EditorGUILayout.HelpBox(engine.preset.constructor + " " + engine.preset.designation, MessageType.None);
-            engine.emptyMass = engine.preset.weight;
-            EditorGUILayout.LabelField("Dry Weight", engine.emptyMass.ToString("0.0") + " Kg");
+            EditorGUILayout.LabelField("Dry Weight", engine.preset.weight.ToString("0.0") + " Kg");
         }
         else
         {
@@ -197,11 +191,6 @@ public class EngineEditor : Editor
             GUILayout.Space(20f);
             EditorGUILayout.HelpBox("Please assign a preset", MessageType.Warning);
         }
-
-        GUILayout.Space(20f);
-        GUI.color = Color.white;
-        EditorGUILayout.HelpBox("Supercharger", MessageType.None);
-        GUI.color = backgroundColor;
 
         serializedObject.ApplyModifiedProperties();
         if (GUI.changed)

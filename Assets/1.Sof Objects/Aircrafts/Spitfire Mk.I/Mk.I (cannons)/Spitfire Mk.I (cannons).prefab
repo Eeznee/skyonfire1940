@@ -51,15 +51,7 @@ MonoBehaviour:
   aircraft: {fileID: 0}
   data: {fileID: 0}
   tr: {fileID: 0}
-  burningEffect: {fileID: 0}
-  burningRatios: []
-  material: {fileID: 0}
   emptyMass: 49
-  maxHp: 0
-  hp: 0
-  structureDamage: 1
-  ripped: 0
-  burning: 0
   controller: 1
   ejection: {fileID: 8166678209451554823}
   muzzleEffects: {fileID: 0}
@@ -76,6 +68,7 @@ MonoBehaviour:
   fuzeDistance: 0
   reloading: 0
   cycleState: 1
+  chambered: 0
 --- !u!1 &4684781689586283054
 GameObject:
   m_ObjectHideFlags: 0
@@ -157,15 +150,7 @@ MonoBehaviour:
   aircraft: {fileID: 0}
   data: {fileID: 0}
   tr: {fileID: 0}
-  burningEffect: {fileID: 0}
-  burningRatios: []
-  material: {fileID: 0}
   emptyMass: 49
-  maxHp: 0
-  hp: 0
-  structureDamage: 1
-  ripped: 0
-  burning: 0
   controller: 1
   ejection: {fileID: 5649478138569133984}
   muzzleEffects: {fileID: 0}
@@ -182,6 +167,7 @@ MonoBehaviour:
   fuzeDistance: 0
   reloading: 0
   cycleState: 1
+  chambered: 0
 --- !u!1 &9094498654306191445
 GameObject:
   m_ObjectHideFlags: 0
@@ -398,6 +384,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: -0.00000011920929
+      objectReference: {fileID: 0}
+    - target: {fileID: 576187449850319068, guid: dff3ea64089be10449de4f8e13c0f4e5,
+        type: 3}
+      propertyPath: area
+      value: 4.501804
       objectReference: {fileID: 0}
     - target: {fileID: 576187449850319068, guid: dff3ea64089be10449de4f8e13c0f4e5,
         type: 3}
@@ -1392,6 +1383,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4491152728689807141, guid: dff3ea64089be10449de4f8e13c0f4e5,
         type: 3}
+      propertyPath: foil
+      value: 
+      objectReference: {fileID: 11400000, guid: 10b3a4bf4e2b1f242ba59777e3922809,
+        type: 2}
+    - target: {fileID: 4491152728689807141, guid: dff3ea64089be10449de4f8e13c0f4e5,
+        type: 3}
       propertyPath: miniFoil.tipLiftPos.y
       value: 1.0338525
       objectReference: {fileID: 0}
@@ -2242,6 +2239,11 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0.000000007809346
       objectReference: {fileID: 0}
+    - target: {fileID: 8041740409355677518, guid: dff3ea64089be10449de4f8e13c0f4e5,
+        type: 3}
+      propertyPath: area
+      value: 3.7080126
+      objectReference: {fileID: 0}
     - target: {fileID: 8065940399735787091, guid: dff3ea64089be10449de4f8e13c0f4e5,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2391,101 +2393,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: -0.22075032
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988178353131200159, guid: dff3ea64089be10449de4f8e13c0f4e5,
-        type: 3}
-      propertyPath: miniFoil.tipLiftPos.x
-      value: -0.00000022666063
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988178353131200159, guid: dff3ea64089be10449de4f8e13c0f4e5,
-        type: 3}
-      propertyPath: miniFoil.tipLiftPos.y
-      value: 2.039581
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988178353131200159, guid: dff3ea64089be10449de4f8e13c0f4e5,
-        type: 3}
-      propertyPath: miniFoil.tipLiftPos.z
-      value: -5.8470697
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988178353131200159, guid: dff3ea64089be10449de4f8e13c0f4e5,
-        type: 3}
-      propertyPath: miniFoil.mainQuad.area
-      value: 0.82500005
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988178353131200159, guid: dff3ea64089be10449de4f8e13c0f4e5,
-        type: 3}
-      propertyPath: miniFoil.rootLiftPos.x
-      value: 0.00000022666063
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988178353131200159, guid: dff3ea64089be10449de4f8e13c0f4e5,
-        type: 3}
-      propertyPath: miniFoil.rootLiftPos.y
-      value: 0.41848373
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988178353131200159, guid: dff3ea64089be10449de4f8e13c0f4e5,
-        type: 3}
-      propertyPath: miniFoil.rootLiftPos.z
-      value: -5.539588
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988178353131200159, guid: dff3ea64089be10449de4f8e13c0f4e5,
-        type: 3}
-      propertyPath: miniFoil.mainQuad.leadingBot.x
-      value: 0.00000022666063
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988178353131200159, guid: dff3ea64089be10449de4f8e13c0f4e5,
-        type: 3}
-      propertyPath: miniFoil.mainQuad.leadingBot.y
-      value: 0.4417778
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988178353131200159, guid: dff3ea64089be10449de4f8e13c0f4e5,
-        type: 3}
-      propertyPath: miniFoil.mainQuad.leadingBot.z
-      value: -5.4167776
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988178353131200159, guid: dff3ea64089be10449de4f8e13c0f4e5,
-        type: 3}
-      propertyPath: miniFoil.mainQuad.leadingTop.x
-      value: -0.00000022666063
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988178353131200159, guid: dff3ea64089be10449de4f8e13c0f4e5,
-        type: 3}
-      propertyPath: miniFoil.mainQuad.leadingTop.y
-      value: 2.062875
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988178353131200159, guid: dff3ea64089be10449de4f8e13c0f4e5,
-        type: 3}
-      propertyPath: miniFoil.mainQuad.leadingTop.z
-      value: -5.7242594
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988178353131200159, guid: dff3ea64089be10449de4f8e13c0f4e5,
-        type: 3}
-      propertyPath: miniFoil.mainQuad.trailingBot.x
-      value: 0.00000022666063
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988178353131200159, guid: dff3ea64089be10449de4f8e13c0f4e5,
-        type: 3}
-      propertyPath: miniFoil.mainQuad.trailingBot.y
-      value: 0.34860155
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988178353131200159, guid: dff3ea64089be10449de4f8e13c0f4e5,
-        type: 3}
-      propertyPath: miniFoil.mainQuad.trailingBot.z
-      value: -5.908019
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988178353131200159, guid: dff3ea64089be10449de4f8e13c0f4e5,
-        type: 3}
-      propertyPath: miniFoil.mainQuad.trailingTop.x
-      value: -0.00000022666063
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988178353131200159, guid: dff3ea64089be10449de4f8e13c0f4e5,
-        type: 3}
-      propertyPath: miniFoil.mainQuad.trailingTop.y
-      value: 1.9696989
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988178353131200159, guid: dff3ea64089be10449de4f8e13c0f4e5,
-        type: 3}
-      propertyPath: miniFoil.mainQuad.trailingTop.z
-      value: -6.215501
       objectReference: {fileID: 0}
     - target: {fileID: 9035404555644925697, guid: dff3ea64089be10449de4f8e13c0f4e5,
         type: 3}

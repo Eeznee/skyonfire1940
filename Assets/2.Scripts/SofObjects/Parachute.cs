@@ -32,20 +32,25 @@ public class Parachute : SofComplex
         startVelocity = aircraft.data.rb.velocity + aircraft.transform.up * 5f;
         startTag = aircraft.tag;
 
-        Initialize();
-
-        data.mass += _crew.Mass();
-        _crew.Initialize(data, false);
+        seat.ResetSeat();
         _crew.transform.parent = seat.transform.parent;
         _crew.seats = new CrewSeat[1] { seat };
-        if (_crew == PlayerManager.player.crew) PlayerManager.SetPlayer(_crew);
-        else _crew.currentSeat = 0;
+        _crew.currentSeat = 0;
+
+        Initialize();
+
+        if (_crew == PlayerManager.player.crew)
+        {
+            if (GameManager.gm.vr) SofVrRig.instance.ResetView();
+            else PlayerCamera.ResetView(false);
+            PlayerManager.SetPlayer(_crew);
+        }
     }
     public override void Initialize()
     {
         base.Initialize();
         rotationSpeed = Random.Range(-2f, 2f);
-        dragCoeff = Random.Range(0.9f,1.1f) * 1600f / (terminalVelocity * terminalVelocity * data.seaLevelAirDensity * radius * radius * Mathf.PI);
+        dragCoeff = Random.Range(0.9f,1.1f) * 1600f / (terminalVelocity * terminalVelocity * Aerodynamics.seaLvlDensity * radius * radius * Mathf.PI);
         data.rb.centerOfMass = Vector3.zero;
         data.rb.angularDrag = 1f;
         data.rb.inertiaTensor = new Vector3(100f, 400f * Random.Range(0.8f,1.2f), 100f);
@@ -53,13 +58,6 @@ public class Parachute : SofComplex
         trueRadius = 0f;
         landed = false;
         tag = startTag;
-
-        seat.ResetSeat();
-        if (PlayerManager.player.crew.Seat() == this)
-        {
-            if (GameManager.gm.vr) SofVrRig.instance.ResetView();
-            else PlayerCamera.ResetView(false);
-        }
     }
     private void FixedUpdate()
     {

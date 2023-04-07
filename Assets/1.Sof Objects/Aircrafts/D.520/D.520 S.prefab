@@ -28,7 +28,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 15901051356873026}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -39,7 +39,7 @@ Transform:
   - {fileID: 7235289304112025384}
   - {fileID: 7269485050326100778}
   - {fileID: 3729113423278142703}
-  m_Father: {fileID: 5511336396886859423}
+  m_Father: {fileID: 7732750328516757722}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6013310892384852737
@@ -110,28 +110,30 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 0}
+  emptyMass: 493.99344
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: b1e93b7e4c814ae4cb2589b6ed5b8492, type: 2}
-  emptyMass: 200
   maxHp: 0
-  hp: 150
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip:
-  - {fileID: 0}
+  area: 8.898342
+  foil: {fileID: 11400000, guid: 344f3690de255c94fb84c31a5fa84825, type: 2}
   vital: 0
-  area: 13.5
-  maxG: 15
-  detachable: 0
-  brokenModel: {fileID: 0}
+  ripOnRip: []
+  bounds:
+    m_Center: {x: 0, y: -0.18100211, z: -0.2591269}
+    m_Extent: {x: 0.47915474, y: 0.6783242, z: 1.9219232}
   hydraulics: {fileID: 4502264776960370066}
   customRipSpeed: 0
   drag: 1
   maxSpeed: 194.44444
   maxDrag: 0.2
-  foil: {fileID: 11400000, guid: d4564f1eb53ee7a4989f7a2a233084b0, type: 2}
+  oldCd: 0.015
+  cd: 0.008
+  linkedFuselages:
+  - {fileID: 7227293705058590713}
+  - {fileID: 1679744628730029545}
+  - {fileID: 4288052533878176537}
 --- !u!64 &3928252635633532727
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -399,13 +401,10 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 0}
-  burningEffect: {fileID: 0}
-  burningRatios: []
-  material: {fileID: 11400000, guid: e485dc88fb9b31f48b04e678e89f9e4b, type: 2}
   emptyMass: 0
+  burningEffect: {fileID: 0}
+  material: {fileID: 11400000, guid: e485dc88fb9b31f48b04e678e89f9e4b, type: 2}
   maxHp: 0
-  hp: 0
-  structureDamage: 1
   ripped: 0
   burning: 0
   mainTank: {fileID: 4006082403658636004}
@@ -434,7 +433,7 @@ GameObject:
   - component: {fileID: 7403998316268955155}
   - component: {fileID: 2092546155043421811}
   - component: {fileID: 4870029472676944351}
-  - component: {fileID: 8136930297633033718}
+  - component: {fileID: 6708080018318740056}
   - component: {fileID: 7835266789339229629}
   m_Layer: 9
   m_Name: Left Gear
@@ -507,7 +506,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &8136930297633033718
+--- !u!114 &6708080018318740056
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -516,32 +515,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 428342935547490916}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19cf394275fd6aa4080fa856dc349359, type: 3}
+  m_Script: {fileID: 11500000, guid: 48465413cba81b44fb6fedb2767c6f91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 7732750328516757725}
+  rb: {fileID: 0}
   sofObject: {fileID: 0}
   simple: {fileID: 0}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
+  complex: {fileID: 0}
+  aircraft: {fileID: 0}
   data: {fileID: 0}
   tr: {fileID: 0}
+  emptyMass: 15.191477
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: b1e93b7e4c814ae4cb2589b6ed5b8492, type: 2}
-  emptyMass: 30
   maxHp: 0
-  hp: 30
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip:
-  - {fileID: 6548940571212578566}
+  area: 0.87343043
+  foil: {fileID: 0}
   vital: 0
-  area: 1
-  maxG: 15
-  detachable: 1
-  brokenModel: {fileID: 0}
+  ripOnRip: []
+  bounds:
+    m_Center: {x: 0.4801308, y: -0.08443166, z: 0.27268693}
+    m_Extent: {x: 0.57839215, y: 0.14931491, z: 0.37752524}
   hydraulics: {fileID: 2761289559783609938}
   customRipSpeed: 1
   drag: 1
@@ -603,6 +599,7 @@ GameObject:
   - component: {fileID: 5653995138515343931}
   - component: {fileID: 2631260600668355921}
   - component: {fileID: 8245660645592725418}
+  - component: {fileID: 2643586530454313727}
   m_Layer: 9
   m_Name: Tail Wheel
   m_TagString: Untagged
@@ -617,13 +614,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 466074310807764550}
-  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.1460001, z: -0.05699978}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8091512069260231637}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5653995138515343931
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -643,27 +640,12 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 0}
-  burningEffect: {fileID: 0}
-  burningRatios: []
-  material: {fileID: 11400000, guid: cdd18122447819d4d915d0dc54513d25, type: 2}
   emptyMass: 20
+  burningEffect: {fileID: 0}
+  material: {fileID: 11400000, guid: cdd18122447819d4d915d0dc54513d25, type: 2}
   maxHp: 0
-  hp: 25
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip:
-  - {fileID: 0}
-  vital: 0
-  area: 0.045238934
-  maxG: 15
-  detachable: 1
-  brokenModel: {fileID: 0}
-  hydraulics: {fileID: 0}
-  customRipSpeed: 0
-  drag: 0
-  maxSpeed: 194.44444
-  maxDrag: 0.1
   brake: 0
   splitBraking: 1
   brakeTorque: 600
@@ -699,7 +681,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e66a5eca12e6f904d867d84b804185b3, type: 2}
+  - {fileID: 2100000, guid: c75377dff47c04945bbf915c2b74323d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -721,6 +703,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &2643586530454313727
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 466074310807764550}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -1216998532077633282, guid: 1ef0d042f7dba224299e0e5c8c76668a, type: 3}
 --- !u!1 &593299765129900804
 GameObject:
   m_ObjectHideFlags: 0
@@ -1082,40 +1078,24 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 1716021198607292569}
+  emptyMass: 28.2616
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: 5280c4897e67a2b4f98944da4f8e9f7a, type: 2}
-  emptyMass: 20
   maxHp: 0
-  hp: 39.26232
-  structureDamage: 1
   ripped: 0
   burning: 0
+  area: 1.6144805
+  foil: {fileID: 11400000, guid: d031f1c0b71fb4d4495f82a32956e4c3, type: 2}
+  vital: 0
   ripOnRip:
   - {fileID: 2605869690719325640}
   - {fileID: 5746597931944142429}
-  vital: 0
-  area: 1.6144799
-  maxG: 15
-  simuFoil:
-    control: {fileID: 6353847082226076539}
-    flap: {fileID: 0}
-    slat: {fileID: 0}
-    pos: {x: 0, y: 0, z: 0}
-    area: 1.6144799
-    span: 1.24
-    length: 1.3019999
-    controlSqrt: 0.5117663
-  shapeTr: {fileID: 0}
-  airfoil: {fileID: 11400000, guid: ca2c8048223bb7041ad086035cfa674b, type: 2}
-  section: {fileID: 0}
+  - {fileID: 6353847082226076539}
+  shapeTr: {fileID: 1716021198607292569}
   angle: -35.8
   tipWidth: 24
-  left: 1
+  airfoil: {fileID: 11400000, guid: ca2c8048223bb7041ad086035cfa674b, type: 2}
   rudder: 1
-  controlSurface: {fileID: 6353847082226076539}
-  csFractionSqrt: 0.84868866
-  controlSpeed: 1.5
 --- !u!64 &9112347228458026075
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1159,7 +1139,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6032008215696977040}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7956174829084372762
 MonoBehaviour:
@@ -1289,32 +1269,20 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 0}
+  emptyMass: 5.6347537
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  emptyMass: 15
   maxHp: 0
-  hp: 10.150004
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip:
-  - {fileID: 0}
+  area: 0.551
+  foil: {fileID: 11400000, guid: 77e2e1717a5a2d0449d400b198ae4619, type: 2}
   vital: 0
-  area: 0.50750023
-  maxG: 15
+  ripOnRip: []
+  shapeTr: {fileID: 7983932371121531646}
+  angle: 0
+  tipWidth: 100
   type: 0
-  miniFoil:
-    airfoil: {fileID: 11400000, guid: 02945341bd566744395aa8c8d7a05a02, type: 2}
-    tr: {fileID: 7983932371121531646}
-    mainQuad:
-      leadingTop: {x: 1.5250001, y: 1.0167563, z: -4.168206}
-      leadingBot: {x: 0.07499999, y: 1.0167563, z: -4.168206}
-      trailingTop: {x: 1.5250001, y: 0.9183919, z: -4.5352545}
-      trailingBot: {x: 0.07499999, y: 0.9183919, z: -4.5352545}
-      area: 0.551
-    rootLiftPos: {x: 0.07499999, y: 0.9921652, z: -4.2599683}
-    tipLiftPos: {x: 1.5250001, y: 0.9921652, z: -4.2599683}
   controlState: 0
   controlAngle: 0
   sinControlAngle: 0
@@ -1444,7 +1412,7 @@ GameObject:
   - component: {fileID: 9014770606043619694}
   - component: {fileID: 2870058624537992393}
   - component: {fileID: 5341863863753786202}
-  - component: {fileID: 3429946587327080450}
+  - component: {fileID: 3812493380524218447}
   - component: {fileID: 3904243968476650777}
   m_Layer: 9
   m_Name: Right Gear
@@ -1517,7 +1485,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &3429946587327080450
+--- !u!114 &3812493380524218447
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1526,32 +1494,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 1343658544758693497}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19cf394275fd6aa4080fa856dc349359, type: 3}
+  m_Script: {fileID: 11500000, guid: 48465413cba81b44fb6fedb2767c6f91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 7732750328516757725}
+  rb: {fileID: 0}
   sofObject: {fileID: 0}
   simple: {fileID: 0}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
+  complex: {fileID: 0}
+  aircraft: {fileID: 0}
   data: {fileID: 0}
   tr: {fileID: 0}
+  emptyMass: 15.191486
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: b1e93b7e4c814ae4cb2589b6ed5b8492, type: 2}
-  emptyMass: 30
   maxHp: 0
-  hp: 30
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip:
-  - {fileID: 1415194381715004707}
+  area: 0.87343085
+  foil: {fileID: 0}
   vital: 0
-  area: 1
-  maxG: 15
-  detachable: 1
-  brokenModel: {fileID: 0}
+  ripOnRip: []
+  bounds:
+    m_Center: {x: -0.4801308, y: -0.044431683, z: 0.2726869}
+    m_Extent: {x: 0.57839215, y: 0.14931491, z: 0.37752527}
   hydraulics: {fileID: 2761289559783609938}
   customRipSpeed: 1
   drag: 1
@@ -1653,10 +1618,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8640756158921094187}
-  - component: {fileID: 635889908614710872}
   - component: {fileID: 6338857480242270631}
+  - component: {fileID: 635889908614710872}
   - component: {fileID: 4438672892237666627}
-  m_Layer: 12
+  m_Layer: 9
   m_Name: Flight Stick
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1678,6 +1643,14 @@ Transform:
   m_Father: {fileID: 9024584143840847924}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &6338857480242270631
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1513605957210438457}
+  m_Mesh: {fileID: -8583348742482472336, guid: 1ef0d042f7dba224299e0e5c8c76668a, type: 3}
 --- !u!23 &635889908614710872
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1719,14 +1692,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &6338857480242270631
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1513605957210438457}
-  m_Mesh: {fileID: -8583348742482472336, guid: 1ef0d042f7dba224299e0e5c8c76668a, type: 3}
 --- !u!114 &4438672892237666627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1807,13 +1772,10 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 0}
-  burningEffect: {fileID: 0}
-  burningRatios: []
-  material: {fileID: 11400000, guid: 45acaca3a30e10a4f9b4fd89eccd3c1f, type: 2}
   emptyMass: 0
+  burningEffect: {fileID: 0}
+  material: {fileID: 11400000, guid: 45acaca3a30e10a4f9b4fd89eccd3c1f, type: 2}
   maxHp: 0
-  hp: 0
-  structureDamage: 1
   ripped: 0
   burning: 0
   capacity: 15
@@ -1845,7 +1807,7 @@ GameObject:
   - component: {fileID: 8050407387245151625}
   - component: {fileID: 4502264776960370066}
   m_Layer: 9
-  m_Name: Cannopy
+  m_Name: Canopy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1899,7 +1861,7 @@ MonoBehaviour:
   state: 0
   stateInput: 0
   essentialParts:
-  - {fileID: 7156389374052700992}
+  - {fileID: 1870617043329815597}
 --- !u!1 &1709122712525839344
 GameObject:
   m_ObjectHideFlags: 0
@@ -2058,15 +2020,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1953372706321097274}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.00000035762787, z: -3.2999997}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -0, z: -3.2999997}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6211280066910005592}
   - {fileID: 1490291899404527916}
   - {fileID: 8228777070923081170}
   - {fileID: 8091512069260231637}
-  m_Father: {fileID: 5511336396886859423}
+  m_Father: {fileID: 7732750328516757722}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3173616664102859651
@@ -2137,22 +2099,19 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 0}
+  emptyMass: 146.24538
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: b1e93b7e4c814ae4cb2589b6ed5b8492, type: 2}
-  emptyMass: 70
   maxHp: 0
-  hp: 180
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip:
-  - {fileID: 0}
+  area: 4.830103
+  foil: {fileID: 0}
   vital: 0
-  area: 8
-  maxG: 15
-  detachable: 1
-  brokenModel: {fileID: 0}
+  ripOnRip: []
+  bounds:
+    m_Center: {x: 0, y: 0.048149228, z: -0.017654896}
+    m_Extent: {x: 0.40343577, y: 0.658957, z: 1.1366098}
   hydraulics: {fileID: 0}
   customRipSpeed: 0
   drag: 0
@@ -2358,11 +2317,10 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 4268555306270436187}
   - {fileID: 5508115817219599841}
   - {fileID: 8250004801142434201}
   m_Father: {fileID: 7732750328516757722}
-  m_RootOrder: 3
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4845967542157588536
 MonoBehaviour:
@@ -2386,6 +2344,7 @@ MonoBehaviour:
   localHolder: {fileID: 0}
   globalHolder: {fileID: 0}
   localActive: 0
+  use3dSound: 0
 --- !u!1 &2387338436508746847
 GameObject:
   m_ObjectHideFlags: 0
@@ -2663,7 +2622,7 @@ GameObject:
   - component: {fileID: 6548940571212578566}
   - component: {fileID: 7744686679370047269}
   m_Layer: 9
-  m_Name: Right Wheel
+  m_Name: Left Wheel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2676,13 +2635,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2736759250791337679}
-  m_LocalRotation: {x: -0.03274517, y: -0.0020027824, z: -0.061015744, w: 0.9975976}
+  m_LocalRotation: {x: -0.021738151, y: -0.024570512, z: -0.7485526, w: 0.6622634}
   m_LocalPosition: {x: 0.2554, y: 0.0461, z: 0.05200005}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 309848984813194291}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -3.76, y: 0, z: -7}
+  m_LocalEulerAnglesHint: {x: -3.76, y: 0, z: -97}
 --- !u!33 &5765272020104112226
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -2690,7 +2649,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2736759250791337679}
-  m_Mesh: {fileID: -8965486480633180311, guid: 7c6cd8a332bc7324eb396010459dc534, type: 3}
+  m_Mesh: {fileID: 8578945929205279023, guid: 1ef0d042f7dba224299e0e5c8c76668a, type: 3}
 --- !u!23 &7633048587189941511
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2710,7 +2669,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 293a4c9b218d1884697d54f29649a88a, type: 2}
+  - {fileID: 2100000, guid: c75377dff47c04945bbf915c2b74323d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2751,27 +2710,12 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 0}
-  burningEffect: {fileID: 0}
-  burningRatios: []
-  material: {fileID: 11400000, guid: cdd18122447819d4d915d0dc54513d25, type: 2}
   emptyMass: 20
+  burningEffect: {fileID: 0}
+  material: {fileID: 11400000, guid: cdd18122447819d4d915d0dc54513d25, type: 2}
   maxHp: 0
-  hp: 25
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip:
-  - {fileID: 0}
-  vital: 0
-  area: 0.32169908
-  maxG: 15
-  detachable: 1
-  brokenModel: {fileID: 0}
-  hydraulics: {fileID: 0}
-  customRipSpeed: 0
-  drag: 0
-  maxSpeed: 194.44444
-  maxDrag: 0.1
   brake: 1
   splitBraking: 0
   brakeTorque: 850
@@ -2899,41 +2843,22 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 6384824147095365432}
+  emptyMass: 28.844776
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  emptyMass: 30
   maxHp: 0
-  hp: 9.20054
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip:
-  - {fileID: 4221726294686786244}
-  - {fileID: 0}
+  area: 1.3392854
+  foil: {fileID: 0}
   vital: 0
-  area: 1.3392855
-  maxG: 16
-  subdivisions:
-  - control: {fileID: 4221726294686786244}
-    flap: {fileID: 0}
-    slat: {fileID: 0}
-    pos: {x: 0.25, y: 0, z: -0.017481705}
-    area: 0.7111142
-    span: 0.5
-    length: 1.4222285
-    controlSqrt: 0.4675725
-  - control: {fileID: 4221726294686786244}
-    flap: {fileID: 0}
-    slat: {fileID: 0}
-    pos: {x: -0.25, y: 0, z: -0.052445114}
-    area: 0.6696427
-    span: 0.5
-    length: 1.3392854
-    controlSqrt: 0.4675725
-  right: -1
+  ripOnRip: []
+  shapeTr: {fileID: 6384824147095365432}
+  angle: -4
+  tipWidth: 83
+  split: 0
+  splitFraction: 0.5
   airfoil: {fileID: 11400000, guid: 1e92c2b916a7d2e428720abebb80b14c, type: 2}
-  section: {fileID: 0}
   oswald: 0.75
   skin: {fileID: 0}
   skinMesh: {fileID: -6987453676189038513, guid: 1ef0d042f7dba224299e0e5c8c76668a,
@@ -2941,17 +2866,8 @@ MonoBehaviour:
   parent: {fileID: 4149851488456922653}
   child: {fileID: 4124555543036698695}
   root: {fileID: 8365611820299590523}
-  shapeTr: {fileID: 6384824147095365432}
-  angle: -4
-  tipWidth: 83
   totalArea: 7.604045
-  controlSpeed: 5
-  controlSurface: {fileID: 4221726294686786244}
-  flaps:
-  - {fileID: 0}
-  slat: {fileID: 0}
-  flapsTotalArea: 0
-  flapsTotalMass: 0
+  alpha: 0
 --- !u!64 &4869051728225196828
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -3090,7 +3006,7 @@ Transform:
   m_GameObject: {fileID: 2832433470311993870}
   m_LocalRotation: {x: 0.03183035, y: 0.054195732, z: -0.05840417, w: 0.99631256}
   m_LocalPosition: {x: -0.013, y: 0.012, z: -0.066}
-  m_LocalScale: {x: 2.26, y: 1, z: 0.35}
+  m_LocalScale: {x: -2.26, y: 1, z: 0.35}
   m_Children: []
   m_Father: {fileID: 4260265777964510349}
   m_RootOrder: 0
@@ -3106,7 +3022,7 @@ GameObject:
   - component: {fileID: 3619697795021423018}
   - component: {fileID: 606674077974037085}
   - component: {fileID: 8912947743844584079}
-  - component: {fileID: 684575894950837429}
+  - component: {fileID: 7227293705058590713}
   - component: {fileID: 8469379805811187923}
   m_Layer: 9
   m_Name: Nose
@@ -3122,15 +3038,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2832472229793591525}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0, z: 2.3}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 2.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5697007855872860092}
   - {fileID: 7856747549431711872}
   - {fileID: 656852770692174341}
   - {fileID: 2053315891036334913}
-  m_Father: {fileID: 5511336396886859423}
+  m_Father: {fileID: 7732750328516757722}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &606674077974037085
@@ -3182,7 +3098,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &684575894950837429
+--- !u!114 &7227293705058590713
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3191,37 +3107,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 2832472229793591525}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19cf394275fd6aa4080fa856dc349359, type: 3}
+  m_Script: {fileID: 11500000, guid: fcb6fa826d4843f4e9b1ae661405ec67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 7732750328516757725}
+  rb: {fileID: 0}
   sofObject: {fileID: 0}
   simple: {fileID: 0}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
+  complex: {fileID: 0}
+  aircraft: {fileID: 0}
   data: {fileID: 0}
   tr: {fileID: 0}
+  emptyMass: 104.7151
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: b1e93b7e4c814ae4cb2589b6ed5b8492, type: 2}
-  emptyMass: 30
   maxHp: 0
-  hp: 150
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip:
-  - {fileID: 0}
+  area: 3.1635003
+  foil: {fileID: 0}
   vital: 0
-  area: 10
-  maxG: 15
-  detachable: 0
-  brokenModel: {fileID: 0}
+  ripOnRip: []
+  bounds:
+    m_Center: {x: 0, y: -0.19733816, z: 0.09262407}
+    m_Extent: {x: 0.4682652, y: 0.61538035, z: 0.7298281}
   hydraulics: {fileID: 0}
   customRipSpeed: 0
   drag: 0
-  maxSpeed: 194.44444
+  maxSpeed: 100
   maxDrag: 0.1
+  brokenModel: {fileID: 0}
 --- !u!64 &8469379805811187923
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -3287,15 +3201,7 @@ MonoBehaviour:
   aircraft: {fileID: 0}
   data: {fileID: 0}
   tr: {fileID: 0}
-  burningEffect: {fileID: 0}
-  burningRatios: []
-  material: {fileID: 0}
   emptyMass: 10.5
-  maxHp: 0
-  hp: 0
-  structureDamage: 1
-  ripped: 0
-  burning: 0
   controller: 1
   ejection: {fileID: 5530900739068595323}
   muzzleEffects: {fileID: 0}
@@ -3312,6 +3218,7 @@ MonoBehaviour:
   fuzeDistance: 0
   reloading: 0
   cycleState: 1
+  chambered: 0
 --- !u!1 &2985919306621392740
 GameObject:
   m_ObjectHideFlags: 0
@@ -3416,39 +3323,23 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 8583940620616260294}
+  emptyMass: 19.335003
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  emptyMass: 30
   maxHp: 0
-  hp: 9.20054
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip: []
-  vital: 0
   area: 1.0257884
-  maxG: 16
-  subdivisions:
-  - control: {fileID: 4221726294686786244}
-    flap: {fileID: 0}
-    slat: {fileID: 0}
-    pos: {x: 0.2525, y: 0, z: -0.015001274}
-    area: 0.5799713
-    span: 0.505
-    length: 1.148458
-    controlSqrt: 0.5132275
-  - control: {fileID: 0}
-    flap: {fileID: 0}
-    slat: {fileID: 0}
-    pos: {x: -0.2525, y: 0, z: -0.045003824}
-    area: 0.5128942
-    span: 0.505
-    length: 1.0156322
-    controlSqrt: 0
-  right: -1
+  foil: {fileID: 0}
+  vital: 0
+  ripOnRip:
+  - {fileID: 4221726294686786244}
+  shapeTr: {fileID: 8583940620616260294}
+  angle: -3.4
+  tipWidth: 67.2
+  split: 0
+  splitFraction: 0.5
   airfoil: {fileID: 11400000, guid: 1e92c2b916a7d2e428720abebb80b14c, type: 2}
-  section: {fileID: 0}
   oswald: 0.75
   skin: {fileID: 0}
   skinMesh: {fileID: -3505882068455149326, guid: 1ef0d042f7dba224299e0e5c8c76668a,
@@ -3456,17 +3347,8 @@ MonoBehaviour:
   parent: {fileID: 9044854894741073952}
   child: {fileID: 0}
   root: {fileID: 8365611820299590523}
-  shapeTr: {fileID: 8583940620616260294}
-  angle: -3.4
-  tipWidth: 67.2
   totalArea: 7.604045
-  controlSpeed: 5
-  controlSurface: {fileID: 0}
-  flaps:
-  - {fileID: 0}
-  slat: {fileID: 0}
-  flapsTotalArea: 0
-  flapsTotalMass: 0
+  alpha: 0
 --- !u!64 &6955035746648781013
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -3532,13 +3414,10 @@ MonoBehaviour:
   aircraft: {fileID: 0}
   data: {fileID: 0}
   tr: {fileID: 0}
-  burningEffect: {fileID: 0}
-  burningRatios: []
-  material: {fileID: 11400000, guid: cd949defde274ba448733a57c20a8cbd, type: 2}
   emptyMass: 60
+  burningEffect: {fileID: 0}
+  material: {fileID: 11400000, guid: cd949defde274ba448733a57c20a8cbd, type: 2}
   maxHp: 0
-  hp: 20
-  structureDamage: 1
   ripped: 0
   burning: 0
 --- !u!64 &9152760594637141319
@@ -3726,13 +3605,10 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 0}
-  burningEffect: {fileID: 0}
-  burningRatios: []
-  material: {fileID: 11400000, guid: 45acaca3a30e10a4f9b4fd89eccd3c1f, type: 2}
   emptyMass: 0
+  burningEffect: {fileID: 0}
+  material: {fileID: 11400000, guid: 45acaca3a30e10a4f9b4fd89eccd3c1f, type: 2}
   maxHp: 0
-  hp: 0
-  structureDamage: 1
   ripped: 0
   burning: 0
   capacity: 32
@@ -4000,15 +3876,7 @@ MonoBehaviour:
   aircraft: {fileID: 0}
   data: {fileID: 0}
   tr: {fileID: 0}
-  burningEffect: {fileID: 0}
-  burningRatios: []
-  material: {fileID: 0}
   emptyMass: 10.5
-  maxHp: 0
-  hp: 0
-  structureDamage: 1
-  ripped: 0
-  burning: 0
   controller: 1
   ejection: {fileID: 2444253170933750644}
   muzzleEffects: {fileID: 0}
@@ -4025,6 +3893,7 @@ MonoBehaviour:
   fuzeDistance: 0
   reloading: 0
   cycleState: 1
+  chambered: 0
 --- !u!1 &3524200246967841692
 GameObject:
   m_ObjectHideFlags: 0
@@ -4251,40 +4120,23 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 1853296815581467338}
+  emptyMass: 37.41275
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  emptyMass: 70
   maxHp: 0
-  hp: 25.885695
-  structureDamage: 1
   ripped: 0
   burning: 0
+  area: 1.5928495
+  foil: {fileID: 0}
+  vital: 1
   ripOnRip:
   - {fileID: 6089854799516401357}
-  vital: 1
-  area: 1.5928499
-  maxG: 13
-  subdivisions:
-  - control: {fileID: 0}
-    flap: {fileID: 6089854799516401357}
-    slat: {fileID: 0}
-    pos: {x: 0.25, y: 0, z: -0.013101941}
-    area: 0.8394749
-    span: 0.5
-    length: 1.6789498
-    controlSqrt: 0
-  - control: {fileID: 0}
-    flap: {fileID: 6089854799516401357}
-    slat: {fileID: 0}
-    pos: {x: -0.25, y: 0, z: -0.03930582}
-    area: 0.796425
-    span: 0.5
-    length: 1.59285
-    controlSqrt: 0
-  right: -1
+  shapeTr: {fileID: 1853296815581467338}
+  angle: -3
+  tipWidth: 85
+  split: 0
+  splitFraction: 0.5
   airfoil: {fileID: 11400000, guid: 1e92c2b916a7d2e428720abebb80b14c, type: 2}
-  section: {fileID: 0}
   oswald: 0.75
   skin: {fileID: 0}
   skinMesh: {fileID: -5181920000996379002, guid: 1ef0d042f7dba224299e0e5c8c76668a,
@@ -4292,17 +4144,8 @@ MonoBehaviour:
   parent: {fileID: 8365611820299590523}
   child: {fileID: 9044854894741073952}
   root: {fileID: 8365611820299590523}
-  shapeTr: {fileID: 1853296815581467338}
-  angle: -3
-  tipWidth: 85
   totalArea: 7.604045
-  controlSpeed: 5
-  controlSurface: {fileID: 4221726294686786244}
-  flaps:
-  - {fileID: 0}
-  slat: {fileID: 0}
-  flapsTotalArea: 0
-  flapsTotalMass: 0
+  alpha: 0
 --- !u!64 &6414858165925136374
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -4348,7 +4191,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8942854951716888322}
   m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!33 &8566417339551997856
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -4449,57 +4292,10 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 0}
-  burningEffect: {fileID: 0}
-  burningRatios:
-  - 0.6904682
-  - 0.84198517
-  - 0.3971709
-  - 0.7034902
-  - 0.61352694
-  - 0.846889
-  - 0.4885057
-  - 1.2017205
-  - 1.0305467
-  - 0.96812624
-  - 0.76303744
-  - 0.65655124
-  - 0.3342824
-  - 0.14741401
-  - 0.19853956
-  - 0.17742246
-  - 0.91765356
-  - 0.26960063
-  - 1.2343565
-  - 0.48133728
-  - 0.9967116
-  - 0.41342255
-  - 1.0645988
-  - 0.6363894
-  - 0.25539154
-  - 0.17808504
-  - 0.20904332
-  - 0.17035164
-  - 0.76127154
-  - 0.36348844
-  - 0.8359127
-  - 0.5613739
-  - 1.3162185
-  - 0.39135355
-  - 0.8280674
-  - 0.4157277
-  - 0.25886795
-  - 0.13026477
-  - 0.12668285
-  - 0.16440701
-  - 0.11162612
-  - 0.10045997
-  - 0.16041292
-  - 0.1982628
-  material: {fileID: 11400000, guid: db30bb86e36dcbb4ea931db5056b7de1, type: 2}
   emptyMass: 0
+  burningEffect: {fileID: 0}
+  material: {fileID: 11400000, guid: db30bb86e36dcbb4ea931db5056b7de1, type: 2}
   maxHp: 0
-  hp: 30
-  structureDamage: 1
   ripped: 0
   burning: 0
   capacity: 90
@@ -4547,7 +4343,7 @@ Transform:
   m_GameObject: {fileID: 3775566249476278566}
   m_LocalRotation: {x: -0.024968818, y: 0.045760628, z: -0.06706567, w: 0.9963859}
   m_LocalPosition: {x: -0.054, y: 0.005, z: -0.041}
-  m_LocalScale: {x: 1.69, y: 1, z: 0.32}
+  m_LocalScale: {x: -1.69, y: 1, z: 0.32}
   m_Children: []
   m_Father: {fileID: 7971844740117263799}
   m_RootOrder: 0
@@ -4868,7 +4664,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3947072027500395452}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.258, y: 0.067, z: 0.052}
+  m_LocalPosition: {x: -0.15, y: 0.067, z: 0.052}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4603531836677305915}
@@ -5023,57 +4819,10 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 0}
-  burningEffect: {fileID: 0}
-  burningRatios:
-  - 0.6904682
-  - 0.84198517
-  - 0.3971709
-  - 0.7034902
-  - 0.61352694
-  - 0.846889
-  - 0.4885057
-  - 1.2017205
-  - 1.0305467
-  - 0.96812624
-  - 0.76303744
-  - 0.65655124
-  - 0.3342824
-  - 0.14741401
-  - 0.19853956
-  - 0.17742246
-  - 0.91765356
-  - 0.26960063
-  - 1.2343565
-  - 0.48133728
-  - 0.9967116
-  - 0.41342255
-  - 1.0645988
-  - 0.6363894
-  - 0.25539154
-  - 0.17808504
-  - 0.20904332
-  - 0.17035164
-  - 0.76127154
-  - 0.36348844
-  - 0.8359127
-  - 0.5613739
-  - 1.3162185
-  - 0.39135355
-  - 0.8280674
-  - 0.4157277
-  - 0.25886795
-  - 0.13026477
-  - 0.12668285
-  - 0.16440701
-  - 0.11162612
-  - 0.10045997
-  - 0.16041292
-  - 0.1982628
-  material: {fileID: 11400000, guid: db30bb86e36dcbb4ea931db5056b7de1, type: 2}
   emptyMass: 0
+  burningEffect: {fileID: 0}
+  material: {fileID: 11400000, guid: db30bb86e36dcbb4ea931db5056b7de1, type: 2}
   maxHp: 0
-  hp: 30
-  structureDamage: 1
   ripped: 0
   burning: 0
   capacity: 300
@@ -5107,7 +4856,7 @@ GameObject:
   - component: {fileID: 4603531836677305915}
   - component: {fileID: 4454842963512921905}
   - component: {fileID: 3867544438486815820}
-  - component: {fileID: 5922938466332517335}
+  - component: {fileID: 475811290765641141}
   - component: {fileID: 4794807877407749697}
   m_Layer: 9
   m_Name: Gear Holder
@@ -5181,7 +4930,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &5922938466332517335
+--- !u!114 &475811290765641141
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5190,36 +4939,34 @@ MonoBehaviour:
   m_GameObject: {fileID: 4018052299706366834}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19cf394275fd6aa4080fa856dc349359, type: 3}
+  m_Script: {fileID: 11500000, guid: 48465413cba81b44fb6fedb2767c6f91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 7732750328516757725}
+  rb: {fileID: 0}
   sofObject: {fileID: 0}
   simple: {fileID: 0}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
+  complex: {fileID: 0}
+  aircraft: {fileID: 0}
   data: {fileID: 0}
   tr: {fileID: 0}
+  emptyMass: 1.149188
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: b1e93b7e4c814ae4cb2589b6ed5b8492, type: 2}
-  emptyMass: 30
   maxHp: 0
-  hp: 30
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip:
-  - {fileID: 0}
+  area: 0.15622687
+  foil: {fileID: 0}
   vital: 0
-  area: 1
-  maxG: 15
-  detachable: 1
-  brokenModel: {fileID: 0}
+  ripOnRip:
+  - {fileID: 1415194381715004707}
+  bounds:
+    m_Center: {x: 0.0013907105, y: -0.0027964711, z: -0.004836168}
+    m_Extent: {x: 0.3086785, y: 0.09092203, z: 0.12652883}
   hydraulics: {fileID: 0}
   customRipSpeed: 0
   drag: 0
-  maxSpeed: 194.44444
+  maxSpeed: 100
   maxDrag: 0.1
 --- !u!64 &4794807877407749697
 MeshCollider:
@@ -5262,13 +5009,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4146640880706075855}
-  m_LocalRotation: {x: -0.03274517, y: 0.0020027794, z: 0.06101565, w: 0.9975976}
+  m_LocalRotation: {x: -0.021738153, y: 0.02457051, z: 0.74855256, w: 0.66226345}
   m_LocalPosition: {x: -0.2554, y: 0.0461, z: 0.05200005}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4603531836677305915}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -3.76, y: 0, z: 7}
+  m_LocalEulerAnglesHint: {x: -3.76, y: 0, z: 97}
 --- !u!33 &95715428521146100
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -5276,7 +5023,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4146640880706075855}
-  m_Mesh: {fileID: -8965486480633180311, guid: 7c6cd8a332bc7324eb396010459dc534, type: 3}
+  m_Mesh: {fileID: 8578945929205279023, guid: 1ef0d042f7dba224299e0e5c8c76668a, type: 3}
 --- !u!23 &2876249498858387731
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5296,7 +5043,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 293a4c9b218d1884697d54f29649a88a, type: 2}
+  - {fileID: 2100000, guid: c75377dff47c04945bbf915c2b74323d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5337,27 +5084,12 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 0}
-  burningEffect: {fileID: 0}
-  burningRatios: []
-  material: {fileID: 11400000, guid: cdd18122447819d4d915d0dc54513d25, type: 2}
   emptyMass: 20
+  burningEffect: {fileID: 0}
+  material: {fileID: 11400000, guid: cdd18122447819d4d915d0dc54513d25, type: 2}
   maxHp: 0
-  hp: 25
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip:
-  - {fileID: 0}
-  vital: 0
-  area: 0.32169908
-  maxG: 15
-  detachable: 1
-  brokenModel: {fileID: 0}
-  hydraulics: {fileID: 0}
-  customRipSpeed: 0
-  drag: 0
-  maxSpeed: 194.44444
-  maxDrag: 0.1
   brake: 1
   splitBraking: 0
   brakeTorque: 850
@@ -5392,7 +5124,7 @@ GameObject:
   - component: {fileID: 5883671048646211203}
   - component: {fileID: 5496467540712220465}
   m_Layer: 9
-  m_Name: Right Wheel Collider
+  m_Name: Left Wheel Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5406,7 +5138,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4194935886055347065}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.258, y: 0.067, z: 0.052}
+  m_LocalPosition: {x: 0.15, y: 0.067, z: 0.052}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 309848984813194291}
@@ -5442,57 +5174,6 @@ WheelCollider:
     m_AsymptoteValue: 0.6
     m_Stiffness: 0.8
   m_Enabled: 1
---- !u!1 &4272072433099724802
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4268555306270436187}
-  - component: {fileID: 2232647615624076088}
-  m_Layer: 9
-  m_Name: Engine Audio
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4268555306270436187
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4272072433099724802}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 6032008215696977040}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2232647615624076088
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4272072433099724802}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5bb1d26e01070584fa55747aebfcff13, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rb: {fileID: 7732750328516757725}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  data: {fileID: 0}
-  tr: {fileID: 0}
-  engines: []
 --- !u!1 &4323979747159232873
 GameObject:
   m_ObjectHideFlags: 0
@@ -5838,32 +5519,20 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 0}
+  emptyMass: 13.683881
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  emptyMass: 40
   maxHp: 0
-  hp: 13.970015
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip:
-  - {fileID: 0}
+  area: 0.99549973
+  foil: {fileID: 11400000, guid: d031f1c0b71fb4d4495f82a32956e4c3, type: 2}
   vital: 0
-  area: 0.69850075
-  maxG: 15
+  ripOnRip: []
+  shapeTr: {fileID: 137829686825570059}
+  angle: 0
+  tipWidth: 100
   type: 0
-  miniFoil:
-    airfoil: {fileID: 11400000, guid: a631383cfcb206c42b8c56a6fa64d1a7, type: 2}
-    tr: {fileID: 137829686825570059}
-    mainQuad:
-      leadingTop: {x: -0.000000112941485, y: 2.1543906, z: -4.752088}
-      leadingBot: {x: 0.000000112941485, y: 0.4060817, z: -4.2835627}
-      trailingTop: {x: -0.000000112941485, y: 2.012021, z: -5.2833424}
-      trailingBot: {x: 0.000000112941485, y: 0.26371208, z: -4.8148165}
-      area: 0.9955002
-    rootLiftPos: {x: 0.000000112941485, y: 0.3704893, z: -4.416376}
-    tipLiftPos: {x: -0.000000112941485, y: 2.1187983, z: -4.8849015}
   controlState: 0
   controlAngle: 0
   sinControlAngle: 0
@@ -5884,41 +5553,6 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4890854529158947862, guid: 1ef0d042f7dba224299e0e5c8c76668a, type: 3}
---- !u!1 &4544199254901200131
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5511336396886859423}
-  m_Layer: 9
-  m_Name: Mesh
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5511336396886859423
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4544199254901200131}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 3619697795021423018}
-  - {fileID: 8942854951716888322}
-  - {fileID: 1314638991818118605}
-  - {fileID: 4496439447973831729}
-  - {fileID: 6298901340469138000}
-  m_Father: {fileID: 7732750328516757722}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4777435398258182240
 GameObject:
   m_ObjectHideFlags: 0
@@ -6049,7 +5683,7 @@ GameObject:
   - component: {fileID: 309848984813194291}
   - component: {fileID: 6757818329116295273}
   - component: {fileID: 2397932357598004489}
-  - component: {fileID: 6621722536796363789}
+  - component: {fileID: 7121540246410882796}
   - component: {fileID: 5655145710950034116}
   m_Layer: 9
   m_Name: Gear Holder
@@ -6123,7 +5757,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &6621722536796363789
+--- !u!114 &7121540246410882796
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -6132,36 +5766,34 @@ MonoBehaviour:
   m_GameObject: {fileID: 5175044432026837924}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19cf394275fd6aa4080fa856dc349359, type: 3}
+  m_Script: {fileID: 11500000, guid: 48465413cba81b44fb6fedb2767c6f91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 7732750328516757725}
+  rb: {fileID: 0}
   sofObject: {fileID: 0}
   simple: {fileID: 0}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
+  complex: {fileID: 0}
+  aircraft: {fileID: 0}
   data: {fileID: 0}
   tr: {fileID: 0}
+  emptyMass: 1.1491891
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: b1e93b7e4c814ae4cb2589b6ed5b8492, type: 2}
-  emptyMass: 30
   maxHp: 0
-  hp: 30
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip:
-  - {fileID: 0}
+  area: 0.15622696
+  foil: {fileID: 0}
   vital: 0
-  area: 1
-  maxG: 15
-  detachable: 1
-  brokenModel: {fileID: 0}
+  ripOnRip:
+  - {fileID: 6548940571212578566}
+  bounds:
+    m_Center: {x: -0.0013906509, y: -0.0027964674, z: -0.004836172}
+    m_Extent: {x: 0.3086785, y: 0.09092203, z: 0.12652884}
   hydraulics: {fileID: 0}
   customRipSpeed: 0
   drag: 0
-  maxSpeed: 194.44444
+  maxSpeed: 100
   maxDrag: 0.1
 --- !u!64 &5655145710950034116
 MeshCollider:
@@ -6281,38 +5913,21 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 4317419366760369401}
+  emptyMass: 20.680044
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: 5280c4897e67a2b4f98944da4f8e9f7a, type: 2}
-  emptyMass: 20
   maxHp: 0
-  hp: 36.44999
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip: []
+  area: 1.3109998
+  foil: {fileID: 11400000, guid: 77e2e1717a5a2d0449d400b198ae4619, type: 2}
   vital: 0
-  area: 1.311
-  maxG: 20
-  simuFoil:
-    control: {fileID: 5907488478324561609}
-    flap: {fileID: 0}
-    slat: {fileID: 0}
-    pos: {x: 0, y: 0, z: 0}
-    area: 1.311
-    span: 1.52
-    length: 0.8625
-    controlSqrt: 0.5748346
+  ripOnRip: []
   shapeTr: {fileID: 4317419366760369401}
-  airfoil: {fileID: 11400000, guid: ca55e600d88c7064cb0c8e25a7d72820, type: 2}
-  section: {fileID: 0}
   angle: -8.1
   tipWidth: 50
-  left: 1
+  airfoil: {fileID: 11400000, guid: ca55e600d88c7064cb0c8e25a7d72820, type: 2}
   rudder: 0
-  controlSurface: {fileID: 5907488478324561609}
-  csFractionSqrt: 0.7513429
-  controlSpeed: 1.5
 --- !u!64 &1213484516663193064
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -6424,8 +6039,8 @@ MonoBehaviour:
   state: 0
   stateInput: 0
   essentialParts:
-  - {fileID: 8136930297633033718}
-  - {fileID: 3429946587327080450}
+  - {fileID: 6708080018318740056}
+  - {fileID: 3812493380524218447}
 --- !u!1 &5651472319358983968
 GameObject:
   m_ObjectHideFlags: 0
@@ -6529,32 +6144,20 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 0}
+  emptyMass: 7.4013753
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  emptyMass: 20
   maxHp: 0
-  hp: 14.399998
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip:
-  - {fileID: 0}
+  area: 0.5407999
+  foil: {fileID: 0}
   vital: 0
-  area: 0.7199999
-  maxG: 15
+  ripOnRip: []
+  shapeTr: {fileID: 849481783106476497}
+  angle: 0
+  tipWidth: 100
   type: 0
-  miniFoil:
-    airfoil: {fileID: 0}
-    tr: {fileID: 849481783106476497}
-    mainQuad:
-      leadingTop: {x: -2.9125772, y: 1.2244486, z: 0.29758018}
-      leadingBot: {x: -4.580297, y: 1.4847708, z: 0.38150725}
-      trailingTop: {x: -2.9428298, y: 1.1285832, z: -0.0062200725}
-      trailingBot: {x: -4.6105494, y: 1.3889054, z: 0.07770699}
-      area: 0.54080015
-    rootLiftPos: {x: -4.58786, y: 1.4608045, z: 0.3055572}
-    tipLiftPos: {x: -2.9201403, y: 1.2004822, z: 0.22163013}
   controlState: 0
   controlAngle: 0
   sinControlAngle: 0
@@ -6742,7 +6345,7 @@ Transform:
   - {fileID: 8050407387245151625}
   - {fileID: 6612438394123782433}
   m_Father: {fileID: 7732750328516757722}
-  m_RootOrder: 2
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5852432111263090207
 GameObject:
@@ -6853,8 +6456,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6081426144866136030}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.2, y: -0.62, z: 0.7}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.2, y: -0.61999995, z: 0.70000005}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3190758203134511045}
@@ -6862,7 +6465,7 @@ Transform:
   - {fileID: 5824473361237687543}
   - {fileID: 9014770606043619694}
   - {fileID: 5319736845381953999}
-  m_Father: {fileID: 5511336396886859423}
+  m_Father: {fileID: 7732750328516757722}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &347274099099590537
@@ -6933,40 +6536,23 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 5319736845381953999}
+  emptyMass: 80.569496
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  emptyMass: 110
   maxHp: 0
-  hp: 69.62561
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip:
-  - {fileID: 3429946587327080450}
+  area: 2.6562896
+  foil: {fileID: 11400000, guid: 3cca03c74f2d4214c94929031751c0cb, type: 2}
   vital: 1
-  area: 2.6562898
-  maxG: 10
-  subdivisions:
-  - control: {fileID: 0}
-    flap: {fileID: 1727254461762023015}
-    slat: {fileID: 0}
-    pos: {x: -0.3475, y: 0, z: -0.018211698}
-    area: 1.415715
-    span: 0.695
-    length: 2.037
-    controlSqrt: 0
-  - control: {fileID: 0}
-    flap: {fileID: 1727254461762023015}
-    slat: {fileID: 0}
-    pos: {x: 0.34750003, y: 0, z: -0.054635093}
-    area: 1.3281449
-    span: 0.695
-    length: 1.9109999
-    controlSqrt: 0
-  right: 1
+  ripOnRip:
+  - {fileID: 3812493380524218447}
+  shapeTr: {fileID: 5319736845381953999}
+  angle: -3
+  tipWidth: 82
+  split: 0
+  splitFraction: 0.5
   airfoil: {fileID: 11400000, guid: f9e1da8a7d32fee48ab75d9e7d376d78, type: 2}
-  section: {fileID: 0}
   oswald: 0.8
   skin: {fileID: 0}
   skinMesh: {fileID: -6890291799899589724, guid: 1ef0d042f7dba224299e0e5c8c76668a,
@@ -6974,17 +6560,8 @@ MonoBehaviour:
   parent: {fileID: 0}
   child: {fileID: 7501626145160231641}
   root: {fileID: 5807151815599183277}
-  shapeTr: {fileID: 5319736845381953999}
-  angle: -3
-  tipWidth: 82
   totalArea: 7.604045
-  controlSpeed: 5
-  controlSurface: {fileID: 5146400041933702963}
-  flaps:
-  - {fileID: 1727254461762023015}
-  slat: {fileID: 0}
-  flapsTotalArea: 0.8925001
-  flapsTotalMass: 80
+  alpha: 0
 --- !u!64 &3655834567213796973
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -7050,15 +6627,7 @@ MonoBehaviour:
   aircraft: {fileID: 0}
   data: {fileID: 0}
   tr: {fileID: 0}
-  burningEffect: {fileID: 0}
-  burningRatios: []
-  material: {fileID: 0}
   emptyMass: 49
-  maxHp: 0
-  hp: 0
-  structureDamage: 1
-  ripped: 0
-  burning: 0
   controller: 2
   ejection: {fileID: 9155851419824631967}
   muzzleEffects: {fileID: 0}
@@ -7075,6 +6644,7 @@ MonoBehaviour:
   fuzeDistance: 0
   reloading: 0
   cycleState: 1
+  chambered: 0
 --- !u!1 &6179547426859792785
 GameObject:
   m_ObjectHideFlags: 0
@@ -7179,39 +6749,21 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 530079475758668481}
+  emptyMass: 20.68004
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: 5280c4897e67a2b4f98944da4f8e9f7a, type: 2}
-  emptyMass: 20
   maxHp: 0
-  hp: 36.44999
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip:
-  - {fileID: 0}
+  area: 1.3109996
+  foil: {fileID: 11400000, guid: 77e2e1717a5a2d0449d400b198ae4619, type: 2}
   vital: 0
-  area: 1.311
-  maxG: 20
-  simuFoil:
-    control: {fileID: 3599342900810725884}
-    flap: {fileID: 0}
-    slat: {fileID: 0}
-    pos: {x: 0, y: 0, z: 0}
-    area: 1.311
-    span: 1.52
-    length: 0.8625
-    controlSqrt: 0.5748346
+  ripOnRip: []
   shapeTr: {fileID: 530079475758668481}
-  airfoil: {fileID: 11400000, guid: ca55e600d88c7064cb0c8e25a7d72820, type: 2}
-  section: {fileID: 0}
   angle: -4.3
   tipWidth: 50
-  left: -1
+  airfoil: {fileID: 11400000, guid: ca55e600d88c7064cb0c8e25a7d72820, type: 2}
   rudder: 0
-  controlSurface: {fileID: 3599342900810725884}
-  csFractionSqrt: 0.7513429
-  controlSpeed: 1.5
 --- !u!64 &7730613852611509622
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -7255,7 +6807,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7732750328516757722}
-  m_RootOrder: 1
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!135 &8541332773297390948
 SphereCollider:
@@ -7375,13 +6927,10 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 0}
-  burningEffect: {fileID: 0}
-  burningRatios: []
-  material: {fileID: 11400000, guid: 5cbfe67f69818c64d9df40a0d192d45c, type: 2}
   emptyMass: 150
+  burningEffect: {fileID: 0}
+  material: {fileID: 11400000, guid: 5cbfe67f69818c64d9df40a0d192d45c, type: 2}
   maxHp: 0
-  hp: 10
-  structureDamage: 1
   ripped: 0
   burning: 0
   reductionGear: 0.67
@@ -7488,15 +7037,7 @@ MonoBehaviour:
   aircraft: {fileID: 0}
   data: {fileID: 0}
   tr: {fileID: 0}
-  burningEffect: {fileID: 0}
-  burningRatios: []
-  material: {fileID: 0}
   emptyMass: 10.5
-  maxHp: 0
-  hp: 0
-  structureDamage: 1
-  ripped: 0
-  burning: 0
   controller: 1
   ejection: {fileID: 8899344359696119189}
   muzzleEffects: {fileID: 0}
@@ -7513,6 +7054,7 @@ MonoBehaviour:
   fuzeDistance: 0
   reloading: 0
   cycleState: 1
+  chambered: 0
 --- !u!1 &6808034710480821279
 GameObject:
   m_ObjectHideFlags: 0
@@ -7737,57 +7279,10 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 0}
-  burningEffect: {fileID: 0}
-  burningRatios:
-  - 1.3012077
-  - 0.9460268
-  - 1.2423384
-  - 1.0838566
-  - 1.1286924
-  - 0.868086
-  - 0.919683
-  - 0.8014496
-  - 0.9131554
-  - 0.9778354
-  - 1.1565732
-  - 0.83123803
-  - 0.26116472
-  - 0.16455068
-  - 0.13177119
-  - 0.11623581
-  - 0.497926
-  - 0.36405855
-  - 0.7114018
-  - 1.0253795
-  - 0.56920236
-  - 0.6469397
-  - 0.5267923
-  - 0.6176635
-  - 0.35738328
-  - 0.14370209
-  - 0.1344508
-  - 0.095573805
-  - 0.34535408
-  - 0.18316436
-  - 1.1142645
-  - 0.59578073
-  - 0.6270084
-  - 0.8103567
-  - 0.6056387
-  - 0.127101
-  - 0.043997314
-  - 0.04158871
-  - 0.036834344
-  - 0.030012267
-  - 0.027777974
-  - 0.029457003
-  - 0.0228065
-  - 0.03420828
-  material: {fileID: 11400000, guid: 696c411f11dcf6249bb528ac39862a0f, type: 2}
   emptyMass: 512.5
+  burningEffect: {fileID: 0}
+  material: {fileID: 11400000, guid: 696c411f11dcf6249bb528ac39862a0f, type: 2}
   maxHp: 0
-  hp: 22
-  structureDamage: 1
   ripped: 0
   burning: 0
   preset: {fileID: 11400000, guid: 4f37b02a40ffeb64aa7f47f059e46cd3, type: 2}
@@ -7939,7 +7434,7 @@ GameObject:
   - component: {fileID: 7438089653902806004}
   - component: {fileID: 7106107598971548637}
   - component: {fileID: 633697063553359833}
-  - component: {fileID: 7156389374052700992}
+  - component: {fileID: 1870617043329815597}
   m_Layer: 9
   m_Name: Canopy
   m_TagString: Untagged
@@ -8011,7 +7506,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7156389374052700992
+--- !u!114 &1870617043329815597
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8020,7 +7515,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7346893361487152220}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19cf394275fd6aa4080fa856dc349359, type: 3}
+  m_Script: {fileID: 11500000, guid: 48465413cba81b44fb6fedb2767c6f91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 0}
@@ -8030,21 +7525,19 @@ MonoBehaviour:
   aircraft: {fileID: 0}
   data: {fileID: 0}
   tr: {fileID: 0}
+  emptyMass: 3.9775898
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: b1e93b7e4c814ae4cb2589b6ed5b8492, type: 2}
-  emptyMass: 15
   maxHp: 0
-  hp: 0
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip: []
+  area: 0.43683252
+  foil: {fileID: 0}
   vital: 0
-  area: 1.5
-  maxG: 0
-  detachable: 1
-  brokenModel: {fileID: 0}
+  ripOnRip: []
+  bounds:
+    m_Center: {x: 0, y: 0.07712729, z: 0.0338358}
+    m_Extent: {x: 0.3819725, y: 0.25307637, z: 0.28590584}
   hydraulics: {fileID: 4502264776960370066}
   customRipSpeed: 1
   drag: 1
@@ -8153,30 +7646,19 @@ MonoBehaviour:
   aircraft: {fileID: 0}
   data: {fileID: 0}
   tr: {fileID: 0}
+  emptyMass: 13.0925
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  emptyMass: 80
   maxHp: 0
-  hp: 0
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip: []
+  area: 0.79100037
+  foil: {fileID: 11400000, guid: 3cca03c74f2d4214c94929031751c0cb, type: 2}
   vital: 0
-  area: 5
-  maxG: 0
-  miniFoil:
-    airfoil: {fileID: 0}
-    tr: {fileID: 7820465240123485683}
-    mainQuad:
-      leadingTop: {x: -0.688223, y: 0.92730176, z: 0.09793039}
-      leadingBot: {x: -2.919529, y: 1.2391706, z: 0.27572605}
-      trailingTop: {x: -0.72471875, y: 0.8610014, z: -0.24378924}
-      trailingBot: {x: -2.956025, y: 1.1728702, z: -0.06599358}
-      area: 0.79100037
-    rootLiftPos: {x: -2.928653, y: 1.2225955, z: 0.19029614}
-    tipLiftPos: {x: -0.6973469, y: 0.91072667, z: 0.01250048}
+  ripOnRip: []
+  shapeTr: {fileID: 7820465240123485683}
+  angle: 0
+  tipWidth: 100
   extendedRipSpeed: 88.88889
 --- !u!64 &5005943446301436141
 MeshCollider:
@@ -8402,7 +7884,11 @@ Transform:
   m_LocalPosition: {x: 0, y: 1.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 5511336396886859423}
+  - {fileID: 3619697795021423018}
+  - {fileID: 8942854951716888322}
+  - {fileID: 1314638991818118605}
+  - {fileID: 4496439447973831729}
+  - {fileID: 6298901340469138000}
   - {fileID: 2362617004938724003}
   - {fileID: 4126151925601248683}
   - {fileID: 6032008215696977040}
@@ -8480,8 +7966,9 @@ MonoBehaviour:
   vStab: {fileID: 0}
   foil: {fileID: 0}
   materials: {fileID: 11400000, guid: dc8a038d21671cb4fad5acea1a90f559, type: 2}
-  emptyCOI: {x: 4.2, y: 6.9, z: 2.9}
+  cogForwardDistance: 0.7
   emptyCOG: {x: 0, y: -0.1, z: 0.7}
+  targetEmptyMass: 2123
   wingSpan: 9.8
   maxG: 10
   maxSpeed: 219.44444
@@ -8658,32 +8145,20 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 0}
+  emptyMass: 7.401379
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  emptyMass: 20
   maxHp: 0
-  hp: 14.400002
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip:
-  - {fileID: 0}
+  area: 0.5408001
+  foil: {fileID: 0}
   vital: 0
-  area: 0.7200001
-  maxG: 15
+  ripOnRip: []
+  shapeTr: {fileID: 4965272369062841688}
+  angle: 0
+  tipWidth: 100
   type: 0
-  miniFoil:
-    airfoil: {fileID: 0}
-    tr: {fileID: 4965272369062841688}
-    mainQuad:
-      leadingTop: {x: 4.580297, y: 1.4847709, z: 0.38150722}
-      leadingBot: {x: 2.9125776, y: 1.2244484, z: 0.29758054}
-      trailingTop: {x: 4.6105494, y: 1.3889055, z: 0.07770696}
-      trailingBot: {x: 2.94283, y: 1.1285831, z: -0.006219715}
-      area: 0.54080003
-    rootLiftPos: {x: 2.9201407, y: 1.2004821, z: 0.22163048}
-    tipLiftPos: {x: 4.58786, y: 1.4608046, z: 0.30555716}
   controlState: 0
   controlAngle: 0
   sinControlAngle: 0
@@ -8807,31 +8282,19 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 0}
+  emptyMass: 13.0925
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  emptyMass: 80
   maxHp: 0
-  hp: 17.850002
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip:
-  - {fileID: 0}
+  area: 0.79100037
+  foil: {fileID: 0}
   vital: 0
-  area: 0.8925001
-  maxG: 15
-  miniFoil:
-    airfoil: {fileID: 0}
-    tr: {fileID: 9165371613818458875}
-    mainQuad:
-      leadingTop: {x: 2.919529, y: 1.2391703, z: 0.27572623}
-      leadingBot: {x: 0.688223, y: 0.9273016, z: 0.09793056}
-      trailingTop: {x: 2.956025, y: 1.1728699, z: -0.0659934}
-      trailingBot: {x: 0.72471875, y: 0.8610012, z: -0.24378908}
-      area: 0.79100037
-    rootLiftPos: {x: 0.6973469, y: 0.9107265, z: 0.012500651}
-    tipLiftPos: {x: 2.928653, y: 1.2225952, z: 0.19029632}
+  ripOnRip: []
+  shapeTr: {fileID: 9165371613818458875}
+  angle: 0
+  tipWidth: 100
   extendedRipSpeed: 88.88889
 --- !u!64 &5452045267259259071
 MeshCollider:
@@ -8928,57 +8391,10 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 0}
-  burningEffect: {fileID: 0}
-  burningRatios:
-  - 0.6904682
-  - 0.84198517
-  - 0.3971709
-  - 0.7034902
-  - 0.61352694
-  - 0.846889
-  - 0.4885057
-  - 1.2017205
-  - 1.0305467
-  - 0.96812624
-  - 0.76303744
-  - 0.65655124
-  - 0.3342824
-  - 0.14741401
-  - 0.19853956
-  - 0.17742246
-  - 0.91765356
-  - 0.26960063
-  - 1.2343565
-  - 0.48133728
-  - 0.9967116
-  - 0.41342255
-  - 1.0645988
-  - 0.6363894
-  - 0.25539154
-  - 0.17808504
-  - 0.20904332
-  - 0.17035164
-  - 0.76127154
-  - 0.36348844
-  - 0.8359127
-  - 0.5613739
-  - 1.3162185
-  - 0.39135355
-  - 0.8280674
-  - 0.4157277
-  - 0.25886795
-  - 0.13026477
-  - 0.12668285
-  - 0.16440701
-  - 0.11162612
-  - 0.10045997
-  - 0.16041292
-  - 0.1982628
-  material: {fileID: 11400000, guid: db30bb86e36dcbb4ea931db5056b7de1, type: 2}
   emptyMass: 0
+  burningEffect: {fileID: 0}
+  material: {fileID: 11400000, guid: db30bb86e36dcbb4ea931db5056b7de1, type: 2}
   maxHp: 0
-  hp: 30
-  structureDamage: 1
   ripped: 0
   burning: 0
   capacity: 90
@@ -9056,7 +8472,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8307170936744519568}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.088, z: -0.057}
+  m_LocalPosition: {x: 0, y: -0.123, z: -0.061}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8091512069260231637}
@@ -9196,41 +8612,22 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 1012766534850844067}
+  emptyMass: 28.844776
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  emptyMass: 30
   maxHp: 0
-  hp: 9.200545
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip:
-  - {fileID: 5146400041933702963}
-  - {fileID: 0}
+  area: 1.3392854
+  foil: {fileID: 0}
   vital: 0
-  area: 1.3392855
-  maxG: 16
-  subdivisions:
-  - control: {fileID: 5146400041933702963}
-    flap: {fileID: 0}
-    slat: {fileID: 0}
-    pos: {x: -0.25, y: 0, z: -0.017481705}
-    area: 0.7111142
-    span: 0.5
-    length: 1.4222285
-    controlSqrt: 0.4675725
-  - control: {fileID: 5146400041933702963}
-    flap: {fileID: 0}
-    slat: {fileID: 0}
-    pos: {x: 0.25, y: 0, z: -0.052445114}
-    area: 0.6696427
-    span: 0.5
-    length: 1.3392854
-    controlSqrt: 0.4675725
-  right: 1
+  ripOnRip: []
+  shapeTr: {fileID: 1012766534850844067}
+  angle: -4
+  tipWidth: 83
+  split: 0
+  splitFraction: 0.5
   airfoil: {fileID: 11400000, guid: 1e92c2b916a7d2e428720abebb80b14c, type: 2}
-  section: {fileID: 0}
   oswald: 0.75
   skin: {fileID: 0}
   skinMesh: {fileID: -6987453676189038513, guid: 1ef0d042f7dba224299e0e5c8c76668a,
@@ -9238,17 +8635,8 @@ MonoBehaviour:
   parent: {fileID: 7501626145160231641}
   child: {fileID: 4356415418171298025}
   root: {fileID: 5807151815599183277}
-  shapeTr: {fileID: 1012766534850844067}
-  angle: -4
-  tipWidth: 83
   totalArea: 7.604045
-  controlSpeed: 5
-  controlSurface: {fileID: 5146400041933702963}
-  flaps:
-  - {fileID: 1727254461762023015}
-  slat: {fileID: 0}
-  flapsTotalArea: 0
-  flapsTotalMass: 0
+  alpha: 0
 --- !u!64 &8365404885568579490
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -9515,32 +8903,20 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 0}
+  emptyMass: 5.6347537
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  emptyMass: 15
   maxHp: 0
-  hp: 10.150004
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip:
-  - {fileID: 0}
+  area: 0.551
+  foil: {fileID: 11400000, guid: 77e2e1717a5a2d0449d400b198ae4619, type: 2}
   vital: 0
-  area: 0.50750023
-  maxG: 15
+  ripOnRip: []
+  shapeTr: {fileID: 4014807143158071424}
+  angle: 0
+  tipWidth: 100
   type: 0
-  miniFoil:
-    airfoil: {fileID: 11400000, guid: 02945341bd566744395aa8c8d7a05a02, type: 2}
-    tr: {fileID: 4014807143158071424}
-    mainQuad:
-      leadingTop: {x: -0.19099998, y: 1.0167562, z: -4.1682067}
-      leadingBot: {x: -1.641, y: 1.0167562, z: -4.1682067}
-      trailingTop: {x: -0.19099998, y: 0.91839176, z: -4.535255}
-      trailingBot: {x: -1.641, y: 0.91839176, z: -4.535255}
-      area: 0.551
-    rootLiftPos: {x: -1.641, y: 0.9921651, z: -4.2599688}
-    tipLiftPos: {x: -0.19099998, y: 0.9921651, z: -4.2599688}
   controlState: 0
   controlAngle: 0
   sinControlAngle: 0
@@ -9612,15 +8988,7 @@ MonoBehaviour:
   aircraft: {fileID: 0}
   data: {fileID: 0}
   tr: {fileID: 0}
-  burningEffect: {fileID: 0}
-  burningRatios: []
-  material: {fileID: 0}
   emptyMass: 10.5
-  maxHp: 0
-  hp: 0
-  structureDamage: 1
-  ripped: 0
-  burning: 0
   controller: 1
   ejection: {fileID: 3805185213777314962}
   muzzleEffects: {fileID: 0}
@@ -9637,6 +9005,7 @@ MonoBehaviour:
   fuzeDistance: 0
   reloading: 0
   cycleState: 1
+  chambered: 0
 --- !u!1 &8687330531696073079
 GameObject:
   m_ObjectHideFlags: 0
@@ -9771,39 +9140,23 @@ MonoBehaviour:
   aircraft: {fileID: 0}
   data: {fileID: 0}
   tr: {fileID: 4354724009363509052}
+  emptyMass: 19.335003
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  emptyMass: 30
   maxHp: 0
-  hp: 0
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip: []
-  vital: 0
   area: 1.0257884
-  maxG: 0
-  subdivisions:
-  - control: {fileID: 5146400041933702963}
-    flap: {fileID: 0}
-    slat: {fileID: 0}
-    pos: {x: -0.2525, y: 0, z: -0.015001274}
-    area: 0.5799713
-    span: 0.505
-    length: 1.148458
-    controlSqrt: 0.5132275
-  - control: {fileID: 0}
-    flap: {fileID: 0}
-    slat: {fileID: 0}
-    pos: {x: 0.2525, y: 0, z: -0.045003824}
-    area: 0.5128942
-    span: 0.505
-    length: 1.0156322
-    controlSqrt: 0
-  right: 1
+  foil: {fileID: 0}
+  vital: 0
+  ripOnRip:
+  - {fileID: 5146400041933702963}
+  shapeTr: {fileID: 4354724009363509052}
+  angle: -3.4
+  tipWidth: 67.2
+  split: 0
+  splitFraction: 0.5
   airfoil: {fileID: 0}
-  section: {fileID: 0}
   oswald: 0.75
   skin: {fileID: 0}
   skinMesh: {fileID: -3505882068455149326, guid: 1ef0d042f7dba224299e0e5c8c76668a,
@@ -9811,16 +9164,8 @@ MonoBehaviour:
   parent: {fileID: 6339268068208255781}
   child: {fileID: 0}
   root: {fileID: 0}
-  shapeTr: {fileID: 4354724009363509052}
-  angle: -3.4
-  tipWidth: 67.2
   totalArea: 0
-  controlSpeed: 5
-  controlSurface: {fileID: 5146400041933702963}
-  flaps: []
-  slat: {fileID: 0}
-  flapsTotalArea: 0
-  flapsTotalMass: 0
+  alpha: 0
 --- !u!64 &8604111363368576336
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -10065,40 +9410,23 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 8219743734261715401}
+  emptyMass: 37.412766
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  emptyMass: 70
   maxHp: 0
-  hp: 25.885695
-  structureDamage: 1
   ripped: 0
   burning: 0
+  area: 1.59285
+  foil: {fileID: 0}
+  vital: 1
   ripOnRip:
   - {fileID: 1727254461762023015}
-  vital: 1
-  area: 1.5928499
-  maxG: 13
-  subdivisions:
-  - control: {fileID: 0}
-    flap: {fileID: 1727254461762023015}
-    slat: {fileID: 0}
-    pos: {x: -0.25, y: 0, z: -0.013101941}
-    area: 0.8394749
-    span: 0.5
-    length: 1.6789498
-    controlSqrt: 0
-  - control: {fileID: 0}
-    flap: {fileID: 1727254461762023015}
-    slat: {fileID: 0}
-    pos: {x: 0.25, y: 0, z: -0.03930582}
-    area: 0.796425
-    span: 0.5
-    length: 1.59285
-    controlSqrt: 0
-  right: 1
+  shapeTr: {fileID: 8219743734261715401}
+  angle: -3
+  tipWidth: 85
+  split: 0
+  splitFraction: 0.5
   airfoil: {fileID: 11400000, guid: 1e92c2b916a7d2e428720abebb80b14c, type: 2}
-  section: {fileID: 0}
   oswald: 0.75
   skin: {fileID: 0}
   skinMesh: {fileID: 6011022581349952875, guid: 1ef0d042f7dba224299e0e5c8c76668a,
@@ -10106,17 +9434,8 @@ MonoBehaviour:
   parent: {fileID: 5807151815599183277}
   child: {fileID: 6339268068208255781}
   root: {fileID: 5807151815599183277}
-  shapeTr: {fileID: 8219743734261715401}
-  angle: -3
-  tipWidth: 85
   totalArea: 7.604045
-  controlSpeed: 5
-  controlSurface: {fileID: 5146400041933702963}
-  flaps:
-  - {fileID: 1727254461762023015}
-  slat: {fileID: 0}
-  flapsTotalArea: 0
-  flapsTotalMass: 0
+  alpha: 0
 --- !u!64 &6893246696263332039
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -10256,7 +9575,7 @@ Transform:
   m_GameObject: {fileID: 9174696464307515442}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.216, y: 0.019, z: -0.068}
-  m_LocalScale: {x: 1.45, y: 1, z: 0.38}
+  m_LocalScale: {x: -1.45, y: 1, z: 0.38}
   m_Children: []
   m_Father: {fileID: 4896544410398440194}
   m_RootOrder: 0
@@ -10318,8 +9637,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9211098837556034477}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.2, y: -0.62, z: 0.70000005}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1.2, y: -0.61999995, z: 0.70000005}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3022087554701770622}
@@ -10327,7 +9646,7 @@ Transform:
   - {fileID: 2627573983717853984}
   - {fileID: 7403998316268955155}
   - {fileID: 3418946428802715903}
-  m_Father: {fileID: 5511336396886859423}
+  m_Father: {fileID: 7732750328516757722}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &1057390618402348609
@@ -10398,57 +9717,31 @@ MonoBehaviour:
   aircraft: {fileID: 402542259424422736}
   data: {fileID: 0}
   tr: {fileID: 3418946428802715903}
+  emptyMass: 80.5695
   burningEffect: {fileID: 0}
-  burningRatios: []
   material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  emptyMass: 110
   maxHp: 0
-  hp: 69.6256
-  structureDamage: 1
   ripped: 0
   burning: 0
-  ripOnRip:
-  - {fileID: 0}
-  vital: 1
   area: 2.6562898
-  maxG: 10
-  subdivisions:
-  - control: {fileID: 0}
-    flap: {fileID: 6089854799516401357}
-    slat: {fileID: 0}
-    pos: {x: 0.3475, y: 0, z: -0.018211698}
-    area: 1.415715
-    span: 0.695
-    length: 2.037
-    controlSqrt: 0
-  - control: {fileID: 0}
-    flap: {fileID: 6089854799516401357}
-    slat: {fileID: 0}
-    pos: {x: -0.34750003, y: 0, z: -0.054635093}
-    area: 1.3281449
-    span: 0.695
-    length: 1.9109999
-    controlSqrt: 0
-  right: -1
+  foil: {fileID: 11400000, guid: 3cca03c74f2d4214c94929031751c0cb, type: 2}
+  vital: 1
+  ripOnRip:
+  - {fileID: 6708080018318740056}
+  shapeTr: {fileID: 3418946428802715903}
+  angle: -3
+  tipWidth: 82
+  split: 0
+  splitFraction: 0.5
   airfoil: {fileID: 11400000, guid: f9e1da8a7d32fee48ab75d9e7d376d78, type: 2}
-  section: {fileID: 0}
   oswald: 0.8
   skin: {fileID: 0}
   skinMesh: {fileID: 923365442294593083, guid: 1ef0d042f7dba224299e0e5c8c76668a, type: 3}
   parent: {fileID: 0}
   child: {fileID: 4149851488456922653}
   root: {fileID: 8365611820299590523}
-  shapeTr: {fileID: 3418946428802715903}
-  angle: -3
-  tipWidth: 82
   totalArea: 7.604045
-  controlSpeed: 5
-  controlSurface: {fileID: 4221726294686786244}
-  flaps:
-  - {fileID: 6089854799516401357}
-  slat: {fileID: 0}
-  flapsTotalArea: 5
-  flapsTotalMass: 80
+  alpha: 0
 --- !u!64 &8989460131737600523
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -12567,12 +11860,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9bd3c6baa95aaee47afefbab295e9df0, type: 3}
---- !u!137 &6203707578877739682 stripped
-SkinnedMeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 4673625485942800693, guid: 9bd3c6baa95aaee47afefbab295e9df0,
-    type: 3}
-  m_PrefabInstance: {fileID: 1642673338507412375}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3989542668311270441 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2420193704280610750, guid: 9bd3c6baa95aaee47afefbab295e9df0,
@@ -12585,6 +11872,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e657e9c1ab43d545b217fe17dbbc6ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!137 &6203707578877739682 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 4673625485942800693, guid: 9bd3c6baa95aaee47afefbab295e9df0,
+    type: 3}
+  m_PrefabInstance: {fileID: 1642673338507412375}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &51621077058386189 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1620336723139607194, guid: 9bd3c6baa95aaee47afefbab295e9df0,
@@ -12601,7 +11894,7 @@ PrefabInstance:
     - target: {fileID: 3887515273037152454, guid: 826442ff951d74f44be063cd9e608ac6,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3887515273037152454, guid: 826442ff951d74f44be063cd9e608ac6,
         type: 3}

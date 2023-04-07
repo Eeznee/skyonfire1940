@@ -10,7 +10,6 @@ public class BombLoad : OrdnanceLoad
 {
     public bool bombBay;
     public Bomb bombRef;
-    public ExternalGroup externalGroup;
 
     private Bomb[] bombs;
 
@@ -49,36 +48,4 @@ public class BombLoad : OrdnanceLoad
 
         return true;
     }
-    public void CopyPositions()
-    {
-        launchPositions = new Vector3[externalGroup.order.Length];
-        for(int i = 0; i < externalGroup.order.Length; i++)
-        {
-            launchPositions[i] = transform.InverseTransformPoint(externalGroup.order[i].transform.position);
-        }
-    }
 }
-#if UNITY_EDITOR
-[CustomEditor(typeof(BombLoad))]
-public class BombLoadEditor : Editor
-{
-    public override void OnInspectorGUI()
-    {
-        serializedObject.Update();
-        base.OnInspectorGUI();
-
-        BombLoad bomb = (BombLoad)target;
-        if (GUILayout.Button("Copy External Group"))
-        {
-            bomb.CopyPositions();
-        }
-
-        if (GUI.changed)
-        {
-            EditorUtility.SetDirty(bomb);
-            EditorSceneManager.MarkSceneDirty(bomb.gameObject.scene);
-        }
-        serializedObject.ApplyModifiedProperties();
-    }
-}
-#endif

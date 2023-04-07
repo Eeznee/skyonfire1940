@@ -9,15 +9,15 @@ public class LiquidTank : Module
 {
     public class LiquidCircuit
     {
-        public LiquidCircuit(Module _part, LiquidTank _tank, float _escapeSpeed)
+        public LiquidCircuit(Module _module, LiquidTank _tank, float _escapeSpeed)
         {
             holesArea = 0f;
-            part = _part;
+            module = _module;
             mainTank = _tank;
             escapeSpeed = _escapeSpeed;
-            leak = Instantiate(mainTank.leakEffect, part.transform).GetComponent<ParticleSystem>();
+            leak = Instantiate(mainTank.leakEffect, module.transform).GetComponent<ParticleSystem>();
         }
-        public Module part;
+        public Module module;
         public LiquidTank mainTank;
 
         public float holesArea;
@@ -67,14 +67,14 @@ public class LiquidTank : Module
         {
             massLost = 0f;
             currentAmount = capacity;
-            hp = material.hpPerSq * Mathf.Pow(capacity, 2f / 3f);
+            maxHp = material.hpPerSq * Mathf.Pow(capacity, 2f / 3f);
             circuit = new LiquidCircuit(this, this, escapeSpeed);
             emptyMass = 0f;
         }
     }
     private void Update()
     {
-        if (structureDamage !=1f)
+        if (Integrity != 1f)
             circuit.Leaking();
     }
     public void Consume(float amount)
@@ -83,13 +83,13 @@ public class LiquidTank : Module
         massLost += amount;
         if (massLost > massLostThreshold)
         {
-            rb.mass -= massLost;
+            data.mass.mass -= massLost;
             massLost = 0f;
         }
     }
-    public override void Damage(float damage, float caliber, float fireCoeff)
+    public override void KineticDamage(float damage, float caliber, float fireCoeff)
     {
-        base.Damage(damage, caliber, fireCoeff);
+        base.KineticDamage(damage, caliber, fireCoeff);
         circuit.Damage(caliber);
     }
 }
@@ -116,7 +116,7 @@ public class LiquidTankEditor : Editor
         tank.escapeSpeed = EditorGUILayout.FloatField("Leak Speed m/s", tank.escapeSpeed);
         EditorGUILayout.LabelField("30 cal empty time : ", (tank.capacity / (Mathf.Pow(7.62f / 2000f, 2) * tank.escapeSpeed * 1000f * Mathf.PI)).ToString("0") + " sec");
 
-        tank.material = EditorGUILayout.ObjectField("Material", tank.material, typeof(PartMaterial), false) as PartMaterial;
+        tank.material = EditorGUILayout.ObjectField("Material", tank.material, typeof(ModuleMaterial), false) as ModuleMaterial;
         tank.leakEffect = EditorGUILayout.ObjectField("Leak Effect", tank.leakEffect, typeof(GameObject), false) as GameObject;
 
 

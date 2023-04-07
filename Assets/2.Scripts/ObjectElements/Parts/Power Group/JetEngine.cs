@@ -28,7 +28,7 @@ public class JetEngine : Engine
             float torque = Working() ? Mathf.Max(Mathf.Abs(targetRps - rps) * torqueCoeff, minTorque) : friction;
             rps = Mathf.MoveTowards(rps, Working() ? targetRps : 0f, torque * Time.fixedDeltaTime);
 
-            float densityCoeff = data.airDensity / data.seaLevelAirDensity;
+            float densityCoeff = data.airDensity / Aerodynamics.seaLvlDensity;
             thrust = densityCoeff * trueThrottle * preset.maxThrust;
             rb.AddForceAtPosition(thrust * transform.forward, transform.position);
         }
@@ -42,19 +42,10 @@ public class JetEngine : Engine
 [CustomEditor(typeof(JetEngine))]
 public class JetEngineEditor : EngineEditor
 {
-    Color backgroundColor;
-    //
     public override void OnInspectorGUI()
     {
-        backgroundColor = GUI.backgroundColor;
-        serializedObject.Update();
-        //
         base.OnInspectorGUI();
-
         JetEngine engine = (JetEngine)target;
-        GUI.color = Color.cyan;
-        EditorGUILayout.HelpBox("Jey Engine Properties", MessageType.None);
-        GUI.color = backgroundColor;
         engine.inlet = EditorGUILayout.ObjectField("Spinning Inlet", engine.inlet, typeof(Transform), true) as Transform;
 
 

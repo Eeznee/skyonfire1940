@@ -23,11 +23,10 @@ public class Radiator : Module
     private void FixedUpdate()
     {
         circuit.Leaking();
-        Burning();
     }
-    public override void Damage(float damage, float caliber, float fireCoeff)
+    public override void KineticDamage(float damage, float caliber, float fireCoeff)
     {
-        base.Damage(damage, caliber, fireCoeff);
+        base.KineticDamage(damage, caliber, fireCoeff);
         circuit.Damage(caliber);
     }
 }
@@ -44,7 +43,7 @@ public class RadiatorEditor : Editor
         //
         serializedObject.Update();
 
-        rad.material = EditorGUILayout.ObjectField("Material", rad.material, typeof(PartMaterial), false) as PartMaterial;
+        rad.material = EditorGUILayout.ObjectField("Material", rad.material, typeof(ModuleMaterial), false) as ModuleMaterial;
         rad.mainTank = EditorGUILayout.ObjectField("Attached Tank", rad.mainTank, typeof(LiquidTank), true) as LiquidTank;
 
 

@@ -14,10 +14,12 @@ public class ObjectData : MonoBehaviour
     public SofSimple simple;
     public SofComplex complex;
     public SofAircraft aircraft;
-    public Module[] parts;
+    public Part[] parts;
+    public Module[] modules;
+    public AirframeBase[] airframes;
     public Rigidbody rb;
     public Weather weather;
-    public float mass = 3000f;
+    public Mass mass;
 
 
     //Speed
@@ -46,7 +48,6 @@ public class ObjectData : MonoBehaviour
     public float altitude = 5f;
     public Vector3 position = Vector3.zero;
     public float airDensity = 1.3f;
-    public float seaLevelAirDensity = 1.3f;
     public float ambientTemperature = 20f;
     public float ambientPressure = 101325f;
 
@@ -62,7 +63,6 @@ public class ObjectData : MonoBehaviour
 
     public void Initialize(bool firstTime)
     {
-        //Type
         tr = transform;
         sofObject = GetComponent<SofObject>();
         simple = GetComponent<SofSimple>();
@@ -78,33 +78,32 @@ public class ObjectData : MonoBehaviour
 
         weather = GameManager.weather;
         rb = (type == 1) ? GameManager.gm.mapRb : (GetComponent<Rigidbody>() ? GetComponent<Rigidbody>() : gameObject.AddComponent<Rigidbody>());
-        parts = GetComponentsInChildren<Module>();
+        parts = GetComponentsInChildren<Part>();
+        modules = GetComponentsInChildren<Module>();
+        airframes = GetComponentsInChildren<AirframeBase>();
 
-        //First Initialization
         foreach (ObjectElement element in GetComponentsInChildren<ObjectElement>())
             element.Initialize(this, firstTime);
 
         if (type == 1) return;
-        rb.mass = mass;
         rb.angularDrag = 0f;
         rb.drag = 0f;
         rb.isKinematic = false;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
-        rb.interpolation = aircraft ?  RigidbodyInterpolation.Extrapolate : RigidbodyInterpolation.Extrapolate;
-
-
-
-        //Final initialization
+        rb.interpolation = aircraft ? RigidbodyInterpolation.Extrapolate : RigidbodyInterpolation.Extrapolate;
+        /*
         foreach (ObjectElement element in GetComponentsInChildren<ObjectElement>())
         {
             element.gameObject.layer = 9;
             element.Initialize(this, false);
         }
+        */
         //New parts might have been created
-        mass = 0f;
-        parts = GetComponentsInChildren<Module>();
-        foreach (Module part in parts)
-            mass += part.Mass();
+        modules = GetComponentsInChildren<Module>();
+        parts = GetComponentsInChildren<Part>();
+        mass = new Mass(parts, false);
+
+        if (type == 3) rb.inertiaTensor = Mass.InertiaMoment(parts, true);
     }
 
     private void Start()
@@ -114,20 +113,27 @@ public class ObjectData : MonoBehaviour
     }
     void FixedUpdate()
     {
-        if (type == 2 ||type == 0) ComplexData();
+        if (type == 2 || type == 0) ComplexData();
         if (type == 3) AircraftData();
+
+
+        if (type == 3)
+        {
+            if (altitude < 5f) foreach (AirframeBase airframe in airframes) airframe.Floating();
+            foreach (AirframeBase airframe in airframes)
+                airframe.ForcesStress();
+        }
     }
 
     protected void ComplexData()
     {
-        rb.mass = mass;
+        rb.mass = mass.mass;
+        rb.centerOfMass = mass.center;
         //Direction
         position = tr.position;
         altitude = Mathf.Max(position.y, 0f);
-        relativeAltitude = Mathf.Max(altitude - GameManager.map.HeightAtPoint(position),0.5f);
-        headingDirection = tr.eulerAngles.y;
+        relativeAltitude = Mathf.Max(altitude - GameManager.map.HeightAtPoint(position), 0.5f);
 
-        //Speed
         gsp = rb.velocity.magnitude;
         tas = gsp;
     }
@@ -135,11 +141,9 @@ public class ObjectData : MonoBehaviour
     {
         ComplexData();
 
-        //Meteo
-        ambientTemperature = Aerodynamics.GetTemperature(altitude, weather.localTemperature);
-        ambientPressure = Aerodynamics.GetPressure(altitude, weather.localTemperature);
+        ambientTemperature = Aerodynamics.GetTemperature(altitude);
+        ambientPressure = Aerodynamics.GetPressure(altitude);
         airDensity = Aerodynamics.GetAirDensity(ambientTemperature, ambientPressure);
-        seaLevelAirDensity = Aerodynamics.GetAirDensity(weather.localTemperature, Aerodynamics.SeaLvlPressure);
 
         //Directions
         forward = tr.forward;
@@ -148,8 +152,8 @@ public class ObjectData : MonoBehaviour
         pitchAngle = Vector3.Angle(forward, Vector3.ProjectOnPlane(forward, Vector3.up));
         if (forward.y < 0f) pitchAngle *= -1f;
 
-
-        bankAngle = tr.root.eulerAngles.z;
+        headingDirection = tr.eulerAngles.y;
+        bankAngle = tr.eulerAngles.z;
         bankAngle = (bankAngle > 180f) ? bankAngle - 360f : bankAngle;
         Vector3 slipVelocity = Vector3.ProjectOnPlane(rb.velocity, up);
         Vector3 attackVelocity = Vector3.ProjectOnPlane(rb.velocity, right);
@@ -160,13 +164,11 @@ public class ObjectData : MonoBehaviour
         rb.drag = submerged ? 1f : 0f;
 
         //Speed
-        gsp = rb.velocity.magnitude;
-        tas = gsp;
-        ias = tas * Mathf.Sqrt(airDensity/seaLevelAirDensity);
-        energy = altitude * -Physics.gravity.y + gsp * gsp / 2;
+        ias = tas * Mathf.Sqrt(airDensity / Aerodynamics.seaLvlDensity);
+        energy = altitude * -Physics.gravity.y + gsp * gsp * 0.5f;
 
         //Acceleration
-        acceleration = (rb.velocity - prevVel) / Time.fixedDeltaTime;
+        acceleration = (rb.velocity - prevVel) * TimeManager.invertFixedDelta;
         acceleration = tr.InverseTransformDirection(acceleration);
         truegForce = acceleration.y / 9.81f + up.y;
         prevVel = rb.velocity;
@@ -174,13 +176,14 @@ public class ObjectData : MonoBehaviour
         //Average G forces
         totalG += Time.fixedDeltaTime * truegForce;
         gForceCounter += Time.fixedDeltaTime;
-        if (gForceCounter > gInterval) {
+        if (gForceCounter > gInterval)
+        {
             gForce = totalG / gForceCounter;
             gForceCounter = totalG = 0f;
         }
 
         //Angular acceleration
-        angularAcceleration = (rb.angularVelocity - prevAng) / Time.fixedDeltaTime;
+        angularAcceleration = (rb.angularVelocity - prevAng) * TimeManager.invertFixedDelta;
         prevAng = rb.angularVelocity;
 
         groundEffect = relativeAltitude / aircraft.wingSpan * Mathf.Sqrt(relativeAltitude / aircraft.wingSpan) * 33f;

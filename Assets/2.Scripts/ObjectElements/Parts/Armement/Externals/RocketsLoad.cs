@@ -10,7 +10,7 @@ public class RocketsLoad : OrdnanceLoad
 {
     public override float Mass()
     {
-        return base.Mass() + rocketRef.p.mass * Mathf.Max(fireIndex + 1, 0);
+        return emptyMass + rocketRef.p.mass * Mathf.Max(fireIndex + 1, 0);
     }
     public float dispersion = 0.5f;
     public float velocity = 525f;

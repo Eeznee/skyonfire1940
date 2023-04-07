@@ -23,7 +23,7 @@ public class PistonEngine : Engine
     public float Power(float thr, bool boost, float radSec)
     {
         float basePower = preset.gear1.Evaluate(data.altitude) * 745.7f;
-        float efficiency = preset.RpmPowerEffectiveness(radSec, boost) * Mathv.SmoothStart(structureDamage, 2);
+        float efficiency = preset.RpmPowerEffectiveness(radSec, boost) * Mathv.SmoothStart(Integrity, 2);
         return basePower * (boost ? preset.Boost(data.altitude) : thr) * efficiency;
     }
     public override void Initialize(ObjectData obj, bool firstTime)
@@ -49,16 +49,16 @@ public class PistonEngine : Engine
         {
             float targetPower = Working() ? Power(trueThrottle, boosting, rps) : 0f;
             brakePower = Mathf.MoveTowards(brakePower, targetPower, Time.fixedDeltaTime * 1000000f);
-            float torque = (rps != 0f) ? structureDamage * brakePower / rps : 0f;
+            float torque = (rps != 0f) ? Integrity * brakePower / rps : 0f;
             torque += propeller.torque + preset.Friction(Working(), ripped) * randomFrictionModifier;
 
             float rpsSpeedUp = torque / (propeller.reductionGear * propeller.MomentOfInertia);
             rps = Mathf.Clamp(rps + rpsSpeedUp * Time.fixedDeltaTime, 0f, preset.boostRPS);
         }
     }
-    public override void Damage(float damage, float caliber, float fireCoeff)
+    public override void KineticDamage(float damage, float caliber, float fireCoeff)
     {
-        base.Damage(damage, caliber, fireCoeff);
+        base.KineticDamage(damage, caliber, fireCoeff);
         if (Random.value < leakChance) oilCircuit.Damage(caliber);
         //if (Random.value < leakChance && waterCooled) waterCircuit.Damage(caliber);
     }
@@ -68,50 +68,18 @@ public class PistonEngine : Engine
 [CustomEditor(typeof(PistonEngine))]
 public class PistonEngineEditor : EngineEditor
 {
-    Color backgroundColor;
-    //
     public override void OnInspectorGUI()
     {
-        backgroundColor = GUI.backgroundColor;
-        serializedObject.Update();
-        //
-        PistonEngine engine = (PistonEngine)target;
-
         base.OnInspectorGUI();
 
-        GUI.color = Color.cyan;
-        EditorGUILayout.HelpBox("Piston Engine Properties", MessageType.None);
-        GUI.color = backgroundColor;
-
-
+        PistonEngine engine = (PistonEngine)target;
         engine.propeller = engine.GetComponentInChildren<Propeller>();
-        if (engine.propeller && engine.preset)
-        {
-            GUILayout.Space(20f);
-            EditorGUILayout.LabelField("Brake Power Sea", engine.preset.gear1.Evaluate(0f).ToString("0.0") + " Hp");
-            EditorGUILayout.LabelField("At", (engine.preset.nominalRPS / (Mathf.PI / 30f)).ToString("0.0") + " Rpm");
-        }
-        else if (!engine.propeller)
+        if (!engine.propeller)
         {
             GUI.color = Color.red;
             GUILayout.Space(20f);
             EditorGUILayout.HelpBox("Please create a propeller as child", MessageType.Warning);
         }
-
-        if (engine.complex)
-        {
-            GUILayout.Space(20f);
-            GUI.color = Color.cyan;
-            EditorGUILayout.HelpBox("Engine Display", MessageType.None);
-            GUI.color = backgroundColor;
-            EditorGUILayout.LabelField("Brake Power", (engine.brakePower / 745.7).ToString("0.0") + " Hp");
-            EditorGUILayout.LabelField("Engine Speed", (engine.rps / (Mathf.PI / 30f)).ToString("0.0") + " RPM");
-        }
-
-        GUILayout.Space(20f);
-        GUI.color = Color.white;
-        EditorGUILayout.HelpBox("Supercharger", MessageType.None);
-        GUI.color = backgroundColor;
 
         serializedObject.ApplyModifiedProperties();
         if (GUI.changed)
