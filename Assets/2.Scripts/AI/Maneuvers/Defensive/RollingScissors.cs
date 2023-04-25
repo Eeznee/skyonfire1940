@@ -41,7 +41,7 @@ public class RollingScissors : ActiveManeuver
         if (phase == 0) //Break Turn Inside Bandit
         {
             input = AircraftControl.TrackingInputs(transform.position + transform.forward * 500f, aircraft, angle, 1f, true);
-            if (Mathf.Abs(aircraft.data.bankAngle - angle) < 10f) input.x = 1f;
+            if (Mathf.Abs(aircraft.data.bankAngle.Get - angle) < 10f) input.x = 1f;
             aircraft.SetControls(input, true, false);
             if (Vector3.Dot(initialDirection, transform.forward) < 0.3f) phase++;
         }

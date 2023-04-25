@@ -25,7 +25,10 @@ namespace Samples.Purchasing.Core.BuyingConsumables
             InitializePurchasing();
             UpdateUI();
         }
+        void IStoreListener.OnInitializeFailed(InitializationFailureReason error, string s)
+        {
 
+        }
         void InitializePurchasing()
         {
             var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());

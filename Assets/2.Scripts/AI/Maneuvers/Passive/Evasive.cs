@@ -13,12 +13,12 @@ public class Evasive : Maneuver
         {
             float side = Mathf.Sign(Random.Range(-1f, 1f));
 
-            float speedFactor = Mathf.InverseLerp(data.aircraft.cruiseSpeed * 0.6f, data.aircraft.cruiseSpeed, data.aircraft.data.ias);
+            float speedFactor = Mathf.InverseLerp(data.aircraft.cruiseSpeed * 0.6f, data.aircraft.cruiseSpeed, data.aircraft.data.ias.Get);
             float minBank = Mathf.Lerp(60f,80f, speedFactor);
-            float maxBank = Mathf.Lerp(80f, 120f,(data.aircraft.data.relativeAltitude + minAltitude) / safeAltitude);
+            float maxBank = Mathf.Lerp(80f, 120f,(data.aircraft.data.relativeAltitude.Get + minAltitude) / safeAltitude);
             float bank = Random.Range(minBank, maxBank);
 
-            float intensity = Mathf.Lerp(0f, 1f, data.aircraft.data.ias / data.aircraft.cruiseSpeed) * Random.Range(0.4f, 0.7f);
+            float intensity = Mathf.Lerp(0f, 1f, data.aircraft.data.ias.Get / data.aircraft.cruiseSpeed) * Random.Range(0.4f, 0.7f);
 
             turn = new TurnData(data.aircraft, bank * side, Random.Range(3f, 7f), intensity);
         }

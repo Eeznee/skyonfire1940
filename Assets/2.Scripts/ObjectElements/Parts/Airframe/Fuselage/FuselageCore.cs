@@ -42,10 +42,10 @@ public class FuselageCore : Fuselage
         if (aircraft) ExcessDrag();
 
         float areas = CombinedArea();
-        Vector2 coefs = Aerodynamics.SimpleCoefficients(data.angleOfSlip, maxCl, cd, maxCd);
+        Vector2 coefs = Aerodynamics.SimpleCoefficients(data.angleOfSlip.Get, maxCl, cd, maxCd);
 
-        Vector3 lift = Aerodynamics.ComputeLift(rb.velocity, data.tas, transform.up, data.airDensity, areas, coefs.y, StructureIntegrity()); 
-        Vector3 drag = Aerodynamics.ComputeDrag(rb.velocity, data.tas, data.airDensity, areas, coefs.x, StructureIntegrity());
+        Vector3 lift = Aerodynamics.ComputeLift(rb.velocity, data.tas.Get, transform.up, data.density.Get, areas, coefs.y, StructureIntegrity()); 
+        Vector3 drag = Aerodynamics.ComputeDrag(rb.velocity, data.tas.Get, data.density.Get, areas, coefs.x, StructureIntegrity());
 
         rb.AddForce(lift + drag);
     }
@@ -67,6 +67,7 @@ public class FuselageCoreEditor : FuselageEditor
         FuselageCore fuselage = (FuselageCore)target;
         fuselage.oldCd = EditorGUILayout.FloatField("Old Cd",fuselage.oldCd);
         fuselage.cd = EditorGUILayout.FloatField("Cd", fuselage.cd);
+        fuselage.tr = EditorGUILayout.ObjectField("Tr", fuselage.tr,typeof(Transform),true) as Transform;
         fuselage.detachable = EditorGUILayout.Toggle("Detachable", fuselage.detachable);
         EditorGUILayout.LabelField("Complete Fuselage Area", fuselage.CombinedArea().ToString("0.0") + " m²");
 

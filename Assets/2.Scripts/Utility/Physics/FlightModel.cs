@@ -15,6 +15,7 @@ public static class FlightModel
         return tr;
     }
 }
+[System.Serializable]
 public class Mass
 {
     public float mass;
@@ -35,7 +36,7 @@ public class Mass
             mass += partMass;
             center += partMass * part.transform.root.InverseTransformPoint(part.transform.position);
         }
-        center /= mass;
+        if (mass > 0f) center /= mass;
     }
 
     public static Vector3 InertiaMoment(Part[] parts, bool empty)
@@ -113,7 +114,7 @@ public class Mass
     public static Mass operator -(Mass m1, Mass m2)
     {
         float total = m1.mass - m2.mass;
-        if (total < 0) return null;
+        if (total < 0f) return new Mass(0f, Vector3.zero);
         return new Mass(total, (m1.center * m1.mass - m2.center * m2.mass) / total);
     }
 }

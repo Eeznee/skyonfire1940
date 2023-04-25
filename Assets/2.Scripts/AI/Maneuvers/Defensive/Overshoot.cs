@@ -10,8 +10,8 @@ public class Overshoot : ActiveManeuver
 
     public override float PickFactor(AI.GeometricData data)
     {
-        float speedDeltaFactor = Mathf.InverseLerp(-20f, 20f, data.aircraft.data.gsp - data.target.data.gsp);
-        float speedFactor = Mathf.InverseLerp(data.aircraft.cruiseSpeed * 0.6f, data.aircraft.cruiseSpeed * 0.8f, data.aircraft.data.gsp);
+        float speedDeltaFactor = Mathf.InverseLerp(-20f, 20f, data.aircraft.data.gsp.Get - data.target.data.gsp.Get);
+        float speedFactor = Mathf.InverseLerp(data.aircraft.cruiseSpeed * 0.6f, data.aircraft.cruiseSpeed * 0.8f, data.aircraft.data.gsp.Get);
         float crossingFactor = Mathf.Clamp01(1f - data.crossAngle / 90f);
         float distanceFactor = Mathf.InverseLerp(400f, 50f, data.distance);
         return speedDeltaFactor * speedFactor * crossingFactor * distanceFactor;
@@ -25,7 +25,7 @@ public class Overshoot : ActiveManeuver
         if (done) return;
         base.Execute(data);
 
-        float throttle = (data.target.data.gsp - aircraft.data.gsp) / fullThrottleSpeedDelta;
+        float throttle = (data.target.data.gsp.Get - aircraft.data.gsp.Get) / fullThrottleSpeedDelta;
         aircraft.SetThrottle(Mathf.Clamp01(throttle));
         if (turn == null || turn.ended)
         {
@@ -36,7 +36,7 @@ public class Overshoot : ActiveManeuver
             }
             else
             {
-                AircraftControl.Tracking(transform.position + data.target.transform.forward * 500f, aircraft, data.target.data.bankAngle, 1f, true);
+                AircraftControl.Tracking(transform.position + data.target.transform.forward * 500f, aircraft, data.target.data.bankAngle.Get, 1f, true);
             }
         }
         else

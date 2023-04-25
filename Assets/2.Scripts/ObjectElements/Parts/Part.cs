@@ -25,19 +25,21 @@ public class Part : ObjectElement       //Parts are Object Elements with mass
         foreach (LineRenderer rope in GetComponentsInChildren<LineRenderer>()) rope.enabled = false;
 
         //Completely separate this part from the aircraft
-        Rigidbody previousRb = rb;
-        data.mass -= new Mass(GetComponentsInChildren<Part>(), false);
+        if (!complex) return;
+        data = tr.root.GetComponent<ObjectData>();
+        Rigidbody previousRb = data.rb;
+        Mass detachedMass = new Mass(GetComponentsInChildren<Part>(), false);
+        data.ShiftMass(new Mass(-detachedMass.mass,detachedMass.center)); 
+        if (data.GetMass() <= 0f) Debug.LogError("Mass below zero", gameObject);
         GameObject obj = new GameObject(name + " Ripped Off");
         obj.transform.SetPositionAndRotation(transform.position, transform.rotation);
         Rigidbody objRb = obj.AddComponent<Rigidbody>();
         transform.parent = obj.transform;
-        objRb.ResetCenterOfMass();
-        objRb.ResetInertiaTensor();
         ObjectData objData = obj.AddComponent<ObjectData>();
 
         objData.Initialize(false);
         objRb.velocity = previousRb.velocity;
-        Destroy(obj, 60f);
+        Destroy(obj, 30f);
     }
 
 }

@@ -35,6 +35,7 @@ public class Stick : CockpitInteractable
     private void Update()
     {
         CockpitInteractableUpdate();
+        if (!aircraft) return;
         pitch.localRotation = Quaternion.AngleAxis(-aircraft.controlInput.x * maxPitch, pitchAxis);
         roll.localRotation = Quaternion.AngleAxis(-aircraft.controlInput.z * maxRoll, rollAxis);
     }

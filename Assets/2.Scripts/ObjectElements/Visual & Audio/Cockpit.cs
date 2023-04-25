@@ -10,28 +10,25 @@ public class Cockpit : ObjectElement
     public Renderer[] glass;
     public Renderer[] internals;
 
-    void Start()
+    public override void Initialize(ObjectData d, bool firstTime)
     {
-        originalGlass = glass[0].sharedMaterial;
+        base.Initialize(d, firstTime);
+        if (firstTime)
+        {
+            originalGlass = glass[0].sharedMaterial;
+            complex.lod.OnSwitchEvent += SwitchMode;
+        }
     }
 
-    void SwitchMode(int mode)
+    void SwitchMode(int lod)
     {
         foreach (Renderer mr in glass)
         {
             if (!mr) continue;
-            mr.sharedMaterial = mode >= 2 ? noCockpitGlass : originalGlass;
-            mr.gameObject.layer = mode >= 2 ? 0 : 1;
+            mr.sharedMaterial = lod >= 2 ? noCockpitGlass : originalGlass;
+            mr.gameObject.layer = lod >= 2 ? 0 : 1;
         }
-        foreach (Renderer mr in internals) if (mr && mr.transform.root == transform.root) mr.enabled = mode <= 1;
-        complexCockpit.SetActive(mode == 0);
-    }
-
-    void Update()
-    {
-        if (complex.lod.Switched())
-        {
-            SwitchMode(complex.lod.LOD());
-        }
+        foreach (Renderer mr in internals) if (mr && mr.transform.root == transform.root) mr.enabled = lod <= 1;
+        complexCockpit.SetActive(lod == 0);
     }
 }

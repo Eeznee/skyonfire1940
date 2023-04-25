@@ -20,7 +20,7 @@ public class Zoom : ActiveManeuver
     }
     public override float PickFactor(AI.GeometricData data)
     {
-        float speedDeltaFactor = Mathf.InverseLerp(5f,30f,data.aircraft.data.gsp - data.target.data.gsp);
+        float speedDeltaFactor = Mathf.InverseLerp(5f,30f,data.aircraft.data.gsp.Get - data.target.data.gsp.Get);
         return speedDeltaFactor;
     }
     public override void Execute(AI.GeometricData data)
@@ -32,6 +32,6 @@ public class Zoom : ActiveManeuver
 
         input = AircraftControl.TrackingInputs(transform.position + targetDirection, aircraft, 0f, 1f, true);
         aircraft.SetControls(input, true, false);
-        if (aircraft.data.ias < aircraft.cruiseSpeed * 0.7f ||data.distance > safeDistance) done = true;
+        if (aircraft.data.ias.Get < aircraft.cruiseSpeed * 0.7f ||data.distance > safeDistance) done = true;
     }
 }

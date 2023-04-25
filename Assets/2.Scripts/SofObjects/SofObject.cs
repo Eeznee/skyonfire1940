@@ -18,6 +18,8 @@ public class SofObject : MonoBehaviour
     public bool destroyed = false;
     public bool burning = false;
 
+
+
     private void Start()
     {
         Initialize();
@@ -25,7 +27,7 @@ public class SofObject : MonoBehaviour
     public virtual void Initialize()
     {
         avm = GetComponentInChildren<AVM>();
-        data = GetComponent<ObjectData>() ? GetComponent<ObjectData>() : gameObject.AddComponent<ObjectData>();
+        data = this.GetCreateComponent<ObjectData>();
         data.Initialize(true);
         if (warOnly && !GameManager.war) { Destroy(gameObject); return; }
         GameManager.sofObjects.Add(this);

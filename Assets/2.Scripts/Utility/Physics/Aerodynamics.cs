@@ -12,6 +12,7 @@ public static class Aerodynamics
     public const float SeaLvlPressure = 101325f;
     const float seaLvlTemp = 20f;
     public const float seaLvlDensity = SeaLvlPressure / ((20f + kelvin) * airConstant);
+    public const float invertSeaLvlDensity = 1f / seaLvlDensity;
 
     public static float GetTemperature(float alt) { return seaLvlTemp - alt * temperatureLapseRate; }
     public static float GetPressure(float alt) { return SeaLvlPressure * Mathv.SmoothStart(1f - temperatureLapseRate/(seaLvlTemp+kelvin) * alt,5); }
@@ -29,6 +30,13 @@ public static class Aerodynamics
 
     //Aerodynamic forces calculations ------------------------------------------------------------------------------------------------------------------------------------------------
     const float maxDrag = 3f;
+
+    public static float GetGroundEffect(float relativeAltitude, float wingSpan)
+    {
+        float ratio = relativeAltitude / wingSpan;
+        float groundEffect = ratio * Mathf.Sqrt(ratio) * 33f;
+        return 1f / groundEffect + 1f;
+    }
 
     public static Vector3 ComputeLift(Vector3 velocity, float vel,Vector3 rootTipDir, float dens, float surface , float cl, float dmg)
     {

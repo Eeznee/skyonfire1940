@@ -32,8 +32,8 @@ public class SofAircraft : SofComplex
     public MaterialsList materials;
 
     //Physics
+    public bool useAutoMass = true;
     public float cogForwardDistance = 0f;
-    public Vector3 emptyCOG = Vector3.zero;
     public float targetEmptyMass = 3000f;
     public float wingSpan = 1f;
     public float maxG = 8f;
@@ -75,7 +75,11 @@ public class SofAircraft : SofComplex
         gunsPointer.SetPositionAndRotation(transform.position, transform.rotation);
         wheels = GetComponentsInChildren<WheelCollider>();
         engines = GetComponentsInChildren<Engine>();
-
+        crew = GetComponentsInChildren<CrewMember>();
+        for(int i = 0; i < crew.Length; i++)
+            for (int j = 0; j < crew[i].seats.Length; j++)
+                if (crew[i].seats[j].GetComponent<BombardierSeat>()) bombardierPath = new SeatPath(i, j);
+        bombSight = GetComponentInChildren<BombardierSeat>();
         rockets = Station.GetOrdnances<RocketsLoad>(stations);
         bombs = Station.GetOrdnances<BombLoad>(stations);
 
@@ -89,6 +93,8 @@ public class SofAircraft : SofComplex
             else hStab = stab;
         }
 
+
+        materials.ApplyMaterials(this);
         base.Initialize();
 
         squadronId = squadron.id;
@@ -147,10 +153,10 @@ public class SofAircraft : SofComplex
         }
         enginesState = (Engine.EnginesState)(destroyedEngine ? 0 : (allOff ? 1 : (allOn ? 2 : 3)));
 
-        if (data.gsp < 40f && data.relativeAltitude < 5f) landed = true;
-        if (data.gsp > cruiseSpeed * 0.7f) landed = false;
+        if (data.gsp.Get < 40f && data.relativeAltitude.Get < 5f) landed = true;
+        if (data.gsp.Get > cruiseSpeed * 0.7f) landed = false;
 
-        if (enginesState == Engine.EnginesState.Destroyed && data.gsp < 10f) destroyed = true;
+        if (enginesState == Engine.EnginesState.Destroyed && data.gsp.Get < 10f) destroyed = true;
     }
     private void FixedUpdate()
     {
@@ -173,11 +179,11 @@ public class SofAircraft : SofComplex
     }
     private void UpdatePidElevator(float target, float t)
     {
-        float correctionTarget = data.relativeAltitude < 3f && data.gsp < cruiseSpeed * 0.7f ? 0f : 1f;
+        float correctionTarget = data.relativeAltitude.Get < 3f && data.gsp.Get < cruiseSpeed * 0.7f ? 0f : 1f;
         correction = Mathf.MoveTowards(correction, correctionTarget, t * 0.1f);
-        if (data.gsp < 3f && data.relativeAltitude < 5f) correction = 0f;
+        if (data.gsp.Get < 3f && data.relativeAltitude.Get < 5f) correction = 0f;
 
-        float inAirError = target - data.angleOfAttack / optiAlpha;
+        float inAirError = target - data.angleOfAttack.Get / optiAlpha;
         controlTarget.x = Mathf.Lerp(target, pidElevator.Update(inAirError, t), correction);
     }
     //Engines
@@ -222,7 +228,7 @@ public class SofAircraft : SofComplex
     }
     public void SetGear()
     {
-        if (gear && hasPilot && data.relativeAltitude > 4f)
+        if (gear && hasPilot && data.relativeAltitude.Get > 4f)
         {
             gear.Set();
             if (PlayerManager.player.aircraft == this)
@@ -368,6 +374,9 @@ public class SofAircraftEditor : Editor
         GUI.color = GUI.backgroundColor;
         aircraft.card = EditorGUILayout.ObjectField("Aircraft Card", aircraft.card, typeof(AircraftCard), false) as AircraftCard;
         aircraft.bubble = EditorGUILayout.ObjectField("Bubble collider", aircraft.bubble, typeof(SphereCollider), true) as SphereCollider;
+        aircraft.materials = EditorGUILayout.ObjectField("Materials", aircraft.materials, typeof(MaterialsList), true) as MaterialsList;
+        //if (aircraft.materials && GUILayout.Button("Apply materials"))
+        //aircraft.materials.ApplyMaterials(aircraft);
         aircraft.controlSpeed = EditorGUILayout.Vector3Field("Controls Speed (P/Y/R)", aircraft.controlSpeed);
         GUILayout.Space(7f);
 
@@ -379,18 +388,22 @@ public class SofAircraftEditor : Editor
         EditorGUILayout.HelpBox("Physics Settings", MessageType.None);
         GUI.color = GUI.backgroundColor;
 
-        aircraft.emptyCOG = EditorGUILayout.Vector3Field("Empty Center Of Gravity", aircraft.emptyCOG);
         Part[] parts = aircraft.GetComponentsInChildren<Part>();
         Mass emptyMass = new Mass(parts, true);
         Mass loadedMass = new Mass(parts, false);
+
         EditorGUILayout.LabelField("Empty Mass", emptyMass.mass.ToString("0.0") + " kg");
         EditorGUILayout.LabelField("Loaded Mass", loadedMass.mass.ToString("0.0") + " kg");
         EditorGUILayout.LabelField("Empty COG", emptyMass.center.ToString("F2"));
 
-        aircraft.targetEmptyMass = EditorGUILayout.FloatField("Target Empty Mass", aircraft.targetEmptyMass);
-        aircraft.cogForwardDistance = EditorGUILayout.FloatField("Target COG Pos", aircraft.cogForwardDistance);
-        if (GUILayout.Button("Target AutoMass"))
-            Mass.ComputeAutoMass(aircraft, new Mass(aircraft.targetEmptyMass, Vector3.forward * aircraft.cogForwardDistance));
+        aircraft.useAutoMass = EditorGUILayout.Toggle("Use Auto Mass", aircraft.useAutoMass);
+        if (aircraft.useAutoMass)
+        {
+            aircraft.targetEmptyMass = EditorGUILayout.FloatField("Target Empty Mass", aircraft.targetEmptyMass);
+            aircraft.cogForwardDistance = EditorGUILayout.FloatField("Target COG Z-Pos", aircraft.cogForwardDistance);
+            if (GUILayout.Button("Target AutoMass"))
+                Mass.ComputeAutoMass(aircraft, new Mass(aircraft.targetEmptyMass, Vector3.forward * aircraft.cogForwardDistance));
+        }
 
         GUILayout.Space(15f);
 
@@ -417,25 +430,14 @@ public class SofAircraftEditor : Editor
         GUI.color = Color.green;
         EditorGUILayout.HelpBox("References", MessageType.None);
         GUI.color = GUI.backgroundColor;
-        aircraft.materials = EditorGUILayout.ObjectField("Materials", aircraft.materials, typeof(MaterialsList), true) as MaterialsList;
-        if (aircraft.materials && GUILayout.Button("Apply materials"))
-            aircraft.materials.ApplyMaterials(aircraft);
         aircraft.flaps = EditorGUILayout.ObjectField("Flaps Hydraulics", aircraft.flaps, typeof(HydraulicSystem), true) as HydraulicSystem;
         aircraft.gear = EditorGUILayout.ObjectField("Gear Hydraulics", aircraft.gear, typeof(HydraulicSystem), true) as HydraulicSystem;
         aircraft.airBrakes = EditorGUILayout.ObjectField("Air Brakes Hydraulics", aircraft.airBrakes, typeof(HydraulicSystem), true) as HydraulicSystem;
         aircraft.cannopy = EditorGUILayout.ObjectField("Cannopy Hydraulics", aircraft.cannopy, typeof(HydraulicSystem), true) as HydraulicSystem;
-        if (aircraft.crew.Length > 3)
-        {
-            aircraft.bombBay = EditorGUILayout.ObjectField("Bomb Bay Hydraulics", aircraft.bombBay, typeof(HydraulicSystem), true) as HydraulicSystem;
-            aircraft.bombSight = EditorGUILayout.ObjectField("Bombardier Bomb Sight", aircraft.bombSight, typeof(BombardierSeat), true) as BombardierSeat;
-            SerializedProperty bombardierPath = serializedObject.FindProperty("bombardierPath");
-            EditorGUILayout.PropertyField(bombardierPath, true);
-        }
+        aircraft.bombBay = EditorGUILayout.ObjectField("Bomb Bay Hydraulics", aircraft.bombBay, typeof(HydraulicSystem), true) as HydraulicSystem;
 
         EditorGUILayout.PropertyField(serializedObject.FindProperty("stations"), true);
         foreach (Station s in aircraft.stations) if (aircraft.stations != null && s != null) s.UpdateOptions();
-        SerializedProperty crew = serializedObject.FindProperty("crew");
-        EditorGUILayout.PropertyField(crew, true);
         SerializedProperty fuelTanks = serializedObject.FindProperty("fuelTanks");
         EditorGUILayout.PropertyField(fuelTanks, true);
         if (aircraft.crew[0] && aircraft.crew[0].seats.Length > 0 && aircraft.crew[0].seats[0].GetComponent<PilotSeat>() == null)

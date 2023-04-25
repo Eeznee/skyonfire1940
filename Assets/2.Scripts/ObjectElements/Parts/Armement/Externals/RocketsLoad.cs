@@ -41,7 +41,7 @@ public class RocketsLoad : OrdnanceLoad
     }
     public override bool Launch(float delayFuse)
     {
-        if (fireIndex < 0) return false;
+        if (fireIndex < 0 || !aircraft) return false;
 
         Projectile r = rockets[fireIndex];
         r.transform.parent = null;

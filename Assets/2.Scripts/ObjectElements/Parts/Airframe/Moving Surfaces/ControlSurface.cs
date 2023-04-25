@@ -66,8 +66,8 @@ public class ControlSurface : ShapedAirframe
             controlState = ControlState();
             float maxAngle = (controlState > 0) ? maxDeflection : minDeflection;
             float maxAngleDeflection = maxAngle;
-            if (data.ias > effectiveSpeed)
-                maxAngleDeflection = Aerodynamics.MaxDeflection(data.ias, (controlState > 0) ? constantPos : constantNeg);
+            if (data.ias.Get > effectiveSpeed)
+                maxAngleDeflection = Aerodynamics.MaxDeflection(data.ias.Get, (controlState > 0) ? constantPos : constantNeg);
             controlAngle = controlState * maxAngle;
             controlAngle = Mathf.Clamp(controlAngle, -maxAngleDeflection, maxAngleDeflection);
             sinControlAngle = Mathv.QuickSin(-controlAngle * Mathf.Deg2Rad);

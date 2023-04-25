@@ -42,15 +42,14 @@ public class Aero
     {
         ObjectData data = airframe.data;
         Vector3 center = q.CenterAero(true);
-        Vector3 velocity = tr.InverseTransformDirection(airframe.rb.GetPointVelocity(center));
-        float alpha = Vector3.SignedAngle(q.ChordDir(false), velocity, q.AeroDir(false));
+        Vector3 velocity = airframe.rb.GetPointVelocity(center);
+        float alpha = Vector3.SignedAngle(q.ChordDir(true), velocity, q.AeroDir(true));
         if (center.y <= 0f) return alpha;
 
         Vector2 coeffs = Coefficients(alpha);
 
-        Vector3 force = Aerodynamics.ComputeLift(velocity, data.tas, q.AeroDir(false), data.airDensity, q.Area, coeffs.y, Integrity());
-        force += Aerodynamics.ComputeDrag(velocity, data.tas, data.airDensity, q.Area, coeffs.x, Integrity());
-        force = tr.TransformDirection(force);
+        Vector3 force = Aerodynamics.ComputeLift(velocity, data.tas.Get, q.AeroDir(true), data.density.Get, q.Area, coeffs.y, Integrity());
+        force += Aerodynamics.ComputeDrag(velocity, data.tas.Get, data.density.Get, q.Area, coeffs.x, Integrity());
         data.rb.AddForceAtPosition(force, center);
 
         return alpha;
@@ -81,6 +80,6 @@ public class Aero
         cd = coefs.y;
         Debug.DrawRay(tr.TransformPoint(pos), cl * tr.up, Color.red);
 
-        if (control) Debug.Log(frame.data.angleOfAttack + ", " + alpha + ", " + controlSqrt * airfoil.gradient * control.sinControlAngle + ", " + section.testPlot.Evaluate(alpha));
+        if (control) Debug.Log(frame.data.angleOfAttack.Get + ", " + alpha + ", " + controlSqrt * airfoil.gradient * control.sinControlAngle + ", " + section.testPlot.Evaluate(alpha));
     }
 */

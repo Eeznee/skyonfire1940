@@ -14,12 +14,12 @@ public static class AircraftControl
         target -= ctr.transform.position;
         if (target.y < 0f)
         {
-            if (ctr.data.ias > ctr.maxSpeed * 0.8f) target = Vector3.up;
+            if (ctr.data.ias.Get > ctr.maxSpeed * 0.8f) target = Vector3.up;
             Vector3 frontPoint = ctr.transform.position + Vector3.ProjectOnPlane(ctr.transform.forward * frontDistance, Vector3.up);
-            float frontRelAlt =  ctr.data.altitude - GameManager.map.HeightAtPoint(frontPoint);
-            float relAlt = Mathf.Min(ctr.data.relativeAltitude,frontRelAlt) - minAltitude;
-            float spd = ctr.data.gsp;
-            float minCrashDelay = ctr.minCrashDelay * Mathf.Lerp(1f,3f, Mathf.Abs(ctr.data.bankAngle)/180f);
+            float frontRelAlt =  ctr.data.altitude.Get - GameManager.map.HeightAtPoint(frontPoint);
+            float relAlt = Mathf.Min(ctr.data.relativeAltitude.Get,frontRelAlt) - minAltitude;
+            float spd = ctr.data.gsp.Get;
+            float minCrashDelay = ctr.minCrashDelay * Mathf.Lerp(1f,3f, Mathf.Abs(ctr.data.bankAngle.Get)/180f);
             target.Normalize();
             float verticalSpeed = Mathf.Min(ctr.transform.forward.y ,target.y) * spd;
             float crashDelay = relAlt / -verticalSpeed;
@@ -42,7 +42,7 @@ public static class AircraftControl
         dir = Vector3.RotateTowards(ctr.transform.forward, dir, targetMaxAngle, 500f);
         target = dir + ctr.transform.position;
         Vector3 axis = Vector3.zero;
-        if (ctr.data.ias < 5f) return axis;
+        if (ctr.data.ias.Get < 5f) return axis;
         if (assist)
         {
             target = AssistTarget(target, ctr);
@@ -55,16 +55,16 @@ public static class AircraftControl
         float rollAngle = Mathf.Asin(localTarget.x) * Mathf.Rad2Deg;
 
         //Roll
-        float levelRoll = Mathv.Angle180(ctr.data.bankAngle - targetRoll) * Mathf.Clamp01(1f - offAngle / ctr.bankTurnAngle) * levelingFactor;
+        float levelRoll = Mathv.Angle180(ctr.data.bankAngle.Get - targetRoll) * Mathf.Clamp01(1f - offAngle / ctr.bankTurnAngle) * levelingFactor;
         float agressiveRoll = Mathf.Clamp(rollAngle * Mathf.Lerp(3f,1f,offAngle/90f), -90f, 90f);
         float error = (levelRoll + agressiveRoll)/180f;
         if (assist)
         {
-            float rollLimit = Mathf.Lerp(45f,180f,(ctr.data.relativeAltitude - minAltitude) / ctr.minInvertAltitude);
-            float multiplier = Mathf.InverseLerp(rollLimit * 1.5f, rollLimit / 2f, Mathf.Abs(ctr.data.bankAngle)); //Value between 0 and 1, 0.5 being the middle
+            float rollLimit = Mathf.Lerp(45f,180f,(ctr.data.relativeAltitude.Get - minAltitude) / ctr.minInvertAltitude);
+            float multiplier = Mathf.InverseLerp(rollLimit * 1.5f, rollLimit / 2f, Mathf.Abs(ctr.data.bankAngle.Get)); //Value between 0 and 1, 0.5 being the middle
             multiplier = (multiplier - 0.5f) * 2f; //Make it a value between 1 and - 1
-            if (Mathf.Sign(error) != Mathf.Sign(ctr.data.bankAngle)) error *= Mathf.Clamp01(multiplier);
-            if (multiplier < 0f) error = -multiplier * Mathf.Sign(ctr.data.bankAngle);
+            if (Mathf.Sign(error) != Mathf.Sign(ctr.data.bankAngle.Get)) error *= Mathf.Clamp01(multiplier);
+            if (multiplier < 0f) error = -multiplier * Mathf.Sign(ctr.data.bankAngle.Get);
         }
 
         axis.z =  ctr.pidRoll.Update(error, Time.fixedDeltaTime);
@@ -73,7 +73,7 @@ public static class AircraftControl
         error = pitchAngle;
         axis.x = ctr.pidPitch.Update(error, Time.fixedDeltaTime);
         axis.x *= 1f - Mathf.Abs(axis.z)*0.5f;
-        axis.x *= Mathv.SmoothStart(Mathf.Min(1f, ctr.cruiseSpeed / ctr.data.ias), 2);
+        axis.x *= Mathv.SmoothStart(Mathf.Min(1f, ctr.cruiseSpeed / ctr.data.ias.Get), 2);
         return axis;
     }
     public static void Tracking(Vector3 target, SofAircraft ctr, float targetRoll, float levelingFactor,bool assist)

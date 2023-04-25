@@ -16,6 +16,8 @@ public abstract class AirframeBase : Module
     public bool vital = false;
     public Module[] ripOnRip;
 
+    public Vector3 rootRelativePos;
+
     protected float left = 1f;
     protected float stress = -1f;
     protected float randToughness = 1f;
@@ -43,6 +45,7 @@ public abstract class AirframeBase : Module
             CalculateAerofoilStructure();
             maxHp = area * material.hpPerSq;
         }
+        rootRelativePos = transform.root.InverseTransformPoint(aero.quad.CenterAero(true));
     }
     protected virtual void FixedUpdate()
     {
@@ -63,10 +66,10 @@ public abstract class AirframeBase : Module
         float damageCoeff = Mathv.SmoothStop(StructureIntegrity(), 2);
         float maxG = MaxG() * damageCoeff;
         float maxSpd = MaxSpd() * damageCoeff;
-        if (stress <= -1f && Mathf.Abs(data.gForce) < maxG && data.ias < maxSpd) return;    //If no stress and low g/speed no need to compute anything
+        if (stress <= -1f && Mathf.Abs(data.gForce) < maxG && data.ias.Get < maxSpd) return;    //If no stress and low g/speed no need to compute anything
         //Compute torque and stress
         float excessG = Mathf.Abs(data.gForce) - maxG;
-        float excessSpeed = data.ias - maxSpd;
+        float excessSpeed = data.ias.Get - maxSpd;
         float gStress = excessG / maxG * 5f;
         float speedStress = excessSpeed / maxSpd * 10f;
         stress += Mathf.Max(gStress, speedStress) * Time.fixedDeltaTime;
@@ -114,10 +117,11 @@ public class AirframeEditor : Editor
         EditorGUILayout.HelpBox("Airframe", MessageType.None);
         GUI.color = backgroundColor;
 
- 
-        frame.emptyMass = EditorGUILayout.FloatField("Empty Mass", frame.emptyMass);
+        SofAircraft aircraft = frame.transform.root.GetComponent<SofAircraft>();
+        if (aircraft && aircraft.useAutoMass) EditorGUILayout.LabelField("Empty Mass", frame.emptyMass.ToString("0.0") + " kg");
+        else frame.emptyMass = EditorGUILayout.FloatField("Empty Mass", frame.emptyMass);
+
         EditorGUILayout.LabelField("Area", frame.area.ToString("0.0") + " m²");
-        frame.material = EditorGUILayout.ObjectField("Material", frame.material, typeof(ModuleMaterial), false) as ModuleMaterial;
         SerializedProperty ripOnRip = serializedObject.FindProperty("ripOnRip");
         EditorGUILayout.PropertyField(ripOnRip, true);
 

@@ -40,7 +40,7 @@ public class HoldFormation : Maneuver
         {
             //Direction
             Vector3 targetPos = aircraft.card.formation.GetPosition(leader.transform, aircraft.placeInSquad);
-            AircraftControl.Tracking(targetPos + leader.transform.forward * 1000f, aircraft, leader.data.bankAngle, 1f, true);
+            AircraftControl.Tracking(targetPos + leader.transform.forward * 1000f, aircraft, leader.data.bankAngle.Get, 1f, true);
 
             //Throttle
             float dis = transform.InverseTransformDirection(targetPos - transform.position).z;

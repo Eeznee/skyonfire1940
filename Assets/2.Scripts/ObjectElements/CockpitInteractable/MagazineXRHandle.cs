@@ -37,7 +37,7 @@ public class MagazineXRHandle : CockpitInteractable
             //Check every gun to load into
             foreach (Gun gun in guns)
             {
-                bool canFit = gun.gunPreset == mag.gunPreset;
+                bool canFit = gun.gunPreset.ammunition.caliber == mag.gunPreset.ammunition.caliber;
                 canFit &= gun.magazine == null;
                 canFit &= (gun.MagazinePosition() - transform.position).sqrMagnitude < 0.01f;
                 if (canFit)

@@ -12,7 +12,7 @@ public class Turnfight : Maneuver
         Vector3 flatTurnTarget = Vector3.Cross(Vector3.up, new Vector3(tr.forward.x, 0f, tr.forward.z)).normalized;
 
         //Choose the right direction for the flat turn
-        float bankFactor = Mathf.Sign(data.aircraft.data.bankAngle) * Mathf.PingPong(data.aircraft.data.bankAngle, 90f) / 90f * 0.2f;
+        float bankFactor = Mathf.Sign(data.aircraft.data.bankAngle.Get) * Mathf.PingPong(data.aircraft.data.bankAngle.Get, 90f) / 90f * 0.2f;
         flatTurnTarget *= Mathf.Sign(Vector3.Dot(flatTurnTarget, dumbTarget) - bankFactor);
 
         //Mix flat and dumb to get the final target

@@ -24,7 +24,7 @@ public class Pursuit : Maneuver
             float bulletTime = data.distance / 850f;
             Vector3 target = data.target.transform.position + data.target.data.rb.velocity * bulletTime;
             float levelingFactor = Mathf.Clamp01(1f - data.offAngle / 90f);
-            Vector3 axis = AircraftControl.TrackingInputs(target, data.aircraft, data.target.data.bankAngle, levelingFactor, true);
+            Vector3 axis = AircraftControl.TrackingInputs(target, data.aircraft, data.target.data.bankAngle.Get, levelingFactor, true);
 
 
             data.aircraft.SetControls(axis, true, false);

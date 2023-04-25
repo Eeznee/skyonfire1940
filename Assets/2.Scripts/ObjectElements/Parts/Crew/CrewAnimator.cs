@@ -58,7 +58,7 @@ public class CrewAnimator : MonoBehaviour
             animator.Update(0f);
         }
         bool firstPerson = PlayerManager.player.crew == crew && (GameManager.gm.vr || PlayerCamera.subCam.pos == CamPosition.FirstPerson);
-        bool newDisabled = (crew.aircraft && crew.aircraft.lod.LOD() > 1) || (firstPerson && !firstPersonModel);
+        bool newDisabled = (crew.complex && crew.complex.lod.LOD() > 1) || (firstPerson && !firstPersonModel);
         if (newDisabled != disabled)
         {
             disabled = newDisabled;

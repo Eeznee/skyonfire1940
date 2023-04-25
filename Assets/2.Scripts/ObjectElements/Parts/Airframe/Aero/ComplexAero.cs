@@ -46,7 +46,7 @@ public class ComplexAero : Aero
 
             float wingSpan = airframe.aircraft ? airframe.aircraft.wingSpan : 5f;
             if (wing) coeffs.x += coeffs.y * coeffs.y * totalArea * 2f / (wingSpan * wingSpan * Mathf.PI * wing.oswald);    //Induced Drag
-            coeffs.x *= airframe.data.groundEffect;
+            coeffs.x *= airframe.data.groundEffect.Get;
 
             return coeffs;
         }

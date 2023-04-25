@@ -6,74 +6,94 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
-public class Magazine : Part
+public class Magazine : AmmoContainer
 {
-    public GunPreset gunPreset;
-    public int capacity = 100;
-    [HideInInspector] public int ammo;
-    public Vector3 ejectVector = new Vector3(0f,0.2f,0f);
-    public int[] markers;
-    public GameObject[] markersGameObjects;
+    public Mesh fullMesh;
+    public Mesh simpleMesh;
+    public int[] markers = new int[0];
+    public MeshRenderer[] markerRenderers = new MeshRenderer[0];
 
-    [HideInInspector] public HandGrip grip;
-    [HideInInspector] public Gun attachedGun;
-    [HideInInspector] public MagazineStock attachedStock;
-
-    public override float Mass()
+    public override void Initialize(ObjectData d, bool firstTime)
     {
-        return gunPreset.ammunition.FullMass * ammo;
+        base.Initialize(d, firstTime);
     }
+    public override bool EjectRound()
+    {
+        if (!base.EjectRound()) return false;
 
+        for (int i = 0; i < markers.Length; i++)
+            if (ammo < markers[i]) markerRenderers[i].gameObject.SetActive(false);
+        return true;
+    }
+}
+/*
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+using UnityEditor.SceneManagement;
+#endif
+
+public class Magazine : AmmoContainer
+{
+    private Mesh originalMesh;
+    public Mesh fullMesh;
+    public Mesh simpleMesh;
+    public int[] markers = new int[0];
+    public MeshRenderer[] markerRenderers = new MeshRenderer[0];
+
+    private MeshFilter filter;
+
+    private bool merged;
+
+    public void UnMerge()
+    {
+        return;
+        if (!merged) return;
+        merged = false;
+        UpdateLOD(complex.lod.LOD());
+    }
+    private void UpdateLOD(int lod)
+    {
+        if (!merged)
+        {
+            foreach (MeshRenderer marker in markerRenderers) marker.enabled = lod == 0;
+            filter.mesh = lod == 0 ? originalMesh : simpleMesh;
+        }
+        else filter.mesh = lod == 0 ? fullMesh : simpleMesh;
+    }
     public override void Initialize(ObjectData d, bool firstTime)
     {
         base.Initialize(d, firstTime);
         if (firstTime)
         {
-            grip = GetComponentInChildren<HandGrip>();
-            ammo = capacity;
-        }
-    }
-    public bool EjectRound()
-    {
-        if (ammo <= 0) return false;
-        ammo--;
-        if (markers != null)
-        {
-            for (int i = 0; i < markers.Length; i++)
+            filter = GetComponent<MeshFilter>();
+            //complex.lod.OnSwitchEvent += UpdateLOD;
+            return;
+            if (markers.Length > 0)
             {
-                if (ammo < markers[i]) markersGameObjects[i].SetActive(false);
+                originalMesh = filter.sharedMesh;
+                filter.sharedMesh = complex.lod.LOD() == 0 ? fullMesh : simpleMesh;
+                foreach (MeshRenderer marker in markerRenderers) marker.enabled = false;
+                merged = true;
             }
         }
+    }
+    private void OnDestroy()
+    {
+        //complex.lod.OnSwitchEvent -= UpdateLOD;
+    }
+    public override bool EjectRound()
+    {
+        if (!base.EjectRound()) return false;
+
+        for (int i = 0; i < markers.Length; i++)
+            if (ammo < markers[i]) markerRenderers[i].gameObject.SetActive(false);
+
+        if (markers.Length > 0) UnMerge();
         return true;
     }
-
-    public Vector3 MagTravelPos(Vector3 startPos, Vector3 endPos,float animTime)
-    {
-        float distance = (startPos - endPos).magnitude;
-        float t = animTime * animTime;
-        if (animTime > 0.2f) t = Mathf.Lerp(0.04f,1f,(animTime-0.2f)/0.8f);
-        Vector3 travelOffset = (endPos - (startPos + ejectVector)) * t;
-        return travelOffset + startPos + ejectVector * Mathf.Clamp01(animTime*distance * 3f);
-    }
 }
 
-#if UNITY_EDITOR
-[CustomEditor(typeof(Magazine))]
-public class MagazineEditor : Editor
-{
-    public override void OnInspectorGUI()
-    {
-        base.OnInspectorGUI();
-        serializedObject.Update();
-
-        Magazine mag = (Magazine)target;
-
-        if (GUI.changed)
-        {
-            EditorUtility.SetDirty(mag);
-            EditorSceneManager.MarkAllScenesDirty();
-        }
-        serializedObject.ApplyModifiedProperties();
-    }
-}
-#endif
+ */

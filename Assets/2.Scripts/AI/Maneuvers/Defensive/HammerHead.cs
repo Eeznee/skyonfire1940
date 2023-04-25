@@ -25,7 +25,7 @@ public class HammerHead : ActiveManeuver
         {
             input = AircraftControl.TrackingInputs(transform.position + Vector3.up * 500f, aircraft, 0f, 0f, true);
             aircraft.SetControls(input, true, false);
-            if (aircraft.data.ias < 150 / 3.6f) { phase++; way = Mathf.Sign(aircraft.data.bankAngle); }
+            if (aircraft.data.ias.Get < 150 / 3.6f) { phase++; way = Mathf.Sign(aircraft.data.bankAngle.Get); }
         }
         else if (phase == 1) //Hammerhead
         {

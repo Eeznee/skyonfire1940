@@ -54,7 +54,7 @@ public class CrewMember : Module
 
         //Bailout sequence
         bool bailing = bailingOut;
-        bailing &= data.relativeAltitude + data.VerticalSpeed * minCrashTime > minBailOutAltitude;
+        bailing &= data.relativeAltitude.Get + data.vsp.Get * minCrashTime > minBailOutAltitude;
         if (Seat().canopy) bailing &= Seat().canopy.state > 0.5f || Seat().canopy.disabled;
         if (bailing)
         {

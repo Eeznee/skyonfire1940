@@ -38,7 +38,7 @@ public static class AI
             offAngle = Vector3.Angle(dir, aircraft.transform.forward);
             crossAngle = Vector3.Angle(aircraft.transform.forward, target.transform.forward);
             aspectAngle = Vector3.Angle(dir, target.transform.forward);
-            energyDelta = aircraft.data.energy - target.data.energy;
+            energyDelta = aircraft.data.energy.Get - target.data.energy.Get;
 
             float offensiveness = (180f-offAngle - aspectAngle) / 180f; //1f is full offensive, -1f is defensive
             state = offensiveness > stateNeutralLimit ? DogfightState.Offensive : (offensiveness < -stateNeutralLimit ? DogfightState.Defensive : DogfightState.Neutral);

@@ -28,8 +28,8 @@ public class Gun : Part
     public Transform muzzleEffects;
     public Transform bulletSpawn;
     public GunPreset gunPreset;
-    public MagazineStock magStock;
-    public Magazine magazine;
+    public MagazineStorage magStorage;
+    public AmmoContainer magazine;
     public int clipAmmo;
     public Vector3 magazineLocalPos;
     public BoltHandle bolt;
@@ -68,14 +68,8 @@ public class Gun : Part
     const float absoluteTemperature = 800f;
     //const float maxDispersionTemperature = 550f;
 
-    public override float EmptyMass()
-    {
-        return gunPreset.mass;
-    }
-    public override float Mass()
-    {
-        return EmptyMass() + (magazine ? 0f : gunPreset.ammunition.FullMass * clipAmmo);
-    }
+    public override float EmptyMass() { return gunPreset.mass; }
+    public override float Mass() { return EmptyMass(); }
     public static int AmmunitionCount(Gun[] guns)
     {
         int total = 0;
@@ -93,14 +87,8 @@ public class Gun : Part
         bool shotReady = magazine && magazine.ammo > 0 && !(!chambered && cycleState == 1f);
         return (shotReady && data.type > 0 && transform.position.y > 0f) || Firing();
     }
-    public bool Firing()
-    {
-        return Time.time - lastFired <= 60f * invertFireRate + Time.deltaTime * 3;
-    }
-    public Vector3 MagazinePosition()
-    {
-        return transform.TransformPoint(magazineLocalPos);
-    }
+    public bool Firing() { return Time.time - lastFired <= 60f * invertFireRate + Time.deltaTime * 3f; }
+    public Vector3 MagazinePosition() { return tr.TransformPoint(magazineLocalPos); }
     public override void Initialize(ObjectData d, bool firstTime)
     {
         base.Initialize(d, firstTime);
@@ -111,24 +99,12 @@ public class Gun : Part
             for (int i = 0; i < bullets.Length; i++)
                 bullets[i] = gunPreset.ammunition.CreateProjectile(i, transform);
 
-            if (!magazine) //Create a hidden magazine if there is none available
-            {
-                magazine = new GameObject(gunPreset.name + " Magazine").AddComponent<Magazine>();
-                magazine.capacity = clipAmmo;
-                magazine.Initialize(data, true);
-                magazine.gunPreset = gunPreset;
-            }
-            if (!muzzleEffects) muzzleEffects = transform;
-            if (!bulletSpawn) bulletSpawn = transform;
-
             cycleState = gunPreset.openBolt ? 0.5f : 1f;
             chambered = !gunPreset.openBolt;
             ejected = true;
-
             currentBullet = Random.Range(0, ammunition.defaultBelt.Length);
-            temperature = data.ambientTemperature;
-            emptyMass = gunPreset.mass;
 
+            if (!magazine) magazine = AmmoContainer.CreateAmmoBelt(gunPreset, clipAmmo, data);
             LoadMagazine(magazine);
             chambered = true;
 
@@ -141,9 +117,12 @@ public class Gun : Part
             OnEjectEvent += TryLockBolt;
             OnTriggerEvent += OnTrigger;
 
+            temperature = data.temperature.Get;
             fuzeDistance = 0f;
             invertFireRate = 1f / gunPreset.FireRate;
 
+            if (!muzzleEffects) muzzleEffects = transform;
+            if (!bulletSpawn) bulletSpawn = transform;
             gameObject.AddComponent<GunFX>();
         }
     }
@@ -158,8 +137,8 @@ public class Gun : Part
     public virtual void FixedUpdate()
     {
         if (!lockedBolt && !blockedBolt) Cycle(cycleState + gunPreset.FireRate / 60f * Time.fixedDeltaTime);
-        float delta = Mathf.Max(temperature - data.ambientTemperature, 150f);
-        temperature = Mathf.MoveTowards(temperature, data.ambientTemperature, delta * gunPreset.coolingFactor * Time.fixedDeltaTime);
+        float delta = Mathf.Max(temperature - data.temperature.Get, 150f);
+        temperature = Mathf.MoveTowards(temperature, data.temperature.Get, delta * gunPreset.coolingFactor * Time.fixedDeltaTime);
 
         if (!trigger) reset = true;
         else trigger = false;
@@ -199,10 +178,7 @@ public class Gun : Part
         if (chambered) currentBullet = (currentBullet + 1) % ammunition.defaultBelt.Length;
         lockedBolt = true;
     }
-    protected void OnEject()
-    {
-        ejected = true;
-    }
+    protected void OnEject() { ejected = true; }
     protected void TryLockBolt()
     {
         //bool catchBolt = magazine.ammo <= 0 && gunPreset.boltCatch;
@@ -230,25 +206,18 @@ public class Gun : Part
         bullet.InitializeTrajectory(bullet.transform.forward * bullet.p.baseVelocity + rb.velocity, transform.forward, complex ? complex.bubble : null);
         if (fuzeDistance > 50f) bullet.StartFuze(fuzeDistance / bullet.p.baseVelocity);
     }
-    protected void HeatUp()
-    {
-        temperature += gunPreset.temperaturePerShot;
-    }
+    protected void HeatUp() { temperature += gunPreset.temperaturePerShot; }
     protected void Recoil()
     {
         float energy = ammunition.mass * 2f * ammunition.defaultMuzzleVel;
-        rb.AddForceAtPosition(-transform.forward * energy / rb.mass, transform.position, ForceMode.VelocityChange);
+        rb.AddForceAtPosition(-transform.forward * energy, transform.position);
     }
-    public void LoadMagazine(Magazine mag)
+    public void LoadMagazine(AmmoContainer ammoContainer)
     {
-        if (gunPreset == mag.gunPreset)
-        {
-            magazine = mag;
-            magazine.attachedGun = this;
-            magazine.transform.parent = transform;
-            magazine.transform.localPosition = magazineLocalPos;
-            magazine.transform.localRotation = Quaternion.identity;
-        }
+        if (gunPreset.ammunition.caliber != ammoContainer.gunPreset.ammunition.caliber) return;
+
+        magazine = ammoContainer;
+        magazine.Load(this);
     }
     public void RemoveMagazine()
     {
@@ -288,7 +257,7 @@ public class GunEditor : Editor
         else
         {
             EditorGUILayout.HelpBox("The gun is magazine fed", MessageType.None);
-            gun.magStock = EditorGUILayout.ObjectField("Magazine Stock", gun.magStock, typeof(MagazineStock), true) as MagazineStock;
+            gun.magStorage = EditorGUILayout.ObjectField("Magazine Storage", gun.magStorage, typeof(MagazineStorage), true) as MagazineStorage;
             gun.magazineLocalPos = EditorGUILayout.Vector3Field("Mag Local Pos", gun.magazineLocalPos);
         }
 

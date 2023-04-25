@@ -8,9 +8,10 @@ using UnityEditor.SceneManagement;
 #endif
 public class CockpitInteractable : ObjectElement
 {
-    [HideInInspector]public XRGrabInteractable xrGrab;
+    [HideInInspector] public XRGrabInteractable xrGrab;
     public HandGrip grip;
     public Outline outline;
+    public Collider[] colliders;
     private Color outlineColor;
 
     public bool indexSelect = false;
@@ -31,29 +32,20 @@ public class CockpitInteractable : ObjectElement
 
         if (firstTime)
         {
-            //Default Positions
             xrGrab = null;
             defaultPos = transform.localPosition;
             defaultRot = transform.localRotation;
             gripDefaultPos = grip.transform.localPosition;
 
-            MeshRenderer meshRend = GetComponentInChildren<MeshRenderer>();
-            if (meshRend && !outline)
-                outline = meshRend.gameObject.AddComponent<Outline>();
-            if (outline)
-            {
-                outlineColor = indexSelect ? Color.blue : Color.red;
-                outline.OutlineColor = outlineColor;
-                outline.enabled = true;
-                outline.OutlineWidth = 2f;
-                outline.enabled = false;
-            }
+            colliders = grip.GetComponentsInChildren<Collider>();
+            if (GameManager.gm.vr) DisableVR();
+            else RemoveVR();
         }
     }
     public virtual void EnableVR(XRGrabInteractable xrPrefab)
     {
         xrPrefab.colliders.Clear();
-        xrPrefab.colliders.AddRange(grip.GetComponentsInChildren<Collider>());
+        xrPrefab.colliders.AddRange(colliders);
         xrGrab = Instantiate(xrPrefab);
 
         xrGrab.transform.parent = grip.transform.parent;
@@ -61,20 +53,34 @@ public class CockpitInteractable : ObjectElement
 
         xrGrab.interactionLayers = LayerMask.GetMask(indexSelect ? "TriggerGrab" : "GripGrab");
         xrGrab.gameObject.layer = indexSelect ? 14 : 13;
-        foreach (Collider col in xrGrab.colliders)
-            col.gameObject.layer = 0;
+        foreach (Collider c in colliders) { c.enabled = true; c.gameObject.layer = 0; }
         xrGrab.attachEaseInTime = 0f;
 
         Rigidbody rb = xrGrab.GetComponent<Rigidbody>();
         rb.useGravity = false;
         rb.isKinematic = false;
 
-        outline.enabled = true;
+        MeshRenderer meshRend = GetComponentInChildren<MeshRenderer>();
+        if (meshRend)
+        {
+            if (!outline) outline = meshRend.gameObject.AddComponent<Outline>();
+            outlineColor = indexSelect ? Color.blue : Color.red;
+            outline.OutlineColor = outlineColor;
+            outline.enabled = true;
+            outline.OutlineWidth = 2f;
+        }
     }
     public virtual void DisableVR()
     {
-        Destroy(xrGrab.gameObject);
-        outline.enabled = false;
+        foreach (Collider c in colliders) c.enabled = false;
+        if (xrGrab) Destroy(xrGrab.gameObject);
+        if (outline) outline.enabled = false;
+    }
+    public virtual void RemoveVR()
+    {
+        foreach (Collider c in colliders) Destroy(c);
+        if (xrGrab) Destroy(xrGrab.gameObject);
+        if (outline) Destroy(outline);
     }
     protected virtual void VRInteraction(Vector3 gripPos, Quaternion gripRot)
     {
@@ -89,33 +95,33 @@ public class CockpitInteractable : ObjectElement
     }
     protected virtual void CockpitInteractableUpdate()
     {
-        if (xrGrab)
+        if (!xrGrab) return;
+
+        if (xrGrab.isSelected)
         {
-            if (xrGrab.isSelected)
-            {
-                if (!wasSelected) OnGrab();
-                VRInteraction(xrGrab.transform.position - data.transform.TransformVector(gripOffset), xrGrab.transform.rotation);
-            }
+            if (!wasSelected) OnGrab();
+            VRInteraction(xrGrab.transform.position - data.transform.TransformVector(gripOffset), xrGrab.transform.rotation);
+        }
+        else
+        {
+            xrGrab.transform.SetPositionAndRotation(grip.transform.position, transform.rotation);
+            if (wasSelected) OnRelease();
+        }
+        wasSelected = xrGrab.isSelected;
+
+        //Outline
+        if (outline && outline.enabled)
+        {
+            if (xrGrab.interactorsHovering.Count > 0) outline.OutlineColor = Color.white;
             else
             {
-                xrGrab.transform.SetPositionAndRotation(grip.transform.position, transform.rotation);
-                if (wasSelected) OnRelease();
-            }
-            wasSelected = xrGrab.isSelected;
-
-            //Outline
-            if (outline && outline.enabled)
-            {
-                if (xrGrab.interactorsHovering.Count > 0) outline.OutlineColor = Color.white;
-                else
-                {
-                    float rightDis = (SofVrRig.instance.rightHand.transform.position - xrGrab.transform.position).sqrMagnitude;
-                    float leftDis = (SofVrRig.instance.leftHand.transform.position - xrGrab.transform.position).sqrMagnitude;
-                    float minDis = Mathf.Min(rightDis, leftDis);
-                    outline.OutlineColor = outlineColor - new Color(0f, 0f, 0f, Mathf.Pow(minDis, 0.1f));
-                }
+                float rightDis = (SofVrRig.instance.rightHand.transform.position - xrGrab.transform.position).sqrMagnitude;
+                float leftDis = (SofVrRig.instance.leftHand.transform.position - xrGrab.transform.position).sqrMagnitude;
+                float minDis = Mathf.Min(rightDis, leftDis);
+                outline.OutlineColor = outlineColor - new Color(0f, 0f, 0f, Mathf.Pow(minDis, 0.1f));
             }
         }
+
     }
     protected virtual bool ReadySelect()
     {

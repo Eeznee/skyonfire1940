@@ -16,9 +16,9 @@ public class Sliceback : ActiveManeuver
         base.Initialize(data);
 
         float maxAngle = 180f;
-        float lowestAltitude = aircraft.data.relativeAltitude - aircraft.turnRadius * 2f;
-        if (lowestAltitude < altitudeSafety) maxAngle = Mathf.Rad2Deg * Mathf.Acos(-(aircraft.data.relativeAltitude - altitudeSafety) / (aircraft.turnRadius * 2f));
-        angle = Random.Range(minBank, maxAngle) * Mathf.Sign(aircraft.data.bankAngle);
+        float lowestAltitude = aircraft.data.relativeAltitude.Get - aircraft.turnRadius * 2f;
+        if (lowestAltitude < altitudeSafety) maxAngle = Mathf.Rad2Deg * Mathf.Acos(-(aircraft.data.relativeAltitude.Get - altitudeSafety) / (aircraft.turnRadius * 2f));
+        angle = Random.Range(minBank, maxAngle) * Mathf.Sign(aircraft.data.bankAngle.Get);
 
         initialDirection = Vector3.ProjectOnPlane(transform.forward, Vector3.up) * 500f;
         initialDirectionNormalized = initialDirection.normalized;
@@ -37,9 +37,9 @@ public class Sliceback : ActiveManeuver
     {
         float closureFactor = Mathf.InverseLerp(15f, -30f, data.closure);
         float disFactor = Mathf.InverseLerp(-200f, 500f, data.distance);
-        float overSpeedFactor = Mathf.InverseLerp(data.aircraft.cruiseSpeed * 1.3f,data.aircraft.cruiseSpeed, data.aircraft.data.ias);
+        float overSpeedFactor = Mathf.InverseLerp(data.aircraft.cruiseSpeed * 1.3f,data.aircraft.cruiseSpeed, data.aircraft.data.ias.Get);
         float minAltitudeLoss = Mathf.Cos(minBank * Mathf.Deg2Rad) * data.aircraft.turnRadius * 2f;
-        float altitudeFactor = data.aircraft.data.relativeAltitude + minAltitudeLoss > altitudeSafety ? 1f : 0f;
+        float altitudeFactor = data.aircraft.data.relativeAltitude.Get + minAltitudeLoss > altitudeSafety ? 1f : 0f;
         return closureFactor * disFactor * altitudeFactor;
     }
     public override void Execute(AI.GeometricData data)
@@ -51,7 +51,7 @@ public class Sliceback : ActiveManeuver
         {
             case 0: //Phase 1 : invert bank
                 AircraftControl.Tracking(transform.position + transform.forward * 500f, aircraft, angle, 1f, false);
-                if (Mathf.Abs(aircraft.data.bankAngle - angle) < 5f) phase++;
+                if (Mathf.Abs(aircraft.data.bankAngle.Get - angle) < 5f) phase++;
                 break;
             case 1: //Phase 2 : first half of the sliceback
                 AircraftControl.Tracking(transform.position + downDirection, aircraft, angle, 0f, false);

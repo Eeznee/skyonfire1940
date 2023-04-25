@@ -11,17 +11,28 @@ public class SofComplex : SofObject
     public SphereCollider bubble;
     public LodManager lod;
 
+    public ObjectElement[] elements;
+    public Part[] parts;
+    public Module[] modules;
+    public AirframeBase[] airframes;
+
+
     public override void Initialize()
     {
         lod = gameObject.AddComponent<LodManager>();
         base.Initialize();
         if (bubble) bubble.gameObject.layer = 11;
+
+        elements = GetComponentsInChildren<ObjectElement>();
+        parts = GetComponentsInChildren<Part>();
+        modules = GetComponentsInChildren<Module>();
+        airframes = GetComponentsInChildren<AirframeBase>();
     }
     public override void Explosion(Vector3 center, float tnt)
     {
         base.Explosion(center, tnt);
         float sqrDis = (center - transform.position).sqrMagnitude;
-        if (tnt < sqrDis / 2000f) return;   //no calculations if too far
+        if (tnt * 2000f < sqrDis) return;   //no calculations if too far
         foreach (Module m in data.modules) if (m) m.ExplosionDamage(center, tnt);
     }
 }

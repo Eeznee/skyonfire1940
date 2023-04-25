@@ -29,15 +29,15 @@ public class IndicatorsList : MonoBehaviour
     public string Text()
     {
         SofAircraft player = PlayerManager.player.aircraft;
-        ObjectData playerData = player.data;
+        ObjectData data = player.data;
 
         string finalText = "";
         if (gsp)
-            finalText += "GSP : " + Mathf.RoundToInt(playerData.gsp * UnitsConverter.speed.Multiplier) + " " + UnitsConverter.speed.Symbol + "\n";
+            finalText += "GSP : " + Mathf.RoundToInt(data.gsp.Get * UnitsConverter.speed.Multiplier) + " " + UnitsConverter.speed.Symbol + "\n";
         if (ias)
-            finalText += "IAS : " + Mathf.RoundToInt(playerData.ias * UnitsConverter.speed.Multiplier) + " " + UnitsConverter.speed.Symbol + "\n";
+            finalText += "IAS : " + Mathf.RoundToInt(data.ias.Get * UnitsConverter.speed.Multiplier) + " " + UnitsConverter.speed.Symbol + "\n";
         if (roc)
-            finalText += "ROC : " + Mathf.RoundToInt(playerData.VerticalSpeed * UnitsConverter.climbRate.Multiplier) + " " + UnitsConverter.climbRate.Symbol + "\n";
+            finalText += "ROC : " + Mathf.RoundToInt(data.vsp.Get * UnitsConverter.climbRate.Multiplier) + " " + UnitsConverter.climbRate.Symbol + "\n";
         if (alt)
             finalText += "ALT : " + Mathf.RoundToInt(player.transform.position.y * UnitsConverter.altitude.Multiplier) + " " + UnitsConverter.altitude.Symbol + "\n";
         if (thr)
@@ -45,19 +45,19 @@ public class IndicatorsList : MonoBehaviour
 
         if (ammo && player.primaries.Length > 0)
         {
-            string clip = player.primaries[0].magStock ? " | " + player.primaries[0].magStock.MagsCount() : "";
+            string clip = player.primaries[0].magStorage ? " | " + player.primaries[0].magStorage.magsLeft : "";
             finalText += "PRM : " + Gun.AmmunitionCount(player.primaries) + " \n";
         }
         if (ammo && player.secondaries.Length > 0)
         {
-            string clip = player.secondaries[0].magStock ? " | " + player.secondaries[0].magStock.MagsCount() : "";
+            string clip = player.secondaries[0].magStorage ? " | " + player.secondaries[0].magStorage.magsLeft : "";
             finalText += "SCD : " + Gun.AmmunitionCount(player.secondaries) +  clip + " \n";
         }
 
         if (gfr)
-            finalText += "GFR : " + Mathf.CeilToInt(playerData.gForce * 10f) / 10f + " G\n";
+            finalText += "GFR : " + Mathf.CeilToInt(data.gForce * 10f) / 10f + " G\n";
         if (hdg)
-            finalText += "HDG : " + Mathf.CeilToInt(playerData.headingDirection) + " \n";
+            finalText += "HDG : " + Mathf.CeilToInt(data.heading.Get) + " \n";
         if (player.engines.Length == 0) return finalText;
         if (temp)
             finalText += "WTR : " + player.engines[0].waterTemperature.ToString("0.0") + " °C\n";

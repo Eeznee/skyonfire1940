@@ -23,7 +23,7 @@ public class Disengage : ActiveManeuver
     public override float PickFactor(AI.GeometricData data)
     {
         float energyDeltaFactor = Mathf.InverseLerp(0f,-2000f,data.energyDelta);
-        float speedFactor = Mathf.InverseLerp(data.aircraft.cruiseSpeed , data.aircraft.cruiseSpeed * 0.6f, data.aircraft.data.ias);
+        float speedFactor = Mathf.InverseLerp(data.aircraft.cruiseSpeed , data.aircraft.cruiseSpeed * 0.6f, data.aircraft.data.ias.Get);
         return energyDeltaFactor * speedFactor;
     }
     public override void Execute(AI.GeometricData data)
@@ -35,6 +35,6 @@ public class Disengage : ActiveManeuver
 
         input = AircraftControl.TrackingInputs(transform.position + targetDirection, aircraft, 0f, 1f, true);
         aircraft.SetControls(input, true, false);
-        if (data.distance > maxDistance || aircraft.data.ias > aircraft.cruiseSpeed * maxSpeedFactor) done = true;
+        if (data.distance > maxDistance || aircraft.data.ias.Get > aircraft.cruiseSpeed * maxSpeedFactor) done = true;
     }
 }

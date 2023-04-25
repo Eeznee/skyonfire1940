@@ -18,6 +18,11 @@ public class MyBoutique : MonoBehaviour, IStoreListener
     public string workshopId = "pack.workshop";
     const string k_Environment = "production";
 
+    void IStoreListener.OnInitializeFailed(InitializationFailureReason error,string s)
+    {
+        
+    }
+
     void Awake()
     {
         var options = new InitializationOptions().SetEnvironmentName(k_Environment);
@@ -56,7 +61,7 @@ public class MyBoutique : MonoBehaviour, IStoreListener
     {
         extensions.GetExtension<IAppleExtensions>().RestoreTransactions(OnRestore);
     }
-    void OnRestore(bool success)
+    void OnRestore(bool success,string callback)
     {
         var restoreMessage = "";
         if (success)

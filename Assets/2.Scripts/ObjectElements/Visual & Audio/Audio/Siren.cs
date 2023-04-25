@@ -32,8 +32,8 @@ public class Siren : AudioVisual
             foreach (Transform t in spinners) sirenActive |= t.root == transform.root;
             if (!sirenActive) siren.source.Stop();
         }
-        siren.source.volume = Mathf.Lerp(0f, maxVolume, 2 * (data.ias - minSpeed) / minSpeed);
-        siren.source.pitch =  Mathf.Lerp(minPitch, maxPitch, 2*(data.ias - minSpeed)/minSpeed);
+        siren.source.volume = Mathf.Lerp(0f, maxVolume, 2 * (data.ias.Get - minSpeed) / minSpeed);
+        siren.source.pitch =  Mathf.Lerp(minPitch, maxPitch, 2*(data.ias.Get - minSpeed)/minSpeed);
         foreach(Transform spinner in spinners)
             spinner.Rotate(Vector3.forward * siren.source.volume * 5000f * Time.deltaTime);
     }

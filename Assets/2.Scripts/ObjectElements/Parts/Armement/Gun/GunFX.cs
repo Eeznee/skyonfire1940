@@ -46,7 +46,7 @@ public class GunFX : MonoBehaviour
         if (gun.complex && gun.complex.lod.LOD() < 2) foreach (ParticleSystem ps in muzzleFlashes) ps.Emit(1);
         if (gun.complex && gun.complex.lod.LOD() == 0) if (casings && ejection)
             {
-                casingsDrag.z = -gun.data.ias * gun.data.ias * multiplier;
+                casingsDrag.z = -gun.data.ias.Get * gun.data.ias.Get * multiplier;
                 casings.Emit(1);
             }
     }

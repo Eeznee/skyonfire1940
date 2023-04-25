@@ -102,24 +102,3 @@ public class Module : Part       //Parts are Object Elements with mass
         ripped = true;
     }
 }
-#if UNITY_EDITOR
-[CustomEditor(typeof(Module))]
-public class ModuleEditor : PartEditor
-{
-    public override void OnInspectorGUI()
-    {
-        base.OnInspectorGUI();
-        serializedObject.Update();
-        Module module = (Module)target;
-
-        module.material = EditorGUILayout.ObjectField("Part Material", module.material, typeof(ModuleMaterial), false) as ModuleMaterial;
-
-        if (GUI.changed)
-        {
-            EditorUtility.SetDirty(module);
-            EditorSceneManager.MarkAllScenesDirty();
-        }
-        serializedObject.ApplyModifiedProperties();
-    }
-}
-#endif

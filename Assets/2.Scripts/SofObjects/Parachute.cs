@@ -64,21 +64,22 @@ public class Parachute : SofComplex
         Vector3 vel = data.rb.GetPointVelocity(transform.TransformPoint(dragPoint));
         trueRadius = Mathf.MoveTowards(trueRadius, radius, Time.fixedDeltaTime / 2f);
         float area = trueRadius * trueRadius * Mathf.PI;
-        data.rb.AddForceAtPosition(Aerodynamics.ComputeDrag(vel,data.tas, data.airDensity, area, dragCoeff, 1f),transform.TransformPoint(dragPoint));
-        if (data.relativeAltitude < -feetGroundOffset && !landed) Land();
+        data.rb.AddForceAtPosition(Aerodynamics.ComputeDrag(vel,data.tas.Get, data.density.Get, area, dragCoeff, 1f),transform.TransformPoint(dragPoint));
+        if (data.relativeAltitude.Get < -feetGroundOffset && !landed) Land();
 
         transform.Rotate(0f, rotationSpeed * Time.fixedDeltaTime, 0f, Space.Self);
     }
     private void Land()
     {
         landed = true;
+        data.rb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
         data.rb.isKinematic = true;
 
         Vector3 pos = transform.position;
-        pos.y = data.altitude - data.relativeAltitude - feetGroundOffset;
+        pos.y = data.altitude.Get - data.relativeAltitude.Get - feetGroundOffset;
         transform.position = pos;
         transform.rotation = Quaternion.Euler(0f, transform.rotation.eulerAngles.y, 0f);
-        if (data.altitude - data.relativeAltitude == 0f) GetComponent<Animator>().SetBool("Swimming", true);
+        if (data.altitude.Get - data.relativeAltitude.Get == 0f) GetComponent<Animator>().SetBool("Swimming", true);
         else GetComponent<Animator>().SetBool("Grounded", true);
     }
 }

@@ -40,10 +40,10 @@ public class Slat : ShapedAirframe
         {
             Vector3 velocity = rb.GetPointVelocity(transform.position);
             float alpha = Vector3.SignedAngle(parentWing.shapeTr.forward, velocity, parentWing.shapeTr.right);
-            if (data.ias < 1f) alpha = 0f;
+            if (data.ias.Get < 1f) alpha = 0f;
 
             float straightFactor = lockedSpeed / straightLockedSpeed;
-            float aerodynamicForce = data.ias;
+            float aerodynamicForce = data.ias.Get;
             if (alpha < 0f) aerodynamicForce *= straightFactor * Mathf.InverseLerp(-90f, 0f, alpha);
             else if (alpha < lockAngle) aerodynamicForce *= Mathf.Lerp(1f, straightFactor, Mathf.InverseLerp(lockAngle, 0f, alpha));
             else aerodynamicForce *= Mathf.InverseLerp(-90f, lockAngle, alpha);

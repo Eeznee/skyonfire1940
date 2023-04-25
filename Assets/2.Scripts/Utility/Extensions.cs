@@ -55,4 +55,8 @@ public static class Extensions
     {
         return q * Vector3.right;
     }
+    public static T GetCreateComponent<T>(this MonoBehaviour mono) where T : Component
+    {
+        return mono.GetComponent<T>() != null ? mono.GetComponent<T>() : mono.gameObject.AddComponent<T>();
+    }
 }

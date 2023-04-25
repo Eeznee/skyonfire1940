@@ -16,7 +16,7 @@ public class DefiantBellyAssault : ActiveManeuver
     {
         base.Initialize(data);
         distance = Random.Range(minDistance, maxDistance);
-        distance = Mathf.Min(data.target.data.relativeAltitude - 200f, distance);
+        distance = Mathf.Min(data.target.data.relativeAltitude.Get - 200f, distance);
         sideOffset = distance * Random.Range(-maxOffsetCoeff, maxOffsetCoeff);
     }
     public override string Label()
@@ -26,7 +26,7 @@ public class DefiantBellyAssault : ActiveManeuver
     public override float PickFactor(AI.GeometricData data)
     {
         float pairAndTarget = !data.aircraft.CanPairUp() && data.target.card.bomber ? 1f : 0f;
-        float targetAltitude = Mathf.InverseLerp(400f, 700f, data.target.data.relativeAltitude);
+        float targetAltitude = Mathf.InverseLerp(400f, 700f, data.target.data.relativeAltitude.Get);
         return pairAndTarget * targetAltitude;
     }
     public override void Execute(AI.GeometricData data)

@@ -15,7 +15,7 @@ public class WingTipsTrails : AudioVisual
         if (firstTime)
         {
             wingTips = new List<Wing>();
-            foreach (Wing wing in transform.root.GetComponentsInChildren<Wing>()) if (!wing.child) wingTips.Add(wing);
+            foreach (Wing wing in transform.root.GetComponentsInChildren<Wing>()) if (!wing.child && wing.parent) wingTips.Add(wing);
 
             tipTrails = new TrailRenderer[wingTips.Count];
             for (int i = 0; i < wingTips.Count; i++)
@@ -35,11 +35,11 @@ public class WingTipsTrails : AudioVisual
             Wing wing = wingTips[i];
 
             bool emitting = PlayerManager.player.aircraft;
-            emitting &= data.ias > 20f;
-            emitting &= wing.alpha * Mathf.Min(data.ias * 0.02f, 1f) > wing.foil.airfoilSim.maxAlpha * 0.8f;
+            emitting &= data.ias.Get > 20f;
+            emitting &= wing.alpha * Mathf.Min(data.ias.Get * 0.02f, 1f) > wing.foil.airfoilSim.maxAlpha * 0.8f;
             emitting &= complex.lod.LOD() <= 2;
-            emitting &= wing.tr.root == tr.root;
-            if (tipTrails[i].emitting != emitting) tipTrails[i].emitting = emitting;
+            emitting &= wing && wing.tr.root == tr.root;
+            if (tipTrails[i] && tipTrails[i].emitting != emitting) tipTrails[i].emitting = emitting;
         }
     }
 }

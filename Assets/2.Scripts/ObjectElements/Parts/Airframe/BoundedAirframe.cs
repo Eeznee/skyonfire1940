@@ -90,7 +90,7 @@ public class BoundedAirframe : AirframeBase
             if (cd > 0f)
             {
                 Vector3 velocity = rb.velocity;
-                Vector3 drag = Aerodynamics.ComputeDrag(velocity, data.tas, data.airDensity, 1f, cd, 1f);
+                Vector3 drag = Aerodynamics.ComputeDrag(velocity, data.tas.Get, data.density.Get, 1f, cd, 1f);
                 rb.AddForceAtPosition(drag, transform.position, ForceMode.Force);
             }
         }

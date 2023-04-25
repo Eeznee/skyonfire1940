@@ -23,13 +23,13 @@ public class CrashEffect : ObjectElement
 
         //Two methods to check for crash (both are not reliable 100%)
         //Method 1 : use acceleration value
-        if (data.acceleration.sqrMagnitude > mult * Mathv.SmoothStart(minGThreshold * -Physics.gravity.y, 2) && data.relativeAltitude < 30f)
+        if (data.acceleration.sqrMagnitude > mult * Mathv.SmoothStart(minGThreshold * -Physics.gravity.y, 2) && data.relativeAltitude.Get < 30f)
         {
             Crash(data.acceleration.magnitude / (-Physics.gravity.y * mult));
         }
         if (crashed) return;
         //Method 2 : use relative altitude and vertical speed
-        float timeToCrash = data.relativeAltitude / -aircraft.data.rb.velocity.y;
+        float timeToCrash = data.relativeAltitude.Get / -aircraft.data.rb.velocity.y;
         if (timeToCrash < Time.fixedDeltaTime * 10f && timeToCrash > 0f)
         {
             //weirdly, the estimated G is approximatively the vertical velocity
@@ -46,7 +46,7 @@ public class CrashEffect : ObjectElement
         if (g > 45f)
         {
             //Crash effects
-            if (data.altitude - data.relativeAltitude > 1f) //If on the ground
+            if (data.altitude.Get - data.relativeAltitude.Get > 1f) //If on the ground
                 Instantiate(groundExplosion, transform.position, groundExplosion.transform.rotation, transform);
             else                                            //If water
                 Instantiate(waterSplash, transform.position + (transform.position.y - 0.05f) * Vector3.down, Quaternion.identity);

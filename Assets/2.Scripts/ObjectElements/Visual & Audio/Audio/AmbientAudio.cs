@@ -21,7 +21,7 @@ public class AmbientAudio : AudioVisual
     public void Update()
     {
         if (aircraft != PlayerManager.player.aircraft) return;
-        float targetVolume = Mathf.InverseLerp(50f, 0f, data.relativeAltitude) * 0.1f;
+        float targetVolume = Mathf.InverseLerp(50f, 0f, data.relativeAltitude.Get) * 0.1f;
         rural.source.volume = Mathf.MoveTowards(rural.source.volume, targetVolume, Time.deltaTime);
     }
 }
