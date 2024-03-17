@@ -13,7 +13,7 @@ public class CustomPicture : MonoBehaviour
         string textureName = PlayerPrefs.GetString("custom_pictureLastSelected", "Disabled");
         if (textureName == "Disabled")
         {
-            Destroy(gameObject);
+            rend.sharedMaterials = new Material[0];
             return;
         }
         Texture texture = TextureTool.Load("custom_picture",textureName);

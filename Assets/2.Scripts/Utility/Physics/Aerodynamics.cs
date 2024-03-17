@@ -17,6 +17,8 @@ public static class Aerodynamics
     public static float GetTemperature(float alt) { return seaLvlTemp - alt * temperatureLapseRate; }
     public static float GetPressure(float alt) { return SeaLvlPressure * Mathv.SmoothStart(1f - temperatureLapseRate/(seaLvlTemp+kelvin) * alt,5); }
     public static float GetAirDensity(float temp, float press) { return press / ((temp + kelvin) * airConstant); }
+    public static float GetAirDensity(float alt) { return GetAirDensity(GetTemperature(alt),GetPressure(alt)); }
+
 
     public static Vector2 SimpleCoefficients(float alpha,float maxCl,float minCd,float maxCd)
     {

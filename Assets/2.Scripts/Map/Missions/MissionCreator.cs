@@ -78,16 +78,20 @@ public class MissionCreator : MonoBehaviour
             squadPos = mapData.RealMapPosition(squadPos);
             //Create the new squad
             Game.Team team = ally.isOn ? Game.Team.Ally : Game.Team.Axis;
-            squad = new Game.Squadron(aircraft.SelectedCard, team, 1,lastDifficulty * 100f, false);
+            squad = new Game.Squadron(aircraft.SelectedCard, team, 1, lastDifficulty * 100f, false);
             squad.startPosition.y = lastAltitude;
             squad.startHeading = lastHeading;
             squadrons.Add(squad);
+
+            texture.Reset(texture.SelectedName);
 
             //Create the squadron game icon
             SquadronOnMap icon = Instantiate(squadronIcon, Input.mousePosition, Quaternion.identity, mapData.transform);
             icon.Create(squad);
         }
     }
+
+
     public void LoadValues(Game.Squadron toLoad)
     {
         squadPos = new Vector2(toLoad.startPosition.x, toLoad.startPosition.z);
@@ -104,7 +108,7 @@ public class MissionCreator : MonoBehaviour
     public void Confirm(float heading, float altitude, float difficulty, int id)
     {
         squad = squadrons.Find(x => x.hiddenId == id);
-        squad.startPosition = new Vector3(squadPos.x,altitude,squadPos.y);
+        squad.startPosition = new Vector3(squadPos.x, altitude, squadPos.y);
         squad.startHeading = heading;
         squad.difficulty = difficulty;
         squad.amount = Mathf.Min(int.Parse(amount.text), aircraft.SelectedCard.formation.aircraftPositions.Length);

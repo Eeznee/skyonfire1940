@@ -7,34 +7,49 @@ using UnityEditor.SceneManagement;
 
 public class SofObject : MonoBehaviour
 {
+    public virtual int DefaultLayer() { return 0; }
     //References
-    public bool warOnly;
-    public ObjectData data;
-    public AVM avm;
-    public CrewMember[] crew = new CrewMember[1];
+    public Transform tr;
+    public Rigidbody rb;
 
-    public Vector3 viewPoint = new Vector3(0, 3f, -15f);
+    public SofComplex complex;
+    public SofAircraft aircraft;
+    public SofDebris debris;
+    public SofSimple simpleDamage;
+
+    public bool warOnly;
 
     public bool destroyed = false;
     public bool burning = false;
 
-
-
     private void Start()
     {
+        if (warOnly && !GameManager.war) Destroy(gameObject);
         Initialize();
     }
-    public virtual void Initialize()
+    public virtual void SetReferences()
     {
-        avm = GetComponentInChildren<AVM>();
-        data = this.GetCreateComponent<ObjectData>();
-        data.Initialize(true);
-        if (warOnly && !GameManager.war) { Destroy(gameObject); return; }
+        tr = transform;
+
+        simpleDamage = GetComponent<SofSimple>();
+        complex = GetComponent<SofComplex>();
+        debris = GetComponent<SofDebris>();
+        aircraft = GetComponent<SofAircraft>();
+        if (Application.isPlaying)
+        {
+            gameObject.layer = complex ? 9 : 0;
+            rb = tr.IsChildOf(GameManager.gm.mapRb.transform) ? GameManager.gm.mapRb : this.GetCreateComponent<Rigidbody>();
+        }
+    }
+    protected virtual void Initialize()
+    {
+        SetReferences();
+
         GameManager.sofObjects.Add(this);
     }
     public virtual void Explosion(Vector3 center, float tnt)
     {
-
+        if (simpleDamage) simpleDamage.Explosion(center, tnt);
     }
 }
 
@@ -48,9 +63,8 @@ public class SofObjectEditor : Editor
 
         SofObject sofObj = (SofObject)target;
 
-        sofObj.viewPoint = EditorGUILayout.Vector3Field("External Camera ViewPoint", sofObj.viewPoint);
-        SerializedProperty crew = serializedObject.FindProperty("crew");
-        EditorGUILayout.PropertyField(crew, true);
+
+        if (!sofObj.aircraft) sofObj.warOnly = EditorGUILayout.Toggle("War Only", sofObj.warOnly);
 
         if (GUI.changed)
         {

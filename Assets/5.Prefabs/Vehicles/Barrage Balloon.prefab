@@ -219,6 +219,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3263896319938324394}
   - component: {fileID: 7353508329270253506}
+  - component: {fileID: 8436871545180137137}
   m_Layer: 0
   m_Name: Barrage Balloon
   m_TagString: Untagged
@@ -254,14 +255,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24bbc383c752bb244861b3a035bdffcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  warOnly: 0
-  data: {fileID: 0}
-  avm: {fileID: 0}
-  crew:
-  - {fileID: 0}
-  viewPoint: {x: 0, y: 3, z: -15}
-  destroyed: 0
-  burning: 0
   radius: 5
   tntHp: 20
   bulletAffected: 1
@@ -270,6 +263,27 @@ MonoBehaviour:
   lifeTime: 15
   intactVersion: {fileID: 5555149318712443111}
   destroyedVersion: {fileID: 1150680662224828617}
+--- !u!114 &8436871545180137137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3263896319938324395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71f002fb4bf6f6a45bf0244d53ac6230, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tr: {fileID: 0}
+  rb: {fileID: 0}
+  complex: {fileID: 0}
+  aircraft: {fileID: 0}
+  debris: {fileID: 0}
+  simpleDamage: {fileID: 0}
+  warOnly: 0
+  destroyed: 0
+  burning: 0
 --- !u!1 &3524222497549007059
 GameObject:
   m_ObjectHideFlags: 0
@@ -5235,7 +5249,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7475395677871127020}
-  - component: {fileID: 7921508344708405354}
   - component: {fileID: 6325957917765105548}
   m_Layer: 0
   m_Name: Intact
@@ -5261,21 +5274,6 @@ Transform:
   m_Father: {fileID: 3263896319938324394}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7921508344708405354
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5555149318712443111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b787e102b5bd7d047b9ace1b7036726d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxRange: 1000
-  concerned:
-  - {fileID: 3524222497549007059}
 --- !u!64 &6325957917765105548
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -5300,7 +5298,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4741495217273014315}
   - component: {fileID: 7709361387834998514}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Metal Rope Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5328,7 +5326,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5701209898475176772}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2

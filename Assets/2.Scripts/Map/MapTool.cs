@@ -9,12 +9,16 @@ public class MapTool : MonoBehaviour
     GameManager gm;
     public Airfield[] airfields;
     public float spaceBetweenPoints = 5;
-    public Array[] heightMap;
+    public HeightArrayShort[] heightMap;
     public int xLength;
     public int zLength;
 
     const float maxAltitude = 1000f;
 
+    public float RelativeHeight(Vector3 point)
+    {
+        return point.y - HeightAtPoint(point);
+    }
     public float HeightAtPoint(Vector3 point)
     {
         if (!gm) gm = GetComponent<GameManager>();
@@ -33,12 +37,12 @@ public class MapTool : MonoBehaviour
 
         xLength = Mathf.RoundToInt(scale.x / spaceBetweenPoints);
         zLength = Mathf.RoundToInt(scale.z / spaceBetweenPoints);
-        heightMap = new Array[xLength];
+        heightMap = new HeightArrayShort[xLength];
 
         int mask = LayerMask.GetMask("Terrain");
         for (int x = 0; x < xLength; x++)
         {
-            heightMap[x] = new Array(new short[zLength]);
+            heightMap[x] = new HeightArrayShort(new short[zLength]);
             pos.z = transform.position.z;
             for (int z = 0; z < zLength; z++)
             {

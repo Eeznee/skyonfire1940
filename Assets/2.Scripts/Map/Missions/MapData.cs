@@ -14,7 +14,7 @@ public class MapData : MonoBehaviour
     public float winterOffset = 10f;
 
     public float maxHeight = 300f;
-    public Array[] heightMap;
+    public HeightArrayShort[] heightMap;
     
     public string assignedScene = "Map";
     public float upRef = 1000;
@@ -42,10 +42,10 @@ public class MapData : MonoBehaviour
 
 
 [System.Serializable]
-public class Array
+public class HeightArrayShort
 {
     public short[] array;
-    public Array(short[] a)
+    public HeightArrayShort(short[] a)
     {
         array = a;
     }

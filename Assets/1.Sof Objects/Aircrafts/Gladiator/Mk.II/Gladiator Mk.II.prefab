@@ -27,6 +27,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1482645828760619528}
   m_RootOrder: 6
@@ -42,6 +43,7 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 0
   m_DynamicOccludee: 0
+  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -158,6 +160,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1482645828760619528}
   m_RootOrder: 4
@@ -173,6 +176,7 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 0
   m_DynamicOccludee: 0
+  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -288,66 +292,11 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
   m_LocalPosition: {x: -0, y: -0.005, z: 0.209}
   m_LocalScale: {x: 1.4, y: 1, z: 2.2}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7718599313678801013}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
---- !u!1 &497435547342909258
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3963744506601548443}
-  - component: {fileID: 9172685269695492347}
-  m_Layer: 9
-  m_Name: Material Switcher
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3963744506601548443
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 497435547342909258}
-  m_LocalRotation: {x: 0.020855203, y: -0, z: -0, w: 0.99978256}
-  m_LocalPosition: {x: 0, y: -0.06135522, z: -0.04511701}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4738799802366732677}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &9172685269695492347
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 497435547342909258}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6548bdbaf043ca54a82c6a3d2262ea44, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
-  aircraft: {fileID: 0}
-  data: {fileID: 0}
-  tr: {fileID: 0}
-  materialSwitchers:
-  - lightMat: {fileID: 2100000, guid: 790196f0ae7fbc241940be90f0f78cb7, type: 2}
-    defaultMat: {fileID: 2100000, guid: c75377dff47c04945bbf915c2b74323d, type: 2}
-  - lightMat: {fileID: 2100000, guid: b033489d117c0ca4b8f58f5eec9da25b, type: 2}
-    defaultMat: {fileID: 2100000, guid: 1c12d722dc86ffe4d9142fd0c148fa49, type: 2}
-  overriders: []
 --- !u!1 &544597287910831183
 GameObject:
   m_ObjectHideFlags: 0
@@ -360,7 +309,7 @@ GameObject:
   - component: {fileID: 7554180881795212453}
   - component: {fileID: 7969040834121658828}
   - component: {fileID: 8128784344673036987}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Throttle Lever
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -377,9 +326,9 @@ Transform:
   m_LocalRotation: {x: -0.17364825, y: 0, z: 0, w: 0.9848078}
   m_LocalPosition: {x: -0.4173, y: 0.2022, z: -0.8995}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4606073384934696502}
-  - {fileID: 3329172193080275070}
   m_Father: {fileID: 4606079415209628873}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: -20, y: 0, z: 0}
@@ -402,6 +351,7 @@ MeshRenderer:
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -444,16 +394,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76f154398d001554884e6f17904f0f92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
-  aircraft: {fileID: 0}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  tr: {fileID: 9105598347485920264}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
+  complex: {fileID: 6795371269953406097}
+  aircraft: {fileID: 6795371269953406097}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   xrGrab: {fileID: 0}
   grip: {fileID: 4285704739909335246}
   outline: {fileID: 0}
+  colliders: []
   indexSelect: 0
   animationTime: 0
   switchInput: 0
@@ -495,6 +446,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8599845104496506997}
   m_RootOrder: 5
@@ -511,23 +463,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfac95405a6734e41afe8e2a4d0079fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 2106347413659888618}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 0
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: 45acaca3a30e10a4f9b4fd89eccd3c1f, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
+  liquid: {fileID: 11400000, guid: 217f20f386632244287e0ed253fc03d7, type: 2}
   capacity: 31
-  currentAmount: 31
-  escapeSpeed: 2
-  leakEffect: {fileID: 1273915125232972, guid: 2acdd3a6fc233d74491896c3473b38fa, type: 3}
 --- !u!64 &6353885915592781399
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -568,6 +517,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0.03053853, w: 0.9995336}
   m_LocalPosition: {x: 0.076376915, y: 0.010680784, z: 0.24400014}
   m_LocalScale: {x: 1.17, y: 1, z: 1.73}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7276279027922493657}
   m_RootOrder: 1
@@ -603,6 +553,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.2, y: 0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6221060865902987982}
   - {fileID: 38112557200936166}
@@ -628,6 +579,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -670,38 +622,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b67cb6eb98d4e24f82fddd31e3c7a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 8873083521198679475}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 38112557200936166}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 17.069605
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 1.7619791
-  foil: {fileID: 0}
+  foil: {fileID: 11400000, guid: 19730dc22f186e44bbb3d08c34e14aed, type: 2}
   vital: 0
   ripOnRip:
   - {fileID: 4759302234386480326}
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 0
   shapeTr: {fileID: 38112557200936166}
   angle: -3.6
   tipWidth: 74.1
   split: 0
   splitFraction: 0.547
-  oswald: 0.75
+  oswald: 0.4
   skin: {fileID: 0}
   skinMesh: {fileID: -1605946535113029235, guid: a11e16f04e854074d8ec974d18b5eb97,
     type: 3}
   parent: {fileID: 5583439933106545125}
   child: {fileID: 0}
   root: {fileID: 4957704736477287453}
-  totalArea: 9.595333
+  totalArea: 7.9553785
   alpha: 0
 --- !u!64 &666124668894684372
 MeshCollider:
@@ -757,6 +708,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0.01745245, w: 0.99984777}
   m_LocalPosition: {x: 0, y: 0, z: -0.09}
   m_LocalScale: {x: 1.42, y: 1, z: 0.29}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6809955198809278691}
   m_RootOrder: 0
@@ -791,6 +743,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 1.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7732750328845277581}
   m_Father: {fileID: 7732750328516757722}
@@ -815,6 +768,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -857,24 +811,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcb6fa826d4843f4e9b1ae661405ec67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
-  aircraft: {fileID: 0}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  tr: {fileID: 4048494487401377252}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
+  complex: {fileID: 6795371269953406097}
+  aircraft: {fileID: 6795371269953406097}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 17.555828
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: b1e93b7e4c814ae4cb2589b6ed5b8492, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 1.7952819
   foil: {fileID: 0}
   vital: 0
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
   bounds:
     m_Center: {x: -0.019631207, y: 0.00051379204, z: 0.0018873364}
     m_Extent: {x: 0.64114755, y: 0.63140714, z: 0.35269248}
@@ -924,6 +876,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0.01745245, w: 0.99984777}
   m_LocalPosition: {x: 0, y: 0, z: -0.09}
   m_LocalScale: {x: -1.42, y: 1, z: 0.29}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4970812785980632353}
   m_RootOrder: 0
@@ -959,6 +912,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2344535810739773417}
   - {fileID: 3170569341769105332}
@@ -991,6 +945,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -1033,24 +988,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f1f9cce42d03ed4982e5affc093be7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 8599845104496506997}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 194.94576
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: b1e93b7e4c814ae4cb2589b6ed5b8492, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 8.93568
-  foil: {fileID: 11400000, guid: 1996fe93cfaa23d46afce3f1929150ce, type: 2}
+  foil: {fileID: 0}
   vital: 0
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
   bounds:
     m_Center: {x: 0, y: 0.05510828, z: -0.8913934}
     m_Extent: {x: 0.55708253, y: 0.68880236, z: 1.7930386}
@@ -1059,7 +1012,6 @@ MonoBehaviour:
   drag: 1
   maxSpeed: 0
   maxDrag: 0.2
-  oldCd: 0.0163
   cd: 0.009
   linkedFuselages:
   - {fileID: 4336532724645449776}
@@ -1107,7 +1059,6 @@ GameObject:
   - component: {fileID: 9066731577487772363}
   - component: {fileID: 3084702164610784996}
   - component: {fileID: 2871540936045023254}
-  - component: {fileID: 5525414959404735969}
   m_Layer: 9
   m_Name: Left Wheel
   m_TagString: Untagged
@@ -1125,6 +1076,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.4, y: -0.531, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7053740307786655380}
   m_RootOrder: 0
@@ -1148,6 +1100,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -1156,7 +1109,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b033489d117c0ca4b8f58f5eec9da25b, type: 2}
+  - {fileID: 2100000, guid: 1c12d722dc86ffe4d9142fd0c148fa49, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1190,42 +1143,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f43d084841dafaf4986cee4bcacdae6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 2109456978174804195}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 20.440998
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: cdd18122447819d4d915d0dc54513d25, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
-  brake: 1
-  splitBraking: 0
+  diameter: 0.6
+  brakeMode: 1
   brakeTorque: 1000
   steering: 0
   maxSteerAngle: 30
-  maxSteerSpeed: 16.666668
   brakeEffect: {fileID: 7655424896359560631, guid: 6efd7676860922d4b844dd8a21ba3cb0,
     type: 3}
   wheel: {fileID: 8607402389080308482}
---- !u!64 &5525414959404735969
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 973262181408411443}
-  m_Material: {fileID: 13400000, guid: 52baaeb214519f347a35cf0edfd262ff, type: 2}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 3208454407042794713, guid: a11e16f04e854074d8ec974d18b5eb97, type: 3}
 --- !u!1 &1069575652420136778
 GameObject:
   m_ObjectHideFlags: 0
@@ -1252,6 +1189,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -0.521, z: -1.015}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3170569341769105332}
   m_RootOrder: 1
@@ -1282,6 +1220,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0.030538758, w: 0.9995336}
   m_LocalPosition: {x: 0.06142831, y: -0.015494488, z: 0.19999981}
   m_LocalScale: {x: 1.17, y: 1, z: 1.73}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5103180145144409173}
   m_RootOrder: 1
@@ -1312,6 +1251,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0.030538492, w: -0.9995336}
   m_LocalPosition: {x: -0.076376915, y: 0.010679815, z: 0.24399981}
   m_LocalScale: {x: -1.17, y: 1, z: 1.73}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6516489787954382120}
   m_RootOrder: 1
@@ -1342,6 +1282,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: -0.01745245, w: 0.99984777}
   m_LocalPosition: {x: 0.254, y: 0, z: 0.244}
   m_LocalScale: {x: -1.62, y: 1, z: 1.73}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7404608693423545380}
   m_RootOrder: 2
@@ -1374,6 +1315,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.5238, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8229356754887879907}
   m_RootOrder: 0
@@ -1444,6 +1386,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.6, y: -0.02, z: -0.65000004}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1121398292113064767}
   m_Father: {fileID: 7276279027922493657}
@@ -1468,6 +1411,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -1510,28 +1454,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce8cef36737450646b64ce4a2fa71133, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 8399377932782600445}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 4.525014
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 0.8415001
-  foil: {fileID: 0}
+  foil: {fileID: 11400000, guid: 19730dc22f186e44bbb3d08c34e14aed, type: 2}
   vital: 0
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 0
   shapeTr: {fileID: 1121398292113064767}
   angle: 0
   tipWidth: 100
-  type: 0
+  type: 1
   controlState: 0
   controlAngle: 0
   sinControlAngle: 0
@@ -1579,6 +1522,7 @@ Transform:
   m_LocalRotation: {x: -0.22377494, y: 0.00000008940698, z: 0.000000022351745, w: 0.97464085}
   m_LocalPosition: {x: -0.25, y: 0.1863, z: -0.1639}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1894901660834903577}
   m_RootOrder: 1
@@ -1621,6 +1565,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0.031410925, w: -0.9995066}
   m_LocalPosition: {x: -0.023987293, y: -0.023382433, z: 0.24399993}
   m_LocalScale: {x: -1.54, y: 1, z: 1.73}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1482645828760619528}
   m_RootOrder: 2
@@ -1651,6 +1596,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 277811494060460030}
   m_RootOrder: 1
@@ -1681,6 +1627,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.2, y: -0, z: 0.138}
   m_LocalScale: {x: -1.6, y: 1, z: 1.47}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8597139436129681535}
   m_RootOrder: 1
@@ -1712,6 +1659,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2035427740012139659}
   m_RootOrder: 4
@@ -1727,6 +1675,7 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 0
   m_DynamicOccludee: 0
+  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -1846,6 +1795,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 555433996093405917}
   m_Father: {fileID: 8597139436129681535}
@@ -1870,6 +1820,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -1912,28 +1863,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce8cef36737450646b64ce4a2fa71133, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 4294451407995247059}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 6.8830576
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 1.1129999
   foil: {fileID: 11400000, guid: f5724e23a811f5d428dbd6453b850c24, type: 2}
   vital: 0
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 0
   shapeTr: {fileID: 555433996093405917}
   angle: 0
   tipWidth: 100
-  type: 0
+  type: 1
   controlState: 0
   controlAngle: 0
   sinControlAngle: 0
@@ -1981,6 +1931,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.489, y: -0.07400001, z: -0.034}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8107530268505573527}
   - {fileID: 5112072449828392450}
@@ -1999,31 +1950,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ae16e75984dd9147939b5b512f648c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
-  aircraft: {fileID: 0}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  tr: {fileID: 339324973072481191}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
+  complex: {fileID: 6795371269953406097}
+  aircraft: {fileID: 6795371269953406097}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 14
   controller: 1
   ejection: {fileID: 5112072449828392450}
   muzzleEffects: {fileID: 0}
   bulletSpawn: {fileID: 8107530268505573527}
+  magazineAttachPoint: {fileID: 0}
   gunPreset: {fileID: 11400000, guid: 781f5ecaeacb86e48ad8424221819bfe, type: 2}
   magStorage: {fileID: 0}
   magazine: {fileID: 0}
   clipAmmo: 600
-  magazineLocalPos: {x: 0, y: 0, z: 0}
   bolt: {fileID: 0}
   noConvergeance: 0
+  mechanism: {fileID: 0}
   temperature: 0
   clips: 0
   fuzeDistance: 0
   reloading: 0
-  cycleState: 1
-  chambered: 0
 --- !u!1 &1718220909871440403
 GameObject:
   m_ObjectHideFlags: 0
@@ -2051,6 +2001,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 656057182248926254}
   m_RootOrder: 3
@@ -2066,6 +2017,7 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 0
   m_DynamicOccludee: 0
+  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -2185,6 +2137,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.6999999, z: -0.19999985}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7082472746563344243}
   - {fileID: 4441313835989028361}
@@ -2213,6 +2166,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -2255,28 +2209,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d84636798da6bfc4eb6d4bfe6d358f32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 7718599313678801013}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 7477530567787349893}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 20.313574
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: 5280c4897e67a2b4f98944da4f8e9f7a, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 2.2899804
   foil: {fileID: 11400000, guid: 42e6c20f87f02db4cb7c510aabee947a, type: 2}
   vital: 0
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 1
   shapeTr: {fileID: 7477530567787349893}
   angle: -23.4
   tipWidth: 48.7
-  rudder: 1
 --- !u!64 &8081937710911446419
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2319,6 +2271,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.043, y: 0.1933, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9105598347485920264}
   m_RootOrder: 0
@@ -2385,6 +2338,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0, z: 1.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3170569341769105332}
   m_RootOrder: 0
@@ -2416,6 +2370,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.293, z: -0.18}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4420436512597225161}
   m_RootOrder: 1
@@ -2476,6 +2431,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0.030538544, w: 0.99953365}
   m_LocalPosition: {x: 0.009, y: -0.002, z: -0.074}
   m_LocalScale: {x: 2, y: 1, z: 0.45}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4406212195417606363}
   m_RootOrder: 0
@@ -2510,6 +2466,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.70000005, y: -0.24999999, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2109456978174804195}
   - {fileID: 734888437598898648}
@@ -2535,6 +2492,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -2543,7 +2501,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b033489d117c0ca4b8f58f5eec9da25b, type: 2}
+  - {fileID: 2100000, guid: 1c12d722dc86ffe4d9142fd0c148fa49, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2574,27 +2532,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 2088050141759685740}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48465413cba81b44fb6fedb2767c6f91, type: 3}
+  m_Script: {fileID: 11500000, guid: ca377d44eabe6804c9f9153ea958e762, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
-  aircraft: {fileID: 0}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  tr: {fileID: 7053740307786655380}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
+  complex: {fileID: 6795371269953406097}
+  aircraft: {fileID: 6795371269953406097}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 0.864997
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: b1e93b7e4c814ae4cb2589b6ed5b8492, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 0.2412838
   foil: {fileID: 0}
   vital: 0
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
   bounds:
     m_Center: {x: 0.045288637, y: 0.03307748, z: -0.028334945}
     m_Extent: {x: 0.28912973, y: 0.53190684, z: 0.11340515}
@@ -2647,6 +2603,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.8, y: 0.012999922, z: -0.19999972}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4294451407995247059}
   - {fileID: 3279850653709251564}
@@ -2672,6 +2629,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -2714,28 +2672,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d84636798da6bfc4eb6d4bfe6d358f32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 8597139436129681535}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 3279850653709251564}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 15.988646
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: 5280c4897e67a2b4f98944da4f8e9f7a, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 1.9521598
   foil: {fileID: 11400000, guid: f5724e23a811f5d428dbd6453b850c24, type: 2}
   vital: 0
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 0
   shapeTr: {fileID: 3279850653709251564}
   angle: -5.8
   tipWidth: 66
-  rudder: 0
 --- !u!64 &5402624599853128403
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2777,6 +2733,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.4, y: -0.395, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7053740307786655380}
   m_RootOrder: 1
@@ -2840,6 +2797,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7563614455930787765}
   - {fileID: 4606079415209628873}
@@ -2868,6 +2826,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -2910,20 +2869,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9118bcd8cc20edb49a65c305ebd40108, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
-  aircraft: {fileID: 0}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  tr: {fileID: 2344535810739773417}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
+  complex: {fileID: 6795371269953406097}
+  aircraft: {fileID: 6795371269953406097}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   complexCockpit: {fileID: 6706133324079017809}
-  noCockpitGlass: {fileID: 2100000, guid: 08c3cb5fe43a6af4584c792349da0ad6, type: 2}
-  glass:
-  - {fileID: 977654828016965961}
-  - {fileID: 8890249012054285457}
-  internals:
-  - {fileID: 4154380881952262124}
 --- !u!1 &2245482602523249483
 GameObject:
   m_ObjectHideFlags: 0
@@ -2950,6 +2903,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.15, y: -0, z: -0.071}
   m_LocalScale: {x: 1.59, y: 1, z: 0.7}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6618333666996204302}
   m_RootOrder: 0
@@ -2985,6 +2939,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -1.3, y: 0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6516489787954382120}
   - {fileID: 6513763260965042580}
@@ -3019,6 +2974,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -3061,40 +3017,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b67cb6eb98d4e24f82fddd31e3c7a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 1482645828760619528}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 1127916206551126566}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 31.73748
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 2.6641994
-  foil: {fileID: 0}
+  foil: {fileID: 11400000, guid: 19730dc22f186e44bbb3d08c34e14aed, type: 2}
   vital: 1
   ripOnRip:
   - {fileID: 7740569824078787057}
   - {fileID: 2521111954096670307}
   - {fileID: 2947331222920919564}
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 0
   shapeTr: {fileID: 1127916206551126566}
   angle: 0
   tipWidth: 100
   split: 0
   splitFraction: 0.32
-  oswald: 0.75
+  oswald: 0.4
   skin: {fileID: 0}
   skinMesh: {fileID: 6875184601837728966, guid: a11e16f04e854074d8ec974d18b5eb97,
     type: 3}
   parent: {fileID: 3862669380175756608}
   child: {fileID: 5680453361475038964}
   root: {fileID: 3862669380175756608}
-  totalArea: 9.595333
+  totalArea: 7.2287784
   alpha: 0
 --- !u!64 &4611942977877043660
 MeshCollider:
@@ -3155,6 +3110,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.2, y: 0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4406212195417606363}
   - {fileID: 3358940704378955242}
@@ -3180,6 +3136,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -3222,38 +3179,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b67cb6eb98d4e24f82fddd31e3c7a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 5103180145144409173}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 3358940704378955242}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 17.069605
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 1.7619791
-  foil: {fileID: 0}
+  foil: {fileID: 11400000, guid: 19730dc22f186e44bbb3d08c34e14aed, type: 2}
   vital: 0
   ripOnRip:
   - {fileID: 4410059896856562475}
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 0
   shapeTr: {fileID: 3358940704378955242}
   angle: -3.6
   tipWidth: 74.1
   split: 0
   splitFraction: 0.5
-  oswald: 0.75
+  oswald: 0.4
   skin: {fileID: 0}
   skinMesh: {fileID: -876445968468629847, guid: a11e16f04e854074d8ec974d18b5eb97,
     type: 3}
   parent: {fileID: 6897257230962092665}
   child: {fileID: 0}
   root: {fileID: 8865297909859733980}
-  totalArea: 9.595333
+  totalArea: 7.9553785
   alpha: 0
 --- !u!64 &6383144571566731905
 MeshCollider:
@@ -3309,6 +3265,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -0.74999994, z: 0.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4017364950192929790}
   - {fileID: 7053740307786655380}
@@ -3341,6 +3298,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0.031411234, w: 0.99950653}
   m_LocalPosition: {x: 0.023987293, y: -0.023381934, z: 0.24400018}
   m_LocalScale: {x: 1.54, y: 1, z: 1.73}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2035427740012139659}
   m_RootOrder: 2
@@ -3376,6 +3334,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -1.7, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7521009997192460279}
   - {fileID: 8315808796122755343}
@@ -3401,6 +3360,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -3443,24 +3403,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b67cb6eb98d4e24f82fddd31e3c7a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 7906101431848989394}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 8315808796122755343}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 57.927288
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 3.9789996
   foil: {fileID: 11400000, guid: 19730dc22f186e44bbb3d08c34e14aed, type: 2}
   vital: 1
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 0
   shapeTr: {fileID: 8315808796122755343}
   angle: 0
   tipWidth: 100
@@ -3473,7 +3432,7 @@ MonoBehaviour:
   parent: {fileID: 0}
   child: {fileID: 5583439933106545125}
   root: {fileID: 4957704736477287453}
-  totalArea: 9.595333
+  totalArea: 7.9553785
   alpha: 0
 --- !u!64 &1446224547053329391
 MeshCollider:
@@ -3534,6 +3493,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.3, y: 0.050000098, z: -0.000000016763806}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8399377932782600445}
   - {fileID: 6528213002312898273}
@@ -3559,6 +3519,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -3601,38 +3562,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b67cb6eb98d4e24f82fddd31e3c7a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 7276279027922493657}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 6528213002312898273}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 17.0696
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 1.7619786
-  foil: {fileID: 0}
+  foil: {fileID: 11400000, guid: 19730dc22f186e44bbb3d08c34e14aed, type: 2}
   vital: 0
   ripOnRip:
   - {fileID: 2855146946634628553}
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 0
   shapeTr: {fileID: 6528213002312898273}
   angle: -3.6
   tipWidth: 74.1
   split: 0
   splitFraction: 0.5
-  oswald: 0.75
+  oswald: 0.4
   skin: {fileID: 0}
   skinMesh: {fileID: -7237175056610792135, guid: a11e16f04e854074d8ec974d18b5eb97,
     type: 3}
   parent: {fileID: 576187449850319068}
   child: {fileID: 0}
   root: {fileID: 8041740409355677518}
-  totalArea: 9.595333
+  totalArea: 7.2287793
   alpha: 0
 --- !u!64 &5878409366552799973
 MeshCollider:
@@ -3690,6 +3650,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7438089653902806004}
   m_RootOrder: 0
@@ -3713,6 +3674,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -3770,6 +3732,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.78, y: 0.8999999, z: 0.39999998}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2035427740012139659}
   m_RootOrder: 5
@@ -3785,6 +3748,7 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 0
   m_DynamicOccludee: 0
+  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -3902,6 +3866,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8599845104496506997}
   m_RootOrder: 3
@@ -3918,24 +3883,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6d4a8af8b3ea7441932ff1dd2eb73e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 4583071339481461009}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 0
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: db30bb86e36dcbb4ea931db5056b7de1, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
+  liquid: {fileID: 11400000, guid: b43c9aa9f703d61489aaa164d6f9cd40, type: 2}
   capacity: 245
-  currentAmount: 245
-  escapeSpeed: 2
-  leakEffect: {fileID: 1533138625715334, guid: 509cd9dd9ae839b4f8267bee14d29fe6, type: 3}
-  symmetry: {fileID: 0}
   selfSealing: 1
 --- !u!64 &3262956072541287104
 MeshCollider:
@@ -3981,6 +3942,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -1.1000003, y: -0.05, z: -0.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1106614549931703595}
   m_Father: {fileID: 5871615919230222243}
@@ -4005,6 +3967,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -4047,24 +4010,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c61e93478feb854ca8724e7559cd051, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 6809955198809278691}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 1.9286426
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 0.41179994
   foil: {fileID: 11400000, guid: 19730dc22f186e44bbb3d08c34e14aed, type: 2}
   vital: 0
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 0
   shapeTr: {fileID: 1106614549931703595}
   angle: 0
   tipWidth: 100
@@ -4110,6 +4072,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2035427740012139659}
   m_RootOrder: 6
@@ -4125,6 +4088,7 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 0
   m_DynamicOccludee: 0
+  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -4240,6 +4204,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.2, y: -0, z: 0.138}
   m_LocalScale: {x: 1.6, y: 1, z: 1.47}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2895003419501398407}
   m_RootOrder: 1
@@ -4274,6 +4239,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.6, y: -0.05, z: -0.70000005}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8205781212932842351}
   m_Father: {fileID: 5103180145144409173}
@@ -4298,6 +4264,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -4340,28 +4307,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce8cef36737450646b64ce4a2fa71133, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 4406212195417606363}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 6.2314105
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 0.90000033
-  foil: {fileID: 0}
+  foil: {fileID: 11400000, guid: 19730dc22f186e44bbb3d08c34e14aed, type: 2}
   vital: 0
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 0
   shapeTr: {fileID: 8205781212932842351}
   angle: 0
   tipWidth: 100
-  type: 0
+  type: 1
   controlState: 0
   controlAngle: 0
   sinControlAngle: 0
@@ -4409,6 +4375,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1482645828760619528}
   m_RootOrder: 3
@@ -4424,6 +4391,7 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 0
   m_DynamicOccludee: 0
+  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -4539,6 +4507,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.000000029802322, z: 1.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 339324973072481191}
   m_RootOrder: 0
@@ -4573,6 +4542,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -3.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7043142175645803413}
   - {fileID: 3227349019609342026}
@@ -4598,6 +4568,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -4640,24 +4611,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19cf394275fd6aa4080fa856dc349359, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 277811494060460030}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 34.446236
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: b1e93b7e4c814ae4cb2589b6ed5b8492, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 3.2563825
   foil: {fileID: 0}
   vital: 1
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
   bounds:
     m_Center: {x: 0, y: 0.12329227, z: 0.0058285}
     m_Extent: {x: 0.48024723, y: 0.6667862, z: 0.7097403}
@@ -4710,6 +4679,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.0000002, y: -0.1, z: -0.75}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 299748340004900747}
   m_Father: {fileID: 1482645828760619528}
@@ -4734,6 +4704,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -4776,24 +4747,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c61e93478feb854ca8724e7559cd051, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 6513763260965042580}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 1.6650038
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 0.4321001
   foil: {fileID: 11400000, guid: 19730dc22f186e44bbb3d08c34e14aed, type: 2}
   vital: 0
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 0
   shapeTr: {fileID: 299748340004900747}
   angle: 0
   tipWidth: 100
@@ -4839,6 +4809,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.1399999, z: -1.3249999}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3424400346929713783}
   - {fileID: 7238685271970716975}
@@ -4857,13 +4828,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbab4d51ce040644c804042df3e96fef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 7563614455930787765}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 7563614455930787765}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
+  externalViewPoint: {x: 0, y: 2, z: -12}
+  goProViewPoint: {x: 1, y: 0, z: 0}
   audioCockpitRatio: 0.9
   headLookDirection: {x: 0, y: 0.19080894, z: 0.9816272}
   defaultPOV: {fileID: 3424400346929713783}
@@ -4882,8 +4855,8 @@ MonoBehaviour:
     top: 1
     bottom: 0
   reloadableGuns: []
-  magStock: {fileID: 0}
   magTrash: {fileID: 0}
+  localDirection: {x: 0, y: 0, z: 1}
   target: {fileID: 0}
 --- !u!1 &4031257942925510699
 GameObject:
@@ -4914,6 +4887,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.2, z: -0.545}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 72287154962725455}
   - {fileID: 8544618749066752820}
@@ -4939,6 +4913,7 @@ MeshRenderer:
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -5013,6 +4988,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2656119874584657505}
   m_RootOrder: 0
@@ -5029,32 +5005,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14169b05039809848ad134040791c942, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
-  aircraft: {fileID: 0}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  tr: {fileID: 8517498936593911478}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
+  complex: {fileID: 6795371269953406097}
+  aircraft: {fileID: 6795371269953406097}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
+  control: 2
   animParameter: FlapsState
   binary: 0
   loweringTime: 5
   retractingTime: 5
   defaultState: 0
+  essentialParts:
+  - {fileID: 743814551296313049}
+  - {fileID: 7740569824078787057}
+  - {fileID: 4580770419273888917}
+  - {fileID: 4491152728689807141}
   clip: {fileID: 8300000, guid: e80042b774037884590814f9d4fcf269, type: 3}
   extendedLockClip: {fileID: 0}
   retractedLockClip: {fileID: 0}
   extendOnly: 0
   volume: 0.3
   pitch: 0.9
-  disabled: 0
-  state: 0
-  stateInput: 0
-  essentialParts:
-  - {fileID: 743814551296313049}
-  - {fileID: 7740569824078787057}
-  - {fileID: 4580770419273888917}
-  - {fileID: 4491152728689807141}
 --- !u!1 &4128428653234384526
 GameObject:
   m_ObjectHideFlags: 0
@@ -5082,6 +5056,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1482645828760619528}
   m_RootOrder: 10
@@ -5097,6 +5072,7 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 0
   m_DynamicOccludee: 0
+  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -5215,6 +5191,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 1.7, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5871615919230222243}
   - {fileID: 3657385754345268756}
@@ -5240,6 +5217,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -5282,24 +5260,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b67cb6eb98d4e24f82fddd31e3c7a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 8384521630285464966}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 3657385754345268756}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 57.927288
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 3.9789996
   foil: {fileID: 11400000, guid: 19730dc22f186e44bbb3d08c34e14aed, type: 2}
   vital: 1
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 0
   shapeTr: {fileID: 3657385754345268756}
   angle: 0
   tipWidth: 100
@@ -5312,7 +5289,7 @@ MonoBehaviour:
   parent: {fileID: 0}
   child: {fileID: 6897257230962092665}
   root: {fileID: 8865297909859733980}
-  totalArea: 9.595333
+  totalArea: 7.9553785
   alpha: 0
 --- !u!64 &2443653661585830844
 MeshCollider:
@@ -5370,6 +5347,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8599845104496506997}
   m_RootOrder: 7
@@ -5386,17 +5364,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3f2670b28284fd4290c309890724945, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 6844550347684657345}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 0
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: e485dc88fb9b31f48b04e678e89f9e4b, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   mainTank: {fileID: 3953774239667772144}
@@ -5442,6 +5419,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5426651768103362739}
   m_RootOrder: 2
@@ -5465,6 +5443,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -5473,7 +5452,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b033489d117c0ca4b8f58f5eec9da25b, type: 2}
+  - {fileID: 2100000, guid: 1c12d722dc86ffe4d9142fd0c148fa49, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5522,6 +5501,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.414, y: -0.033, z: 0.913}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3562094194749324506}
   m_Father: {fileID: 656057182248926254}
@@ -5539,31 +5519,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ae16e75984dd9147939b5b512f648c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
-  aircraft: {fileID: 0}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  tr: {fileID: 7040509898148207775}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
+  complex: {fileID: 6795371269953406097}
+  aircraft: {fileID: 6795371269953406097}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 14
   controller: 1
   ejection: {fileID: 3562094194749324506}
   muzzleEffects: {fileID: 0}
   bulletSpawn: {fileID: 0}
+  magazineAttachPoint: {fileID: 0}
   gunPreset: {fileID: 11400000, guid: 781f5ecaeacb86e48ad8424221819bfe, type: 2}
   magStorage: {fileID: 0}
   magazine: {fileID: 0}
   clipAmmo: 400
-  magazineLocalPos: {x: 0, y: 0, z: 0}
   bolt: {fileID: 0}
   noConvergeance: 0
+  mechanism: {fileID: 0}
   temperature: 0
   clips: 0
   fuzeDistance: 0
   reloading: 0
-  cycleState: 1
-  chambered: 0
 --- !u!1 &4358385082537124193
 GameObject:
   m_ObjectHideFlags: 0
@@ -5590,6 +5569,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: -0.030538544, w: 0.99953365}
   m_LocalPosition: {x: -0.009, y: -0.002, z: -0.074}
   m_LocalScale: {x: -2, y: 1, z: 0.45}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6221060865902987982}
   m_RootOrder: 0
@@ -5624,6 +5604,7 @@ Transform:
   m_LocalRotation: {x: 0.2292004, y: 0, z: 0, w: 0.9733793}
   m_LocalPosition: {x: 0.78, y: 0.9, z: 0.85}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2035427740012139659}
   m_RootOrder: 7
@@ -5647,6 +5628,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -5703,24 +5685,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa0c7436b7c6a3348a853df8cba2a716, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
-  aircraft: {fileID: 0}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  tr: {fileID: 3143380962526516963}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
+  complex: {fileID: 6795371269953406097}
+  aircraft: {fileID: 6795371269953406097}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 10.242648
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: c339e8d8fecb0924ebd4ccbcdae59e31, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 0.17847611
   foil: {fileID: 0}
   vital: 0
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
   bounds:
     m_Center: {x: -0.0018655062, y: -0.07808787, z: 0.008175567}
     m_Extent: {x: 0.021285176, y: 0.8487038, z: 0.0525731}
@@ -5761,6 +5741,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.126, z: -0.934}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7040509898148207775}
   m_RootOrder: 0
@@ -5791,338 +5772,11 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.126, z: -0.934}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5594369012152839260}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &4652633340590794676
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 408128395340515880}
-  - component: {fileID: 3464762997168696871}
-  - component: {fileID: 8610726391794430469}
-  m_Layer: 13
-  m_Name: XR Grab
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &408128395340515880
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4652633340590794676}
-  m_LocalRotation: {x: 0.000000009313224, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5426401, z: 0.009800028}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 8229356754887879907}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3464762997168696871
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4652633340590794676}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ad34abafad169848a38072baa96cdb2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_InteractionManager: {fileID: 0}
-  m_Colliders:
-  - {fileID: 3565608163455227747}
-  m_InteractionLayerMask:
-    serializedVersion: 2
-    m_Bits: 8192
-  m_InteractionLayers:
-    m_Bits: 8192
-  m_SelectMode: 0
-  m_CustomReticle: {fileID: 0}
-  m_FirstHoverEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_LastHoverExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_HoverEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_HoverExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FirstSelectEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_LastSelectExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_SelectEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_SelectExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Activated:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Deactivated:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnFirstHoverEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnLastHoverExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnHoverEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnHoverExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnSelectEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnSelectExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnSelectCanceled:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnActivate:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnDeactivate:
-    m_PersistentCalls:
-      m_Calls: []
-  m_AttachTransform: {fileID: 0}
-  m_AttachEaseInTime: 0
-  m_MovementType: 2
-  m_VelocityDamping: 1
-  m_VelocityScale: 1
-  m_AngularVelocityDamping: 1
-  m_AngularVelocityScale: 1
-  m_TrackPosition: 1
-  m_SmoothPosition: 0
-  m_SmoothPositionAmount: 5
-  m_TightenPosition: 0.5
-  m_TrackRotation: 1
-  m_SmoothRotation: 0
-  m_SmoothRotationAmount: 5
-  m_TightenRotation: 0.5
-  m_ThrowOnDetach: 0
-  m_ThrowSmoothingDuration: 0.25
-  m_ThrowSmoothingCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  m_ThrowVelocityScale: 1.5
-  m_ThrowAngularVelocityScale: 1
-  m_ForceGravityOnDetach: 0
-  m_RetainTransformParent: 1
-  m_AttachPointCompatibilityMode: 0
---- !u!54 &8610726391794430469
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4652633340590794676}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!1 &4659297733010810822
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3329172193080275070}
-  - component: {fileID: 413216840754628513}
-  - component: {fileID: 3648249460032897575}
-  m_Layer: 13
-  m_Name: XR Grab
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3329172193080275070
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4659297733010810822}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.043000013, y: 0.19330001, z: 0.000000028754584}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 9105598347485920264}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &413216840754628513
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4659297733010810822}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!114 &3648249460032897575
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4659297733010810822}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ad34abafad169848a38072baa96cdb2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_InteractionManager: {fileID: 0}
-  m_Colliders:
-  - {fileID: 3765604497476342974}
-  m_InteractionLayerMask:
-    serializedVersion: 2
-    m_Bits: 8192
-  m_InteractionLayers:
-    m_Bits: 8192
-  m_SelectMode: 0
-  m_CustomReticle: {fileID: 0}
-  m_FirstHoverEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_LastHoverExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_HoverEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_HoverExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FirstSelectEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_LastSelectExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_SelectEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_SelectExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Activated:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Deactivated:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnFirstHoverEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnLastHoverExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnHoverEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnHoverExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnSelectEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnSelectExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnSelectCanceled:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnActivate:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnDeactivate:
-    m_PersistentCalls:
-      m_Calls: []
-  m_AttachTransform: {fileID: 0}
-  m_AttachEaseInTime: 0.15
-  m_MovementType: 2
-  m_VelocityDamping: 1
-  m_VelocityScale: 1
-  m_AngularVelocityDamping: 1
-  m_AngularVelocityScale: 1
-  m_TrackPosition: 1
-  m_SmoothPosition: 0
-  m_SmoothPositionAmount: 5
-  m_TightenPosition: 0.5
-  m_TrackRotation: 1
-  m_SmoothRotation: 0
-  m_SmoothRotationAmount: 5
-  m_TightenRotation: 0.5
-  m_ThrowOnDetach: 0
-  m_ThrowSmoothingDuration: 0.25
-  m_ThrowSmoothingCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  m_ThrowVelocityScale: 1.5
-  m_ThrowAngularVelocityScale: 1
-  m_ForceGravityOnDetach: 0
-  m_RetainTransformParent: 1
-  m_AttachPointCompatibilityMode: 0
 --- !u!1 &4791254982369858935
 GameObject:
   m_ObjectHideFlags: 0
@@ -6149,6 +5803,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0.009948241, w: 0.9999505}
   m_LocalPosition: {x: -0.55, y: 0, z: 0.2}
   m_LocalScale: {x: 2.3, y: 1, z: 1.73}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8384521630285464966}
   m_RootOrder: 1
@@ -6184,6 +5839,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -1.3, y: 0.05, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 86324396072859829}
   - {fileID: 2475124202359080272}
@@ -6209,6 +5865,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -6251,38 +5908,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b67cb6eb98d4e24f82fddd31e3c7a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 6516489787954382120}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 2475124202359080272}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 17.0696
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 1.7619786
-  foil: {fileID: 0}
+  foil: {fileID: 11400000, guid: 19730dc22f186e44bbb3d08c34e14aed, type: 2}
   vital: 0
   ripOnRip:
   - {fileID: 2448003060767669263}
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 0
   shapeTr: {fileID: 2475124202359080272}
   angle: -3.6
   tipWidth: 74.1
   split: 0
   splitFraction: 0.5
-  oswald: 0.75
+  oswald: 0.4
   skin: {fileID: 0}
   skinMesh: {fileID: -368534297379139516, guid: a11e16f04e854074d8ec974d18b5eb97,
     type: 3}
   parent: {fileID: 664228770329043945}
   child: {fileID: 0}
   root: {fileID: 3862669380175756608}
-  totalArea: 9.595333
+  totalArea: 7.2287784
   alpha: 0
 --- !u!64 &5250433475502849524
 MeshCollider:
@@ -6340,6 +5996,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8599845104496506997}
   m_RootOrder: 6
@@ -6356,17 +6013,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3f2670b28284fd4290c309890724945, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 401085838770270232}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 0
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: e485dc88fb9b31f48b04e678e89f9e4b, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   mainTank: {fileID: 3953774239667772144}
@@ -6411,6 +6067,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2035427740012139659}
   m_RootOrder: 3
@@ -6426,6 +6083,7 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 0
   m_DynamicOccludee: 0
+  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -6545,6 +6203,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.70000005, y: -0.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6561238441546593000}
   - {fileID: 6935198891783529405}
@@ -6570,6 +6229,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -6578,7 +6238,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b033489d117c0ca4b8f58f5eec9da25b, type: 2}
+  - {fileID: 2100000, guid: 1c12d722dc86ffe4d9142fd0c148fa49, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6609,27 +6269,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 5137976837642250646}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48465413cba81b44fb6fedb2767c6f91, type: 3}
+  m_Script: {fileID: 11500000, guid: ca377d44eabe6804c9f9153ea958e762, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
-  aircraft: {fileID: 0}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  tr: {fileID: 4017364950192929790}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
+  complex: {fileID: 6795371269953406097}
+  aircraft: {fileID: 6795371269953406097}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 0.864997
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: b1e93b7e4c814ae4cb2589b6ed5b8492, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 0.2412838
   foil: {fileID: 0}
   vital: 0
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
   bounds:
     m_Center: {x: -0.045288637, y: 0.03307748, z: -0.028334945}
     m_Extent: {x: 0.28912973, y: 0.53190684, z: 0.11340515}
@@ -6683,6 +6341,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -1.5, y: -0.5500001, z: -0.70000005}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1482645828760619528}
   - {fileID: 5594369012152839260}
@@ -6709,6 +6368,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -6751,24 +6411,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b67cb6eb98d4e24f82fddd31e3c7a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 7404608693423545380}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 5550421972710831869}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 34.24239
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 2.8026004
   foil: {fileID: 11400000, guid: 19730dc22f186e44bbb3d08c34e14aed, type: 2}
   vital: 1
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 0
   shapeTr: {fileID: 5550421972710831869}
   angle: 0
   tipWidth: 100
@@ -6781,7 +6440,7 @@ MonoBehaviour:
   parent: {fileID: 0}
   child: {fileID: 664228770329043945}
   root: {fileID: 3862669380175756608}
-  totalArea: 9.595333
+  totalArea: 7.2287784
   alpha: 0
 --- !u!64 &7819203871115659808
 MeshCollider:
@@ -6837,6 +6496,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0.026176924, w: 0.99965733}
   m_LocalPosition: {x: 0, y: 0, z: -0.078}
   m_LocalScale: {x: 1.49, y: 1, z: 0.29}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5093346435367993429}
   m_RootOrder: 0
@@ -6867,6 +6527,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.521, z: -1.015}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 339324973072481191}
   m_RootOrder: 1
@@ -6899,6 +6560,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.78, y: 0.89999986, z: 0.39999992}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1482645828760619528}
   m_RootOrder: 9
@@ -6922,6 +6584,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -6982,6 +6645,7 @@ Transform:
   m_LocalRotation: {x: 0.2376859, y: 0, z: 0, w: 0.97134215}
   m_LocalPosition: {x: -0.78, y: 0.9, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1482645828760619528}
   m_RootOrder: 8
@@ -7005,6 +6669,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -7061,24 +6726,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa0c7436b7c6a3348a853df8cba2a716, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
-  aircraft: {fileID: 0}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  tr: {fileID: 4990954034180271649}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
+  complex: {fileID: 6795371269953406097}
+  aircraft: {fileID: 6795371269953406097}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 10.847463
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: c339e8d8fecb0924ebd4ccbcdae59e31, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 0.19610475
   foil: {fileID: 0}
   vital: 0
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
   bounds:
     m_Center: {x: 0.0031200647, y: -0.07452953, z: -0.01631701}
     m_Extent: {x: 0.021382928, y: 0.8636726, z: 0.05676478}
@@ -7121,6 +6784,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.15, y: -0, z: -0.071}
   m_LocalScale: {x: -1.59, y: 1, z: 0.7}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4294451407995247059}
   m_RootOrder: 0
@@ -7151,6 +6815,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0.030538492, w: -0.9995336}
   m_LocalPosition: {x: -0.06142831, y: -0.01549425, z: 0.19999993}
   m_LocalScale: {x: -1.17, y: 1, z: 1.73}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8873083521198679475}
   m_RootOrder: 1
@@ -7185,6 +6850,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 1.1, y: -0.05, z: -0.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4817301017501090839}
   m_Father: {fileID: 7521009997192460279}
@@ -7209,6 +6875,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -7251,24 +6918,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c61e93478feb854ca8724e7559cd051, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 4970812785980632353}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 1.9286426
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 0.41179994
   foil: {fileID: 11400000, guid: 19730dc22f186e44bbb3d08c34e14aed, type: 2}
   vital: 0
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 0
   shapeTr: {fileID: 4817301017501090839}
   angle: 0
   tipWidth: 100
@@ -7315,6 +6981,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -0.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3074453074631387770}
   - {fileID: 6415774645025671431}
@@ -7340,6 +7007,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -7348,7 +7016,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b033489d117c0ca4b8f58f5eec9da25b, type: 2}
+  - {fileID: 2100000, guid: 1c12d722dc86ffe4d9142fd0c148fa49, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -7397,6 +7065,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.489, y: -0.07400001, z: -0.034}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 9072706426207025879}
   - {fileID: 6877150343063104401}
@@ -7415,31 +7084,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ae16e75984dd9147939b5b512f648c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
-  aircraft: {fileID: 0}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  tr: {fileID: 3170569341769105332}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
+  complex: {fileID: 6795371269953406097}
+  aircraft: {fileID: 6795371269953406097}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 14
   controller: 1
   ejection: {fileID: 6877150343063104401}
   muzzleEffects: {fileID: 0}
   bulletSpawn: {fileID: 9072706426207025879}
+  magazineAttachPoint: {fileID: 0}
   gunPreset: {fileID: 11400000, guid: 781f5ecaeacb86e48ad8424221819bfe, type: 2}
   magStorage: {fileID: 0}
   magazine: {fileID: 0}
   clipAmmo: 600
-  magazineLocalPos: {x: 0, y: 0, z: 0}
   bolt: {fileID: 0}
   noConvergeance: 0
+  mechanism: {fileID: 0}
   temperature: 0
   clips: 0
   fuzeDistance: 0
   reloading: 0
-  cycleState: 1
-  chambered: 0
 --- !u!1 &6160031509639066142
 GameObject:
   m_ObjectHideFlags: 0
@@ -7471,6 +7139,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 1.5, y: -0.54999995, z: -0.69999987}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2035427740012139659}
   - {fileID: 7040509898148207775}
@@ -7498,6 +7167,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -7540,24 +7210,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b67cb6eb98d4e24f82fddd31e3c7a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 656057182248926254}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 5217070213504932526}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 34.24239
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 2.8026004
   foil: {fileID: 11400000, guid: 19730dc22f186e44bbb3d08c34e14aed, type: 2}
   vital: 1
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 0
   shapeTr: {fileID: 5217070213504932526}
   angle: 0
   tipWidth: 100
@@ -7570,7 +7239,7 @@ MonoBehaviour:
   parent: {fileID: 0}
   child: {fileID: 576187449850319068}
   root: {fileID: 8041740409355677518}
-  totalArea: 9.595333
+  totalArea: 7.2287793
   alpha: 0
 --- !u!64 &1179989486243137500
 MeshCollider:
@@ -7631,6 +7300,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.2, y: 0.05, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8873083521198679475}
   - {fileID: 4970812785980632353}
@@ -7657,6 +7327,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -7699,40 +7370,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b67cb6eb98d4e24f82fddd31e3c7a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 7521009997192460279}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 5123423897159012433}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 24.049522
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 2.2144
-  foil: {fileID: 0}
+  foil: {fileID: 11400000, guid: 19730dc22f186e44bbb3d08c34e14aed, type: 2}
   vital: 1
   ripOnRip:
   - {fileID: 743814551296313049}
   - {fileID: 5815451695348461453}
   - {fileID: 1804231087231715640}
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 0
   shapeTr: {fileID: 5123423897159012433}
   angle: 0
   tipWidth: 100
   split: 0
   splitFraction: 0.5
-  oswald: 0.75
+  oswald: 0.4
   skin: {fileID: 0}
   skinMesh: {fileID: 1165025554589077015, guid: a11e16f04e854074d8ec974d18b5eb97,
     type: 3}
   parent: {fileID: 4957704736477287453}
   child: {fileID: 6209305669975624682}
   root: {fileID: 4957704736477287453}
-  totalArea: 9.595333
+  totalArea: 7.9553785
   alpha: 0
 --- !u!64 &3966954878841248083
 MeshCollider:
@@ -7788,6 +7458,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0.02966624, w: 0.9995599}
   m_LocalPosition: {x: 0.038645744, y: 0.010835838, z: 0.19999987}
   m_LocalScale: {x: 1.28, y: 1, z: 1.73}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5871615919230222243}
   m_RootOrder: 2
@@ -7818,6 +7489,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0.030538544, w: 0.99953365}
   m_LocalPosition: {x: 0, y: 0, z: -0.074}
   m_LocalScale: {x: 1.87, y: 1, z: 0.45}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8399377932782600445}
   m_RootOrder: 0
@@ -7849,6 +7521,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2656119874584657505}
   m_RootOrder: 1
@@ -7865,29 +7538,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14169b05039809848ad134040791c942, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
-  aircraft: {fileID: 0}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  tr: {fileID: 4686195648558220117}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
+  complex: {fileID: 6795371269953406097}
+  aircraft: {fileID: 6795371269953406097}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
+  control: 4
   animParameter: CanopyState
   binary: 1
   loweringTime: 3
   retractingTime: 3
   defaultState: 0
+  essentialParts:
+  - {fileID: 7672561770023958065}
   clip: {fileID: 8300000, guid: 7b6e8301c01f95d4ea16d1cee5d8e0a8, type: 3}
   extendedLockClip: {fileID: 0}
   retractedLockClip: {fileID: 8300000, guid: e3cc82dbb22ff2c41adef0d3dd8f42de, type: 3}
   extendOnly: 0
   volume: 0.5
   pitch: 1
-  disabled: 0
-  state: 0
-  stateInput: 0
-  essentialParts:
-  - {fileID: 7672561770023958065}
 --- !u!1 &6279195268446762558
 GameObject:
   m_ObjectHideFlags: 0
@@ -7916,6 +7587,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8599845104496506997}
   m_RootOrder: 4
@@ -7932,24 +7604,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6d4a8af8b3ea7441932ff1dd2eb73e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 2660834986044421418}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 0
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: db30bb86e36dcbb4ea931db5056b7de1, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
+  liquid: {fileID: 11400000, guid: b43c9aa9f703d61489aaa164d6f9cd40, type: 2}
   capacity: 37
-  currentAmount: 37
-  escapeSpeed: 2
-  leakEffect: {fileID: 1533138625715334, guid: 509cd9dd9ae839b4f8267bee14d29fe6, type: 3}
-  symmetry: {fileID: 0}
   selfSealing: 1
 --- !u!64 &2023065831537855402
 MeshCollider:
@@ -7991,6 +7659,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 0, y: -0.081, z: -0.148}
   m_LocalScale: {x: 1.65, y: 1, z: 0.82}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7082472746563344243}
   m_RootOrder: 0
@@ -8022,6 +7691,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7718599313678801013}
   m_RootOrder: 2
@@ -8037,6 +7707,7 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 0
   m_DynamicOccludee: 0
+  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -8156,6 +7827,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0, z: -1.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2895003419501398407}
   - {fileID: 8597139436129681535}
@@ -8183,6 +7855,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -8225,24 +7898,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19cf394275fd6aa4080fa856dc349359, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 7043142175645803413}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 18.900023
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: b1e93b7e4c814ae4cb2589b6ed5b8492, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 2.1824741
   foil: {fileID: 0}
   vital: 1
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
   bounds:
     m_Center: {x: 0, y: 0.054801494, z: 0.013477564}
     m_Extent: {x: 0.35513628, y: 0.4441745, z: 0.6826112}
@@ -8265,50 +7936,6 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -7225346305800845814, guid: a11e16f04e854074d8ec974d18b5eb97, type: 3}
---- !u!1 &6526717380651701720
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3634208745948492507}
-  - component: {fileID: 631729816304566893}
-  m_Layer: 11
-  m_Name: Bubble Collider
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3634208745948492507
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6526717380651701720}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 7732750328516757722}
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &631729816304566893
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6526717380651701720}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 9
-  m_Center: {x: 0, y: 0, z: -1.75}
 --- !u!1 &6570843852395065698
 GameObject:
   m_ObjectHideFlags: 0
@@ -8340,6 +7967,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.2, y: 0.05, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5103180145144409173}
   - {fileID: 6809955198809278691}
@@ -8366,6 +7994,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -8408,40 +8037,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b67cb6eb98d4e24f82fddd31e3c7a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 5871615919230222243}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 8035120469000357002}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 24.049522
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 2.2144
-  foil: {fileID: 0}
+  foil: {fileID: 11400000, guid: 19730dc22f186e44bbb3d08c34e14aed, type: 2}
   vital: 1
   ripOnRip:
   - {fileID: 4580770419273888917}
   - {fileID: 5815451695348461453}
   - {fileID: 1804231087231715640}
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 0
   shapeTr: {fileID: 8035120469000357002}
   angle: 0
   tipWidth: 100
   split: 0
   splitFraction: 0.5
-  oswald: 0.75
+  oswald: 0.4
   skin: {fileID: 0}
   skinMesh: {fileID: 6891658047382627831, guid: a11e16f04e854074d8ec974d18b5eb97,
     type: 3}
   parent: {fileID: 8865297909859733980}
   child: {fileID: 8345527064212780452}
   root: {fileID: 8865297909859733980}
-  totalArea: 9.595333
+  totalArea: 7.9553785
   alpha: 0
 --- !u!64 &7717396184809527680
 MeshCollider:
@@ -8498,6 +8126,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7718599313678801013}
   m_RootOrder: 1
@@ -8513,6 +8142,7 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 0
   m_DynamicOccludee: 0
+  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -8628,9 +8258,9 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1036308773675570523}
-  - {fileID: 408128395340515880}
   m_Father: {fileID: 8642034604329648469}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -8645,6 +8275,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -8710,6 +8341,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.4, y: -0.395, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4017364950192929790}
   m_RootOrder: 1
@@ -8772,6 +8404,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8642034604329648469}
   - {fileID: 1894901660834903577}
@@ -8800,6 +8433,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -8856,6 +8490,7 @@ Transform:
   m_LocalRotation: {x: 0.3007389, y: -0.21057962, z: 0.53352237, w: 0.761949}
   m_LocalPosition: {x: -0.28, y: 0.134, z: -0.556}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4606079415209628873}
   m_RootOrder: 2
@@ -8890,6 +8525,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 1.0499997, z: 0.099999905}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8384521630285464966}
   - {fileID: 7906101431848989394}
@@ -8915,6 +8551,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -8954,27 +8591,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 6978517811870708066}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48465413cba81b44fb6fedb2767c6f91, type: 3}
+  m_Script: {fileID: 11500000, guid: ca377d44eabe6804c9f9153ea958e762, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
-  aircraft: {fileID: 0}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  tr: {fileID: 1215622816712617926}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
+  complex: {fileID: 6795371269953406097}
+  aircraft: {fileID: 6795371269953406097}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 50.1029
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: b1e93b7e4c814ae4cb2589b6ed5b8492, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 3.612105
   foil: {fileID: 0}
   vital: 0
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
   bounds:
     m_Center: {x: 0, y: 0.0028670467, z: -0.24307016}
     m_Extent: {x: 1.0433823, y: 0.08265191, z: 0.8654797}
@@ -9009,7 +8644,6 @@ GameObject:
   - component: {fileID: 5497791608399546149}
   - component: {fileID: 8214342793800407834}
   - component: {fileID: 6472555772659228328}
-  - component: {fileID: 156849408971564865}
   m_Layer: 9
   m_Name: Right Wheel
   m_TagString: Untagged
@@ -9027,6 +8661,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.4, y: -0.531, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4017364950192929790}
   m_RootOrder: 0
@@ -9050,6 +8685,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -9058,7 +8694,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b033489d117c0ca4b8f58f5eec9da25b, type: 2}
+  - {fileID: 2100000, guid: 1c12d722dc86ffe4d9142fd0c148fa49, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9092,42 +8728,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f43d084841dafaf4986cee4bcacdae6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 6561238441546593000}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 20.440998
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: cdd18122447819d4d915d0dc54513d25, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
-  brake: 1
-  splitBraking: 0
+  diameter: 0.6
+  brakeMode: 1
   brakeTorque: 1000
   steering: 0
   maxSteerAngle: 30
-  maxSteerSpeed: 16.666668
   brakeEffect: {fileID: 7655424896359560631, guid: 6efd7676860922d4b844dd8a21ba3cb0,
     type: 3}
   wheel: {fileID: 8922613422658326994}
---- !u!64 &156849408971564865
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6991205577291314732}
-  m_Material: {fileID: 13400000, guid: 52baaeb214519f347a35cf0edfd262ff, type: 2}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 3208454407042794713, guid: a11e16f04e854074d8ec974d18b5eb97, type: 3}
 --- !u!1 &7069259870647957773
 GameObject:
   m_ObjectHideFlags: 0
@@ -9158,6 +8778,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -1.0000002, y: -0.10000004, z: -0.75}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3325767628528705231}
   m_Father: {fileID: 2035427740012139659}
@@ -9182,6 +8803,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -9224,24 +8846,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c61e93478feb854ca8724e7559cd051, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 5093346435367993429}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 1.6650038
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 0.4321001
   foil: {fileID: 11400000, guid: 19730dc22f186e44bbb3d08c34e14aed, type: 2}
   vital: 0
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 0
   shapeTr: {fileID: 3325767628528705231}
   angle: 0
   tipWidth: 100
@@ -9290,6 +8911,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.8, y: 0.012999952, z: -0.19999921}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6618333666996204302}
   - {fileID: 8563852379262911136}
@@ -9315,6 +8937,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -9357,28 +8980,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d84636798da6bfc4eb6d4bfe6d358f32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 2895003419501398407}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 8563852379262911136}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 15.988646
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: 5280c4897e67a2b4f98944da4f8e9f7a, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 1.9521598
   foil: {fileID: 11400000, guid: f5724e23a811f5d428dbd6453b850c24, type: 2}
   vital: 0
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 0
   shapeTr: {fileID: 8563852379262911136}
   angle: -5.8
   tipWidth: 66
-  rudder: 0
 --- !u!64 &6705874960757650412
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -9422,6 +9043,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.8, z: -1.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8708749225748113811}
   m_Father: {fileID: 2344535810739773417}
@@ -9446,6 +9068,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -9454,7 +9077,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b033489d117c0ca4b8f58f5eec9da25b, type: 2}
+  - {fileID: 2100000, guid: 1c12d722dc86ffe4d9142fd0c148fa49, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9485,27 +9108,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 7346893361487152220}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48465413cba81b44fb6fedb2767c6f91, type: 3}
+  m_Script: {fileID: 11500000, guid: ca377d44eabe6804c9f9153ea958e762, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
-  aircraft: {fileID: 0}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  tr: {fileID: 7438089653902806004}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
+  complex: {fileID: 6795371269953406097}
+  aircraft: {fileID: 6795371269953406097}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 1.4904683
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: b1e93b7e4c814ae4cb2589b6ed5b8492, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 0.40134948
   foil: {fileID: 0}
   vital: 0
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
   bounds:
     m_Center: {x: 0, y: 0.035303563, z: 0.059351623}
     m_Extent: {x: 0.30653515, y: 0.21256551, z: 0.32732755}
@@ -9540,6 +9161,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: -0.030538544, w: 0.99953365}
   m_LocalPosition: {x: 0, y: 0, z: -0.074}
   m_LocalScale: {x: -1.87, y: 1, z: 0.45}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 86324396072859829}
   m_RootOrder: 0
@@ -9572,6 +9194,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5426651768103362739}
   m_RootOrder: 1
@@ -9595,6 +9218,7 @@ MeshRenderer:
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -9651,11 +9275,12 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8517498936593911478}
   - {fileID: 4686195648558220117}
   m_Father: {fileID: 7732750328516757722}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7732750328516757726
 GameObject:
@@ -9669,6 +9294,7 @@ GameObject:
   - component: {fileID: 6795371269953406097}
   - component: {fileID: 1107555855967290558}
   - component: {fileID: 6726502311915312788}
+  - component: {fileID: 2592588978436756164}
   m_Layer: 9
   m_Name: Gladiator Mk.II
   m_TagString: Untagged
@@ -9686,6 +9312,7 @@ Transform:
   m_LocalRotation: {x: -0.11433028, y: 0, z: 0, w: 0.99344283}
   m_LocalPosition: {x: 0, y: 1.84, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4048494487401377252}
   - {fileID: 8599845104496506997}
@@ -9694,7 +9321,6 @@ Transform:
   - {fileID: 7404608693423545380}
   - {fileID: 277811494060460030}
   - {fileID: 7470588040131918189}
-  - {fileID: 3634208745948492507}
   - {fileID: 2656119874584657505}
   - {fileID: 4738799802366732677}
   m_Father: {fileID: 0}
@@ -9712,17 +9338,245 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c57226eb60c63a7479219acbc238e907, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tr: {fileID: 7732750328516757722}
+  rb: {fileID: 6726502311915312788}
+  complex: {fileID: 6795371269953406097}
+  aircraft: {fileID: 6795371269953406097}
+  debris: {fileID: 0}
+  simpleDamage: {fileID: 0}
   warOnly: 0
-  data: {fileID: 0}
-  avm: {fileID: 0}
-  crew:
-  - {fileID: 4678163980961681957}
-  viewPoint: {x: 0, y: 2, z: -12}
   destroyed: 0
   burning: 0
-  bubble: {fileID: 631729816304566893}
   lod: {fileID: 0}
+  bubble: {fileID: 0}
+  data: {fileID: 2592588978436756164}
+  avm: {fileID: 1606782772559677223}
+  components:
+  - {fileID: 2592588978436756164}
+  - {fileID: 4336532724645449776}
+  - {fileID: 7732750328845277578}
+  - {fileID: 6343857157576403988}
+  - {fileID: 924893162482051689}
+  - {fileID: 8117718659022532917}
+  - {fileID: 7502917854333441417}
+  - {fileID: 5446146218561762707}
+  - {fileID: 872458082242151559}
+  - {fileID: 8128784344673036987}
+  - {fileID: 4678163980961681957}
+  - {fileID: 7672561770023958065}
+  - {fileID: 6819529326527257377}
+  - {fileID: 8678937877628422621}
+  - {fileID: 166981263410194471}
+  - {fileID: 269969604649512291}
+  - {fileID: 3953774239667772144}
+  - {fileID: 7342792628284363075}
+  - {fileID: 8569305553560698136}
+  - {fileID: 4720256859768817034}
+  - {fileID: 8865297909859733980}
+  - {fileID: 6897257230962092665}
+  - {fileID: 8345527064212780452}
+  - {fileID: 4410059896856562475}
+  - {fileID: 4580770419273888917}
+  - {fileID: 4957704736477287453}
+  - {fileID: 5583439933106545125}
+  - {fileID: 6209305669975624682}
+  - {fileID: 4759302234386480326}
+  - {fileID: 743814551296313049}
+  - {fileID: 8041740409355677518}
+  - {fileID: 576187449850319068}
+  - {fileID: 2394215899466260449}
+  - {fileID: 2855146946634628553}
+  - {fileID: 4491152728689807141}
+  - {fileID: 5815451695348461453}
+  - {fileID: 1804231087231715640}
+  - {fileID: 1150793366707650191}
+  - {fileID: 3862669380175756608}
+  - {fileID: 664228770329043945}
+  - {fileID: 5680453361475038964}
+  - {fileID: 2448003060767669263}
+  - {fileID: 7740569824078787057}
+  - {fileID: 2521111954096670307}
+  - {fileID: 2947331222920919564}
+  - {fileID: 3064950641366943990}
+  - {fileID: 8489293493741924466}
+  - {fileID: 5145302736653803461}
+  - {fileID: 8722683730702524512}
+  - {fileID: 2920842613537356008}
+  - {fileID: 2824488520492334483}
+  - {fileID: 7595441232819029818}
+  - {fileID: 1090266236202511690}
+  - {fileID: 2802373439120541775}
+  - {fileID: 1735466105049215167}
+  - {fileID: 7166134692370170924}
+  - {fileID: 6472555772659228328}
+  - {fileID: 8081338760711134764}
+  - {fileID: 2871540936045023254}
+  - {fileID: 3674759326264903371}
+  - {fileID: 3177358684805865425}
+  - {fileID: 1606782772559677223}
+  - {fileID: 7807699147059309765}
+  - {fileID: 448732344766013838}
+  - {fileID: 256319180065789972}
+  - {fileID: 7175392080003930079}
+  - {fileID: 2651188396801581771}
+  - {fileID: 3631734539724150111}
+  - {fileID: 6362356031965490245}
+  - {fileID: 4951801332955185569}
+  parts:
+  - {fileID: 4336532724645449776}
+  - {fileID: 7732750328845277578}
+  - {fileID: 924893162482051689}
+  - {fileID: 8117718659022532917}
+  - {fileID: 4678163980961681957}
+  - {fileID: 7672561770023958065}
+  - {fileID: 6819529326527257377}
+  - {fileID: 8678937877628422621}
+  - {fileID: 166981263410194471}
+  - {fileID: 269969604649512291}
+  - {fileID: 3953774239667772144}
+  - {fileID: 7342792628284363075}
+  - {fileID: 8569305553560698136}
+  - {fileID: 4720256859768817034}
+  - {fileID: 8865297909859733980}
+  - {fileID: 6897257230962092665}
+  - {fileID: 8345527064212780452}
+  - {fileID: 4410059896856562475}
+  - {fileID: 4580770419273888917}
+  - {fileID: 4957704736477287453}
+  - {fileID: 5583439933106545125}
+  - {fileID: 6209305669975624682}
+  - {fileID: 4759302234386480326}
+  - {fileID: 743814551296313049}
+  - {fileID: 8041740409355677518}
+  - {fileID: 576187449850319068}
+  - {fileID: 2394215899466260449}
+  - {fileID: 2855146946634628553}
+  - {fileID: 4491152728689807141}
+  - {fileID: 5815451695348461453}
+  - {fileID: 1804231087231715640}
+  - {fileID: 1150793366707650191}
+  - {fileID: 3862669380175756608}
+  - {fileID: 664228770329043945}
+  - {fileID: 5680453361475038964}
+  - {fileID: 2448003060767669263}
+  - {fileID: 7740569824078787057}
+  - {fileID: 2521111954096670307}
+  - {fileID: 2947331222920919564}
+  - {fileID: 3064950641366943990}
+  - {fileID: 8489293493741924466}
+  - {fileID: 5145302736653803461}
+  - {fileID: 8722683730702524512}
+  - {fileID: 2920842613537356008}
+  - {fileID: 2824488520492334483}
+  - {fileID: 7595441232819029818}
+  - {fileID: 1090266236202511690}
+  - {fileID: 2802373439120541775}
+  - {fileID: 1735466105049215167}
+  - {fileID: 7166134692370170924}
+  - {fileID: 6472555772659228328}
+  - {fileID: 8081338760711134764}
+  - {fileID: 2871540936045023254}
+  modules:
+  - {fileID: 4336532724645449776}
+  - {fileID: 7732750328845277578}
+  - {fileID: 924893162482051689}
+  - {fileID: 8117718659022532917}
+  - {fileID: 4678163980961681957}
+  - {fileID: 7672561770023958065}
+  - {fileID: 166981263410194471}
+  - {fileID: 269969604649512291}
+  - {fileID: 3953774239667772144}
+  - {fileID: 7342792628284363075}
+  - {fileID: 8569305553560698136}
+  - {fileID: 4720256859768817034}
+  - {fileID: 8865297909859733980}
+  - {fileID: 6897257230962092665}
+  - {fileID: 8345527064212780452}
+  - {fileID: 4410059896856562475}
+  - {fileID: 4580770419273888917}
+  - {fileID: 4957704736477287453}
+  - {fileID: 5583439933106545125}
+  - {fileID: 6209305669975624682}
+  - {fileID: 4759302234386480326}
+  - {fileID: 743814551296313049}
+  - {fileID: 8041740409355677518}
+  - {fileID: 576187449850319068}
+  - {fileID: 2394215899466260449}
+  - {fileID: 2855146946634628553}
+  - {fileID: 4491152728689807141}
+  - {fileID: 5815451695348461453}
+  - {fileID: 1804231087231715640}
+  - {fileID: 3862669380175756608}
+  - {fileID: 664228770329043945}
+  - {fileID: 5680453361475038964}
+  - {fileID: 2448003060767669263}
+  - {fileID: 7740569824078787057}
+  - {fileID: 2521111954096670307}
+  - {fileID: 2947331222920919564}
+  - {fileID: 8489293493741924466}
+  - {fileID: 5145302736653803461}
+  - {fileID: 8722683730702524512}
+  - {fileID: 2920842613537356008}
+  - {fileID: 2824488520492334483}
+  - {fileID: 7595441232819029818}
+  - {fileID: 1090266236202511690}
+  - {fileID: 2802373439120541775}
+  - {fileID: 1735466105049215167}
+  - {fileID: 7166134692370170924}
+  - {fileID: 6472555772659228328}
+  - {fileID: 8081338760711134764}
+  - {fileID: 2871540936045023254}
+  airframes:
+  - {fileID: 4336532724645449776}
+  - {fileID: 8117718659022532917}
+  - {fileID: 7672561770023958065}
+  - {fileID: 4720256859768817034}
+  - {fileID: 8865297909859733980}
+  - {fileID: 6897257230962092665}
+  - {fileID: 8345527064212780452}
+  - {fileID: 4410059896856562475}
+  - {fileID: 4580770419273888917}
+  - {fileID: 4957704736477287453}
+  - {fileID: 5583439933106545125}
+  - {fileID: 6209305669975624682}
+  - {fileID: 4759302234386480326}
+  - {fileID: 743814551296313049}
+  - {fileID: 8041740409355677518}
+  - {fileID: 576187449850319068}
+  - {fileID: 2394215899466260449}
+  - {fileID: 2855146946634628553}
+  - {fileID: 4491152728689807141}
+  - {fileID: 5815451695348461453}
+  - {fileID: 1804231087231715640}
+  - {fileID: 3862669380175756608}
+  - {fileID: 664228770329043945}
+  - {fileID: 5680453361475038964}
+  - {fileID: 2448003060767669263}
+  - {fileID: 7740569824078787057}
+  - {fileID: 2521111954096670307}
+  - {fileID: 2947331222920919564}
+  - {fileID: 8489293493741924466}
+  - {fileID: 5145302736653803461}
+  - {fileID: 8722683730702524512}
+  - {fileID: 2920842613537356008}
+  - {fileID: 2824488520492334483}
+  - {fileID: 7595441232819029818}
+  - {fileID: 1090266236202511690}
+  - {fileID: 2802373439120541775}
+  - {fileID: 7166134692370170924}
+  - {fileID: 8081338760711134764}
+  crew:
+  - {fileID: 4678163980961681957}
+  cogForwardDistance: 0
+  targetEmptyMass: 1459
   card: {fileID: 11400000, guid: aa6ece902b1532c4baab985f6a3c93c2, type: 2}
+  stations: []
+  gear: {fileID: 0}
+  canopy: {fileID: 3177358684805865425}
+  flaps: {fileID: 3674759326264903371}
+  airBrakes: {fileID: 0}
+  bombBay: {fileID: 0}
+  materials: {fileID: 11400000, guid: dc8a038d21671cb4fad5acea1a90f559, type: 2}
   squadron:
     aircraftCard: {fileID: 0}
     team: 0
@@ -9740,64 +9594,39 @@ MonoBehaviour:
     convergeance: 0
     rocketsFuzeMeters: 0
     bombsFuzeSeconds: 0
+  fuselageCore: {fileID: 8117718659022532917}
   engines:
   - {fileID: 7732750328845277578}
-  wheels:
-  - {fileID: 8922613422658326994}
-  - {fileID: 8607402389080308482}
-  - {fileID: 6735009489514141400}
-  gear: {fileID: 0}
-  cannopy: {fileID: 3177358684805865425}
-  flaps: {fileID: 3674759326264903371}
-  airBrakes: {fileID: 0}
-  bombBay: {fileID: 0}
+  bombardierId: 0
+  bombardierSeat: 0
   bombSight: {fileID: 0}
-  bombardierPath:
-    crew: 0
-    seat: 0
-  fuelTanks:
-  - {fileID: 166981263410194471}
-  - {fileID: 269969604649512291}
-  primaries:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  secondaries: []
-  stations: []
   bombs: []
   rockets: []
   torpedoes: []
+  primaries:
+  - {fileID: 6819529326527257377}
+  - {fileID: 8678937877628422621}
+  - {fileID: 1150793366707650191}
+  - {fileID: 3064950641366943990}
+  secondaries: []
   hStab: {fileID: 2824488520492334483}
   vStab: {fileID: 1090266236202511690}
-  materials: {fileID: 11400000, guid: dc8a038d21671cb4fad5acea1a90f559, type: 2}
-  useAutoMass: 1
-  cogForwardDistance: 0
-  targetEmptyMass: 1459
-  wingSpan: 10.2
   maxG: 8
   maxSpeed: 155.55556
   collidersOn: 0
   controlSpeed: {x: 2, y: 1.5, z: 2}
-  controlInput: {x: 0, y: 0, z: 0}
   cruiseSpeed: 105.55556
   convergeance: 250
-  verticalConvergence: 1
-  bankTurnAngle: 14
-  optiAlpha: 9
-  turnRadius: 125
-  minCrashDelay: 4
-  minInvertAltitude: 200
+  customPIDValues: 0
   pidPitch:
     pidValues: {x: 0.3, y: 0, z: 0.03}
   pidRoll:
     pidValues: {x: 4, y: 0, z: 0}
   pidElevator:
-    pidValues: {x: 0.4, y: 0.65, z: 0.045}
+    pidValues: {x: 0.28, y: 0.5, z: 0.02}
+  turnRadius: 125
+  minCrashDelay: 4
+  minInvertAltitude: 200
   enginesState: 0
   hasPilot: 1
   landed: 0
@@ -9806,16 +9635,15 @@ MonoBehaviour:
   difficulty: 0
   deletePassWord: 
   gunsPointer: {fileID: 0}
-  controlTarget: {x: 0, y: 0, z: 0}
   controlSent: 0
   throttle: 0
   boost: 0
-  flapsInput: 0
-  mixture: 0.5
   brake: 0
   primaryFire: 0
   secondaryFire: 0
-  gunnersFire: 1
+  controlValue: {x: 0, y: 0, z: 0}
+  controlUncorrected: {x: 0, y: 0, z: 0}
+  controlTarget: {x: 0, y: 0, z: 0}
 --- !u!95 &1107555855967290558
 Animator:
   serializedVersion: 5
@@ -9853,6 +9681,25 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &2592588978436756164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7732750328516757726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96d07c011fedd8e4ea48fe0210875bbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tr: {fileID: 7732750328516757722}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
+  complex: {fileID: 6795371269953406097}
+  aircraft: {fileID: 6795371269953406097}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
 --- !u!1 &7732750328845277580
 GameObject:
   m_ObjectHideFlags: 0
@@ -9882,6 +9729,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5426651768103362739}
   m_Father: {fileID: 4048494487401377252}
@@ -9899,37 +9747,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 984e19affcf9a5b4fb0ab0567e9c174f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 7732750328845277581}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 438
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: 696c411f11dcf6249bb528ac39862a0f, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   preset: {fileID: 11400000, guid: 62069c58ad07d2c4ab26e4fc5506dc93, type: 2}
   igniting: 0
+  ignitionState: 0
   pumped: 0
-  carburetorState: 1
-  carburetorOk: 1
   rps: 0
-  consumption: 0
-  trueEngineVolume: 1
   onInput: 0
   throttleInput: 0
   trueThrottle: 0
   boosting: 0
-  maximumTemperature: 0
-  temperature: 80
-  waterTemperature: 0
-  oilTemperature: 0
   oil: {fileID: 3953774239667772144}
-  waterCooled: 0
   water: {fileID: 0}
   propeller: {fileID: 924893162482051689}
   brakePower: 0
@@ -9960,13 +9799,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62213cb75f942e843a2f8c10c6807a0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
-  aircraft: {fileID: 0}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  tr: {fileID: 7732750328845277581}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
+  complex: {fileID: 6795371269953406097}
+  aircraft: {fileID: 6795371269953406097}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   exhaustMesh: {fileID: 3004920710594205237, guid: a11e16f04e854074d8ec974d18b5eb97,
     type: 3}
 --- !u!1 &7772616798460332193
@@ -9995,6 +9834,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: -0.026176924, w: 0.99965733}
   m_LocalPosition: {x: 0, y: 0, z: -0.078}
   m_LocalScale: {x: -1.49, y: 1, z: 0.29}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6513763260965042580}
   m_RootOrder: 0
@@ -10026,6 +9866,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2035427740012139659}
   m_RootOrder: 9
@@ -10041,6 +9882,7 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 0
   m_DynamicOccludee: 0
+  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -10156,6 +9998,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8599845104496506997}
   m_RootOrder: 8
@@ -10179,6 +10022,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -10240,6 +10084,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.3, y: 0.09999995, z: -0.00000021919004}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7276279027922493657}
   - {fileID: 5093346435367993429}
@@ -10273,6 +10118,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -10315,40 +10161,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b67cb6eb98d4e24f82fddd31e3c7a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 2035427740012139659}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 4206138947134525780}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 31.737494
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 2.6642
-  foil: {fileID: 0}
+  foil: {fileID: 11400000, guid: 19730dc22f186e44bbb3d08c34e14aed, type: 2}
   vital: 1
   ripOnRip:
   - {fileID: 4491152728689807141}
   - {fileID: 5815451695348461453}
   - {fileID: 1804231087231715640}
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 0
   shapeTr: {fileID: 4206138947134525780}
   angle: 0
   tipWidth: 100
   split: 0
   splitFraction: 0.32
-  oswald: 0.75
+  oswald: 0.4
   skin: {fileID: 0}
   skinMesh: {fileID: -8170111485595106549, guid: a11e16f04e854074d8ec974d18b5eb97,
     type: 3}
   parent: {fileID: 8041740409355677518}
   child: {fileID: 2394215899466260449}
   root: {fileID: 8041740409355677518}
-  totalArea: 9.595333
+  totalArea: 7.2287793
   alpha: 0
 --- !u!64 &716113036652586311
 MeshCollider:
@@ -10404,6 +10249,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: -0.009948241, w: 0.9999505}
   m_LocalPosition: {x: 0.55, y: 0, z: 0.2}
   m_LocalScale: {x: -2.3, y: 1, z: 1.73}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7906101431848989394}
   m_RootOrder: 1
@@ -10438,6 +10284,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.6, y: -0.05, z: -0.70000005}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1414956549001842442}
   m_Father: {fileID: 8873083521198679475}
@@ -10462,6 +10309,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -10504,28 +10352,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce8cef36737450646b64ce4a2fa71133, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 6221060865902987982}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 6.2314105
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 0.90000033
-  foil: {fileID: 0}
+  foil: {fileID: 11400000, guid: 19730dc22f186e44bbb3d08c34e14aed, type: 2}
   vital: 0
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 0
   shapeTr: {fileID: 1414956549001842442}
   angle: 0
   tipWidth: 100
-  type: 0
+  type: 3
   controlState: 0
   controlAngle: 0
   sinControlAngle: 0
@@ -10576,6 +10423,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.45}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 149698292235248304}
   m_Father: {fileID: 7718599313678801013}
@@ -10600,6 +10448,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -10642,28 +10491,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce8cef36737450646b64ce4a2fa71133, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 7082472746563344243}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 9.225404
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 1.353
   foil: {fileID: 11400000, guid: 42e6c20f87f02db4cb7c510aabee947a, type: 2}
   vital: 0
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 1
   shapeTr: {fileID: 149698292235248304}
   angle: 0
   tipWidth: 100
-  type: 0
+  type: 2
   controlState: 0
   controlAngle: 0
   sinControlAngle: 0
@@ -10714,6 +10562,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.000000029802322, z: -0.30000007}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5118309497658569646}
   m_Father: {fileID: 2895003419501398407}
@@ -10738,6 +10587,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -10780,28 +10630,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce8cef36737450646b64ce4a2fa71133, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 6618333666996204302}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 6.8830576
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 1.1129999
   foil: {fileID: 11400000, guid: f5724e23a811f5d428dbd6453b850c24, type: 2}
   vital: 0
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 0
   shapeTr: {fileID: 5118309497658569646}
   angle: 0
   tipWidth: 100
-  type: 0
+  type: 1
   controlState: 0
   controlAngle: 0
   sinControlAngle: 0
@@ -10848,6 +10697,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.725, z: 0.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7563614455930787765}
   m_RootOrder: 1
@@ -10879,6 +10729,7 @@ Transform:
   m_LocalRotation: {x: -0.22377494, y: 0.00000008940698, z: 0.000000022351745, w: 0.97464085}
   m_LocalPosition: {x: 0.25, y: 0.1863, z: -0.1639}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1894901660834903577}
   m_RootOrder: 0
@@ -10924,6 +10775,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.343, z: -0.183}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4420436512597225161}
   m_RootOrder: 0
@@ -10947,6 +10799,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -10955,7 +10808,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b033489d117c0ca4b8f58f5eec9da25b, type: 2}
+  - {fileID: 2100000, guid: 1c12d722dc86ffe4d9142fd0c148fa49, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -10989,25 +10842,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f43d084841dafaf4986cee4bcacdae6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 3074453074631387770}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 0.19697808
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: cdd18122447819d4d915d0dc54513d25, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
-  brake: 0
-  splitBraking: 1
+  diameter: 0.6
+  brakeMode: 0
   brakeTorque: 600
   steering: 1
   maxSteerAngle: 25
-  maxSteerSpeed: 20.833334
   brakeEffect: {fileID: 7655424896359560631, guid: 6efd7676860922d4b844dd8a21ba3cb0,
     type: 3}
   wheel: {fileID: 6735009489514141400}
@@ -11039,6 +10890,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5426651768103362739}
   m_RootOrder: 0
@@ -11062,6 +10914,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -11119,6 +10972,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.414, y: -0.033, z: 0.913}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3588052812217676021}
   m_Father: {fileID: 7404608693423545380}
@@ -11136,31 +10990,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ae16e75984dd9147939b5b512f648c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
-  aircraft: {fileID: 0}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  tr: {fileID: 5594369012152839260}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
+  complex: {fileID: 6795371269953406097}
+  aircraft: {fileID: 6795371269953406097}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 14
   controller: 1
   ejection: {fileID: 3588052812217676021}
   muzzleEffects: {fileID: 0}
   bulletSpawn: {fileID: 0}
+  magazineAttachPoint: {fileID: 0}
   gunPreset: {fileID: 11400000, guid: 781f5ecaeacb86e48ad8424221819bfe, type: 2}
   magStorage: {fileID: 0}
   magazine: {fileID: 0}
   clipAmmo: 400
-  magazineLocalPos: {x: 0, y: 0, z: 0}
   bolt: {fileID: 0}
   noConvergeance: 0
+  mechanism: {fileID: 0}
   temperature: 0
   clips: 0
   fuzeDistance: 0
   reloading: 0
-  cycleState: 1
-  chambered: 0
 --- !u!1 &8369636574494086106
 GameObject:
   m_ObjectHideFlags: 0
@@ -11191,6 +11044,7 @@ Transform:
   m_LocalRotation: {x: 0.2376859, y: 0, z: 0, w: 0.97134215}
   m_LocalPosition: {x: 0.78, y: 0.90000004, z: 0.000000056810677}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2035427740012139659}
   m_RootOrder: 8
@@ -11214,6 +11068,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -11270,24 +11125,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa0c7436b7c6a3348a853df8cba2a716, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
-  aircraft: {fileID: 0}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  tr: {fileID: 6128438494296550788}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
+  complex: {fileID: 6795371269953406097}
+  aircraft: {fileID: 6795371269953406097}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 10.242648
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: c339e8d8fecb0924ebd4ccbcdae59e31, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 0.17847611
   foil: {fileID: 0}
   vital: 0
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
   bounds:
     m_Center: {x: -0.0018655062, y: -0.07808787, z: 0.008175567}
     m_Extent: {x: 0.021285176, y: 0.8487038, z: 0.0525731}
@@ -11329,11 +11182,11 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3963744506601548443}
   - {fileID: 2121419244321619470}
   m_Father: {fileID: 7732750328516757722}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1606782772559677223
 MonoBehaviour:
@@ -11347,16 +11200,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7a37a313e41a3e48851ccbd2e981c70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 4738799802366732677}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   localHolder: {fileID: 0}
   globalHolder: {fileID: 0}
-  localActive: 0
   use3dSound: 0
 --- !u!1 &8454068277510741527
 GameObject:
@@ -11385,6 +11237,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.78, y: 0.8999999, z: 0.39999992}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1482645828760619528}
   m_RootOrder: 5
@@ -11400,6 +11253,7 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 0
   m_DynamicOccludee: 0
+  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -11516,6 +11370,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7718599313678801013}
   m_RootOrder: 3
@@ -11531,6 +11386,7 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 0
   m_DynamicOccludee: 0
+  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -11650,6 +11506,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1698712964187802236}
   - {fileID: 7214342398298170302}
@@ -11676,6 +11533,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -11718,24 +11576,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58b66420e085b5b45973659114fb6101, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 5426651768103362739}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 95
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: 5cbfe67f69818c64d9df40a0d192d45c, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   reductionGear: 0.5
   preset: {fileID: 11400000, guid: 9c6dcfc12a72b174d8bb07f71f825abb, type: 2}
   efficiency: 0.82
   engine: {fileID: 0}
-  prop: {fileID: 0}
+  meshRenderer: {fileID: 0}
   brokenProp: {fileID: 2606314185762591266}
   blurredProp: {fileID: 3901378815587265013}
   torque: 0
@@ -11780,6 +11637,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.725, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7563614455930787765}
   m_RootOrder: 0
@@ -11811,6 +11669,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.1632, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8229356754887879907}
   m_Father: {fileID: 4606079415209628873}
@@ -11828,16 +11687,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c01da559cffe1549a6763aeebf7b021, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
-  aircraft: {fileID: 0}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  tr: {fileID: 8642034604329648469}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
+  complex: {fileID: 6795371269953406097}
+  aircraft: {fileID: 6795371269953406097}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   xrGrab: {fileID: 0}
   grip: {fileID: 4928121848083994159}
   outline: {fileID: 0}
+  colliders: []
   indexSelect: 0
   pitch: {fileID: 8642034604329648469}
   roll: {fileID: 8229356754887879907}
@@ -11875,6 +11735,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.6, y: -0.02, z: -0.65}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 9012519951270767820}
   m_Father: {fileID: 6516489787954382120}
@@ -11899,6 +11760,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -11941,28 +11803,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce8cef36737450646b64ce4a2fa71133, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
+  tr: {fileID: 86324396072859829}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
   complex: {fileID: 6795371269953406097}
   aircraft: {fileID: 6795371269953406097}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 4.525014
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 0.8415001
-  foil: {fileID: 0}
+  foil: {fileID: 11400000, guid: 19730dc22f186e44bbb3d08c34e14aed, type: 2}
   vital: 0
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
+  vertical: 0
   shapeTr: {fileID: 9012519951270767820}
   angle: 0
   tipWidth: 100
-  type: 0
+  type: 3
   controlState: 0
   controlAngle: 0
   sinControlAngle: 0
@@ -12009,6 +11870,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0.029666275, w: -0.9995599}
   m_LocalPosition: {x: -0.038645744, y: 0.010836076, z: 0.19999993}
   m_LocalScale: {x: -1.28, y: 1, z: 1.73}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7521009997192460279}
   m_RootOrder: 2
@@ -12039,6 +11901,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0.01745245, w: 0.99984777}
   m_LocalPosition: {x: -0.254, y: 0, z: 0.244}
   m_LocalScale: {x: 1.62, y: 1, z: 1.73}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 656057182248926254}
   m_RootOrder: 2
@@ -12073,6 +11936,7 @@ Transform:
   m_LocalRotation: {x: 0.2292004, y: 0, z: 0, w: 0.9733793}
   m_LocalPosition: {x: -0.78, y: 0.9, z: 0.8499999}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1482645828760619528}
   m_RootOrder: 7
@@ -12096,6 +11960,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -12152,24 +12017,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa0c7436b7c6a3348a853df8cba2a716, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
-  aircraft: {fileID: 0}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  tr: {fileID: 3636377032603546684}
+  rb: {fileID: 6726502311915312788}
+  sofObject: {fileID: 6795371269953406097}
+  complex: {fileID: 6795371269953406097}
+  aircraft: {fileID: 6795371269953406097}
+  avm: {fileID: 1606782772559677223}
+  data: {fileID: 2592588978436756164}
   emptyMass: 10.242648
-  burningEffect: {fileID: 0}
   material: {fileID: 11400000, guid: c339e8d8fecb0924ebd4ccbcdae59e31, type: 2}
-  maxHp: 0
+  structureDamage: 1
   ripped: 0
   burning: 0
   area: 0.17847613
   foil: {fileID: 0}
   vital: 0
   ripOnRip: []
-  rootRelativePos: {x: 0, y: 0, z: 0}
   bounds:
     m_Center: {x: 0.0018655062, y: -0.07808781, z: 0.008175507}
     m_Extent: {x: 0.021285176, y: 0.84870386, z: 0.0525731}
@@ -12191,10 +12054,180 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4738799802366732677}
     m_Modifications:
+    - target: {fileID: 885266117726067715, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: rb
+      value: 
+      objectReference: {fileID: 6726502311915312788}
+    - target: {fileID: 885266117726067715, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: tr
+      value: 
+      objectReference: {fileID: 7836939542942323463}
+    - target: {fileID: 885266117726067715, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: avm
+      value: 
+      objectReference: {fileID: 1606782772559677223}
+    - target: {fileID: 885266117726067715, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: body
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 885266117726067715, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: data
+      value: 
+      objectReference: {fileID: 2592588978436756164}
+    - target: {fileID: 885266117726067715, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: complex
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 885266117726067715, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: aircraft
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 885266117726067715, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: sofObject
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 1938080873986976663, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: rb
+      value: 
+      objectReference: {fileID: 6726502311915312788}
+    - target: {fileID: 1938080873986976663, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: tr
+      value: 
+      objectReference: {fileID: 3547012067253809508}
+    - target: {fileID: 1938080873986976663, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: avm
+      value: 
+      objectReference: {fileID: 1606782772559677223}
+    - target: {fileID: 1938080873986976663, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: body
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 1938080873986976663, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: data
+      value: 
+      objectReference: {fileID: 2592588978436756164}
+    - target: {fileID: 1938080873986976663, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: complex
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 1938080873986976663, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: aircraft
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 1938080873986976663, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: sofObject
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 3102225829121124060, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: rb
+      value: 
+      objectReference: {fileID: 6726502311915312788}
+    - target: {fileID: 3102225829121124060, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: tr
+      value: 
+      objectReference: {fileID: 7269514651822175462}
+    - target: {fileID: 3102225829121124060, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: avm
+      value: 
+      objectReference: {fileID: 1606782772559677223}
+    - target: {fileID: 3102225829121124060, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: body
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 3102225829121124060, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: data
+      value: 
+      objectReference: {fileID: 2592588978436756164}
+    - target: {fileID: 3102225829121124060, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: complex
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 3102225829121124060, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: aircraft
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 3102225829121124060, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: sofObject
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 3366940636463701830, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: rb
+      value: 
+      objectReference: {fileID: 6726502311915312788}
+    - target: {fileID: 3366940636463701830, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: tr
+      value: 
+      objectReference: {fileID: 3022731692987200959}
+    - target: {fileID: 3366940636463701830, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: avm
+      value: 
+      objectReference: {fileID: 1606782772559677223}
+    - target: {fileID: 3366940636463701830, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: body
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 3366940636463701830, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: data
+      value: 
+      objectReference: {fileID: 2592588978436756164}
+    - target: {fileID: 3366940636463701830, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: complex
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 3366940636463701830, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: aircraft
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 3366940636463701830, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: sofObject
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 3738095489891526202, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3785381496018790596, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 3887515273037152454, guid: 826442ff951d74f44be063cd9e608ac6,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3887515273037152454, guid: 826442ff951d74f44be063cd9e608ac6,
         type: 3}
@@ -12231,11 +12264,325 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4961124123782255117, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: rb
+      value: 
+      objectReference: {fileID: 6726502311915312788}
+    - target: {fileID: 4961124123782255117, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: tr
+      value: 
+      objectReference: {fileID: 2099469202856810089}
+    - target: {fileID: 4961124123782255117, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: avm
+      value: 
+      objectReference: {fileID: 1606782772559677223}
+    - target: {fileID: 4961124123782255117, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: data
+      value: 
+      objectReference: {fileID: 2592588978436756164}
+    - target: {fileID: 4961124123782255117, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: complex
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 4961124123782255117, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: aircraft
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 4961124123782255117, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: sofObject
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 5186610176578764955, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5411053027919898903, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: rb
+      value: 
+      objectReference: {fileID: 6726502311915312788}
+    - target: {fileID: 5411053027919898903, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: tr
+      value: 
+      objectReference: {fileID: 3228582183969394567}
+    - target: {fileID: 5411053027919898903, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: avm
+      value: 
+      objectReference: {fileID: 1606782772559677223}
+    - target: {fileID: 5411053027919898903, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: body
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 5411053027919898903, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: data
+      value: 
+      objectReference: {fileID: 2592588978436756164}
+    - target: {fileID: 5411053027919898903, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: complex
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 5411053027919898903, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: aircraft
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 5411053027919898903, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: sofObject
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 5604892960934587882, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7799007537078419305, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: rb
+      value: 
+      objectReference: {fileID: 6726502311915312788}
+    - target: {fileID: 7799007537078419305, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: tr
+      value: 
+      objectReference: {fileID: 5187512701129304235}
+    - target: {fileID: 7799007537078419305, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: avm
+      value: 
+      objectReference: {fileID: 1606782772559677223}
+    - target: {fileID: 7799007537078419305, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: body
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 7799007537078419305, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: data
+      value: 
+      objectReference: {fileID: 2592588978436756164}
+    - target: {fileID: 7799007537078419305, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: complex
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 7799007537078419305, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: aircraft
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 7799007537078419305, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: sofObject
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 8073444626741278763, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8126833493669008013, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: rb
+      value: 
+      objectReference: {fileID: 6726502311915312788}
+    - target: {fileID: 8126833493669008013, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: tr
+      value: 
+      objectReference: {fileID: 4093703789508985797}
+    - target: {fileID: 8126833493669008013, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: avm
+      value: 
+      objectReference: {fileID: 1606782772559677223}
+    - target: {fileID: 8126833493669008013, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: body
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 8126833493669008013, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: data
+      value: 
+      objectReference: {fileID: 2592588978436756164}
+    - target: {fileID: 8126833493669008013, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: complex
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 8126833493669008013, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: aircraft
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 8126833493669008013, guid: 826442ff951d74f44be063cd9e608ac6,
+        type: 3}
+      propertyPath: sofObject
+      value: 
+      objectReference: {fileID: 6795371269953406097}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 826442ff951d74f44be063cd9e608ac6, type: 3}
+--- !u!114 &256319180065789972 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3102225829121124060, guid: 826442ff951d74f44be063cd9e608ac6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2919442082290384584}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f71faad05fb25744782bf11ac8aaf006, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &448732344766013838 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3366940636463701830, guid: 826442ff951d74f44be063cd9e608ac6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2919442082290384584}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8279c40a400d1904b94976cc63ea0b99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &2099469202856810089 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3864406269009438881, guid: 826442ff951d74f44be063cd9e608ac6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2919442082290384584}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2121419244321619470 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3887515273037152454, guid: 826442ff951d74f44be063cd9e608ac6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2919442082290384584}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2651188396801581771 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 885266117726067715, guid: 826442ff951d74f44be063cd9e608ac6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2919442082290384584}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37bd0dd750a65f74da32153b255a174b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &3022731692987200959 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 103890029951028087, guid: 826442ff951d74f44be063cd9e608ac6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2919442082290384584}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &3228582183969394567 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 310127669282353487, guid: 826442ff951d74f44be063cd9e608ac6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2919442082290384584}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &3547012067253809508 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1853923619207466924, guid: 826442ff951d74f44be063cd9e608ac6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2919442082290384584}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3631734539724150111 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1938080873986976663, guid: 826442ff951d74f44be063cd9e608ac6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2919442082290384584}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bb1d26e01070584fa55747aebfcff13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &4093703789508985797 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1174367423548374285, guid: 826442ff951d74f44be063cd9e608ac6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2919442082290384584}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4951801332955185569 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7799007537078419305, guid: 826442ff951d74f44be063cd9e608ac6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2919442082290384584}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcbbf52b5d753414c9900f0befa66742, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &5187512701129304235 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8033944865204934243, guid: 826442ff951d74f44be063cd9e608ac6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2919442082290384584}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6362356031965490245 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8126833493669008013, guid: 826442ff951d74f44be063cd9e608ac6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2919442082290384584}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff3096d4f686bf64bb54f5ce92b9cd90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7175392080003930079 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5411053027919898903, guid: 826442ff951d74f44be063cd9e608ac6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2919442082290384584}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cb2c84edc3800f4c8abf30e53550638, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &7269514651822175462 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5503803452140358190, guid: 826442ff951d74f44be063cd9e608ac6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2919442082290384584}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7807699147059309765 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4961124123782255117, guid: 826442ff951d74f44be063cd9e608ac6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2919442082290384584}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7c45d4f74109b54fb1d7841b2072b83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &7836939542942323463 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4918379278647995855, guid: 826442ff951d74f44be063cd9e608ac6,
     type: 3}
   m_PrefabInstance: {fileID: 2919442082290384584}
   m_PrefabAsset: {fileID: 0}
@@ -12791,6 +13138,46 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.09226563
       objectReference: {fileID: 0}
+    - target: {fileID: 2420193704280610750, guid: 999e70ca5e7e9da4ca6c45330334930d,
+        type: 3}
+      propertyPath: rb
+      value: 
+      objectReference: {fileID: 6726502311915312788}
+    - target: {fileID: 2420193704280610750, guid: 999e70ca5e7e9da4ca6c45330334930d,
+        type: 3}
+      propertyPath: tr
+      value: 
+      objectReference: {fileID: 8576819243880185601}
+    - target: {fileID: 2420193704280610750, guid: 999e70ca5e7e9da4ca6c45330334930d,
+        type: 3}
+      propertyPath: avm
+      value: 
+      objectReference: {fileID: 1606782772559677223}
+    - target: {fileID: 2420193704280610750, guid: 999e70ca5e7e9da4ca6c45330334930d,
+        type: 3}
+      propertyPath: body
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 2420193704280610750, guid: 999e70ca5e7e9da4ca6c45330334930d,
+        type: 3}
+      propertyPath: data
+      value: 
+      objectReference: {fileID: 2592588978436756164}
+    - target: {fileID: 2420193704280610750, guid: 999e70ca5e7e9da4ca6c45330334930d,
+        type: 3}
+      propertyPath: complex
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 2420193704280610750, guid: 999e70ca5e7e9da4ca6c45330334930d,
+        type: 3}
+      propertyPath: aircraft
+      value: 
+      objectReference: {fileID: 6795371269953406097}
+    - target: {fileID: 2420193704280610750, guid: 999e70ca5e7e9da4ca6c45330334930d,
+        type: 3}
+      propertyPath: sofObject
+      value: 
+      objectReference: {fileID: 6795371269953406097}
     - target: {fileID: 2420193704280610750, guid: 999e70ca5e7e9da4ca6c45330334930d,
         type: 3}
       propertyPath: headLookAt.y
@@ -14073,9 +14460,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 999e70ca5e7e9da4ca6c45330334930d, type: 3}
---- !u!4 &8576819243880185601 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1620336723139607194, guid: 999e70ca5e7e9da4ca6c45330334930d,
+--- !u!137 &2424732777256748206 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 4673625485942800693, guid: 999e70ca5e7e9da4ca6c45330334930d,
     type: 3}
   m_PrefabInstance: {fileID: 7024045329539909019}
   m_PrefabAsset: {fileID: 0}
@@ -14091,9 +14478,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e657e9c1ab43d545b217fe17dbbc6ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!137 &2424732777256748206 stripped
-SkinnedMeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 4673625485942800693, guid: 999e70ca5e7e9da4ca6c45330334930d,
+--- !u!4 &8576819243880185601 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1620336723139607194, guid: 999e70ca5e7e9da4ca6c45330334930d,
     type: 3}
   m_PrefabInstance: {fileID: 7024045329539909019}
   m_PrefabAsset: {fileID: 0}

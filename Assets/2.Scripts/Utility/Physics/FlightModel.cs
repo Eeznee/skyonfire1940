@@ -9,7 +9,7 @@ public static class FlightModel
     {
         if (!tr || tr.parent != transform || tr == transform) tr = transform.Find(transform.name + " Shape");
         if(!tr) tr = new GameObject().transform;
-        tr.parent = transform;
+        if(tr.parent != transform) tr.parent = transform;
         tr.gameObject.SetActive(false);
         tr.name = transform.name + " Shape";
         return tr;
@@ -25,24 +25,30 @@ public class Mass
         mass = _mass;
         center = _center;
     }
-    public Mass(Part[] parts, bool empty)
+    public Mass(SofPart part, bool empty)
+    {
+        float partMass = empty ? part.EmptyMass() : part.Mass();
+        mass = partMass;
+        center = part.sofObject.transform.InverseTransformPoint(part.transform.position);
+    }
+    public Mass(SofPart[] parts, bool empty)
     {
         mass = 0f;
         center = Vector3.zero;
 
-        foreach(Part part in parts)
+        foreach(SofPart part in parts)
         {
-            float partMass = empty ? part.EmptyMass() : part.Mass();
-            mass += partMass;
-            center += partMass * part.transform.root.InverseTransformPoint(part.transform.position);
+            Mass partMass = new Mass(part, empty);
+            mass += partMass.mass;
+            center += partMass.mass * partMass.center;
         }
         if (mass > 0f) center /= mass;
     }
 
-    public static Vector3 InertiaMoment(Part[] parts, bool empty)
+    public static Vector3 InertiaMoment(SofPart[] parts, bool empty)
     {
         Vector3 inertiaMoment = Vector3.zero;
-        foreach (Part part in parts)
+        foreach (SofPart part in parts)
         {
             Vector3 localPos = part.transform.root.InverseTransformPoint(part.transform.position);
             float x = new Vector2(localPos.y, localPos.z).sqrMagnitude;
@@ -53,10 +59,10 @@ public class Mass
         return inertiaMoment;
     }
 
-    public static Mass ApproximateMass(AirframeBase[] airframes)
+    public static Mass ApproximateMass(SofAirframe[] airframes)
     {
         Mass approximated = new Mass(0f, Vector3.zero);
-        foreach (AirframeBase airframe in airframes)
+        foreach (SofAirframe airframe in airframes)
         {
             Vector3 localPos = airframe.transform.root.InverseTransformPoint(airframe.transform.position);
             approximated.mass += airframe.ApproximateMass();
@@ -67,9 +73,9 @@ public class Mass
     }
     public static void ComputeAutoMass(SofObject sofObject, Mass targetEmptyMass) 
     {
-        Part[] parts = sofObject.GetComponentsInChildren<Part>();
-        AirframeBase[] airframes = sofObject.GetComponentsInChildren<AirframeBase>();
-        foreach (AirframeBase airframe in airframes)
+        SofPart[] parts = sofObject.GetComponentsInChildren<SofPart>();
+        SofAirframe[] airframes = sofObject.GetComponentsInChildren<SofAirframe>();
+        foreach (SofAirframe airframe in airframes)
             airframe.emptyMass = airframe.ApproximateMass();
         Mass fixedMass = new Mass(parts, true) - new Mass(airframes, true);
         Mass targetAirframeMass = targetEmptyMass - fixedMass;
@@ -78,13 +84,13 @@ public class Mass
         //Approximate airframe mass to match target mass
         Mass approximated = ApproximateMass(airframes);
         float factor = targetAirframeMass.mass / approximated.mass;
-        foreach (AirframeBase airframe in airframes)
+        foreach (SofAirframe airframe in airframes)
             airframe.emptyMass = factor * airframe.ApproximateMass();
 
         //Balance front and back to match target center of gravity
-        List<AirframeBase> frontFrames = new List<AirframeBase>();
-        List<AirframeBase> backFrames = new List<AirframeBase>();
-        foreach (AirframeBase airframe in airframes)
+        List<SofAirframe> frontFrames = new List<SofAirframe>();
+        List<SofAirframe> backFrames = new List<SofAirframe>();
+        foreach (SofAirframe airframe in airframes)
         {
             Vector3 localPos = airframe.transform.root.InverseTransformPoint(airframe.transform.position);
             if (localPos.z > targetAirframeMass.center.z)
@@ -100,21 +106,21 @@ public class Mass
         float frontFactor = 1f + centerShiftMass / front.mass;
         float backFactor = 1f - centerShiftMass / back.mass;
 
-        foreach (AirframeBase airframe in frontFrames)
+        foreach (SofAirframe airframe in frontFrames)
             airframe.emptyMass *= frontFactor;
-        foreach (AirframeBase airframe in backFrames)
+        foreach (SofAirframe airframe in backFrames)
             airframe.emptyMass *= backFactor;
     }
 
     public static Mass operator +(Mass m1, Mass m2)
     {
         float total = m1.mass + m2.mass;
+        if (total <= 0f) return new Mass(0f, Vector3.zero);
         return new Mass(total,(m1.center * m1.mass + m2.center * m2.mass)/total);
     }
     public static Mass operator -(Mass m1, Mass m2)
     {
-        float total = m1.mass - m2.mass;
-        if (total < 0f) return new Mass(0f, Vector3.zero);
-        return new Mass(total, (m1.center * m1.mass - m2.center * m2.mass) / total);
+        m2.mass = -m2.mass;
+        return m1 + m2;
     }
 }

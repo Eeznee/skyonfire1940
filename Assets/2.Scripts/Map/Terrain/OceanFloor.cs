@@ -16,7 +16,8 @@ public class OceanFloor : MonoBehaviour
 
     private void Update()
     {
-        bool newActive = PlayerCamera.camPos.y < 0f;
+        if (!SofCamera.tr) return;
+        bool newActive = SofCamera.tr.position.y < 0f;
         if (newActive != active)
         {
             active = newActive;

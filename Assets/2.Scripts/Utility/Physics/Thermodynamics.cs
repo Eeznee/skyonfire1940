@@ -14,9 +14,9 @@ public static class Thermodynamics
         ratio = Mathf.Lerp(1f, ratio, Mathf.Sqrt(fill));
         return Mathf.LerpUnclamped(20f, engineTemp, ratio);
     }
-    public static float LerpTemperature(float from,float to)
+    public static float LerpTemperature(float from,float to, float deltaTime)
     {
         float temperatureDiff = Mathf.Clamp(Mathf.Abs(to - from), proportionalMin, proportionalMax);
-        return Mathf.MoveTowards(from, to, temperatureDiff * conductivity * Time.deltaTime);
+        return Mathf.MoveTowards(from, to, temperatureDiff * conductivity * deltaTime);
     }
 }

@@ -17,8 +17,8 @@ public class SquadronOnMap : MonoBehaviour
     [Header("References")]
     public SquadronPositionner positionner;
 
-    [HideInInspector]public Game.Squadron assignedSquad;
-    [HideInInspector]public int hiddenId = 0;
+    [HideInInspector] public Game.Squadron assignedSquad;
+    [HideInInspector] public int hiddenId = 0;
 
 
     public void Create(Game.Squadron squad)

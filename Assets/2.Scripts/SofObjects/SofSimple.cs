@@ -5,7 +5,8 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
-public class SofSimple : SofObject
+[RequireComponent(typeof(SofObject))]
+public class SofSimple : MonoBehaviour
 {
     //Damage model
     public float radius = 5f;
@@ -19,26 +20,26 @@ public class SofSimple : SofObject
     public GameObject intactVersion;
     public GameObject destroyedVersion;
 
-    float hp;
+    private float hp;
 
-    public override void Initialize()
+    private void Start()
     {
-        base.Initialize();
         hp = tntHp;
     }
-    public override void Explosion(Vector3 center, float tnt)
+
+    public void Explosion(Vector3 center, float tnt)
     {
         float distance = (transform.position - center).magnitude;
         if (distance < radius + Ballistics.ExplosionRangeSimple(tnt))
         {
             hp -= tnt;
-        } else if (distance < radius + Ballistics.HalfExplosionRangeSimple(tnt))
+        }
+        else if (distance < radius + Ballistics.HalfExplosionRangeSimple(tnt))
         {
             hp -= tnt / 2f;
         }
         if (hp <= 0f) SofDestroy();
     }
-
     public void BulletDamage(float energy)
     {
         hp -= energy / 1000f / bulletHp * tntHp;
@@ -47,11 +48,15 @@ public class SofSimple : SofObject
 
     public void SofDestroy()
     {
-        if (destroyed) return;
-        intactVersion.SetActive(false);
-        destroyedVersion.SetActive(true);
-        destroyed = true;
-        GameManager.sofObjects.Remove(this);
+        SofObject sofObject = GetComponent<SofObject>();
+        if (sofObject)
+        {
+            if (sofObject.destroyed) return;
+            sofObject.destroyed = true;
+            GameManager.sofObjects.Remove(sofObject);
+        }
+        if (intactVersion) intactVersion.SetActive(false);
+        if (destroyedVersion) destroyedVersion.SetActive(true);
         if (destroyAnim) Destroy(gameObject, lifeTime);
     }
 }
@@ -64,39 +69,36 @@ public class SofSimpleEditor : Editor
     {
         serializedObject.Update();
 
-        SofSimple sofSimple = (SofSimple)target;
-        sofSimple.warOnly = EditorGUILayout.Toggle("War Only", sofSimple.warOnly);
+        SofSimple simple = (SofSimple)target;
         //Physics
         GUILayout.Space(15f);
         GUI.color = Color.white;
         EditorGUILayout.HelpBox("Damage Settings", MessageType.None);
         GUI.color = GUI.backgroundColor;
-        sofSimple.radius = EditorGUILayout.FloatField("Radius", sofSimple.radius);
-        sofSimple.tntHp = EditorGUILayout.FloatField("Tnt Kg Hp", sofSimple.tntHp);
-        sofSimple.bulletAffected = EditorGUILayout.Toggle("Affected by bullets", sofSimple.bulletAffected);
-        if (sofSimple.bulletAffected)
+        simple.radius = EditorGUILayout.FloatField("Radius", simple.radius);
+        simple.tntHp = EditorGUILayout.FloatField("Tnt Kg Hp", simple.tntHp);
+        simple.bulletAffected = EditorGUILayout.Toggle("Affected by bullets", simple.bulletAffected);
+        if (simple.bulletAffected)
         {
-            sofSimple.bulletHp = EditorGUILayout.FloatField("Bullet Hp", sofSimple.bulletHp);
+            simple.bulletHp = EditorGUILayout.FloatField("Bullet Hp", simple.bulletHp);
         }
         GUILayout.Space(15f);
         GUI.color = Color.white;
         EditorGUILayout.HelpBox("Destroy Animation", MessageType.None);
         GUI.color = GUI.backgroundColor;
-        sofSimple.intactVersion = EditorGUILayout.ObjectField("Intact GameObject", sofSimple.intactVersion, typeof(GameObject), true) as GameObject;
-        sofSimple.destroyedVersion = EditorGUILayout.ObjectField("Destroyed GameObject", sofSimple.destroyedVersion, typeof(GameObject), true) as GameObject;
-        sofSimple.destroyAnim = EditorGUILayout.Toggle("Destruction Animation", sofSimple.destroyAnim);
-        if (sofSimple.destroyAnim)
+        simple.intactVersion = EditorGUILayout.ObjectField("Intact GameObject", simple.intactVersion, typeof(GameObject), true) as GameObject;
+        simple.destroyedVersion = EditorGUILayout.ObjectField("Destroyed GameObject", simple.destroyedVersion, typeof(GameObject), true) as GameObject;
+        simple.destroyAnim = EditorGUILayout.Toggle("Destruction Animation", simple.destroyAnim);
+        if (simple.destroyAnim)
         {
-            sofSimple.lifeTime = EditorGUILayout.FloatField("Lifetime On Destroy", sofSimple.lifeTime);
+            simple.lifeTime = EditorGUILayout.FloatField("Lifetime On Destroy", simple.lifeTime);
         }
 
-        SerializedProperty crew = serializedObject.FindProperty("crew");
-        EditorGUILayout.PropertyField(crew, true);
 
         if (GUI.changed)
         {
-            EditorUtility.SetDirty(sofSimple);
-            EditorSceneManager.MarkSceneDirty(sofSimple.gameObject.scene);
+            EditorUtility.SetDirty(simple);
+            EditorSceneManager.MarkSceneDirty(simple.gameObject.scene);
         }
         serializedObject.ApplyModifiedProperties();
     }

@@ -15,12 +15,20 @@ public class SofAudioListener : MonoBehaviour
     AudioMixer mixer;
     float cockpitRatio = 1f;
 
-    void Awake()
+    public static bool AttachedToSofObject(SofObject sofObj) { return tr && sofObj.tr.root == tr.root; }
+
+    private void OnEnable()
     {
+        tr = transform;
+        listener = gameObject.AddComponent<AudioListener>();
         mixer = GameManager.gm.mixer;
         StartCoroutine(FadeVolumeIn());
-        listener = gameObject.AddComponent<AudioListener>();
-        tr = transform;
+
+        TimeManager.OnPauseEvent += OnPause;
+    }
+    private void OnDisable()
+    {
+        TimeManager.OnPauseEvent -= OnPause;
     }
     public static AudioMixerGroup GetAudioMixer(SofAudioGroup group)
     {
@@ -34,18 +42,19 @@ public class SofAudioListener : MonoBehaviour
     }
     private Transform CurrentParent()
     {
-        if (GameManager.gm.vr) return PlayerManager.player.crew.transform;
-        if (PlayerCamera.subCam.pos == CamPosition.Free || PlayerManager.player.crew == null)
-            return PlayerCamera.camTr;
-
-        return PlayerManager.player.crew.transform;
+        if (SofCamera.subCam.logic.BasePosMode == CamPos.World) return SofCamera.tr;
+        if (!SofCamera.subCam.targetsPlayer) return SofCamera.subCam.Target().tr;
+        return Player.crew.tr;
     }
-
+    private void OnPause()
+    {
+        AudioListener.volume = TimeManager.paused ? 0.2f : 1f;
+    }
     void Update()
     {
         //Cockpit volume
-        bool firstPerson = GameManager.gm.vr || PlayerCamera.subCam.pos == CamPosition.FirstPerson || PlayerCamera.subCam.pos == CamPosition.Bombsight;
-        float targetRatio = firstPerson ? PlayerManager.player.crew.audioCockpitRatio : 0f;
+        bool firstPerson = GameManager.gm.vr || SofCamera.viewMode == 1 || SofCamera.viewMode == 3;
+        float targetRatio = firstPerson ? Player.crew.Seat.CockpitAudio() : 0f;
         cockpitRatio = Mathf.MoveTowards(cockpitRatio, targetRatio, 5f * Time.deltaTime);
         mixer.SetFloat("CockpitVolume", Mathf.Log10(cockpitRatio + 0.0001f) * 20);
         float externalVol = Mathf.Log10(1f - cockpitRatio + 0.0001f) * 20;

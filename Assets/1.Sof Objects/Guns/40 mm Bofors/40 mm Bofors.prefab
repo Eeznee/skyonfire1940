@@ -26,6 +26,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.775, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8155067803604597682}
   m_RootOrder: 0
@@ -58,6 +59,7 @@ Transform:
   m_LocalRotation: {x: 0.12120575, y: 0.29589245, z: 0.3882775, w: 0.8642902}
   m_LocalPosition: {x: -1.5817815, y: 0.018325329, z: -1.1809796}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 104978598713032887}
   m_RootOrder: 1
@@ -81,6 +83,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -138,6 +141,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8155067803483289766}
   m_RootOrder: 2
@@ -183,6 +187,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3128844551411075324}
   - {fileID: 8427347310464456621}
@@ -209,6 +214,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -266,6 +272,7 @@ Transform:
   m_LocalRotation: {x: -0.3420201, y: 0, z: 0, w: 0.9396927}
   m_LocalPosition: {x: -0.1, y: -0.4, z: 0.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8155067803604597682}
   m_RootOrder: 1
@@ -309,6 +316,7 @@ Transform:
   m_LocalRotation: {x: -0.3420201, y: 0, z: 0, w: 0.9396927}
   m_LocalPosition: {x: 0.1, y: -0.4, z: 0.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8155067803604597682}
   m_RootOrder: 2
@@ -353,6 +361,7 @@ Transform:
   m_LocalRotation: {x: -0.000000036928085, y: -0, z: 0.000000020314358, w: 1}
   m_LocalPosition: {x: -0.87892, y: 1.8103911, z: -1.144172}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8155067803150941403}
   m_RootOrder: 1
@@ -369,19 +378,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e657e9c1ab43d545b217fe17dbbc6ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tr: {fileID: 7501945661026523373}
   rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
+  sofObject: {fileID: 238445306015949557}
+  complex: {fileID: 238445306015949557}
   aircraft: {fileID: 0}
-  data: {fileID: 0}
-  tr: {fileID: 0}
-  burningEffect: {fileID: 0}
-  burningRatios: []
-  material: {fileID: 11400000, guid: aae8ef80076325d4699c0031ae003f06, type: 2}
+  avm: {fileID: 0}
+  data: {fileID: 2907799334845312572}
   emptyMass: 0
-  maxHp: 0
-  hp: 5
+  material: {fileID: 11400000, guid: aae8ef80076325d4699c0031ae003f06, type: 2}
   structureDamage: 1
   ripped: 0
   burning: 0
@@ -389,8 +394,10 @@ MonoBehaviour:
   currentSeat: 0
   seats:
   - {fileID: 8155067803604597683}
+  crewGroup: []
   parachute: {fileID: 3414645787355955904, guid: a124fc22068e50a498cd4ad9141507a4,
     type: 3}
+  specialPlayerParachute: {fileID: 0}
   headLookAt: {x: 0, y: 0, z: 1}
 --- !u!136 &7461790824485519251
 CapsuleCollider:
@@ -416,7 +423,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8155067803069004724}
   - component: {fileID: 8913085849251016605}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Guns Audio
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -433,6 +440,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8155067804050703306}
   m_RootOrder: 0
@@ -449,13 +457,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff3096d4f686bf64bb54f5ce92b9cd90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tr: {fileID: 8155067803069004724}
   rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
+  sofObject: {fileID: 238445306015949557}
+  complex: {fileID: 238445306015949557}
   aircraft: {fileID: 0}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 0}
+  data: {fileID: 2907799334845312572}
 --- !u!1 &8155067803150941402
 GameObject:
   m_ObjectHideFlags: 0
@@ -468,7 +476,7 @@ GameObject:
   - component: {fileID: 7565534157745625479}
   - component: {fileID: 7261544260633682711}
   - component: {fileID: 7112097954470652888}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Intact
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -485,6 +493,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8155067803371847379}
   - {fileID: 7501945661026523373}
@@ -504,13 +513,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e1fb4ee19e65ba4abb29beeb38a8af2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tr: {fileID: 8155067803150941403}
   rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
+  sofObject: {fileID: 238445306015949557}
+  complex: {fileID: 238445306015949557}
   aircraft: {fileID: 0}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 0}
+  data: {fileID: 2907799334845312572}
   preventSelfDamage: 0
   animatedConstrains: 0
   controlMode: 0
@@ -590,6 +599,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -648,6 +658,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.733, z: -0.706}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8155067803681774956}
   - {fileID: 8155067803604597682}
@@ -673,6 +684,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -712,8 +724,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8155067803483289766}
+  - component: {fileID: 238445306015949557}
   - component: {fileID: 8155067803483289767}
-  m_Layer: 0
+  - component: {fileID: 2907799334845312572}
+  m_Layer: 9
   m_Name: 40 mm Bofors
   m_TagString: Ally
   m_Icon: {fileID: 0}
@@ -730,6 +744,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 126.73, y: 0, z: -138.99}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8155067803150941403}
   - {fileID: 104978598713032887}
@@ -737,6 +752,39 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &238445306015949557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8155067803483289761}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b93287a77cba364d86e12b16e766afb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tr: {fileID: 8155067803483289766}
+  rb: {fileID: 0}
+  complex: {fileID: 238445306015949557}
+  aircraft: {fileID: 0}
+  debris: {fileID: 0}
+  simpleDamage: {fileID: 8155067803483289767}
+  warOnly: 1
+  destroyed: 0
+  burning: 0
+  lod: {fileID: 0}
+  bubble: {fileID: 0}
+  data: {fileID: 2907799334845312572}
+  avm: {fileID: 0}
+  components: []
+  parts: []
+  modules: []
+  airframes: []
+  crew:
+  - {fileID: 6914878273311552969}
+  cogForwardDistance: 0
+  targetEmptyMass: 3000
 --- !u!114 &8155067803483289767
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -749,22 +797,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24bbc383c752bb244861b3a035bdffcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  warOnly: 1
-  data: {fileID: 0}
-  avm: {fileID: 0}
-  crew:
-  - {fileID: 6914878273311552969}
-  viewPoint: {x: 0, y: 3, z: -15}
-  destroyed: 0
-  burning: 0
   radius: 5
   tntHp: 5
   bulletAffected: 1
-  bulletHp: 100
+  bulletHp: 120
   destroyAnim: 0
   lifeTime: 30
   intactVersion: {fileID: 8155067803150941402}
   destroyedVersion: {fileID: 2984981211621786066}
+--- !u!114 &2907799334845312572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8155067803483289761}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96d07c011fedd8e4ea48fe0210875bbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tr: {fileID: 8155067803483289766}
+  rb: {fileID: 0}
+  sofObject: {fileID: 238445306015949557}
+  complex: {fileID: 238445306015949557}
+  aircraft: {fileID: 0}
+  avm: {fileID: 0}
+  data: {fileID: 2907799334845312572}
 --- !u!1 &8155067803604597693
 GameObject:
   m_ObjectHideFlags: 0
@@ -775,7 +834,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8155067803604597682}
   - component: {fileID: 8155067803604597683}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Gunner Seat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -792,6 +851,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.88, y: 0.688, z: -0.438}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4577115825373651166}
   - {fileID: 1487722493247050342}
@@ -811,13 +871,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd637709e39f8a9439d09da1d86e4bd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
-  aircraft: {fileID: 0}
-  data: {fileID: 0}
   tr: {fileID: 8155067803604597682}
+  rb: {fileID: 0}
+  sofObject: {fileID: 238445306015949557}
+  complex: {fileID: 238445306015949557}
+  aircraft: {fileID: 0}
+  avm: {fileID: 0}
+  data: {fileID: 2907799334845312572}
+  externalViewPoint: {x: 0, y: 2, z: -12}
+  goProViewPoint: {x: 1, y: 0, z: 0}
   audioCockpitRatio: 1
   headLookDirection: {x: 0, y: 0, z: 0}
   defaultPOV: {fileID: 4577115825373651166}
@@ -835,12 +897,10 @@ MonoBehaviour:
     rear: 0.5
     top: 1
     bottom: 0
-  reloadableGuns:
-  - {fileID: 8155067804333574725}
-  magStock: {fileID: 0}
+  reloadableGuns: []
   magTrash: {fileID: 0}
+  localDirection: {x: 0, y: 0, z: 1}
   target: {fileID: 0}
-  mainGun: 0
   turret: {fileID: 7565534157745625479}
   gunPovTarget: {fileID: 8155067803604597682}
   progressiveHydraulic: {fileID: 0}
@@ -872,6 +932,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.833, z: -0.288}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8155067804333574724}
   m_Father: {fileID: 8155067803371847379}
@@ -896,6 +957,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -936,7 +998,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8155067804050703306}
   - component: {fileID: 8155067804050703307}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: AVM
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -953,6 +1015,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8155067803069004724}
   m_Father: {fileID: 8155067803150941403}
@@ -970,16 +1033,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7a37a313e41a3e48851ccbd2e981c70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tr: {fileID: 8155067804050703306}
   rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
+  sofObject: {fileID: 238445306015949557}
+  complex: {fileID: 238445306015949557}
   aircraft: {fileID: 0}
-  data: {fileID: 0}
-  tr: {fileID: 0}
+  avm: {fileID: 0}
+  data: {fileID: 2907799334845312572}
   localHolder: {fileID: 0}
   globalHolder: {fileID: 0}
-  localActive: 0
+  use3dSound: 0
 --- !u!1 &8155067804333574727
 GameObject:
   m_ObjectHideFlags: 0
@@ -990,7 +1053,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8155067804333574724}
   - component: {fileID: 8155067804333574725}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: 40 MM
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1007,6 +1070,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.07, y: 0.087, z: 3.21}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8155067803681774956}
   m_RootOrder: 0
@@ -1023,38 +1087,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ae16e75984dd9147939b5b512f648c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tr: {fileID: 8155067804333574724}
   rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  simple: {fileID: 0}
-  complex: {fileID: 0}
+  sofObject: {fileID: 238445306015949557}
+  complex: {fileID: 238445306015949557}
   aircraft: {fileID: 0}
-  data: {fileID: 0}
-  tr: {fileID: 0}
-  burningEffect: {fileID: 0}
-  burningRatios: []
-  material: {fileID: 0}
+  avm: {fileID: 0}
+  data: {fileID: 2907799334845312572}
   emptyMass: 500
-  maxHp: 0
-  hp: 0
-  structureDamage: 1
-  ripped: 0
-  burning: 0
   controller: 0
   ejection: {fileID: 0}
   muzzleEffects: {fileID: 0}
   bulletSpawn: {fileID: 0}
+  magazineAttachPoint: {fileID: 0}
   gunPreset: {fileID: 11400000, guid: 080b36c5bb9be1143ab991327203260f, type: 2}
-  magStock: {fileID: 0}
+  magStorage: {fileID: 0}
   magazine: {fileID: 0}
   clipAmmo: 1000
-  magazineLocalPos: {x: 0, y: 0, z: 0}
   bolt: {fileID: 0}
   noConvergeance: 0
+  mechanism: {fileID: 0}
   temperature: 0
   clips: 0
   fuzeDistance: 0
   reloading: 0
-  cycleState: 1
 --- !u!1 &8982870346397146754
 GameObject:
   m_ObjectHideFlags: 0
@@ -1083,6 +1139,7 @@ Transform:
   m_LocalRotation: {x: -0.30923307, y: -0.07072823, z: -0.21144836, w: 0.9244793}
   m_LocalPosition: {x: 1.82, y: 0.282, z: -1.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 104978598713032887}
   m_RootOrder: 2
@@ -1106,6 +1163,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
