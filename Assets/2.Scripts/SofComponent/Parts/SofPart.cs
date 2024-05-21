@@ -5,31 +5,29 @@ using UnityEditor.SceneManagement;
 #endif
 public class SofPart : SofComponent       //Parts are Object Elements with mass
 {
-    public float emptyMass = 0f;
-    protected Vector3 localPos;
+    public float mass;
 
-    public override void Initialize(SofComplex _complex)
+    public float Mass()
     {
-        base.Initialize(_complex);
-        localPos = complex.transform.InverseTransformPoint(tr.position);
+        return EmptyMass() + AdditionalMass();
     }
-    public virtual float Mass()
+    public virtual float AdditionalMass()
     {
-        return emptyMass;
+        return 0f;
     }
     public virtual float EmptyMass()
     {
-        return emptyMass;
+        return mass;
     }
 }
 #if UNITY_EDITOR
 [CustomEditor(typeof(SofPart))]
 public class PartEditor : Editor
 {
-    SerializedProperty emptyMass;
+    SerializedProperty mass;
     protected virtual void OnEnable()
     {
-        emptyMass = serializedObject.FindProperty("emptyMass");
+        mass = serializedObject.FindProperty("mass");
     }
     protected bool ShowMass() { return true; }
     protected virtual string BasicName() { return "Part"; }
@@ -38,7 +36,7 @@ public class PartEditor : Editor
 
     protected virtual void BasicFoldout()
     {
-        if (ShowMass()) EditorGUILayout.PropertyField(emptyMass);
+        if (ShowMass()) EditorGUILayout.PropertyField(mass);
     }
 
     public override void OnInspectorGUI()

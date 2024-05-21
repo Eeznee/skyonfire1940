@@ -32,12 +32,12 @@ public class Parachute : SofComplex
         startVelocity = aircraft.data.rb.velocity + aircraft.transform.up * 5f;
         startTag = aircraft.tag;
 
-        seat.ResetSeat();
         _crew.transform.parent = seat.transform.parent;
-        _crew.seats = new CrewSeat[1] { seat };
-        _crew.currentSeat = 0;
 
         Initialize();
+
+        _crew.seats = new List<CrewSeat>(new CrewSeat[] { seat });
+        _crew.SwitchSeat(0);
 
         if (_crew == Player.crew)
         {
@@ -65,7 +65,7 @@ public class Parachute : SofComplex
         Vector3 vel = data.rb.GetPointVelocity(transform.TransformPoint(dragPoint));
         trueRadius = Mathf.MoveTowards(trueRadius, radius, Time.fixedDeltaTime * 0.5f);
         float area = trueRadius * trueRadius * Mathf.PI;
-        data.rb.AddForceAtPosition(Aerodynamics.ComputeDrag(vel,data.tas.Get, data.density.Get, area, dragCoeff, 1f),transform.TransformPoint(dragPoint));
+        data.rb.AddForceAtPosition(Aerodynamics.Drag(vel,data.tas.Get, data.density.Get, area, dragCoeff, 1f),transform.TransformPoint(dragPoint));
         if (data.relativeAltitude.Get < -feetGroundOffset && !landed) Land();
 
         transform.Rotate(0f, rotationSpeed * Time.fixedDeltaTime, 0f, Space.Self);

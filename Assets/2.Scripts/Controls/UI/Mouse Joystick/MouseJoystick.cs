@@ -12,6 +12,7 @@ namespace UnityEngine.InputSystem.OnScreen
         private RectTransform tr;
 
         [InputControl(layout = "Vector2")] [SerializeField] private string m_ControlPath;
+        private float sensitivity = 0.5f;
         public float size = 0.6f;
         public Image fixedDot;
         public Image border;
@@ -26,6 +27,7 @@ namespace UnityEngine.InputSystem.OnScreen
 
         void Start()
         {
+            sensitivity = PlayerPrefs.GetFloat("MouseStickSensitivity", sensitivity);
             alwaysShow = PlayerPrefs.GetInt("MouseStickAlwaysShow", 1) == 1;
             transform.position = dotTr.position = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
             tr = GetComponent<RectTransform>();
@@ -60,10 +62,14 @@ namespace UnityEngine.InputSystem.OnScreen
         }
         void Update()
         {
+            if (false && PlayerActions.cam.Reset.ReadValue<float>() < 0.5f)
+            {
+                SetDot(Vector2.zero);
+                return;
+            }
             if (!SofCamera.lookAround)
             {
-                Vector2 input = PlayerActions.cam.Rotate.ReadValue<Vector2>();
-                input.y *= -1;
+                Vector2 input = Mouse.current.delta.value * sensitivity;
                 SetDot(dotPos + input);
             }
             if (!alwaysShow)

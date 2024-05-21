@@ -15,25 +15,25 @@ public class Stick : CockpitInteractable
         float pitchAngle = Mathv.OptimalLeverRotation(pitch, gripPos, pitchAxis, pitch.parent.up);
         float rollAngle = Mathv.OptimalLeverRotation(roll, gripPos, rollAxis, roll.parent.up);
 
-        Vector3 axis = Vector3.zero;
-        axis.x = Mathf.Clamp(-pitchAngle / maxPitch, -1f, 1f);
-        axis.z = Mathf.Clamp(-rollAngle / maxRoll, -1f, 1f);
-        axis.y = -SofVrRig.instance.Stick(xrGrab).x;
-        aircraft.SetControls(axis,false, true);
+        AircraftAxes axes = AircraftAxes.zero;
+        axes.pitch = Mathf.Clamp(-pitchAngle / maxPitch, -1f, 1f);
+        axes.roll = Mathf.Clamp(-rollAngle / maxRoll, -1f, 1f);
+        axes.yaw = -SofVrRig.instance.Stick(xrGrab).x;
+        aircraft.inputs.SendAxes(axes, false, true);
 
-        aircraft.brake = SofVrRig.instance.Stick(xrGrab).y;
+        aircraft.inputs.brake = SofVrRig.instance.Stick(xrGrab).y;
 
         bool secondaryFire = SofVrRig.instance.Trigger(xrGrab) > 0.9f || SofVrRig.instance.PrimaryButton(xrGrab);
         bool primaryFire = SofVrRig.instance.Trigger(xrGrab) > 0.1f;
-        if (primaryFire) aircraft.FirePrimaries();
-        if (secondaryFire) aircraft.FireSecondaries();
+        if (primaryFire) aircraft.armament.FirePrimaries();
+        if (secondaryFire) aircraft.armament.FireSecondaries();
     }
     private void Update()
     {
         CockpitInteractableUpdate();
         if (!aircraft) return;
-        pitch.localRotation = Quaternion.AngleAxis(-aircraft.controlValue.x * maxPitch, pitchAxis);
-        roll.localRotation = Quaternion.AngleAxis(-aircraft.controlValue.z * maxRoll, rollAxis);
+        pitch.localRotation = Quaternion.AngleAxis(-aircraft.inputs.current.pitch * maxPitch, pitchAxis);
+        roll.localRotation = Quaternion.AngleAxis(-aircraft.inputs.current.roll * maxRoll, rollAxis);
     }
 }
 

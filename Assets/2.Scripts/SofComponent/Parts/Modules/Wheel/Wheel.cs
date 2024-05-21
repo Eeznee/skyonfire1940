@@ -112,7 +112,7 @@ public class Wheel : SofModule
         {
             float speedEff = Mathf.InverseLerp(maximumSteerableSpeed, 0f, data.gsp.Get);
 
-            steeringInput = aircraft.controlValue.y * maxSteerAngle * speedEff;
+            steeringInput = aircraft.inputs.current.yaw * maxSteerAngle * speedEff;
 
             wheel.steerAngle = Mathf.MoveTowards(wheel.steerAngle, steeringInput, Time.fixedDeltaTime * steerAngularSpeed);
 
@@ -120,10 +120,10 @@ public class Wheel : SofModule
             transform.parent.localRotation = rotation;
         }
 
-        bool forcedBrake = data.gsp.Get < 2f && ((int)aircraft.enginesState <= 1 || aircraft.throttle < 0.05f);
+        bool forcedBrake = data.gsp.Get < 2f && ((int)aircraft.engines.state <= 1 || aircraft.engines.throttle < 0.05f);
 
-        brakeInput = brakeMode == BrakeMode.Split ? -Mathf.Sign(rootPos.x) * aircraft.controlValue.y : 0f;
-        brakeInput = Mathf.Max(aircraft.brake, brakeInput);
+        brakeInput = brakeMode == BrakeMode.Split ? -Mathf.Sign(rootPos.x) * aircraft.inputs.target.yaw : 0f;
+        brakeInput = Mathf.Max(aircraft.inputs.brake, brakeInput);
         if (forcedBrake) brakeInput = 1f;
         if (wheel.radius == 0f) brakeInput = 0f;
 
@@ -132,9 +132,9 @@ public class Wheel : SofModule
     }
     private void Update()
     {
-        if (aircraft && aircraft.gear && rootPos.x != 0f)
+        if (aircraft && aircraft.hydraulics.gear && rootPos.x != 0f)
         {
-            bool newWheelDisabled = aircraft.gear.state < 0.8f;
+            bool newWheelDisabled = aircraft.hydraulics.gear.state < 0.8f;
             if (newWheelDisabled != wheelDisabled) { wheelDisabled = newWheelDisabled; wheel.radius = wheelDisabled ? 0f : radius; }
         }
         wheel.GetWorldPose(out Vector3 pos, out Quaternion rot);
@@ -209,8 +209,7 @@ public class Steering : SofModule
         if (steering && aircraft)
         {
             float speedEff = Mathf.InverseLerp(maxSteerSpeed, 0f, data.gsp.Get);
-            steeringInput = aircraft.controlValue.y * maxSteerAngle * -Mathf.Sign(rootPos.z) * speedEff;
-            wheel.steerAngle = Mathf.MoveTowards(wheel.steerAngle, steeringInput, Time.fixedDeltaTime * 2f);
+            wheel.steerAngle = aircraft.inputs.current.yaw * maxSteerAngle * -Mathf.Sign(rootPos.z) * speedEff;
             transform.parent.localRotation = defaultLocalRot;
             transform.parent.Rotate(Vector3.up * wheel.steerAngle);
         }

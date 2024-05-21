@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New GunHits Preset", menuName = "Weapons/GunHits")]
+[CreateAssetMenu(fileName = "New Bullet Hits", menuName = "SOF/Weapons/Bullet Hits")]
 public class BulletHits : ScriptableObject
 {
     public GameObject mudHit;

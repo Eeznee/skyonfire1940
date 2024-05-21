@@ -25,7 +25,7 @@ public class HoldFormation : Maneuver
         if (breakFormation && breakFormationTimer < Time.time)
         {
             Vector3 axis = AircraftControl.TrackingInputs(transform.position + breakDir * 300f, aircraft, 0f, 0f,true);
-            aircraft.SetControls(axis, true, false);
+            aircraft.inputs.SetControls(axis, true, false);
         } 
 
         else
@@ -34,19 +34,19 @@ public class HoldFormation : Maneuver
         {
             Vector3 pos = transform.position + transform.forward * 500f;
             pos.y = Mathf.Max(transform.position.y,500f);
-            AircraftControl.Tracking(pos, aircraft, 0f, 1f,true);
+            PointTracking.Tracking(pos, aircraft, 0f, 1f,true);
         }
         else
         {
             //Direction
             Vector3 targetPos = aircraft.card.formation.GetPosition(leader.transform, aircraft.placeInSquad);
-            AircraftControl.Tracking(targetPos + leader.transform.forward * 1000f, aircraft, leader.data.bankAngle.Get, 1f, true);
+            PointTracking.Tracking(targetPos + leader.transform.forward * 1000f, aircraft, leader.data.bankAngle.Get, 1f, true);
 
             //Throttle
             float dis = transform.InverseTransformDirection(targetPos - transform.position).z;
-            float thr = leader.throttle + thrPID.UpdateUnclamped(dis,Time.fixedDeltaTime);
-            aircraft.SetThrottle(Mathf.Clamp01(thr));
-            aircraft.boost = thr > 1.15f;
+            float thr = leader.engines.throttle + thrPID.UpdateUnclamped(dis,Time.fixedDeltaTime);
+            aircraft.engines.SetThrottle(Mathf.Clamp01(thr));
+            aircraft.engines.boost = thr > 1.15f;
         }
         /*
         if (Input.GetKeyDown(KeyCode.B))

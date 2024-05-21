@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
-public class HydraulicControl
+public static class HydraulicControl
 {
     public enum Type
     {
@@ -12,10 +13,25 @@ public class HydraulicControl
         AirBrakes,
         Canopy,
         SecondCanopy,
-        BombBay
+        BombBay,
     }
-    public static bool IsAlwaysBinary(Type control) { return control == Type.BombBay || control == Type.LandingGear || control == Type.AirBrakes; }
-    public static string GetParameter(Type control)
+    public static bool IsAlwaysBinary(this Type control) { return control == Type.BombBay || control == Type.LandingGear ||  control == Type.AirBrakes; }
+    public static bool HasCustomDefaultState(this Type control) { return control == Type.Custom || control == Type.Canopy || control == Type.SecondCanopy; }
+
+    public static float DefaultState(this Type control)
+    {
+        switch (control)
+        {
+            case Type.Flaps: return 0f;
+            case Type.LandingGear: return 0f;
+            case Type.AirBrakes: return 0f;
+            case Type.BombBay: return 0f;
+        }
+        Debug.LogError("This control type doesnt have a default state");
+        return 0f;
+    }
+
+    public static string StringParameter(this Type control)
     {
         switch (control)
         {
@@ -28,22 +44,5 @@ public class HydraulicControl
         }
         Debug.LogError("Custom Hydraulic cannot use this function");
         return "";
-    }
-
-    public static void AssignHydraulics(SofAircraft aircraft)
-    {
-        HydraulicSystem[] systems = aircraft.GetComponentsInChildren<HydraulicSystem>();
-
-        foreach(HydraulicSystem hs in systems)
-        {
-            switch (hs.control)
-            {
-                case Type.Flaps: aircraft.flaps = hs; break;
-                case Type.LandingGear: aircraft.gear = hs; break;
-                case Type.AirBrakes: aircraft.airBrakes = hs; break;
-                case Type.BombBay: aircraft.bombBay = hs; break;
-                case Type.Canopy: aircraft.canopy = hs; break;
-            }
-        }
     }
 }

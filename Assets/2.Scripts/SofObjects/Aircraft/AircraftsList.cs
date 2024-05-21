@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
-[CreateAssetMenu(fileName = "New Aircraft List", menuName = "Aircraft/Aircraft List")]
+[CreateAssetMenu(fileName = "New Aircraft List", menuName = "SOF/Game Data/Aircraft List")]
 public class AircraftsList : ScriptableObject
 {
     public AircraftCard[] list;
@@ -25,7 +25,6 @@ public class AircraftsList : ScriptableObject
                 if (list[i].aircraft) list[i].sofAircraft = aircraft;
             }
         }
-        
     }
 }
 #if UNITY_EDITOR

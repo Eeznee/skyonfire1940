@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -57,22 +58,28 @@ public class CameraInputs : MonoBehaviour
         float fovFactor = 1f - Mathf.Log(fov / minFov, 2) / Mathf.Log(maxFov / minFov, 2);
         SetFov(zoomRelativeInput + fovFactor);
     }
-    private void Zoom()
+    public void Zoom(bool zoomedIn)
     {
-        zoomed = !zoomed;
+        //Log.Print(zoomedIn ? "Camera Zoomed In" : "Camera Zoomed Out", "Camera Zoom");
+        zoomed = zoomedIn;
         fov = zoomed ? zoomedFieldOfView : fieldOfView;
     }
-    private void SetFov(float factor)
+    public void Zoom()
+    {
+        Zoom(!zoomed);
+    }
+    public void SetFov(float factor)
     {
         factor = Mathf.Max(0f, factor);
         fov = minFov * Mathf.Pow(2f, Mathf.Log(maxFov / minFov, 2) * (1f - factor));
+        zoomed = fov <= 0.5f * (zoomedFieldOfView + fieldOfView);
     }
     private float zoomVelocity = 0f;
     private void Update()
     {
         ProgressiveZoom();
 
-        if (Player.seatInterface == SeatInterface.Bombardier) cam.fieldOfView = Player.aircraft.bombSight.fov;
+        if (Player.role == SeatRole.Bombardier) cam.fieldOfView = Player.aircraft.bombSight.fov;
         else
             cam.fieldOfView = Mathf.SmoothDamp(cam.fieldOfView, fov, ref zoomVelocity, zoomSmoothTime, Mathf.Infinity, Time.unscaledDeltaTime);
 
@@ -86,7 +93,8 @@ public class CameraInputs : MonoBehaviour
     }
     private static bool CameraUnlocked()
     {
-        if (GameManager.Controls() == ControlsMode.MouseStick) return SofCamera.lookAround;
+        if (ControlsManager.CurrentMode() == ControlsMode.MouseStick) return SofCamera.lookAround;
+        if (Player.role == SeatRole.Gunner && ControlsManager.CurrentMode() == ControlsMode.Direct) return SofCamera.lookAround;
 #if !MOBILE_INPUT
         if (UIManager.gameUI != GameUI.Game) return PlayerActions.cam.Unlock.ReadValue<float>() > 0.5f && EventSystem.current.currentSelectedGameObject == null;
 #endif
@@ -101,7 +109,7 @@ public class CameraInputs : MonoBehaviour
     public static float Sensitivity()
     {
         float sens = SofCamera.cam.fieldOfView / instance.fieldOfView;
-        sens *= Player.seatInterface == SeatInterface.Gunner ? sensGunner : sensitivity;
+        sens *= Player.role == SeatRole.Gunner ? sensGunner : sensitivity;
         return sens;
     }
     public static Vector2 CameraInput()

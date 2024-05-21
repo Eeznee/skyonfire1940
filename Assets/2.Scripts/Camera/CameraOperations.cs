@@ -26,18 +26,18 @@ public static class CameraOperations
         rotation *= Quaternion.Euler(Vector3.right * axis.y);
         return rotation;
     }
-    public static Quaternion RotateWorld(Quaternion rotation, Quaternion defaultRotation)
+    public static Quaternion RotateWorld(Quaternion rotation, Vector3 defaultForward, Vector3 defaultUp)
     {
         Vector2 inputs = CameraInputs.CameraInput();
 
-        Vector3 up = defaultRotation.Up();
+        Vector3 up = defaultUp;
         float upAngle = Vector3.Angle(up, rotation.Forward());
 
         if (upAngle < minUp || upAngle > 180f - minUp) up = rotation.Up();
         else
         {
             bool backwards = Vector3.Angle(up, rotation.Up()) > 90f;
-            if (!SofCamera.lookAround && Vector3.Angle(defaultRotation.Forward(), rotation.Forward()) < 90f) backwards = false;
+            if (!SofCamera.lookAround && Vector3.Angle(defaultForward, rotation.Forward()) < 90f) backwards = false;
             if (backwards) up = -up;
         }
         rotation = Quaternion.LookRotation(rotation * Vector3.forward, up);

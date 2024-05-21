@@ -21,9 +21,9 @@ public class TrackingCrosshair : MonoBehaviour
 
             bool active = pos.z > 0f;
             active &= !TimeManager.paused;
-            active &= GameManager.Controls() == ControlsMode.Tracking || Player.seatInterface == SeatInterface.Gunner;
-            active &= !(Player.seatInterface == SeatInterface.Gunner && SofCamera.viewMode == 1);
-            bool dyn = PlayerActions.dynamic || (Player.seatInterface == SeatInterface.Gunner);
+            active &= ControlsManager.CurrentMode() == ControlsMode.Tracking;
+            active &= !(Player.role == SeatRole.Gunner && SofCamera.viewMode == 1);
+            bool dyn = PlayerActions.dynamic || (Player.role == SeatRole.Gunner);
             dynamic.gameObject.SetActive(dyn && active);
             level.gameObject.SetActive(!dyn && active);
 

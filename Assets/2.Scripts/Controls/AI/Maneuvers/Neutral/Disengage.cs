@@ -31,10 +31,10 @@ public class Disengage : ActiveManeuver
         if (done) return;
 
         base.Execute(data);
-        Vector3 input;
+        AircraftAxes axes;
 
-        input = AircraftControl.TrackingInputs(transform.position + targetDirection, aircraft, 0f, 1f, true);
-        aircraft.SetControls(input, true, false);
+        axes = PointTracking.TrackingInputs(transform.position + targetDirection, aircraft, 0f, 1f, true);
+        aircraft.inputs.SendAxes(axes, true, false);
         if (data.distance > maxDistance || aircraft.data.ias.Get > aircraft.cruiseSpeed * maxSpeedFactor) done = true;
     }
 }

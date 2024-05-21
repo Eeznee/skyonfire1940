@@ -11,7 +11,7 @@ public enum PurchasableGroup{
     Workshop
 }
 
-[CreateAssetMenu(fileName = "New Aircraft Card", menuName = "Aircraft/Aircraft Card")]
+[CreateAssetMenu(fileName = "New Aircraft Card", menuName = "SOF/Game Data/Aircraft Card")]
 public class AircraftCard : ScriptableObject
 {
     public string completeName = "Aircraft Mk.I";

@@ -25,9 +25,9 @@ public class FuselageCore : Fuselage
         foreach (Fuselage fus in linkedFuselages) if (fus.data == data) areas += fus.area;
         return areas;
     }
-    public override void CalculateAerofoilStructure()
+    public override void UpdateAerofoil()
     {
-        base.CalculateAerofoilStructure();
+        base.UpdateAerofoil();
 
         linkedFuselages = new List<Fuselage>();
         foreach(Fuselage fus in transform.root.GetComponentsInChildren<Fuselage>())
@@ -47,8 +47,8 @@ public class FuselageCore : Fuselage
         float areas = CombinedArea();
         Vector2 coefs = Aerodynamics.SimpleCoefficients(data.angleOfSlip.Get, maxCl, cd, maxCd);
 
-        Vector3 lift = Aerodynamics.ComputeLift(rb.velocity, data.tas.Get, transform.up, data.density.Get, areas, coefs.y, StructureIntegrity()); 
-        Vector3 drag = Aerodynamics.ComputeDrag(rb.velocity, data.tas.Get, data.density.Get, areas, coefs.x, StructureIntegrity());
+        Vector3 lift = Aerodynamics.Lift(rb.velocity, data.tas.Get, transform.up, data.density.Get, areas, coefs.y, StructureIntegrity()); 
+        Vector3 drag = Aerodynamics.Drag(rb.velocity, data.tas.Get, data.density.Get, areas, coefs.x, StructureIntegrity());
 
         rb.AddForce(lift + drag);
     }

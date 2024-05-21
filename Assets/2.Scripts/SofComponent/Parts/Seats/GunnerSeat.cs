@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.InputSystem;
-using UnityStandardAssets.CrossPlatformInput;
+using UnityEngine.Serialization;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -10,8 +8,7 @@ using UnityEditor.SceneManagement;
 public class GunnerSeat : CrewSeat
 {
     private bool mainGun = false;
-    public Turret turret;
-    public Transform gunPovTarget;
+    [FormerlySerializedAs("turret")] public GunMount gunMount;
     public HydraulicSystem progressiveHydraulic;
     private float perlinRandomizer;
 
@@ -26,30 +23,35 @@ public class GunnerSeat : CrewSeat
     const float sprayTargetCycle = 4f;
     const float burstPerlinNoob = 0.42f;
     const float burstPerlinExpert = 0.52f;
-    public override SeatInterface SeatUI() { return SeatInterface.Gunner; }
 
-    public override Vector3 CrosshairDirection()
+    public override Vector3 CameraUp => gunMount && !SofCamera.lookAround ? gunMount.CameraUp : base.CameraUp;
+    public override Vector3 LookingDirection => gunMount ? gunMount.FiringDirection : base.LookingDirection;
+
+    public override Vector3 DefaultHeadPosition
     {
-        if (turret) return turret.FiringDirection() * 500f;
-        return base.CrosshairDirection();
-    }
-    public override int Priority()
-    {
-        if (mainGun && aircraft && aircraft.crew[0] == Player.crew)
+        get
         {
-            if (Vector3.Angle(turret.FiringDirection(), data.forward.Get) > 0.1f) return 3;
-            return -1;
+            if(!gunMount) return base.DefaultHeadPosition;
+
+            Vector3 baseToAim = gunMount.AimPosition - defaultPOV.position;
+            Vector3 positionShift = Vector3.ProjectOnPlane(baseToAim, LookingDirection) * 0.5f;
+            return defaultPOV.position + positionShift;
         }
-        if (target) return 2;
-        return 0;
     }
-
-    private void Update()
+    public override Vector3 ZoomedHeadPosition => gunMount ? gunMount.AimPosition : base.ZoomedHeadPosition;
+    public override Vector3 CrosshairPosition => gunMount ? gunMount.AimPosition + gunMount.FiringDirection * 500f : base.CrosshairPosition;
+    
+    public override int Priority
     {
-        if (turret && turret.transform.root != transform.root)
+        get
         {
-            turret = null;
-            NewGrips(null, null);
+            if (mainGun && aircraft && aircraft.crew[0] == Player.crew)
+            {
+                if (Vector3.Dot(gunMount.FiringDirection, data.forward.Get) < 0.999f) return 3;
+                return -1;
+            }
+            if (target) return 2;
+            return 0;
         }
     }
 
@@ -60,14 +62,18 @@ public class GunnerSeat : CrewSeat
         difficulty = aircraft ? aircraft.difficulty : 1f;
         perlinRandomizer = Random.Range(0f, 1000f);
         currentLead = Vector3.zero;
-        mainGun = turret.PilotMainGun();
+        mainGun = gunMount.PilotMainGun;
     }
-    public override Vector3 HeadPosition(bool player)
+
+    private void Update()
     {
-        bool useGunPov = gunPovTarget && gunPovTarget.root == transform.root && !(player && CameraInputs.zoomed);
-        if (useGunPov)  return (gunPovTarget.position + defaultPOV.position) * 0.5f;
-        else return base.HeadPosition(player);
+        if (gunMount && gunMount.transform.root != transform.root)
+        {
+            gunMount = null;
+            NewGrips(null, null);
+        }
     }
+
     public override void PlayerUpdate(CrewMember crew)
     {
         base.PlayerUpdate(crew);
@@ -77,48 +83,53 @@ public class GunnerSeat : CrewSeat
             float input = PlayerActions.gunner.Hydraulics.ReadValue<float>();
             progressiveHydraulic.SetDirection(Mathf.RoundToInt(input));
         }
-        if (!turret) return;
+        if (!gunMount) return;
         if (!handsBusy) NewGrips(defaultRightHand, defaultLeftHand);
 
-        if (complex.bubble) complex.bubble.ToggleColliders(false);
+        if (complex.bubble) complex.bubble.EnableColliders(false);
 
         Vector2 basic = PlayerActions.gunner.BasicAxis.ReadValue<Vector2>();
         float special = PlayerActions.gunner.SpecialAxis.ReadValue<float>();
-        turret.SetDirectionSemi(SofCamera.directionInput,special);
+
+        if (ControlsManager.CurrentMode() == ControlsMode.Tracking && !gunMount.ForceJoystickControls)
+            gunMount.OperateMainTracking(SofCamera.directionInput);
+        else
+            gunMount.OperateMainManual(basic);
+
+        gunMount.OperateSpecialManual(special);
+
         bool firing = PlayerActions.gunner.Fire.ReadValue<float>() > 0.5f;
-        turret.Operate(firing,false);
-        if (turret.Firing()) VibrationsManager.SendVibrations(0.2f, 0.1f, aircraft);
+        gunMount.OperateTrigger(firing, false);
+        if (gunMount.Firing) VibrationsManager.SendVibrations(0.2f, 0.1f, aircraft);
     }
     public override void AiUpdate(CrewMember crew)
     {
         base.AiUpdate(crew);
 
-        if (handsBusy || !turret) return;
+        if (handsBusy || !gunMount) return;
         if (mainGun && Player.crew == aircraft.crew[0])
         {
-            turret.SetDirectionAuto(data.forward.Get);
-            turret.Operate(false, false);
+            gunMount.OperateMainTracking(data.forward.Get);
+            gunMount.OperateTrigger(false, false);
             return;
         }
         bool firing = false;
 
         if (target && sofObject && !sofObject.destroyed) firing = AiTargeting();
 
-        if (target) headLookDirection = targetTr.position - transform.position;
-        else headLookDirection = turret.FiringDirection();
-
-        turret.Operate(firing,true);
+        gunMount.OperateTrigger(firing, true);
     }
+
     public bool AiTargeting()
     {
-        AI.GunnerTargetingData targetData = new AI.GunnerTargetingData(turret, target.data.rb); //Compute Ballistic data
-        float t = Ballistics.InterceptionTime(turret.MuzzleVelocity() * 0.95f, targetData.dir, targetData.relativeVel);
+        AI.GunnerTargetingData targetData = new AI.GunnerTargetingData(gunMount, target.data.rb); //Compute Ballistic data
+        float t = Ballistics.InterceptionTime(gunMount.MuzzleVelocity * 0.95f, targetData.dir, targetData.relativeVel);
         Vector3 gravityLead = -Physics.gravity * t * t * 0.5f;
         Vector3 speedLead = t * target.data.rb.velocity;
         Vector3 targetLead = speedLead + gravityLead - rb.velocity * t * 1.2f;
         targetLead *= Mathf.Lerp(-0.7f + difficulty * 1.1f, 3f - 1.35f * difficulty, Mathf.PerlinNoise(perlinRandomizer, Time.time * 0.33f));
 
-        if (turret.Firing()) //Spray when firing
+        if (gunMount.Firing) //Spray when firing
         {
             float sprayTarget = Mathf.PingPong(Time.time * 2f / sprayTargetCycle, 2f) - 1f;
             targetLead += targetTr.right * sprayTarget * target.stats.wingSpan * 0.33f;
@@ -128,13 +139,14 @@ public class GunnerSeat : CrewSeat
         currentLead += Random.insideUnitSphere * targetData.distance * 0.01f * Mathf.Lerp(0.8f, 0.15f, difficulty);
 
         Vector3 targetDir = targetTr.position - transform.position + currentLead;
-        turret.SetDirectionAuto(targetDir); //Aim target
+        gunMount.OperateMainTracking(targetDir);
+        gunMount.OperateSpecialTracking(targetDir);
 
-        float gunsAngle = Vector3.Angle(targetDir, turret.FiringDirection());
-        float minAngle = Mathf.Max(target.stats.wingSpan / targetData.distance * Mathf.Rad2Deg,1f);
+        float gunsAngle = Vector3.Angle(targetDir, gunMount.FiringDirection);
+        float minAngle = Mathf.Max(target.stats.wingSpan / targetData.distance * Mathf.Rad2Deg, 1f);
 
         //Solution temporaire pour 40 mm
-        if (!aircraft) turret.SetFuze(targetData.distance);
+        if (!aircraft) gunMount.SetFuze(targetData.distance);
 
         if (gunsAngle > minAngle || targetData.distance > (aircraft ? maxRange : maxRangeAA)) return false;
         return Mathf.PerlinNoise(perlinRandomizer, Time.time) < Mathf.Lerp(burstPerlinNoob, burstPerlinExpert, difficulty);
@@ -142,34 +154,31 @@ public class GunnerSeat : CrewSeat
     public void GetTarget()
     {
         spotted = visibility.Spot();
-        target = TargetPicker.PickTargetGunner(turret, spotted, target);
+        target = TargetPicker.PickTargetGunner(gunMount, spotted, target);
         targetTr = target ? target.transform : null;
     }
 }
 #if UNITY_EDITOR
-[CustomEditor(typeof(GunnerSeat))]
+[CustomEditor(typeof(GunnerSeat)), CanEditMultipleObjects]
 public class GunnerSeatEditor : CrewSeatEditor
 {
-    public override void OnInspectorGUI()
+    SerializedProperty gunMount;
+    SerializedProperty progressiveHydraulic;
+
+    protected override void OnEnable()
     {
-        base.OnInspectorGUI();
+        base.OnEnable();
 
-        GunnerSeat seat = (GunnerSeat)target;
+        gunMount = serializedObject.FindProperty("gunMount");
+        progressiveHydraulic = serializedObject.FindProperty("progressiveHydraulic");
+    }
+    protected override void WeaponsGUI()
+    {
+        EditorGUILayout.PropertyField(gunMount);
 
-        GUI.color = Color.green;
-        EditorGUILayout.HelpBox("Gunner Settings", MessageType.None);
-        GUI.color = GUI.backgroundColor;
+        base.WeaponsGUI();
 
-        seat.turret = EditorGUILayout.ObjectField("Turret", seat.turret, typeof(Turret), true) as Turret;
-        seat.gunPovTarget = EditorGUILayout.ObjectField("Gun Pov Target", seat.gunPovTarget, typeof(Transform), true) as Transform;
-        seat.progressiveHydraulic = EditorGUILayout.ObjectField("Progressive hydraulics", seat.progressiveHydraulic, typeof(HydraulicSystem), true) as HydraulicSystem;
-
-        if (GUI.changed)
-        {
-            EditorUtility.SetDirty(seat);
-            EditorSceneManager.MarkSceneDirty(seat.gameObject.scene);
-        }
-        serializedObject.ApplyModifiedProperties();
+        EditorGUILayout.PropertyField(progressiveHydraulic, new GUIContent("Controlled Hydraulics"));
     }
 }
 #endif

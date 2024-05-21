@@ -31,6 +31,7 @@ Transform:
   m_LocalRotation: {x: -1.6940659e-21, y: 1.4210855e-14, z: 1.4210855e-14, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6315324672976147465}
   - {fileID: 6538963127089982421}
@@ -56,6 +57,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -100,12 +102,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tr: {fileID: 0}
   rb: {fileID: 0}
+  animator: {fileID: 0}
   sofObject: {fileID: 0}
   complex: {fileID: 0}
   aircraft: {fileID: 0}
   avm: {fileID: 0}
   data: {fileID: 0}
-  emptyMass: 2
+  localPos: {x: 0, y: 0, z: 0}
+  mass: 0
   gunPreset: {fileID: 11400000, guid: 98117c37545eb8d4c9f4597bf4bf39e0, type: 2}
   capacity: 75
   ejectVector: {x: 0, y: 0.17, z: 0}
@@ -141,11 +145,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tr: {fileID: 0}
   rb: {fileID: 0}
+  animator: {fileID: 0}
   sofObject: {fileID: 0}
   complex: {fileID: 0}
   aircraft: {fileID: 0}
   avm: {fileID: 0}
   data: {fileID: 0}
+  localPos: {x: 0, y: 0, z: 0}
   xrGrab: {fileID: 0}
   grip: {fileID: 3510618011283685082}
   outline: {fileID: 0}
@@ -186,7 +192,7 @@ GameObject:
   - component: {fileID: 3510618011283685082}
   - component: {fileID: 7924835041000092228}
   m_Layer: 13
-  m_Name: Grip Clip
+  m_Name: Magazine Reload Grip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -202,6 +208,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: 2.4074124e-35, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3669396974261468456}
   m_RootOrder: 1
@@ -270,6 +277,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: 2.4074124e-35, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3669396974261468456}
   m_RootOrder: 0
@@ -293,6 +301,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1

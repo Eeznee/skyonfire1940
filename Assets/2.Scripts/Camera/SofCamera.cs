@@ -23,7 +23,7 @@ public class SofCamera : MonoBehaviour
 
     public static event Action OnSwitchCamEvent;
 
-    private void Awake()
+    private void Start()
     {
         tr = transform;
         cam = GetComponent<Camera>();
@@ -41,14 +41,22 @@ public class SofCamera : MonoBehaviour
 
         ResetCamera();
     }
-    private void OnEnable() { Player.OnSeatChange += ResetCamera; }
-    private void OnDisable() { Player.OnSeatChange -= ResetCamera; }
+    private void OnEnable() { 
+        Player.OnSeatChange += ResetCamera; 
+        Player.OnSeatChange += ResetRotation;
+        Player.OnCrewChange += ResetRotationInstant; 
+    }
+    private void OnDisable() { 
+        Player.OnSeatChange -= ResetCamera; 
+        Player.OnSeatChange -= ResetRotation;
+        Player.OnCrewChange -= ResetRotationInstant; 
+    }
     private void LateUpdate()
     {
         if (subCam.Offset() == Vector3.zero) tr.position = subCam.Position();
         if (UIManager.gameUI != GameUI.Pause)
             desiredRotation = subCam.Rotation(ref axis, desiredRotation);
-        tr.rotation = subCam.smooth ? Mathv.Damp(tr.rotation, desiredRotation, smoothDampSpeed) : desiredRotation;
+        tr.rotation = subCam.smooth ? Mathv.Damp(tr.rotation, desiredRotation, smoothDampSpeed, Mathf.Infinity) : desiredRotation;
         if (subCam.Offset() != Vector3.zero) tr.position = subCam.Position();
 
         if (!lookAround) directionInput = desiredRotation * Vector3.forward;
@@ -58,19 +66,23 @@ public class SofCamera : MonoBehaviour
     public static void StopLookAround() {
         lookAround = false;
         if (UIManager.gameUI == GameUI.Pause) return;
-        desiredRotation = Quaternion.LookRotation(directionInput, subCam.logic.Up());
+        desiredRotation = Quaternion.LookRotation(directionInput, subCam.logic.BaseUp());
         axis = savedAxis;
     }
-    public static void ResetRotation(bool instant)
+    public static void ResetRotation()
     {
         desiredRotation = subCam.logic.BaseRotation();
-        if (instant) tr.rotation = desiredRotation;
         axis = Vector2.zero;
+    }
+    public static void ResetRotationInstant()
+    {
+        ResetRotation();
+        tr.rotation = desiredRotation;
     }
     public static void ResetCamera() { SwitchViewMode(viewMode); }
     public static void SwitchViewMode(int vm)
     {
-        if (Player.seatInterface == SeatInterface.Bombardier) vm = 3;
+        if (Player.role == SeatRole.Bombardier) vm = 3;
         else if (vm == 3) vm = previousViewMode == 1 ? 1 : 0;
 
         if (vm != viewMode || subCam == null)
@@ -81,13 +93,15 @@ public class SofCamera : MonoBehaviour
             if (subCam == null) { subCam = new SubCam(-vm); subCams[SubCamID(vm)] = subCam; }
 
             OnSwitchCamEvent?.Invoke();
+
+            Log.Print("Camera Switch To " + subCam.logName, "Camera Mode");
         }
 
-        if (Player.crew && Player.crew.GetComponent<CrewAnimator>()) Player.crew.GetComponent<CrewAnimator>().ToggleFirstPersonModel();
+        if (Player.crew && Player.crew.crewAnimator) Player.crew.crewAnimator.ToggleFirstPersonModel();
         bool resetRotation = GetSubCam(viewMode).logic.BaseDirMode != GetSubCam(previousViewMode).logic.BaseDirMode;
         resetRotation |= viewMode == previousViewMode;
         resetRotation &= viewMode != 2;
-        if (resetRotation) ResetRotation(true);
+        if (resetRotation) ResetRotationInstant();
 
         subCam.ResetNoneHoldPos();
     }

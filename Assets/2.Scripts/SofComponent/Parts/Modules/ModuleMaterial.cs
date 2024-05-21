@@ -3,7 +3,7 @@ using UnityEditor;
 #endif
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Part Material", menuName = "Aircraft/Part Material Preset")]
+[CreateAssetMenu(fileName = "New Module Material", menuName = "SOF/Materials/Module Material")]
 public class ModuleMaterial : ScriptableObject
 {
     //Healthpoints

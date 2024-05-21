@@ -25,16 +25,25 @@ public class Gun : SofPart
     }
     //Settings
     public GunController controller = GunController.Gunner;
-    public Transform ejection;
-    public Transform muzzleEffects;
-    public Transform bulletSpawn;
+
+    public bool separateBulletPos;
+    public bool ejectCasings;
+    public Vector3 ejectionPos;
+    public Vector3 muzzlePos;
+    public Vector3 bulletPos;
+
+    public bool noConvergeance = false;
+    public Quaternion convergence;
+    public Quaternion cheatConvergence;
+    public float cheatTime;
+
     public Transform magazineAttachPoint;
     public GunPreset gunPreset;
     public MagazineStorage magStorage;
     public AmmoContainer magazine;
     public int clipAmmo;
     public BoltHandle bolt;
-    public bool noConvergeance = false;
+
 
     private GunTrigger trigger;
     [HideInInspector] public GunMechanism mechanism;
@@ -64,7 +73,7 @@ public class Gun : SofPart
     //const float maxDispersionTemperature = 550f;
 
     public override float EmptyMass() { return gunPreset.mass; }
-    public override float Mass() { return !Application.isPlaying && !magazine ? gunPreset.mass + clipAmmo * gunPreset.ammunition.FullMass : gunPreset.mass; }
+    public override float AdditionalMass() { return !Application.isPlaying && !magazine ? clipAmmo * gunPreset.ammunition.FullMass : 0f; }
 
     public override void Rearm()
     {
@@ -76,8 +85,7 @@ public class Gun : SofPart
         trigger = this.GetCreateComponent<GunTrigger>();
         mechanism = this.GetCreateComponent<GunMechanism>();
 
-        if (!muzzleEffects) muzzleEffects = transform;
-        if (!bulletSpawn) bulletSpawn = transform;
+        if (!separateBulletPos) bulletPos = muzzlePos;
         if (!magazineAttachPoint) magazineAttachPoint = transform;
 
         base.Initialize(_complex);
@@ -89,9 +97,14 @@ public class Gun : SofPart
 
         currentBullet = Random.Range(0, ammunition.defaultBelt.Length);
 
-        if (!magazine) magazine = AmmoContainer.CreateAmmoBelt(this, clipAmmo, sofObject);
+        if (controller == GunController.Gunner) noConvergeance = true;
+        if (noConvergeance) convergence = Quaternion.identity;
+        cheatConvergence = Quaternion.identity;
+        cheatTime = 0f;
 
-        OnFireEvent += LaunchBullet;
+        if (!magazine) magazine = AmmoContainer.CreateAmmoBelt(this, clipAmmo);
+
+        OnFireEvent += FireBullet;
         OnFireEvent += RecoilAndHeatup;
         OnChamberRoundEvent += CycleNextBullet;
 
@@ -112,23 +125,27 @@ public class Gun : SofPart
     {
         currentBullet = (currentBullet + 1) % ammunition.defaultBelt.Length;
     }
-    protected void LaunchBullet(float delay)
+    private void FireBullet(float delay)
     {
-        Projectile bullet = Instantiate(bullets[ammunition.defaultBelt[currentBullet]], bulletSpawn.position, bulletSpawn.rotation);
+        Quaternion rotation = cheatTime > Time.time ? cheatConvergence : convergence;
+        Quaternion rot = Ballistics.Spread(tr.rotation * rotation, gunPreset.dispersion);
+        //float dispersion = gunPreset.dispersion * Mathf.Lerp(1f, gunPreset.overHeatDispersion, Mathv.SmoothStart(temperature / maxDispersionTemperature, 3));
+
+        Projectile bullet = Instantiate(bullets[ammunition.defaultBelt[currentBullet]], tr.TransformPoint(bulletPos), rot);
         bullet.gameObject.SetActive(true);
 
-        //float dispersion = gunPreset.dispersion * Mathf.Lerp(1f, gunPreset.overHeatDispersion, Mathv.SmoothStart(temperature / maxDispersionTemperature, 3));
-        bullet.transform.rotation = Ballistics.Spread(bulletSpawn.rotation, gunPreset.dispersion);
         bullet.RaycastDamage(bullet.p.baseVelocity * bullet.transform.forward + rb.velocity, rb.velocity, 10f);
+
         bullet.transform.position += rb.velocity * Time.fixedDeltaTime;
         bullet.transform.position += bullet.transform.forward * bullet.p.baseVelocity * delay * 0.85f;
-        bullet.InitializeTrajectory(bullet.transform.forward * bullet.p.baseVelocity + rb.velocity, transform.forward, complex.Bubble(),delay);
+        Collider ignoreCollider = complex.bubble ? complex.bubble.bubble : null;
+        bullet.InitializeTrajectory(bullet.transform.forward * bullet.p.baseVelocity + rb.velocity, transform.forward, ignoreCollider, delay);
         if (fuzeDistance > 50f) bullet.StartFuze(fuzeDistance / bullet.p.baseVelocity);
     }
-    protected void RecoilAndHeatup(float delay)
+    private void RecoilAndHeatup(float delay)
     {
         float energy = ammunition.mass / 1000f * 2f * ammunition.defaultMuzzleVel * ammunition.defaultMuzzleVel;
-        rb.AddForceAtPosition(-transform.forward * energy, transform.position,ForceMode.Impulse);
+        rb.AddForceAtPosition(-transform.forward * energy, transform.position, ForceMode.Impulse);
         temperature += gunPreset.temperaturePerShot;
     }
     public void LoadMagazine(AmmoContainer ammoContainer)
@@ -167,100 +184,3 @@ public class Gun : SofPart
     public bool Firing() { return mechanism.IsFiring(); }
     public Vector3 MagazinePosition() { return magazineAttachPoint.position; }
 }
-#if UNITY_EDITOR
-[CustomEditor(typeof(Gun)), CanEditMultipleObjects]
-public class GunEditor : Editor
-{
-    SerializedProperty gunPreset;
-    SerializedProperty controller;
-    SerializedProperty noConvergeance;
-
-    SerializedProperty ejection;
-    SerializedProperty muzzleEffects;
-    SerializedProperty bulletSpawn;
-
-    SerializedProperty magazine;
-    SerializedProperty clipAmmo;
-    SerializedProperty magStorage;
-    SerializedProperty magazineAttachPoint;
-    void OnEnable()
-    {
-        gunPreset = serializedObject.FindProperty("gunPreset");
-        controller = serializedObject.FindProperty("controller");
-        noConvergeance = serializedObject.FindProperty("noConvergeance");
-
-        ejection = serializedObject.FindProperty("ejection");
-        muzzleEffects = serializedObject.FindProperty("muzzleEffects");
-        bulletSpawn = serializedObject.FindProperty("bulletSpawn");
-        magazineAttachPoint = serializedObject.FindProperty("magazineAttachPoint");
-
-        magazine = serializedObject.FindProperty("magazine");
-        clipAmmo = serializedObject.FindProperty("clipAmmo");
-        magStorage = serializedObject.FindProperty("magStorage");
-    }
-
-    static bool showGunMain = true;
-    static bool showTransforms = true;
-    static bool showAmmo = true;
-    static bool showMassInfo = true;
-    public override void OnInspectorGUI()
-    {
-        serializedObject.Update();
-
-        Gun gun = (Gun)target;
-
-        showGunMain = EditorGUILayout.Foldout(showGunMain, "Gun", true, EditorStyles.foldoutHeader);
-        if (showGunMain)
-        {
-            EditorGUI.indentLevel++;
-            EditorGUILayout.PropertyField(gunPreset);
-            EditorGUILayout.PropertyField(controller);
-            EditorGUILayout.PropertyField(noConvergeance);
-
-            EditorGUI.indentLevel--;
-        }
-
-        showAmmo = EditorGUILayout.Foldout(showAmmo, "Ammo & Mags", true, EditorStyles.foldoutHeader);
-        if (showAmmo)
-        {
-            EditorGUI.indentLevel++;
-            EditorGUILayout.HelpBox(gun.magazine ? "Can be reloaded from a stock" : "No magazine system, cannot be reloaded", MessageType.None);
-            EditorGUILayout.PropertyField(magazine);
-            if (!gun.magazine)
-                EditorGUILayout.PropertyField(clipAmmo, new GUIContent("Ammo Capacity"));
-            else
-                EditorGUILayout.PropertyField(magStorage, new GUIContent("Magazine Stock"));
-
-            EditorGUI.indentLevel--;
-        }
-
-        showTransforms = EditorGUILayout.Foldout(showTransforms, "Transforms", true, EditorStyles.foldoutHeader);
-        if (showTransforms)
-        {
-            EditorGUI.indentLevel++;
-            EditorGUILayout.PropertyField(ejection, new GUIContent("Ejected Casings"));
-            EditorGUILayout.PropertyField(muzzleEffects, new GUIContent("Muzzle Effects"));
-            EditorGUILayout.PropertyField(bulletSpawn, new GUIContent("Muzzle Bullets"));
-            if (gun.magazine) EditorGUILayout.PropertyField(magazineAttachPoint, new GUIContent("Mag Attach Point"));
-            EditorGUI.indentLevel--;
-        }
-
-        if (gun.gunPreset)
-        {
-            showMassInfo = EditorGUILayout.Foldout(showMassInfo, "Mass Infos", true, EditorStyles.foldoutHeader);
-            if (showMassInfo)
-            {
-                EditorGUI.indentLevel++;
-                gun.emptyMass = gun.gunPreset.mass;
-                float gunMass = gun.gunPreset.mass;
-                float ammoMass = gun.magazine ? gun.magazine.Mass() : gun.Mass() - gunMass;
-                EditorGUILayout.LabelField("Unloaded Gun", gunMass.ToString("0.0") + " Kg");
-                EditorGUILayout.LabelField("Loaded Gun", (ammoMass + gunMass).ToString("0.0") + " Kg");
-                //EditorGUILayout.LabelField("Mag + Ammo", ammoMass.ToString("0.0") + " Kg");
-                EditorGUI.indentLevel--;
-            }
-        }
-        serializedObject.ApplyModifiedProperties();
-    }
-}
-#endif

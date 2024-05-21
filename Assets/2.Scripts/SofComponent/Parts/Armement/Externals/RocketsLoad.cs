@@ -14,9 +14,9 @@ public class RocketsLoad : OrdnanceLoad
     public Projectile rocketRef;
     private Projectile[] rockets;
 
-    public override float Mass()
+    public override float AdditionalMass()
     {
-        return emptyMass + OrdnanceMass();
+        return OrdnanceMass();
     }
 
     public override float SingleMass()

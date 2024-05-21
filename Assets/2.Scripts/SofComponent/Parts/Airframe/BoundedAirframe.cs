@@ -22,6 +22,8 @@ public class BoundedAirframe : SofAirframe
             return base.MaxSpd();
     }
 
+    protected override AirfoilSurface CreateFoilSurface() { return new AirfoilSurface(this, CreateQuad(), foil); }
+
     protected Quad CreateQuadBounds(bool flat)
     {
         Vector3 forward = bounds.size.z * Vector3.forward * 0.5f;
@@ -34,45 +36,33 @@ public class BoundedAirframe : SofAirframe
 
         return new Quad(transform, lt, lb, tt, tb);
     }
-    protected void RecalculateBounds()
-    {
-        MeshCollider mesh = GetComponent<MeshCollider>();
-        if (mesh) { bounds = mesh.sharedMesh.bounds; return; }
-
-        BoxCollider box = GetComponent<BoxCollider>();
-        if (box) { bounds = new Bounds(box.center,box.size); return; }
-
-        MeshFilter visualMesh = GetComponent<MeshFilter>();
-        if (visualMesh) bounds = visualMesh.sharedMesh.bounds;
-    }
-    protected float ApproximateArea()
-    {
-        float a = area;
-        Vector3 size = bounds.size;
-        if (size != Vector3.zero) a = size.z * Mathf.PI / Mathf.Sqrt(2f) * Mathf.Sqrt(size.x * size.x + size.y * size.y);
-        return a;
-    }
     protected override Quad CreateQuad()
     {
         return CreateQuadBounds(bounds.size.x > bounds.size.y);
     }
-    public override void Initialize(SofComplex _complex)
+    private void RecalculateBounds()
+    {
+        MeshCollider mesh = GetComponent<MeshCollider>();
+        if (mesh && mesh.sharedMesh) { bounds = mesh.sharedMesh.bounds; return; }
+
+        BoxCollider box = GetComponent<BoxCollider>();
+        if (box) { bounds = new Bounds(box.center, box.size); return; }
+
+        MeshFilter visualMesh = GetComponent<MeshFilter>();
+        if (visualMesh && visualMesh.sharedMesh) { bounds = visualMesh.sharedMesh.bounds; return; }
+
+        bounds = new Bounds(Vector3.zero, Vector3.zero);
+    }
+    public override void UpdateAerofoil()
     {
         RecalculateBounds();
-        base.Initialize(_complex);
+        base.UpdateAerofoil();
     }
     protected override void FixedUpdate()
     {
         if (aircraft) ExcessDrag();
         base.FixedUpdate();
     }
-#if UNITY_EDITOR
-    protected override void Draw()
-    {
-        RecalculateBounds();
-        base.Draw();
-    }
-#endif
     const float maxCd = 1.5f;
     public Vector2 SimplifiedCoefficients(float alpha)
     {
@@ -89,11 +79,17 @@ public class BoundedAirframe : SofAirframe
             if (cd > 0f)
             {
                 Vector3 velocity = rb.velocity;
-                Vector3 drag = Aerodynamics.ComputeDrag(velocity, data.tas.Get, data.density.Get, 1f, cd, 1f);
+                Vector3 drag = Aerodynamics.Drag(velocity, data.tas.Get, data.density.Get, 1f, cd, 1f);
                 rb.AddForceAtPosition(drag, transform.position, ForceMode.Force);
             }
         }
     }
+#if UNITY_EDITOR
+    public override void Draw()
+    {
+        foilSurface.quad.Draw(new Color(), Color.yellow, false);
+    }
+#endif
 }
 
 #if UNITY_EDITOR
@@ -124,7 +120,6 @@ public class BoundedAirframeEditor : AirframeEditor
         base.OnInspectorGUI();
         serializedObject.Update();
         BoundedAirframe frame = (BoundedAirframe)target;
-        frame.CalculateAerofoilStructure();
 
         showDragModel = EditorGUILayout.Foldout(showDragModel, "Simple Drag", true, EditorStyles.foldoutHeader);
         if (showDragModel)

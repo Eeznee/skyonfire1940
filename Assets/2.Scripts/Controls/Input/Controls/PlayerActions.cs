@@ -75,7 +75,7 @@ public class PlayerActions : MonoBehaviour
         general.Reload.performed += _ => Action("Reload");
         general.BailOut.performed += _ => Action("StartBailout");
         general.BailOut.canceled += _ => Action("CancelBailout");
-        general.SwitchSeat.performed += _ => Player.SetSeat((Player.crew.currentSeat + 1) % Player.crew.seats.Length);
+        general.SwitchSeat.performed += _ => Player.CycleSeats();
 
         menu.Cancel.performed += _ => Escape();
         menu.Screenshot.performed += _ => GameManager.ScreenShot();
@@ -92,7 +92,7 @@ public class PlayerActions : MonoBehaviour
         camera.Custom6.performed += _ => SofCamera.SwitchViewMode(-6);
         camera.FreeView.performed += val => SofCamera.StartLookAround();
         camera.FreeView.canceled += val => SofCamera.StopLookAround();
-        camera.Reset.performed += _ => SofCamera.ResetRotation(false);
+        camera.Reset.performed += _ => SofCamera.ResetRotation();
         camera.ToggleViewMode.performed += _ => SofCamera.SwitchViewMode(SofCamera.viewMode == 0 ? 1 : 0);
 
 
@@ -105,7 +105,7 @@ public class PlayerActions : MonoBehaviour
         switcher.Crew6.performed += _ => Player.SetCrew(6);
         switcher.NextCrew.performed += _ => Player.SetCrew(Player.crewId + 1);
         switcher.PreviousCrew.performed += _ => Player.SetCrew(Player.crewId - 1);
-        switcher.ToBombardier.performed += _ => Player.SetSeat(Player.aircraft.bombardierId, Player.aircraft.bombardierSeat);
+        switcher.ToBombardier.performed += _ => Player.SetSeat(Player.aircraft.bombardierSeat);
         switcher.NextSquadron.performed += _ => Player.NextSquadron(1);
         switcher.PreviousSquadron.performed += _ => Player.NextSquadron(-1);
         switcher.NextWing.performed += _ => Player.NextWing(1);
@@ -132,20 +132,20 @@ public class PlayerActions : MonoBehaviour
     private void UpdateActions()
     {
         bool gameActions = !TimeManager.paused && UIManager.gameUI == GameUI.Game;
-        SeatInterface si = Player.seatInterface;
+        SeatRole si = Player.role;
 
         if (gameActions != actions.General.enabled)
             if (gameActions) actions.General.Enable(); else actions.General.Disable();
 
-        bool pilotActions = gameActions && si == SeatInterface.Pilot;
+        bool pilotActions = gameActions && si == SeatRole.Pilot;
         if (pilotActions != actions.Pilot.enabled)
             if (pilotActions) actions.Pilot.Enable(); else actions.Pilot.Disable();
 
-        bool gunnerActions = gameActions && si == SeatInterface.Gunner;
+        bool gunnerActions = gameActions && si == SeatRole.Gunner;
         if (gunnerActions != actions.Gunner.enabled)
             if (gunnerActions) actions.Gunner.Enable(); else actions.Gunner.Disable();
 
-        bool bomberActions = gameActions && si == SeatInterface.Bombardier;
+        bool bomberActions = gameActions && si == SeatRole.Bombardier;
         if (bomberActions != actions.Bombardier.enabled)
             if (bomberActions) actions.Bombardier.Enable(); else actions.Bombardier.Disable();
     }
@@ -155,28 +155,29 @@ public class PlayerActions : MonoBehaviour
         switch (action)
         {
             case "Reload":
-                Player.crew.Seat.TryReload();
+                Player.crew.seat.TryReload(false);
                 break;
             case "Bomb":
-                Player.aircraft.DropBomb();
+                if (Player.role == SeatRole.Bombardier) Player.aircraft.bombSight.StartReleaseSequence();
+                else Player.aircraft.armament.DropBomb();
                 break;
             case "Rocket":
-                Player.aircraft.FireRocket();
+                Player.aircraft.armament.FireRocket();
                 break;
             case "LandingGear":
-                Player.aircraft.SetGear();
+                Player.aircraft.hydraulics.SetGear();
                 break;
             case "BombBay":
-                Player.aircraft.SetBombBay();
+                Player.aircraft.hydraulics.SetBombBay();
                 break;
             case "AirBrakes":
-                Player.aircraft.SetAirBrakes();
+                Player.aircraft.hydraulics.SetAirBrakes();
                 break;
             case "Canopy":
-                Player.aircraft.SetCanopy();
+                Player.aircraft.hydraulics.SetCanopy();
                 break;
             case "Engines":
-                Player.aircraft.SetEngines();
+                Player.aircraft.engines.SetEngines();
                 break;
             case "BombsightMode":
                 Player.aircraft.bombSight.ToggleMode();
@@ -189,11 +190,11 @@ public class PlayerActions : MonoBehaviour
                 break;
             case "StartBailout":
                 for (int i = 0; i < Player.aircraft.crew.Length; i++)
-                    Player.aircraft.crew[i].StartBailout(Random.Range(0.1f, 1f));
+                    Player.aircraft.crew[i].bailOut.Start(Random.Range(0.1f, 1f));
                 break;
             case "CancelBailout":
                 for (int i = 0; i < Player.aircraft.crew.Length; i++)
-                    Player.aircraft.crew[i].CancelBailout();
+                    Player.aircraft.crew[i].bailOut.Cancel();
                 break;
         }
     }
@@ -201,6 +202,6 @@ public class PlayerActions : MonoBehaviour
     {
         //Debug.Log(thr);
         if (!PlayerAvailable()) return;
-        Player.aircraft.SetThrottle(thr);
+        Player.aircraft.engines.SetThrottle(thr);
     }
 }

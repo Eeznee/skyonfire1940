@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class TrackCam : CameraLogic
 {
+    public override string Name => "Tracking";
     public override CamPos BasePosMode { get { return CamPos.Tracking; } }
     public override CamDir BaseDirMode { get { return CamDir.Tracking; } }
     public override CamAdjustment Adjustment { get { return CamAdjustment.Position; } }
@@ -18,6 +19,7 @@ public class TrackCam : CameraLogic
 }
 public class FlyByCam : CameraLogic
 {
+    public override string Name => "FlyBy";
     public override CamPos BasePosMode { get { return CamPos.World; } }
     public override CamDir BaseDirMode { get { return CamDir.FlyBy; } }
     public override CamUp UpMode { get { return CamUp.World; } }

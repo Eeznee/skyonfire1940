@@ -3,7 +3,7 @@
 using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
-public class SofModule : SofPart       //Parts are Object Elements with mass
+public class SofModule : SofPart       //Modules are parts with HP that can be destroyed
 {
     //Damage model
     public ModuleMaterial material;

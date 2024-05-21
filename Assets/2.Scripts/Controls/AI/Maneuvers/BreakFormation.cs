@@ -24,8 +24,8 @@ public class BreakFormation : ActiveManeuver
         base.Execute(data);
 
         breakCountDown -= Time.fixedDeltaTime;
-        Vector3 axis = AircraftControl.TrackingInputs(transform.position + breakDir * 300f, aircraft, 0f, 0f, true);
-        aircraft.SetControls(axis, true, false);
+        AircraftAxes axes = PointTracking.TrackingInputs(transform.position + breakDir * 300f, aircraft, 0f, 0f, true);
+        aircraft.inputs.SendAxes(axes, true, false);
         if (breakCountDown < 0f) done = true;
     }
 }

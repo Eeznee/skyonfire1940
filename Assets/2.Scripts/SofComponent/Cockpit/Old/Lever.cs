@@ -36,19 +36,19 @@ public class Lever : MonoBehaviour
         switch (inputType)
         {
             case LeverInput.Throttle:
-                input = controller.throttle;
+                input = controller.engines.throttle;
                 break;
             case LeverInput.Mixture:
-                input = controller.throttle;
+                input = controller.engines.throttle;
                 break;
             case LeverInput.Flaps:
-                input = controller.flaps.stateInput;
+                input = controller.hydraulics.flaps.stateInput;
                 break;
             case LeverInput.Gear:
-                input = controller.gear.stateInput;
+                input = controller.hydraulics.gear.stateInput;
                 break;
             case LeverInput.Brake:
-                input = controller.brake;
+                input = controller.inputs.brake;
                 break;
         }
         trueInput = Mathf.MoveTowards(trueInput, input, speed * Time.deltaTime);

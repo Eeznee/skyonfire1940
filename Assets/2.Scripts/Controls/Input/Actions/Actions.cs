@@ -317,7 +317,7 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""5c7bc9f7-9d71-4a95-83e3-1feb78ace2a6"",
-                    ""path"": ""<Gamepad>/leftStick/y"",
+                    ""path"": ""<Gamepad>/rightStick/y"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
@@ -383,7 +383,7 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""79ffd275-6c1b-496b-8042-8f4040a16637"",
-                    ""path"": ""<Gamepad>/leftStick/x"",
+                    ""path"": ""<Gamepad>/rightStick/x"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
@@ -458,7 +458,7 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""negative"",
+                    ""name"": ""Negative"",
                     ""id"": ""c684cefe-39d0-4600-98cc-48356cb2b3d1"",
                     ""path"": ""<Gamepad>/leftTrigger"",
                     ""interactions"": """",
@@ -469,7 +469,7 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""positive"",
+                    ""name"": ""Positive"",
                     ""id"": ""8647891f-2c13-44c7-927a-5142483b9571"",
                     ""path"": ""<Gamepad>/rightTrigger"",
                     ""interactions"": """",
@@ -636,7 +636,7 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""a871393d-195c-4054-a0be-910b0815513f"",
-                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""path"": ""<Gamepad>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
@@ -1197,9 +1197,9 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""660ea23f-7da7-4009-95f5-5fa21e31c492"",
-                    ""path"": ""<Gamepad>/leftStick"",
+                    ""path"": ""<Gamepad>/rightStick"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""StickDeadzone(min=0.05)"",
                     ""groups"": ""Gamepad"",
                     ""action"": ""BasicAxis"",
                     ""isComposite"": false,
@@ -1222,6 +1222,15 @@ public partial class @Actions: IInputActionCollection2, IDisposable
             ""name"": ""Bombardier"",
             ""id"": ""53909b14-9315-4599-8ce2-5f2da547213d"",
             ""actions"": [
+                {
+                    ""name"": ""Rotate"",
+                    ""type"": ""Value"",
+                    ""id"": ""db0d9429-f402-45b2-a7c2-2044c5690a57"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
                 {
                     ""name"": ""Mode"",
                     ""type"": ""Button"",
@@ -1409,6 +1418,72 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""action"": ""Rudder"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a9576468-26d7-417a-98eb-e08b049d22d6"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""5675b577-5797-43d1-98dd-67cbc5431f59"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""7fd477d8-7d72-450d-84d6-f6b1e36241f2"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""1439809c-1179-4cd6-b8e0-8e44f9383f9c"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""cdeb9ecc-f2b3-4f8f-9d3e-1072e004cdcf"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""ca86b3f0-bc63-4671-a3c4-69fd09ba6f4d"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -2134,9 +2209,9 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""257680c0-d36a-43b7-aa1d-c4825c7a59b6"",
-                    ""path"": ""<Gamepad>/rightStick"",
+                    ""path"": ""<Gamepad>/leftStick"",
                     ""interactions"": """",
-                    ""processors"": ""StickDeadzone,ScaleVector2(x=5,y=5)"",
+                    ""processors"": ""StickDeadzone(min=0.2,max=1),ScaleVector2(x=0.3,y=0.3)"",
                     ""groups"": ""Gamepad"",
                     ""action"": ""Rotate"",
                     ""isComposite"": false,
@@ -2233,7 +2308,7 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""bf6419aa-615b-4526-ac27-9201b3f89597"",
-                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""path"": ""<Gamepad>/leftStickPress"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
@@ -2798,6 +2873,7 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         m_Gunner_BasicAxis = m_Gunner.FindAction("BasicAxis", throwIfNotFound: true);
         // Bombardier
         m_Bombardier = asset.FindActionMap("Bombardier", throwIfNotFound: true);
+        m_Bombardier_Rotate = m_Bombardier.FindAction("Rotate", throwIfNotFound: true);
         m_Bombardier_Mode = m_Bombardier.FindAction("Mode", throwIfNotFound: true);
         m_Bombardier_Interval = m_Bombardier.FindAction("Interval", throwIfNotFound: true);
         m_Bombardier_Quantity = m_Bombardier.FindAction("Quantity", throwIfNotFound: true);
@@ -3229,6 +3305,7 @@ public partial class @Actions: IInputActionCollection2, IDisposable
     // Bombardier
     private readonly InputActionMap m_Bombardier;
     private List<IBombardierActions> m_BombardierActionsCallbackInterfaces = new List<IBombardierActions>();
+    private readonly InputAction m_Bombardier_Rotate;
     private readonly InputAction m_Bombardier_Mode;
     private readonly InputAction m_Bombardier_Interval;
     private readonly InputAction m_Bombardier_Quantity;
@@ -3239,6 +3316,7 @@ public partial class @Actions: IInputActionCollection2, IDisposable
     {
         private @Actions m_Wrapper;
         public BombardierActions(@Actions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Rotate => m_Wrapper.m_Bombardier_Rotate;
         public InputAction @Mode => m_Wrapper.m_Bombardier_Mode;
         public InputAction @Interval => m_Wrapper.m_Bombardier_Interval;
         public InputAction @Quantity => m_Wrapper.m_Bombardier_Quantity;
@@ -3254,6 +3332,9 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_BombardierActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_BombardierActionsCallbackInterfaces.Add(instance);
+            @Rotate.started += instance.OnRotate;
+            @Rotate.performed += instance.OnRotate;
+            @Rotate.canceled += instance.OnRotate;
             @Mode.started += instance.OnMode;
             @Mode.performed += instance.OnMode;
             @Mode.canceled += instance.OnMode;
@@ -3276,6 +3357,9 @@ public partial class @Actions: IInputActionCollection2, IDisposable
 
         private void UnregisterCallbacks(IBombardierActions instance)
         {
+            @Rotate.started -= instance.OnRotate;
+            @Rotate.performed -= instance.OnRotate;
+            @Rotate.canceled -= instance.OnRotate;
             @Mode.started -= instance.OnMode;
             @Mode.performed -= instance.OnMode;
             @Mode.canceled -= instance.OnMode;
@@ -3849,6 +3933,7 @@ public partial class @Actions: IInputActionCollection2, IDisposable
     }
     public interface IBombardierActions
     {
+        void OnRotate(InputAction.CallbackContext context);
         void OnMode(InputAction.CallbackContext context);
         void OnInterval(InputAction.CallbackContext context);
         void OnQuantity(InputAction.CallbackContext context);

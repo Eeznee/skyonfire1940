@@ -71,7 +71,9 @@ public class GunMechanism : MonoBehaviour
     {
         cycleState = newCycleState;
 
-        while (movement != Movement.Locked && (cycleState < 0f || cycleState > 1f))
+        if(cycleState < 0.3f) TryEject();
+
+        while (movement != Movement.Locked && Mathf.Clamp01(cycleState) != cycleState)
         {
             TryEject();
 
@@ -117,7 +119,6 @@ public class GunMechanism : MonoBehaviour
         bool firing = roundState == RoundState.HotRound;
         if (gunPreset.openBolt) firing &= movement == Movement.Closing;
         else firing &= trigger.On();
-
         if (firing)
         {
             float excessCycle = cycleState - 1f;

@@ -4,166 +4,179 @@ using UnityEngine.UI;
 using System;
 using Unity.Services.Core;
 using Unity.Services.Core.Environments;
-public class MyBoutique : MonoBehaviour, IStoreListener
+using UnityEngine.Purchasing.Extension;
+
+namespace Samples.Purchasing.Core.BuyingConsumables
 {
-    public Button spitfire;
-    public Button bf110;
-    public Button workshop;
-
-    private IStoreController controller;
-    private IExtensionProvider extensions;
-
-    public string spitfireId = "aircrafts.spitfire_mki_cannons";
-    public string bf110Id = "aircrafts.bf110_c6";
-    public string workshopId = "pack.workshop";
-    const string k_Environment = "production";
-
-    void IStoreListener.OnInitializeFailed(InitializationFailureReason error,string s)
+    public class MyBoutique : MonoBehaviour, IDetailedStoreListener
     {
-        
-    }
+        public Button spitfire;
+        public Button bf110;
+        public Button workshop;
 
-    void Awake()
-    {
-        var options = new InitializationOptions().SetEnvironmentName(k_Environment);
-        UnityServices.InitializeAsync(options);
-    }
-    void Start()
-    {
-        var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
+        private IStoreController controller;
+        private IExtensionProvider extensions;
 
-        builder.AddProduct("aircrafts.bf110_c6", ProductType.NonConsumable);
-        builder.AddProduct("aircrafts.spitfire_mki_cannons", ProductType.NonConsumable);
-        builder.AddProduct("pack.workshop", ProductType.NonConsumable);
+        public string spitfireId = "aircrafts.spitfire_mki_cannons";
+        public string bf110Id = "aircrafts.bf110_c6";
+        public string workshopId = "pack.workshop";
+        const string k_Environment = "production";
 
-        UnityPurchasing.Initialize(this, builder);
-        UpdateButtons();
-    }
-
-    /// <summary>
-    /// Called when Unity IAP is ready to make purchases.
-    /// </summary>
-    public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
-    {
-        this.controller = controller;
-        this.extensions = extensions;
-    }
-    /// <summary>
-    /// Called when Unity IAP encounters an unrecoverable initialization error.
-    ///
-    /// Note that this will not be called if Internet is unavailable; Unity IAP
-    /// will attempt initialization until it becomes available.
-    /// </summary>
-    public void OnInitializeFailed(InitializationFailureReason error)
-    {
-    }
-    public void Restore()
-    {
-        extensions.GetExtension<IAppleExtensions>().RestoreTransactions(OnRestore);
-    }
-    void OnRestore(bool success,string callback)
-    {
-        var restoreMessage = "";
-        if (success)
+        void IStoreListener.OnInitializeFailed(InitializationFailureReason error, string s)
         {
-            // This does not mean anything was restored,
-            // merely that the restoration process succeeded.
-            restoreMessage = "Restore Successful";
-        }
-        else
-        {
-            // Restoration failed.
-            restoreMessage = "Restore Failed";
+
         }
 
-        Debug.Log(restoreMessage);
-    }
-    /// <summary>
-    /// Called when a purchase completes.
-    ///
-    /// May be called at any time after OnInitialized().
-    /// </summary>
-    public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs e)
-    {
-        //Retrieve the purchased product
-        var product = e.purchasedProduct;
-
-        //Add the purchased product to the players inventory
-        PurchaseProduct(product);
-        return PurchaseProcessingResult.Complete;
-    }
-    private void PurchaseProduct(Product p)
-    {
-        if (p.definition.id == spitfireId)
+        void Awake()
         {
-            PlayerPrefs.SetInt("spitfire_mki_cannons", 1);
+            var options = new InitializationOptions().SetEnvironmentName(k_Environment);
+            UnityServices.InitializeAsync(options);
         }
-        else if (p.definition.id == bf110Id)
+        void Start()
         {
-            PlayerPrefs.SetInt("bf_110_c6", 1);
+            var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
+
+            builder.AddProduct("aircrafts.bf110_c6", ProductType.NonConsumable);
+            builder.AddProduct("aircrafts.spitfire_mki_cannons", ProductType.NonConsumable);
+            builder.AddProduct("pack.workshop", ProductType.NonConsumable);
+
+            UnityPurchasing.Initialize(this, builder);
+            UpdateButtons();
         }
-        else if (p.definition.id == workshopId)
+
+        /// <summary>
+        /// Called when Unity IAP is ready to make purchases.
+        /// </summary>
+        public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
         {
-            PlayerPrefs.SetInt("workshop", 1);
+            this.controller = controller;
+            this.extensions = extensions;
         }
-        UpdateButtons();
-    }
-
-    /// <summary>
-    /// Called when a purchase fails.
-    /// </summary>
-    public void OnPurchaseFailed(Product i, PurchaseFailureReason p)
-    {
-        if (p == PurchaseFailureReason.DuplicateTransaction)
+        /// <summary>
+        /// Called when Unity IAP encounters an unrecoverable initialization error.
+        ///
+        /// Note that this will not be called if Internet is unavailable; Unity IAP
+        /// will attempt initialization until it becomes available.
+        /// </summary>
+        public void OnInitializeFailed(InitializationFailureReason error)
         {
-            PurchaseProduct(i);
+        }
+        public void Restore()
+        {
+            extensions.GetExtension<IAppleExtensions>().RestoreTransactions(OnRestore);
+        }
+        void OnRestore(bool success, string callback)
+        {
+            var restoreMessage = "";
+            if (success)
+            {
+                // This does not mean anything was restored,
+                // merely that the restoration process succeeded.
+                restoreMessage = "Restore Successful";
+            }
+            else
+            {
+                // Restoration failed.
+                restoreMessage = "Restore Failed";
+            }
+
+            Debug.Log(restoreMessage);
+        }
+        /// <summary>
+        /// Called when a purchase completes.
+        ///
+        /// May be called at any time after OnInitialized().
+        /// </summary>
+        public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs e)
+        {
+            //Retrieve the purchased product
+            var product = e.purchasedProduct;
+
+            //Add the purchased product to the players inventory
+            PurchaseProduct(product);
+            return PurchaseProcessingResult.Complete;
+        }
+        private void PurchaseProduct(Product p)
+        {
+            if (p.definition.id == spitfireId)
+            {
+                PlayerPrefs.SetInt("spitfire_mki_cannons", 1);
+            }
+            else if (p.definition.id == bf110Id)
+            {
+                PlayerPrefs.SetInt("bf_110_c6", 1);
+            }
+            else if (p.definition.id == workshopId)
+            {
+                PlayerPrefs.SetInt("workshop", 1);
+            }
+            UpdateButtons();
+        }
+
+        /// <summary>
+        /// Called when a purchase fails.
+        /// </summary>
+        public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
+        {
+            if (failureReason == PurchaseFailureReason.DuplicateTransaction)
+            {
+                PurchaseProduct(product);
+            }
+        }
+        public void OnPurchaseFailed(Product product, PurchaseFailureDescription failureDescription)
+        {
+            if (failureDescription.reason == PurchaseFailureReason.DuplicateTransaction)
+            {
+                PurchaseProduct(product);
+            }
+        }
+
+        private void UpdateButtons()
+        {
+            if (HasProduct(spitfireId)) DisableButton(spitfire);
+            if (HasProduct(bf110Id)) DisableButton(bf110);
+            if (HasProduct(workshopId)) DisableButton(workshop);
+
+            Product spitfireProduct = controller.products.WithID(spitfireId);
+            spitfire.GetComponentInChildren<Text>().text = "Purchase for " + spitfireProduct.PriceString();
+
+            Product bf110Product = controller.products.WithID(bf110Id);
+            bf110.GetComponentInChildren<Text>().text = "Purchase for " + bf110Product.PriceString();
+
+            Product workshopProduct = controller.products.WithID(workshopId);
+            workshop.GetComponentInChildren<Text>().text = "Purchase for " + workshopProduct.PriceString();
+        }
+
+        private void DisableButton(Button button)
+        {
+            button.interactable = false;
+            button.GetComponentInChildren<Text>().text = "Owned !";
+        }
+        bool HasProduct(string id)
+        {
+            Product noAdsProduct = controller.products.WithID(id);
+            return noAdsProduct != null && noAdsProduct.hasReceipt;
+        }
+
+        public void BuySpitfire()
+        {
+            controller.InitiatePurchase(spitfireId);
+        }
+        public void BuyBf110()
+        {
+            controller.InitiatePurchase(bf110Id);
+        }
+        public void BuyWorkshop()
+        {
+            controller.InitiatePurchase(workshopId);
         }
     }
-
-    private void UpdateButtons()
+    public static class BoutiqueExtensions
     {
-        if (HasProduct(spitfireId)) DisableButton(spitfire);
-        if (HasProduct(bf110Id)) DisableButton(bf110);
-        if (HasProduct(workshopId)) DisableButton(workshop);
 
-        Product spitfireProduct = controller.products.WithID(spitfireId);
-        spitfire.GetComponentInChildren<Text>().text = "Purchase for " + spitfireProduct.PriceString();
-
-        Product bf110Product = controller.products.WithID(bf110Id);
-        bf110.GetComponentInChildren<Text>().text = "Purchase for " + bf110Product.PriceString();
-
-        Product workshopProduct = controller.products.WithID(workshopId);
-        workshop.GetComponentInChildren<Text>().text = "Purchase for " + workshopProduct.PriceString();
-    }
-
-    private void DisableButton(Button button)
-    {
-        button.interactable = false;
-        button.GetComponentInChildren<Text>().text = "Owned !";
-    }
-    bool HasProduct(string id)
-    {
-        Product noAdsProduct = controller.products.WithID(id);
-        return noAdsProduct != null && noAdsProduct.hasReceipt;
-    }
-
-    public void BuySpitfire()
-    {
-        controller.InitiatePurchase(spitfireId);
-    }
-    public void BuyBf110()
-    {
-        controller.InitiatePurchase(bf110Id);
-    }
-    public void BuyWorkshop()
-    {
-        controller.InitiatePurchase(workshopId);
-    }
-}
-public static class BoutiqueExtensions{
-
-    public static string PriceString(this Product product)
-    {
-        return product.metadata.localizedPriceString + " " + product.metadata.isoCurrencyCode;
+        public static string PriceString(this Product product)
+        {
+            return product.metadata.localizedPriceString + " " + product.metadata.isoCurrencyCode;
+        }
     }
 }

@@ -15,7 +15,7 @@ public class SofAircraftEditor : SofComplexEditor
     SerializedProperty card;
     SerializedProperty materials;
     SerializedProperty convergence;
-    SerializedProperty controlSpeed;
+    SerializedProperty axesSpeed;
     SerializedProperty maxG;
     SerializedProperty maxSpeed;
     SerializedProperty stations;
@@ -28,6 +28,7 @@ public class SofAircraftEditor : SofComplexEditor
     SerializedProperty pidPitch;
     SerializedProperty pidRoll;
 
+
     protected override void OnEnable()
     {
         base.OnEnable();
@@ -35,7 +36,7 @@ public class SofAircraftEditor : SofComplexEditor
         card = serializedObject.FindProperty("card");
         materials = serializedObject.FindProperty("materials");
         convergence = serializedObject.FindProperty("convergeance");
-        controlSpeed = serializedObject.FindProperty("controlSpeed");
+        axesSpeed = serializedObject.FindProperty("axesSpeed");
         maxG = serializedObject.FindProperty("maxG");
         maxSpeed = serializedObject.FindProperty("maxSpeed");
         stations = serializedObject.FindProperty("stations");
@@ -47,7 +48,7 @@ public class SofAircraftEditor : SofComplexEditor
         pidPitch = serializedObject.FindProperty("pidPitch.pidValues");
         pidRoll = serializedObject.FindProperty("pidRoll.pidValues");
     }
-
+    public string deletePassWord;
     public static float altitudeTopSpeed;
 
 
@@ -67,7 +68,7 @@ public class SofAircraftEditor : SofComplexEditor
             EditorGUILayout.PropertyField(materials);
             EditorGUILayout.PropertyField(maxG, new GUIContent("G-Force Limit"));
             EditorGUILayout.PropertyField(maxSpeed,new GUIContent("Speed Limit"));
-            EditorGUILayout.PropertyField(controlSpeed);
+            EditorGUILayout.PropertyField(axesSpeed);
             EditorGUILayout.PropertyField(convergence, new GUIContent("Gun Convergence"));
             EditorGUILayout.PropertyField(stations);
             foreach (Station s in aircraft.stations) if (aircraft.stations != null && s != null) s.UpdateOptions();
@@ -100,8 +101,6 @@ public class SofAircraftEditor : SofComplexEditor
         base.OnInspectorGUI();
 
 
-        return;
-
         showDeprecated = EditorGUILayout.Foldout(showDeprecated, "Deprecated", true, EditorStyles.foldoutHeader);
         if (showDeprecated)
         {
@@ -115,16 +114,16 @@ public class SofAircraftEditor : SofComplexEditor
         }
 
         altitudeTopSpeed = EditorGUILayout.Slider("Top Speed Altitude m", altitudeTopSpeed, 0f, 6000f);
-        EditorGUILayout.LabelField("Max Speed", (aircraft.MaxSpeed(altitudeTopSpeed, 1f) * 3.6f).ToString("0.0") + " km/h");
+        //EditorGUILayout.LabelField("Max Speed", (aircraft.MaxSpeed(altitudeTopSpeed, 1f) * 3.6f).ToString("0.0") + " km/h");
 
-        if (aircraft.crew[0] && aircraft.crew[0].seats.Length > 0 && aircraft.crew[0].seats[0].GetComponent<PilotSeat>() == null)
+        if (aircraft.crew[0] && aircraft.crew[0].seats.Count > 0 && aircraft.crew[0].seats[0].GetComponent<PilotSeat>() == null)
         {
             EditorGUILayout.HelpBox("First seat must be pilot", MessageType.Warning);
         }
 
 
-        aircraft.deletePassWord = EditorGUILayout.PasswordField("Delete All Parts", aircraft.deletePassWord);
-        if (aircraft.deletePassWord == "isni")
+        deletePassWord = EditorGUILayout.PasswordField("Delete All Parts", deletePassWord);
+        if (deletePassWord == "isni")
         {
             if (GUILayout.Button("Delete all parts"))
             {

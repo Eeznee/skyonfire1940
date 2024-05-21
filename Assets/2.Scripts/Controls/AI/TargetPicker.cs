@@ -21,7 +21,7 @@ public static class TargetPicker
         if (targets[picked].destroyed) return null;
         return targets[picked];
     }
-    public static SofAircraft PickTargetGunner(Turret turret, List<SofAircraft> targets, SofAircraft currentTarget)
+    public static SofAircraft PickTargetGunner(GunMount turret, List<SofAircraft> targets, SofAircraft currentTarget)
     {
         if (targets == null || targets.Count == 0) return null;
         float bestPrio = TargetPrioGunner(turret, targets[0], currentTarget);
@@ -53,7 +53,7 @@ public static class TargetPicker
         //No closure makes an aircraft an important target
         //The priority of a target dis 0 closure -200m/s (head on result) is  the same as a target 2 km away
     }
-    private static float TargetPrioGunner(Turret turret, SofAircraft target, SofAircraft currentTarget)
+    private static float TargetPrioGunner(GunMount turret, SofAircraft target, SofAircraft currentTarget)
     {
         Rigidbody rb = turret.data.rb;
         Rigidbody targetRb = target.data.rb;
@@ -61,7 +61,7 @@ public static class TargetPicker
         float dis = dir.magnitude;
         dir /= dis;
         float threaten = Vector3.Dot(target.transform.forward, dir) + 1f;
-        float alignement = -Vector3.Dot(turret.FiringDirection(), dir) + 1f;
+        float alignement = -Vector3.Dot(turret.FiringDirection, dir) + 1f;
         float prio = dis + threaten * 300f + alignement * 400f;
         if (currentTarget == target) prio -= 200f;
         return prio * turret.TargetAvailability(targetRb.position);

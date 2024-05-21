@@ -17,9 +17,6 @@ public class PistonEngine : Engine
 
     const float leakChance = 0.12f;
 
-    public override float Mass() { return preset.weight; }
-    public override float EmptyMass() { return preset.weight; }
-
     public float Power(float thr, bool boost, float radSec)
     {
         float basePower = preset.gear1.Evaluate(data.altitude.Get) * 745.7f;

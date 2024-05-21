@@ -23,7 +23,6 @@ public class BombsightUI : MonoBehaviour
     public RectTransform indicator;
     public RectTransform traverse;
     public Text marking;
-    public UIGauge targetAltitudeGauge;
     public UIGauge intervalGauge;
     public UIGauge amountGauge;
     public UIGauge modeGauge;
@@ -39,7 +38,7 @@ public class BombsightUI : MonoBehaviour
     }
     private void Reload()
     {
-        BombardierSeat sight = Player.aircraft.bombSight;
+        Bombsight sight = Player.aircraft.bombSight;
         if (sight == null) return;
 
         defaultTraversePos = traverse.localPosition;
@@ -66,7 +65,7 @@ public class BombsightUI : MonoBehaviour
         marking.gameObject.SetActive(false);
 
         //Bomb bay toggle
-        bombBayState = Player.aircraft.bombBay.state == 0f;
+        bombBayState = Player.aircraft.hydraulics.bombBay.state == 0f;
         bombBayToggle.Toggle(bombBayState);
 
         foreach (MaskableGraphic g in GetComponentsInChildren<Graphic>()) g.maskable = false;
@@ -75,21 +74,21 @@ public class BombsightUI : MonoBehaviour
     {
         if (!Player.aircraft.bombSight) return;
 
-        BombardierSeat sight = Player.aircraft.bombSight;
-        float wheelAngle = SightToWheelAngle(sight.angle);
+        Bombsight sight = Player.aircraft.bombSight;
+        float wheelAngle = SightToWheelAngle(sight.verticalAngle);
         wheel.rotation = Quaternion.Euler(0f, 0f, wheelAngle + refAngle);
-        float indicatorAngle = SightToWheelAngle(sight.dropAngle);
+        float indicatorAngle = SightToWheelAngle(sight.HitAnglePrediction());
         indicator.localRotation = Quaternion.Euler(0f, 0f, -indicatorAngle);
 
-        float offset = maxTraverseDistance * -sight.sideAngle / sight.maxSideAngle;
+        float offset = maxTraverseDistance * -sight.horizontalAngle / sight.maxSideAngle;
         traverse.localPosition = defaultTraversePos + transform.right * offset;
 
         //Bomb bay Toggle
-        bombBayState = Player.aircraft.bombBay.stateInput == 0f;
+        bombBayState = Player.aircraft.hydraulics.bombBay.stateInput == 0f;
         bombBayToggle.Toggle(bombBayState);
 
         //Bombs alert and release sequence
-        bombsAlertToggle.Toggle(Player.aircraft.bombBay.state == 1f);
+        bombsAlertToggle.Toggle(Player.aircraft.hydraulics.bombBay.state == 1f);
         releaseSequenceToggle.Toggle(sight.releaseSequence);
 
         //Interval and Amount

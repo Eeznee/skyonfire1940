@@ -50,7 +50,7 @@ public static class AI
     }
     public class GunnerTargetingData
     {
-        Turret turret;
+        GunMount turret;
         Rigidbody target;
         public float distance;
         public float closure;
@@ -58,7 +58,7 @@ public static class AI
         public Vector3 relativeVel;
         public float angularSpeed;
         public float aspectAngle;
-        public GunnerTargetingData(Turret _turret, Rigidbody _target)
+        public GunnerTargetingData(GunMount _turret, Rigidbody _target)
         {
             turret = _turret;
             target = _target;

@@ -38,7 +38,7 @@ public class SofObject : MonoBehaviour
         if (Application.isPlaying)
         {
             gameObject.layer = complex ? 9 : 0;
-            rb = tr.IsChildOf(GameManager.gm.mapRb.transform) ? GameManager.gm.mapRb : this.GetCreateComponent<Rigidbody>();
+            rb = tr.IsChildOf(GameManager.gm.mapmap.transform) ? GameManager.gm.mapmap.rb : this.GetCreateComponent<Rigidbody>();
         }
     }
     protected virtual void Initialize()

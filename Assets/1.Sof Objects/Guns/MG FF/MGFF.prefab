@@ -27,6 +27,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.0437, z: -0.3061}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8699160814882299174}
   m_RootOrder: 0
@@ -84,10 +85,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.005300015, z: -0.13699996}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8699160814882299174}
   - {fileID: 4278841443241681730}
-  - {fileID: 8141726484139405083}
   - {fileID: 7948013867352814401}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -111,6 +112,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -155,30 +157,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tr: {fileID: 0}
   rb: {fileID: 0}
+  animator: {fileID: 0}
   sofObject: {fileID: 0}
-  simple: {fileID: 0}
   complex: {fileID: 0}
   aircraft: {fileID: 0}
   avm: {fileID: 0}
   data: {fileID: 0}
-  emptyMass: 26.3
+  localPos: {x: 0, y: 0, z: 0}
+  mass: 0
   controller: 2
   ejection: {fileID: 0}
-  muzzleEffects: {fileID: 8141726484139405083}
-  bulletSpawn: {fileID: 8141726484139405083}
+  muzzleEffects: {fileID: 0}
+  bulletSpawn: {fileID: 0}
+  ejectCasings: 0
+  ejectionPos: {x: 0, y: 0, z: 0}
+  muzzlePos: {x: 0, y: 0, z: 0.943}
+  separateBulletPos: 0
+  bulletPos: {x: 0, y: 0, z: 0}
+  magazineAttachPoint: {fileID: 0}
   gunPreset: {fileID: 11400000, guid: ad2eb083ed5394247b16e2d3baa499ff, type: 2}
   magStorage: {fileID: 0}
   magazine: {fileID: 4078002427023859098}
   clipAmmo: 0
-  magazineLocalPos: {x: 0, y: 0, z: 0}
   bolt: {fileID: 0}
   noConvergeance: 0
+  mechanism: {fileID: 0}
   temperature: 0
   clips: 0
   fuzeDistance: 0
   reloading: 0
-  cycleState: 1
-  chambered: 0
 --- !u!205 &8726379529866028181
 LODGroup:
   m_ObjectHideFlags: 0
@@ -203,36 +210,6 @@ LODGroup:
     renderers:
     - renderer: {fileID: 7821345278361509308}
   m_Enabled: 1
---- !u!1 &3506510712531562921
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8141726484139405083}
-  m_Layer: 9
-  m_Name: Muzzle
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8141726484139405083
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3506510712531562921}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.943}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 2313523885190914558}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4082620695033393093
 GameObject:
   m_ObjectHideFlags: 0
@@ -262,6 +239,7 @@ Transform:
   m_LocalRotation: {x: -1.6940659e-21, y: 1.4210855e-14, z: 1.4210855e-14, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3011842609468087671}
   m_Father: {fileID: 2313523885190914558}
@@ -286,6 +264,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -330,12 +309,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tr: {fileID: 0}
   rb: {fileID: 0}
+  animator: {fileID: 0}
   sofObject: {fileID: 0}
-  simple: {fileID: 0}
   complex: {fileID: 0}
   aircraft: {fileID: 0}
   avm: {fileID: 0}
   data: {fileID: 0}
+  localPos: {x: 0, y: 0, z: 0}
   xrGrab: {fileID: 0}
   grip: {fileID: 7376034958701920827}
   outline: {fileID: 0}
@@ -376,9 +356,10 @@ Transform:
   m_LocalRotation: {x: -1.6940659e-21, y: 1.4210855e-14, z: 1.4210855e-14, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2313523885190914558}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2892828434640429263
 MeshFilter:
@@ -399,6 +380,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -498,12 +480,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1da40d88657244840ace66c47cf94aac, type: 3}
---- !u!4 &4278841443241681730 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 190968932274462437, guid: 1da40d88657244840ace66c47cf94aac,
-    type: 3}
-  m_PrefabInstance: {fileID: 4163308080990862759}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &4078002427023859098 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 94843039218475069, guid: 1da40d88657244840ace66c47cf94aac,
@@ -516,3 +492,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2539e33e644e4d46a4ce2f3f3c7ec15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &4278841443241681730 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 190968932274462437, guid: 1da40d88657244840ace66c47cf94aac,
+    type: 3}
+  m_PrefabInstance: {fileID: 4163308080990862759}
+  m_PrefabAsset: {fileID: 0}

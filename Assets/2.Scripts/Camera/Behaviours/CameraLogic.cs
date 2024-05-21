@@ -62,77 +62,111 @@ public abstract class CameraLogic
             default: return null;
         }
     }
-
     public SubCam subCam;
+
+    public virtual string Name { get { return "Set A Camera Name"; } }
 
     public virtual CamPos BasePosMode { get { return CamPos.SofObject; } }
     public virtual CamDir BaseDirMode { get { return CamDir.SeatAligned; } }
     public virtual CamUp UpMode { get { return CamUp.Relative; } }
     public virtual bool FollowBaseDir { get { return true; } }
     public virtual CamAdjustment Adjustment { get { return CamAdjustment.None; } }
-    public virtual Vector3 FixedOffset()
-    {
-        return Vector3.zero;
-    }
-    public virtual Vector3 DefaultStartingPos()
-    {
-        return SofCamera.tr.position;
-    }
+    public virtual Vector3 FixedOffset() { return Vector3.zero; }
+    public virtual Vector3 DefaultStartingPos() { return SofCamera.tr.position; }
+
+
+
     public Vector3 BasePosition()
     {
         switch (BasePosMode)
         {
             case CamPos.Game:
-                return (Player.seatInterface == SeatInterface.Pilot ? subCam.Target().tr : subCam.TargetCrew().Seat.tr).position;
+
+                return (Player.role == SeatRole.Pilot ? subCam.Target().tr : subCam.TargetCrew().seat.tr).position;
+
             case CamPos.SofObject:
+
                 return subCam.Target().tr.position;
+
             case CamPos.Tracking:
+
                 SofObject target = subCam.reverseTrack ? Player.sofObj : subCam.trackTarget;
                 return target.tr.position;
+
             case CamPos.FirstPerson:
+
                 return subCam.TargetCrew().EyesPosition();
+
             case CamPos.Bomber:
-                return subCam.Target().aircraft.bombSight.zoomedPOV.position;
+
+                return subCam.Target().aircraft.bombSight.tr.position;
+
             case CamPos.World:
-                return GameManager.gm.mapTr.position;
+
+                return GameManager.gm.mapmap.transform.position;
+
         }
-        return Vector3.zero;
+        return subCam.Target().tr.position;
     }
     public Vector3 BaseDirection()
     {
         switch (BaseDirMode)
         {
             case CamDir.SeatAligned:
-                return subCam.TargetCrew().Seat.DefaultDirection();
+
+                return subCam.TargetCrew().seat.LookingDirection;
+
             case CamDir.Tracking:
+
                 SofObject target = subCam.reverseTrack ? subCam.trackTarget : Player.sofObj;
                 return (target.tr.position - SofCamera.tr.position).normalized;
+
             case CamDir.FlyBy:
+
                 return (subCam.Target().tr.position - SofCamera.tr.position).normalized;
+
             case CamDir.Bomber:
-                return subCam.Target().aircraft.bombSight.zoomedPOV.forward;
+
+                return subCam.Target().aircraft.bombSight.tr.forward;
+
             case CamDir.World:
+
                 return Vector3.forward;
+
         }
-        return subCam.TargetCrew().Seat.DefaultDirection();
+        return subCam.TargetCrew().seat.LookingDirection;
     }
     public Transform RelativeTransform()
     {
         if (BasePosMode == CamPos.World)
-            return GameManager.gm.mapTr;
+            return GameManager.gm.mapmap.transform;
         return subCam.Target().tr;
     }
-    public Vector3 Up()
+    public Vector3 BaseUp()
     {
-        bool relative = true;
-        if (UpMode == CamUp.World) relative = false;
-        if (UpMode == CamUp.Custom) relative = !subCam.gravity;
-        if (UpMode == CamUp.Adaptative) relative = PlayerActions.dynamic || GameManager.Controls() != ControlsMode.Tracking;
-        return relative ? subCam.Target().tr.up : Vector3.up;
+        if (RelativeUp())
+            return Player.seat.CameraUp;
+        else 
+            return Vector3.up;
+    }
+    private bool RelativeUp()
+    {
+        switch (UpMode)
+        {
+            case CamUp.Relative: return true;
+
+            case CamUp.World: return false;
+
+            case CamUp.Custom: return !subCam.gravity;
+
+            case CamUp.Adaptative:
+                return PlayerActions.dynamic || ControlsManager.CurrentMode() != ControlsMode.Tracking;
+        }
+        return true;
     }
     public Quaternion BaseRotation()
     {
-        return Quaternion.LookRotation(BaseDirection(), Up());
+        return Quaternion.LookRotation(BaseDirection(), BaseUp());
     }
 }
 

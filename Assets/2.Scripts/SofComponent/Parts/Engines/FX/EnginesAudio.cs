@@ -81,8 +81,8 @@ public class EnginesGroupAudio : MonoBehaviour
     {
         float idlePitch = Mathf.Max(1f, rps * invertIdleRPS) * (TimeManager.paused ? 1f : Time.timeScale);
         float fullPitch = idlePitch * preset.idleRPS * invertFullRPS;
-        if (avm.aircraft.boost && preset.type != EnginePreset.Type.Jet) fullPitch *= 1.125f;
-        if ((int)avm.aircraft.enginesState <= 1) return;
+        if (avm.aircraft.engines.boost && preset.type != EnginePreset.Type.Jet) fullPitch *= 1.125f;
+        if ((int)avm.aircraft.engines.state <= 1) return;
 
         idleCockpit.source.pitch = idleExternal.source.pitch = idlePitch;
         fullCockpit.source.pitch = fullExternal.source.pitch = fullPitch;

@@ -33,14 +33,14 @@ public class BombsLoad : OrdnanceLoad
         {
             Vector3 pos = transform.TransformPoint(launchPositions[i]);
             bombs[i] = Instantiate(bombRef, pos, transform.rotation, transform);
-            bombs[i].InitializeComponent(complex);
+            bombs[i].SetInstanciatedComponent(complex);
         }
     }
 
     public override bool Launch(float delayFuse)
     {
         if (fireIndex >= launchPositions.Length) return false;
-        if (bombBay && aircraft.bombBay.state < 1f) return false;
+        if (bombBay && aircraft.hydraulics.bombBay.state < 1f) return false;
 
         bombs[fireIndex].Drop(5f, bombBay);
 

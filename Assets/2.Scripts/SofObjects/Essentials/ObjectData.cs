@@ -71,7 +71,7 @@ public class ObjectData : SofComponent
         position = new Value<Vector3>(() => { return tr.position; }, this);
     }
 
-    public override void Initialize(SofComplex _complex)
+    public override void AttachNewComplex(SofComplex _complex)
     {
         base.Initialize(_complex);
         OnValuesReset = null;

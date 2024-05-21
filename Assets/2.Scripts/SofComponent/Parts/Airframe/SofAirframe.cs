@@ -11,12 +11,11 @@ public abstract class SofAirframe : SofModule
 {
     public float area = 5f;
     public Airfoil foil;
-    public Aero aero;
+    public AirfoilSurface foilSurface;
 
     public bool vital = false;
     public SofModule[] ripOnRip;
 
-    protected float left = 1f;
     protected float stress = -1f;
     protected float randToughness = 1f;
     protected float floatLevel;
@@ -27,21 +26,17 @@ public abstract class SofAirframe : SofModule
     public virtual float ApproximateMass() { return Mathf.Pow(area, 1.5f); }
     public virtual float AreaCd() { return 0f; }
     protected virtual Quad CreateQuad() { return null; }
-    protected virtual Aero CreateAero() { return new Aero(this, CreateQuad(), foil); }
+    protected virtual AirfoilSurface CreateFoilSurface() { return new AirfoilSurface(this, CreateQuad(), foil); }
 
-    protected virtual void Awake()
+    public virtual void UpdateAerofoil()
     {
-        aero = null;
-    }
-    public virtual void CalculateAerofoilStructure()
-    {
-        aero = CreateAero();
-        area = aero.Area();
+        foilSurface = CreateFoilSurface();
+        area = foilSurface.Area();
     }
     public override void SetReferences(SofComplex _complex)
     {
         base.SetReferences(_complex);
-        CalculateAerofoilStructure();
+        UpdateAerofoil();
     }
     public override void Initialize(SofComplex _complex)
     {
@@ -53,7 +48,7 @@ public abstract class SofAirframe : SofModule
     }
     protected virtual void FixedUpdate()
     {
-        if (!aircraft) aero.ApplyForces();
+        if (!aircraft) foilSurface.ApplyForces();
     }
     public override void Rip()
     {
@@ -95,19 +90,11 @@ public abstract class SofAirframe : SofModule
             floatLevel = Mathf.Max(floatLevel - Time.fixedDeltaTime / 12f, 1f);
         }
     }
-
-#if UNITY_EDITOR
-    protected virtual void Draw() { aero.quad.Draw(new Color(), Color.yellow, false); }
-
-    private void OnValidate()
-    {
-        CalculateAerofoilStructure();
-    }
+    public virtual void Draw() { }
     private void OnDrawGizmos()
     {
         Draw();
     }
-#endif
 }
 #if UNITY_EDITOR
 [CustomEditor(typeof(SofAirframe)), CanEditMultipleObjects]
@@ -123,6 +110,7 @@ public class AirframeEditor : PartEditor
     {
         return "Airframe";
     }
+
     protected override void BasicFoldout()
     {
         base.BasicFoldout();

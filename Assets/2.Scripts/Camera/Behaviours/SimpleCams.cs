@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class RelativeCam : CameraLogic
 {
+    public override string Name => "Relative";
     public override CamPos BasePosMode { get { return CamPos.SofObject; } }
     public override CamDir BaseDirMode { get { return CamDir.SeatAligned; } }
     public override CamUp UpMode { get { return CamUp.Custom; } }
@@ -14,6 +15,7 @@ public class RelativeCam : CameraLogic
 }
 public class GyroCam : CameraLogic
 {
+    public override string Name => "Gyro";
     public override CamPos BasePosMode { get { return CamPos.SofObject; } }
     public override CamDir BaseDirMode { get { return CamDir.SeatAligned; } }
     public override CamUp UpMode { get { return CamUp.World; } }
@@ -22,6 +24,7 @@ public class GyroCam : CameraLogic
 }
 public class GoProCam : CameraLogic
 {
+    public override string Name => "GoPro";
     public override CamPos BasePosMode { get { return CamPos.SofObject; } }
     public override CamDir BaseDirMode { get { return CamDir.SeatAligned; } }
     public override CamUp UpMode { get { return CamUp.Custom; } }
@@ -30,6 +33,6 @@ public class GoProCam : CameraLogic
 
     public override Vector3 DefaultStartingPos()
     {
-        return subCam.TargetCrew().Seat.tr.TransformPoint(subCam.TargetCrew().Seat.goProViewPoint);
+        return subCam.TargetCrew().seat.tr.TransformPoint(subCam.TargetCrew().seat.goProViewPoint);
     }
 }

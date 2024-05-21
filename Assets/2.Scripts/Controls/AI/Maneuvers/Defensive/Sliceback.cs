@@ -50,15 +50,15 @@ public class Sliceback : ActiveManeuver
         switch (phase)
         {
             case 0: //Phase 1 : invert bank
-                AircraftControl.Tracking(transform.position + transform.forward * 500f, aircraft, angle, 1f, false);
+                PointTracking.Tracking(transform.position + transform.forward * 500f, aircraft, angle, 1f, false);
                 if (Mathf.Abs(aircraft.data.bankAngle.Get - angle) < 5f) phase++;
                 break;
             case 1: //Phase 2 : first half of the sliceback
-                AircraftControl.Tracking(transform.position + downDirection, aircraft, angle, 0f, false);
+                PointTracking.Tracking(transform.position + downDirection, aircraft, angle, 0f, false);
                 if (aircraft.transform.forward.y < -0.5f) phase++;
                 break;
             case 2: //Phase 3 : Direction reversed
-                AircraftControl.Tracking(transform.position - initialDirection, aircraft, 0f, 1f, false);
+                PointTracking.Tracking(transform.position - initialDirection, aircraft, 0f, 1f, false);
                 if (Vector3.Dot(transform.forward, -initialDirectionNormalized) > 0.9f) done = true;
                 break;
         }

@@ -17,19 +17,19 @@ public class SpecificButton : DynamicUI
             switch (spec)
             {
                 case Spec.Bomb:
-                    return p.bombs.Length > 0;
+                    return p.armament.bombs.Length > 0;
                 case Spec.Rockets:
-                    return p.rockets.Length > 0;
+                    return p.armament.rockets.Length > 0;
                 case Spec.Bay:
-                    return p.bombBay;
+                    return p.hydraulics.bombBay;
                 case Spec.Guns:
-                    return p.primaries.Length > 0 || p.secondaries.Length > 0;
+                    return p.armament.primaries.Length > 0 || p.armament.secondaries.Length > 0;
                 case Spec.Multiseats:
-                    return Player.crew.seats.Length > 1;
+                    return Player.crew.seats.Count > 1;
                 case Spec.Multicrew:
                     return p.crew.Length > 1;
                 case Spec.Airbrakes:
-                    return p.airBrakes;
+                    return p.hydraulics.airBrakes;
             }
         }
         switch (spec)
@@ -37,13 +37,13 @@ public class SpecificButton : DynamicUI
             case Spec.Reload:
                 return s.reloadableGuns.Length > 0;
             case Spec.Pilot:
-                return Player.seatInterface == SeatInterface.Pilot;
+                return Player.role == SeatRole.Pilot;
             case Spec.Bomber:
-                return Player.seatInterface == SeatInterface.Bombardier;
+                return Player.role == SeatRole.Bombardier;
             case Spec.Gunner:
-                return Player.seatInterface == SeatInterface.Gunner;
+                return Player.role == SeatRole.Gunner;
             case Spec.Empty:
-                return Player.seatInterface == SeatInterface.Empty;
+                return Player.role == SeatRole.Simple;
         }
         return false;
     }

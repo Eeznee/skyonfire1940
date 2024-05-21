@@ -19,20 +19,20 @@ public class HammerHead : ActiveManeuver
         if (done) return;
         base.Execute(data);
 
-        Vector3 input;
+        AircraftAxes axes;
 
         if (phase == 0) //Climb Up
         {
-            input = AircraftControl.TrackingInputs(transform.position + Vector3.up * 500f, aircraft, 0f, 0f, true);
-            aircraft.SetControls(input, true, false);
+            axes = PointTracking.TrackingInputs(transform.position + Vector3.up * 500f, aircraft, 0f, 0f, true);
+            aircraft.inputs.SendAxes(axes, true, false);
             if (aircraft.data.ias.Get < 150 / 3.6f) { phase++; way = Mathf.Sign(aircraft.data.bankAngle.Get); }
         }
         else if (phase == 1) //Hammerhead
         {
-            input = Vector3.zero;
-            input.y = -way * Mathf.Sign(transform.forward.y);
-            aircraft.SetThrottle(0f);
-            aircraft.SetControls(input, true, false);
+            axes = AircraftAxes.zero;
+            axes.yaw = -way * Mathf.Sign(transform.forward.y);
+            aircraft.engines.SetThrottle(0f);
+            aircraft.inputs.SendAxes(axes, true, false);
             if (transform.forward.y < 0f) done = true ;
         }
     }

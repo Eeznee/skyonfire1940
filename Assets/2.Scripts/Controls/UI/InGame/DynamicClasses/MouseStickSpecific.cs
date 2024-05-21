@@ -6,6 +6,6 @@ public class MouseStickSpecific : DynamicUI
 {
     public override bool IsActive()
     {
-        return GameManager.Controls() == ControlsMode.MouseStick;
+        return ControlsManager.CurrentMode() == ControlsMode.MouseStick;
     }
 }

@@ -16,13 +16,11 @@ public class PhotoMode : MonoBehaviour
 
     private void OnEnable()
     {
-        worldPos = GameManager.gm.mapTr.InverseTransformPoint(SofCamera.tr.position);
+        worldPos = GameManager.gm.mapmap.transform.InverseTransformPoint(SofCamera.tr.position);
     }
-
-    private SubCam currentCam = null;
 
     public void ResetPositions()
     {
-        worldPos = GameManager.gm.mapTr.InverseTransformPoint(Player.sofObj.transform.position);
+        worldPos = GameManager.gm.mapmap.transform.InverseTransformPoint(Player.sofObj.transform.position);
     }
 }

@@ -8,74 +8,109 @@ public class CrewAnimator : MonoBehaviour
     public Mesh headLessModel;
     private Mesh defaultModel;
 
+    public CrewHand rightHand;
+    public CrewHand leftHand;
+    public FootRest defaultRightFoot;
+    public FootRest defaultLeftFoot;
+    public HandGrip restingGrip;
+
+    private Transform tr;
+    private Animator animator;
     private SkinnedMeshRenderer meshRend;
     private CrewMember crew;
-    private CrewHand rightHand;
-    private CrewHand leftHand;
-    private FootRest standingRightFoot;
-    private FootRest standingLeftFoot;
-    public HandGrip restingGrip;
-    private Animator animator;
-
-    const float standingButtHead = 0.88f;
-    const float leaningButtHead = 0.68f;
-    const float headMoveSpeed = 1f;
-    const float smoothTime = 0.2f;
 
     private bool firstPersonBody;
+
+    private Vector3 headLookAtPosition;
+    private Vector3 headPosition;
+
+    private CrewSeat Seat => Application.isPlaying ? crew.seat : crew.seats[crew.seatIdTest];
+    private FootRest CurrentRightFoot => Seat.rightFootRest ? Seat.rightFootRest : defaultRightFoot;
+    private FootRest CurrentLeftFoot => Seat.leftFootRest ? Seat.leftFootRest : defaultLeftFoot;
+    private HandGrip CurrentRightGrip
+    {
+        get
+        {
+            if (crew.IsVrPlayer)
+                return SofVrRig.instance.rightHandGrip;
+            if (Seat.rightHandGrip && Seat.rightHandGrip.transform.root == tr.root)
+                return Seat.rightHandGrip;
+            return restingGrip;
+        }
+    }
+    private HandGrip CurrentLeftGrip
+    {
+        get
+        {
+            if (crew.IsVrPlayer)
+                return SofVrRig.instance.leftHandGrip;
+            if (Seat.leftHandGrip && Seat.leftHandGrip.transform.root == tr.root)
+                return Seat.leftHandGrip;
+            return restingGrip;
+        }
+    }
 
     private void Awake()
     {
         GetReferences();
         firstPersonBody = PlayerPrefs.GetInt("FirstPersonModel", 1) == 1;
     }
+    private void OnValidate() { GetReferences(); }
     private void GetReferences()
     {
+        tr = transform;
         crew = GetComponent<CrewMember>();
         animator = GetComponent<Animator>();
         meshRend = GetComponentInChildren<SkinnedMeshRenderer>();
         defaultModel = meshRend.sharedMesh;
-
-        CrewHand[] hands = GetComponentsInChildren<CrewHand>();
-        rightHand = hands[0].ikGoal == AvatarIKGoal.RightHand ? hands[0] : hands[1];
-        leftHand = hands[0].ikGoal == AvatarIKGoal.RightHand ? hands[1] : hands[0];
-
-        FootRest[] feet = GetComponentsInChildren<FootRest>();
-        standingRightFoot = feet[0].transform.localPosition.x > 0f ? feet[0] : feet[1];
-        standingLeftFoot = feet[0].transform.localPosition.x > 0f ? feet[1] : feet[0];
     }
-
-    private Vector3 accelerationCompensation = Vector3.zero;
-    private Vector3 vel = Vector3.zero;
-    private void Update()
-    {
-        if (!Application.isPlaying)
-        {
-            GetReferences();
-            animator.Update(0f);
-        }
-    }
-
     public void ToggleFirstPersonModel()
     {
-        bool firstPerson = Player.crew == crew && (GameManager.gm.vr || SofCamera.viewMode == 1);
+        bool firstPerson = crew.IsVrPlayer || (crew.IsPlayer && SofCamera.viewMode == 1);
 
         meshRend.enabled = !firstPerson || firstPersonBody;
         meshRend.sharedMesh = firstPerson ? headLessModel : defaultModel;
     }
-    private void AnimatePosition()
+    private void Update()
     {
-        CrewSeat seat = crew.seats[Mathf.Clamp(crew.currentSeat, 0, crew.seats.Length - 1)];
-        if (!seat) return;
+        if (!Application.isPlaying && crew.complex)
+        {
+            animator.Update(0f);
+            animator.Update(0f);
+        }
+    }
 
+    private void OnAnimatorIK()
+    {
+        if (Seat == null) return;
+        if (Time.deltaTime > 0f || !Application.isPlaying)
+        {
+            headLookAtPosition = HeadLookAtPosition();
+            headPosition = HeadPosition();
+        }
+
+        SetBodyPosition(headPosition);
+        SetBodyRotation(headPosition);
+
+        AnimateLeaning();
+        animator.SetLookAtWeight(1);
+        animator.SetLookAtPosition(headLookAtPosition);
+
+        leftHand.SetHandPose(animator, CurrentLeftGrip);
+        rightHand.SetHandPose(animator, CurrentRightGrip);
+
+        CurrentRightFoot.SetFootPose(animator, AvatarIKGoal.RightFoot);
+        CurrentLeftFoot.SetFootPose(animator, AvatarIKGoal.LeftFoot);
+    }
+    private Vector3 HeadPosition()
+    {
         ObjectData data = crew.data;
-        Transform tr = transform;
 
-        bool player = Player.crew == crew;
-        bool vrPlayer = Application.isPlaying && GameManager.gm.vr && player;
+        if (crew.IsVrPlayer) return SofCamera.tr.position;
 
-        Vector3 pos = vrPlayer ? SofCamera.tr.position : seat.HeadPosition(player);
-        if (data && Player.sofObj == crew.sofObject && !vrPlayer)
+        Vector3 headPosition = CameraInputs.zoomed ? Seat.ZoomedHeadPosition : Seat.DefaultHeadPosition;
+
+        if (crew.IsPlayer)
         {
             Vector3 gOffsetLocal = data.acceleration / Physics.gravity.y;
             gOffsetLocal.y *= 0.5f;
@@ -83,63 +118,53 @@ public class CrewAnimator : MonoBehaviour
             accelerationOffset += (data.tr.up - Vector3.up) * 4f;
             accelerationCompensation = Vector3.MoveTowards(accelerationCompensation, accelerationOffset, Time.deltaTime * 2f);
             accelerationCompensation = Vector3.ClampMagnitude(accelerationCompensation, accelerationOffset.magnitude);
-            pos += (accelerationOffset - accelerationCompensation) / 50f;
+            headPosition += (accelerationOffset - accelerationCompensation) / 50f;
         }
-        if (!Application.isPlaying) seat.tr = seat.transform;
-        Quaternion rot = Quaternion.LookRotation(seat.tr.position - pos, seat.tr.forward * 2f + (vrPlayer ? SofCamera.tr.forward : Vector3.zero));
-        rot *= Quaternion.Euler(-90f, 0f, 0f);
 
-        Vector3 localPos = tr.parent.InverseTransformPoint(pos);
-        localPos += CrewMember.eyeShift * Vector3.down;
-        tr.localPosition = Vector3.SmoothDamp(tr.localPosition, localPos, ref vel, smoothTime, headMoveSpeed, Time.deltaTime);
-        tr.rotation = rot;
+        return headPosition;
     }
-    private void OnAnimatorIK()
+
+    const float bodyMoveSpeed = 1f;
+    const float smoothTime = 0.2f;
+    private Vector3 accelerationCompensation = Vector3.zero;
+    private Vector3 vel = Vector3.zero;
+    private void SetBodyPosition(Vector3 headPosition)
     {
-        if (Application.isPlaying)
-            if (crew.seats.Length == 0 || crew.seats[0] == null || !crew.complex) return;
+        bool instant = !Application.isPlaying;
 
-        CrewSeat seat = crew.seats[Mathf.Clamp(crew.currentSeat, 0, crew.seats.Length - 1)];
-
-        AnimatePosition();
-        AnimateBody(crew.tr, seat);
-        AnimateArms(crew.tr, seat);
-        AnimateLegs(seat);
-        AnimateHead(crew.tr, seat);
+        Vector3 localHeadPosition = tr.parent.InverseTransformPoint(headPosition);
+        localHeadPosition += CrewMember.eyeShift * Vector3.down;
+        if (instant) tr.localPosition = localHeadPosition;
+        else tr.localPosition = Vector3.SmoothDamp(tr.localPosition, localHeadPosition, ref vel, smoothTime, bodyMoveSpeed, Time.deltaTime);
     }
-    private void AnimateHead(Transform tr, CrewSeat seat)
+    private void SetBodyRotation(Vector3 headPosition)
     {
-        Vector3 localDir = tr.InverseTransformDirection(seat.headLookDirection + seat.transform.forward * 0.05f);
-        localDir.y *= 0.35f;
-        localDir.z = Mathf.Abs(localDir.z);
-        Vector3 dir = tr.TransformDirection(localDir) * 100f;
-        if (crew.ripped) dir = tr.forward - tr.up * 2f;
-        crew.headLookAt = tr.position + dir;
+        Vector3 bodyForward = Seat.transform.position - headPosition;
+        Vector3 bodyUp = Seat.transform.forward;// * 2f + (crew.IsVrPlayer ? SofCamera.tr.forward : Vector3.zero);
+        Quaternion bodyRotation = Quaternion.LookRotation(bodyForward, bodyUp);
+        bodyRotation *= Quaternion.Euler(-90f, 0f, 0f);
 
-        animator.SetLookAtWeight(1);
-        animator.SetLookAtPosition(crew.headLookAt);
+        tr.rotation = bodyRotation;
     }
-    private void AnimateBody(Transform tr, CrewSeat seat)
+    const float maxDistanceLean = 0.88f;
+    const float minDistanceLean = 0.68f;
+    private void AnimateLeaning()
     {
-        float distance = (tr.position - seat.transform.position).magnitude;
-        float leaning = Mathf.InverseLerp(standingButtHead, leaningButtHead, distance);
+        float distance = (tr.position - Seat.transform.position).magnitude;
+        float leaning = Mathf.InverseLerp(maxDistanceLean, minDistanceLean, distance);
         animator.SetFloat("Leaning", leaning);
     }
-    private void AnimateArms(Transform tr, CrewSeat seat)
+    private Vector3 HeadLookAtPosition()
     {
-        bool vrPlayer = Application.isPlaying && GameManager.gm.vr && Player.crew == crew;
-        HandGrip right = vrPlayer ? SofVrRig.instance.rightHandGrip : seat.rightHandGrip;
-        if (!right || right.transform.root != tr.root) right = restingGrip;
-        HandGrip left = vrPlayer ? SofVrRig.instance.leftHandGrip : seat.leftHandGrip;
-        if (!left || left.transform.root != tr.root) left = restingGrip;
-        if (right) rightHand.SetHandPose(animator, right);
-        if (left) leftHand.SetHandPose(animator, left);
-    }
-    private void AnimateLegs(CrewSeat seat)
-    {
-        FootRest rightFoot = seat.rightFootRest ? seat.rightFootRest : standingRightFoot;
-        FootRest leftFoot = seat.leftFootRest ? seat.leftFootRest : standingLeftFoot;
-        if (rightFoot) rightFoot.SetFootPose(animator, AvatarIKGoal.RightFoot);
-        if (leftFoot) leftFoot.SetFootPose(animator, AvatarIKGoal.LeftFoot);
+        if (crew.ripped)
+            return tr.position + tr.forward - tr.up * 2f;
+
+        Vector3 headDirection = crew.IsPlayer ? SofCamera.directionInput : Seat.LookingDirection;
+        headDirection += Seat.transform.forward * 0.05f;
+
+        Vector3 localHeadDirection = tr.InverseTransformDirection(headDirection);
+        localHeadDirection.z = Mathf.Abs(localHeadDirection.z);
+
+        return tr.position + tr.TransformDirection(localHeadDirection);
     }
 }

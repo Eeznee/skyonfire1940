@@ -28,12 +28,12 @@ using UnityEngine;
             if (offset)
             {
                 transform.localPosition = originalPos;
-                transform.localPosition += Vector3.forward * maxOffset * controller.controlValue.y;
+                transform.localPosition += Vector3.forward * maxOffset * controller.inputs.current.yaw;
             }
             if (rotation)
             {
                 transform.localRotation = originalRot;
-                transform.Rotate(axis, controller.controlValue.y * maxRotation);
+                transform.Rotate(axis, controller.inputs.current.yaw * maxRotation);
             }
         }
     }

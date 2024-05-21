@@ -19,6 +19,8 @@ public class SubCam
 
     public SofComplex trackTarget;
 
+    public string logName { get; private set; }
+
     public SofObject Target()
     {
         return TargetCrew().sofObject;
@@ -67,14 +69,14 @@ public class SubCam
     }
     public Quaternion Rotation(ref Vector2 axis, Quaternion currentRotation)
     {
-        if (Player.seatInterface == SeatInterface.Bombardier) return logic.BaseRotation();
+        if (Player.role == SeatRole.Bombardier) return logic.BaseRotation();
 
         Quaternion rotation;
 
         if (logic.FollowBaseDir)
             rotation = CameraOperations.RotateRelative(ref axis, CameraInputs.CameraInput().Rotate(-tilt), logic.BaseRotation());
         else
-            rotation = CameraOperations.RotateWorld(currentRotation, logic.BaseRotation());
+            rotation = CameraOperations.RotateWorld(currentRotation, logic.BaseDirection(),logic.BaseUp());
 
         rotation *= Quaternion.AngleAxis(tilt, Vector3.forward);
         return rotation;
@@ -95,7 +97,7 @@ public class SubCam
         if (logic.Adjustment == CamAdjustment.Position)
             customPos = logic.RelativeTransform().InverseTransformPoint(logic.DefaultStartingPos());
         if (logic.Adjustment == CamAdjustment.Offset)
-            customOffset = TargetCrew().Seat.externalViewPoint;
+            customOffset = TargetCrew().seat.externalViewPoint;
     }
     public void ChangeLogic(CustomCamLogic newLogic)
     {
@@ -116,6 +118,8 @@ public class SubCam
         smooth = _smooth;
         holdPos = _holdPos;
         tilt = 0f;
+
+        logName = _logic.Name;
     }
     public SubCam(int i)
     {
@@ -134,6 +138,8 @@ public class SubCam
         trackTarget = LoadAircraft("targetSquad" + i, "targetWing" + i);
 
         ChangeLogic((CustomCamLogic)PlayerPrefs.GetInt("camBehaviour" + i, 0));
+
+        logName = "Cam " + i + " " +  logic.Name;
     }
     public void SaveSettings()
     {

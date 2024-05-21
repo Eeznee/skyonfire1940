@@ -19,13 +19,13 @@ public class FollowPair : Maneuver
 
         //Direction
         Vector3 targetPos = leader.transform.position - Vector3.ProjectOnPlane(leader.transform.forward, Vector3.up) * pairDistance;
-        Vector3 axis = AircraftControl.TrackingInputs(targetPos + leader.transform.forward * 400f, aircraft, leader.data.bankAngle.Get, 1f, true);
-        aircraft.SetControls(axis, true, false);
+        AircraftAxes axes = PointTracking.TrackingInputs(targetPos + leader.transform.forward * 400f, aircraft, leader.data.bankAngle.Get, 1f, true);
+        aircraft.inputs.SendAxes(axes, true, false);
 
         //Throttle
         float dis = transform.InverseTransformDirection(targetPos - transform.position).z;
-        float thr = leader.throttle + thrPID.UpdateUnclamped(dis, Time.fixedDeltaTime);
-        aircraft.SetThrottle(Mathf.Clamp01(thr));
-        aircraft.boost = thr > 1.05f;
+        float thr = leader.engines.throttle + thrPID.UpdateUnclamped(dis, Time.fixedDeltaTime);
+        aircraft.engines.SetThrottle(Mathf.Clamp01(thr));
+        aircraft.engines.boost = thr > 1.05f;
     }
 }

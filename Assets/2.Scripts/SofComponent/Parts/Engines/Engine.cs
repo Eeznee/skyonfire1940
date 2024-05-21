@@ -40,7 +40,6 @@ public class Engine : SofModule
     public Action OnTurnOff;
 
     public override float EmptyMass() { return preset.weight; }
-    public override float Mass() { return preset.weight; }
     public override void Initialize(SofComplex _complex)
     {
         material = preset.material;
@@ -57,13 +56,13 @@ public class Engine : SofModule
         if (igniting) return rps / preset.idleRPS;
         return 0f;
     }
-    public bool Functional() { return aircraft && !ripped && !aircraft.fuelSystem.Empty; }
+    public bool Functional() { return aircraft && !ripped && !aircraft.fuel.Empty; }
     public bool Working() { return !igniting && onInput && Functional() && rps > preset.idleRPS * 0.5f && carburetor.working; }
     public virtual float ConsumptionRate() { return 0f; } //Unit : kg/h
 
     public void EngineFixedUpdate()
     {
-        boosting = preset.type != EnginePreset.Type.Jet && Working() && aircraft.boost;
+        boosting = preset.type != EnginePreset.Type.Jet && Working() && aircraft.engines.boost;
         trueThrottle = Working() ? Mathf.Clamp01((throttleInput + 0.005f) / 1.005f) : 0f;
 
         carburetor.Update(Time.fixedDeltaTime);
@@ -71,7 +70,7 @@ public class Engine : SofModule
 
         if (!Working()) return;
 
-        aircraft.fuelSystem.Consume(ConsumptionRate(), Time.fixedDeltaTime);
+        aircraft.fuel.Consume(ConsumptionRate(), Time.fixedDeltaTime);
     }
     public override void DamageTick(float dt)
     {

@@ -10,9 +10,13 @@ public static class Mathv
         if (angle > 180f) angle -= 360f;
         return angle;
     }
-    public static Quaternion Damp(Quaternion a, Quaternion b, float lambda)
+    public static Quaternion Damp(Quaternion a, Quaternion b, float lambda, float maxAngularSpeed)
     {
-        return Quaternion.Slerp(a, b, 1 - Mathf.Exp(-lambda * Time.unscaledDeltaTime));
+        Quaternion cappedSpeed = Quaternion.RotateTowards(a, b, maxAngularSpeed * Time.unscaledDeltaTime);
+        Quaternion damped = Quaternion.Slerp(a, b, 1f - Mathf.Exp(-lambda * Time.unscaledDeltaTime));
+
+        if (Quaternion.Angle(cappedSpeed, b) > Quaternion.Angle(damped, b)) return cappedSpeed;
+        return damped;
     }
     public static float SquareArea(Vector3 A, Vector3 B, Vector3 C, Vector3 D)
     {

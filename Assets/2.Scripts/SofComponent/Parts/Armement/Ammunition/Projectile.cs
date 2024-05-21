@@ -93,12 +93,13 @@ public class Projectile : MonoBehaviour //Follows a trajectory using drag, weigh
         if (pos.y < 0f) CollideWater();
         if (detonationTime != 0f && Time.time > detonationTime) Detonate(tr.position,null);
     }
+    const float maxRicochetChance = 0.5f;
     public void Ricochet(RaycastHit hit, float speed)
     {
         tr.position = hit.point;
         float alpha = Vector3.Angle(tr.forward, -hit.normal);
         float chance = Mathf.InverseLerp(noRicochetAlpha, ricochetAlpha, alpha);
-        if (Random.value < chance)
+        if (Random.value < chance && Random.value < maxRicochetChance)
         {
             tr.forward = Vector3.Reflect(tr.forward, hit.normal);
             tr.rotation = Ballistics.Spread(tr.rotation, 7f);
@@ -119,7 +120,7 @@ public class Projectile : MonoBehaviour //Follows a trajectory using drag, weigh
     {
         ObjectBubble bubble = obj.GetComponent<ObjectBubble>();
         if (!bubble) return;
-        bubble.ToggleColliders(false);
+        bubble.EnableColliders(false);
         RaycastDamage(Vel(counter), obj.transform.root.GetComponent<Rigidbody>().velocity, bubble.bubble.radius * 2f + box.size.z);
     }
     public void RaycastDamage(Vector3 velocity, Vector3 targetVelocity, float range)
@@ -185,20 +186,3 @@ public class Projectile : MonoBehaviour //Follows a trajectory using drag, weigh
     }
     public void Detonate(Vector3 pos, Transform tran) { if (p.explosive) p.filler.Detonate(pos, p.mass, tran); Destroy(gameObject); }
 }
-
-/*
-private float fuzeDisSquared;
-public void SetFuze(float dis)
-{
-    if (explosive == null) return;
-    dis *= Random.Range(0.9f, 1.1f);
-    fuzeDisSquared = dis * dis;
-}
-        if (fuzeDisSquared > 50f * 50f)
-    {
-        float dis = (tr.position - initPosition).sqrMagnitude;
-        if (dis > fuzeDisSquared) SelfDestruct(false);
-    }
-    else if (counter > lifetime)
-        SelfDestruct(false);
-*/

@@ -48,9 +48,9 @@ public class TurnData
     public void TurnFixedTime()
     {
         if (ended) return;
-        Vector3 axis = AircraftControl.TrackingInputs(aircraft.transform.position + aircraft.transform.forward * 500f, aircraft, bankAngle, 1f, true);
-        axis.x = intensity;
-        aircraft.SetControls(axis, true, false);
+        AircraftAxes axes = PointTracking.TrackingInputs(aircraft.transform.position + aircraft.transform.forward * 500f, aircraft, bankAngle, 1f, true);
+        axes.pitch = intensity;
+        aircraft.inputs.SendAxes(axes, true, false);
         count += Time.fixedDeltaTime;
         if (count >= turnTime) ended = true;
     }

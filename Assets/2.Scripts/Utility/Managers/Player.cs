@@ -12,12 +12,24 @@ public class Player : MonoBehaviour
     private static int wing = 0;
 
     public static CrewMember crew;
-    public static int crewId;
+    public static int crewId
+    {
+        get
+        {
+            for (int i = 0; i < complex.crew.Length; i++)
+                if (complex.crew[i] == crew) return i;
+            return -1;
+        }
+    }
 
     public static CrewSeat seat;
-    public static SeatInterface seatInterface = SeatInterface.Empty;
+    public static PilotSeat pilotSeat;
+    public static GunnerSeat gunnerSeat;
+    public static BombardierSeat bombardierSeat;
+    public static SeatRole role = SeatRole.Simple;
 
     public static event Action OnSeatChange;
+    public static event Action OnCrewChange;
 
     private void Awake()
     {
@@ -57,8 +69,12 @@ public class Player : MonoBehaviour
         tr = null;
         crew = null;
         seat = null;
-        seatInterface = SeatInterface.Empty;
+        gunnerSeat = null;
+        pilotSeat = null;
+        bombardierSeat = null;
+        role = SeatRole.Simple;
 
+        OnCrewChange?.Invoke();
         OnSeatChange?.Invoke();
     }
     public static void Set(SofComplex target)
@@ -84,16 +100,16 @@ public class Player : MonoBehaviour
         crew = null;
         SetCrew(0);
     }
-    public static void SetCrew(int newCrewId)
+    public static void SetCrew(CrewMember newCrew)
     {
-        CrewMember[] crewList = crew ? crew.crewGroup : complex.crew;
+        if (newCrew == crew || !complex) return;
 
-        bool nullId = newCrewId != Mathf.Clamp(newCrewId, 0, crewList.Length - 1);
+        CrewMember previousCrew = crew;
 
-        if (nullId || crewList[newCrewId] == crew || !complex) return;
+        crew = newCrew;
+        newCrew.AttachPlayer();
 
-        crewId = newCrewId;
-        crew = crewList[crewId];
+        if (previousCrew) previousCrew.DetachPlayer();
 
         string txt = "Switched to crew " + (crewId + 1);
         if (aircraft)
@@ -104,18 +120,38 @@ public class Player : MonoBehaviour
         Log.Print(txt, "Switch Crew");
 
         SetSeat(0);
+
+        OnCrewChange?.Invoke();
+    }
+    public static void SetCrew(int newCrewId)
+    {
+        bool nullId = newCrewId != Mathf.Clamp(newCrewId, 0, complex.crew.Length - 1);
+        if (nullId) return;
+
+        SetCrew(complex.crew[newCrewId]);
+    }
+    public static void SetSeat(CrewSeat seat)
+    {
+        SetSeat(seat.id);
     }
     public static void SetSeat(int seatId)
     {
-        bool nullId = seatId != Mathf.Clamp(seatId, 0, crew.seats.Length - 1);
+        bool nullId = seatId != Mathf.Clamp(seatId, 0, crew.seats.Count - 1);
         if (nullId || !crew) return;
 
         crew.SwitchSeat(seatId);
 
-        seat = crew.Seat;
-        seatInterface = crew.Seat.SeatUI();
+        seat = crew.seat;
+        role = crew.seat.role;
+        pilotSeat = role == SeatRole.Pilot ? (PilotSeat)seat : null;
+        gunnerSeat = role == SeatRole.Gunner ? (GunnerSeat)seat : null;
+        bombardierSeat = role == SeatRole.Bombardier ? (BombardierSeat)seat : null;
 
         OnSeatChange?.Invoke();
     }
-    public static void SetSeat(int crewId, int seatId) { SetCrew(crewId); SetSeat(seatId); }
+    public static void CycleSeats()
+    {
+        SetSeat((crew.SeatId + 1) % crew.seats.Count);
+    }
+    public static void SetSeat(SeatId seatId) { SetCrew(seatId.crewId); SetSeat(seatId.seatId); }
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Liquid", menuName = "Aircraft/Liquid")]
+[CreateAssetMenu(fileName = "New Liquid", menuName = "SOF/Materials/Liquid")]
 public class Liquid : ScriptableObject
 {
     public LiquidType type = LiquidType.Coolant;

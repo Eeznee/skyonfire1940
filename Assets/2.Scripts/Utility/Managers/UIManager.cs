@@ -28,7 +28,7 @@ public class UIManager : MonoBehaviour
 
     public AircraftMarker aircraftMarkerPrefab;
 
-    private SeatInterface seatInterface;
+    private SeatRole seatInterface;
 
     public List<DynamicUI> dynamicUis;
 
@@ -60,20 +60,20 @@ public class UIManager : MonoBehaviour
     }
     public void ResetInterface()
     {
-        seatInterface = Player.seatInterface;
+        seatInterface = Player.role;
         foreach (DynamicUI dui in dynamicUis) dui.ResetProperties();
 
 #if !MOBILE_INPUT
-        bool cursor = seatInterface == SeatInterface.Bombardier || gameUI != GameUI.Game;
+        bool cursor = seatInterface == SeatRole.Bombardier || gameUI != GameUI.Game;
         Cursor.visible = cursor;
         Cursor.lockState = cursor ? CursorLockMode.None : CursorLockMode.Locked;
 #endif
         currentIndicator = null;
         switch (seatInterface)
         {
-            case SeatInterface.Pilot:currentIndicator = pilotIndicators; break;
-            case SeatInterface.Gunner: currentIndicator = gunnerIndicators; break;
-            case SeatInterface.Bombardier:currentIndicator = bomberIndicators; break;
+            case SeatRole.Pilot:currentIndicator = pilotIndicators; break;
+            case SeatRole.Gunner: currentIndicator = gunnerIndicators; break;
+            case SeatRole.Bombardier:currentIndicator = bomberIndicators; break;
         }
         gameMenu.SetActive(gameUI == GameUI.Game);
         pauseMenu.SetActive(gameUI == GameUI.Pause);

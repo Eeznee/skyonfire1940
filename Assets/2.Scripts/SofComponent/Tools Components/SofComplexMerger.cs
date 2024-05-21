@@ -104,7 +104,7 @@ public class SofComplexMerger
     private void SplitRenderers(SofComponent combineParent, List<FilterRenderer> relevantFiltRends, Transform[] mobileFiltersExceptions)
     {
         HydraulicSystem[] hydraulics = combineParent.sofObject.GetComponentsInChildren<HydraulicSystem>();
-        Material commonMaterial = combineParent.aircraft.fuselageCore.GetComponent<Renderer>().sharedMaterial;
+        Material commonMaterial = combineParent.aircraft.GetComponentInChildren<FuselageCore>().GetComponent<Renderer>().sharedMaterial;
 
         unMergedFiltRends = new List<FilterRenderer>();
         mobileFiltRends = new List<FilterRenderer>();

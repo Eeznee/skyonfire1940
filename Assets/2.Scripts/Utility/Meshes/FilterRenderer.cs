@@ -20,7 +20,7 @@ public struct FilterRenderer
     public bool IsMergeable(Material requiredMaterial)
     {
         if (rend.GetComponent<Propeller>() || rend.GetComponentInParent<Propeller>()) return false;
-        if (rend.GetComponentInParent<Turret>()) return false;
+        if (rend.GetComponentInParent<GunMount>()) return false;
         if (rend.GetComponent<MagazineStorage>()) return false;
         if (rend.GetComponent<Bomb>()) return false;
         if (rend.sharedMaterial != requiredMaterial) return false;
@@ -32,10 +32,10 @@ public struct FilterRenderer
         if (rend.GetComponent<Flap>()) return true;
         if (rend.GetComponent<Slat>()) return true;
         if (rend.GetComponent<Wheel>()) return true;
-        if (rend.GetComponent<Turret>()) return true;
+        if (rend.GetComponent<GunMount>()) return true;
 
         foreach (HydraulicSystem hydraulic in hydraulics)
-            if (hydraulic.IsEssentialPart(rend.gameObject) || hydraulic.IsEssentialPart(rend.transform.parent.gameObject)) return true;
+            if (hydraulic.IsEssentialPart(rend.gameObject)) return true;
 
         foreach (Transform exception in mobileFiltersExceptions)
             if (exception && (rend.transform == exception || rend.transform.parent == exception)) return true;

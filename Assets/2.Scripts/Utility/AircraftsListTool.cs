@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
+
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -14,12 +16,7 @@ public class AircraftsListTool : MonoBehaviour
     ///WRITE YOUR CUSTOM CODE HERE
     public void CustomFunction(SofAircraft aircraft)
     {
-        foreach (Wheel wheeler in aircraft.GetComponentsInChildren<Wheel>())
-        {
-
-        }
     }
-
 }
 #if UNITY_EDITOR
 [CustomEditor(typeof(AircraftsListTool))]

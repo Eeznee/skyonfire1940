@@ -3,7 +3,7 @@ using UnityEditor;
 #endif
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Part Part Materials List", menuName = "Aircraft/Part Material List")]
+[CreateAssetMenu(fileName = "New Materials List", menuName = "SOF/Materials/Module Material List")]
 public class MaterialsList : ScriptableObject
 {
     public ModuleMaterial airframeMat;

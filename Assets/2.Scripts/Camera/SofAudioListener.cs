@@ -24,6 +24,7 @@ public class SofAudioListener : MonoBehaviour
         mixer = GameManager.gm.mixer;
         StartCoroutine(FadeVolumeIn());
 
+        AudioListener.volume = 1f;
         TimeManager.OnPauseEvent += OnPause;
     }
     private void OnDisable()
@@ -54,7 +55,7 @@ public class SofAudioListener : MonoBehaviour
     {
         //Cockpit volume
         bool firstPerson = GameManager.gm.vr || SofCamera.viewMode == 1 || SofCamera.viewMode == 3;
-        float targetRatio = firstPerson ? Player.crew.Seat.CockpitAudio() : 0f;
+        float targetRatio = firstPerson ? Player.seat.CockpitAudioRatio : 0f;
         cockpitRatio = Mathf.MoveTowards(cockpitRatio, targetRatio, 5f * Time.deltaTime);
         mixer.SetFloat("CockpitVolume", Mathf.Log10(cockpitRatio + 0.0001f) * 20);
         float externalVol = Mathf.Log10(1f - cockpitRatio + 0.0001f) * 20;

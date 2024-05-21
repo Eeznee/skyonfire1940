@@ -7,78 +7,153 @@ using UnityStandardAssets.CrossPlatformInput;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
-public enum SeatInterface { Empty, Pilot, Gunner, Bombardier }
-
-public class CrewSeat : BasicSeat
+public enum SeatRole { Simple, Pilot, Gunner, Bombardier }
+public struct SeatId
 {
+    public int crewId;
+    public int seatId;
+    public SeatId(int _crewId, int _seatId)
+    {
+        crewId = _crewId;
+        seatId = _seatId;
+    }
+    public SeatId(CrewSeat seat)
+    {
+        crewId = 0;
+        seatId = 0;
+
+        SofComplex complex = seat.complex;
+        for (int i = 0; i < complex.crew.Length; i++)
+            for (int j = 0; j < complex.crew[i].seats.Count; j++)
+                if (complex.crew[i] && complex.crew[i].seats[j] == seat)
+                {
+                    crewId = i; seatId = j;
+                }
+    }
+}
+public class CrewSeat : SofComponent
+{
+    public SeatRole role;
+
+    public Vector3 externalViewPoint = new Vector3(0f, 2f, -12f);
+    public Vector3 goProViewPoint = new Vector3(1f, 0f, 0f);
+
+    public Transform defaultPOV;
+
+
+    public HandGrip rightHandGrip = null;
+    public HandGrip leftHandGrip = null;
+    public FootRest rightFootRest = null;
+    public FootRest leftFootRest = null;
+
     public HydraulicSystem canopy;
     public float audioRatio = 0.3f;
     public float closedRatio = 0.9f;
 
     public Visibility visibility;
-
     public Gun[] reloadableGuns;
     public Transform magTrash;
-    public Vector3 localDirection;
 
-    const float magRemoveTime = 0.5f;
-    const float magTravelSpeed = 1f;
 
-    protected List<SofAircraft> spotted;
-    public SofAircraft target;
-    protected Transform targetTr;
+    protected bool handsBusy = false;
+    protected HandGrip defaultRightHand;
+    protected HandGrip defaultLeftHand;
 
-    public Vector3 DefaultDirection()
+    private Vector3 flattenedLocalDir;
+    public SeatId id { get { return new SeatId(this); } }
+
+    public CrewMember seatedCrew { get; private set; }
+    public List<SofAircraft> spotted { get; protected set; }
+    public SofAircraft target { get; protected set; }
+    public Transform targetTr { get; protected set; }
+
+    public virtual int Priority => 0;
+    public virtual string Action => "Inactive";
+
+    public virtual Vector3 ZoomedHeadPosition => DefaultHeadPosition;
+    public virtual Vector3 DefaultHeadPosition => defaultPOV ? defaultPOV.position : transform.position + data.up.Get * 0.75f;
+    public virtual Vector3 CameraUp => sofObject.tr.up;
+    public virtual Vector3 LookingDirection => data.tr.TransformDirection(flattenedLocalDir);
+    public virtual Vector3 CrosshairPosition => defaultPOV.position + data.forward.Get * (aircraft ? aircraft.convergeance : 300f);
+    public float CockpitAudioRatio
     {
-        return data.tr.TransformDirection(localDirection);
-    }
-    public virtual Vector3 CrosshairDirection()
-    {
-        return DefaultDirection() * 500f;
-    }
-    public override float CockpitAudio()
-    {
-        if (!aircraft) return 0f;
-        if (canopy && !canopy.disabled)
+        get
         {
+            if (!aircraft) return 0f;
+            if (!canopy || canopy.disabled) return audioRatio;
             return Mathf.Lerp(audioRatio, closedRatio, Mathv.SmoothStart(1f - canopy.state, 5));
         }
-        else return audioRatio;
     }
     public override void SetReferences(SofComplex _complex)
     {
         base.SetReferences(_complex);
-        localDirection = transform.root.InverseTransformDirection(transform.forward);
-        localDirection = new Vector3(localDirection.x, 0f, localDirection.z).normalized;
+
+        role = SeatRole.Simple;
+        if (GetComponent<PilotSeat>()) role = SeatRole.Pilot;
+        if (GetComponent<GunnerSeat>()) role = SeatRole.Gunner;
+        if (GetComponent<BombardierSeat>()) role = SeatRole.Bombardier;
+
+        defaultRightHand = rightHandGrip;
+        defaultLeftHand = leftHandGrip;
+
+        flattenedLocalDir = tr.root.InverseTransformDirection(transform.forward);
+        flattenedLocalDir.y = 0f;
+        flattenedLocalDir.Normalize();
     }
     public override void Initialize(SofComplex _complex)
     {
         base.Initialize(_complex);
 
         if (!magTrash) magTrash = transform;
-        if (!zoomedPOV) zoomedPOV = defaultPOV;
         visibility.Initialize(this);
         spotted = new List<SofAircraft>();
     }
-    public override void AiUpdate(CrewMember crew)
+    public virtual void OnCrewSeats(CrewMember newCrew)
     {
-        base.AiUpdate(crew);
+        seatedCrew = newCrew;
+    }
+    public virtual void OnCrewLeaves()
+    {
+        seatedCrew = null;
+    }
+
+    public virtual void PlayerUpdate(CrewMember crew)
+    {
+
+    }
+    public virtual void PlayerFixed(CrewMember crew)
+    {
+
+    }
+    public virtual void AiUpdate(CrewMember crew)
+    {
+        TryReload(true);
+    }
+    public virtual void AiFixed(CrewMember crew)
+    {
+    }
+    protected void NewGrips(HandGrip right, HandGrip left)
+    {
+        rightHandGrip = right;
+        leftHandGrip = left;
+    }
+    public void TryReload(bool onlyEmptyGuns)
+    {
         if (handsBusy) return;
         foreach (Gun gun in reloadableGuns)
         {
-            if (gun.MustBeReloaded()) { StartCoroutine(Reload(gun)); ; return; }  //Check Reloadable guns
+            if (!gun.CanBeReloaded()) continue;
+            if (gun.complex != complex) continue;
+            if (onlyEmptyGuns && gun.magazine.ammo > 0) continue;
+
+            StartCoroutine(Reload(gun));
+            return;
         }
+
     }
-    public void TryReload()
-    {
-        if (handsBusy) return;
-        foreach( Gun gun in reloadableGuns)
-            if (gun.CanBeReloaded() && gun.sofObject == sofObject)
-            {
-                StartCoroutine(Reload(gun));
-                return;
-            }
-    }
+
+    const float magRemoveTime = 0.5f;
+    const float magTravelSpeed = 1f;
     protected IEnumerator Reload(Gun gun)
     {
         if (!gun || !gun.magStorage || gun.magStorage.magsLeft == 0) yield break;
@@ -93,7 +168,7 @@ public class CrewSeat : BasicSeat
             AmmoContainer oldMagRef = gun.magazine;
             Transform oldMag = gun.magazine.transform;
             leftHandGrip = oldMagRef.grip;
-            yield return new WaitForSeconds(0.4f);  //Wait for hand to attach
+            yield return new WaitForSeconds(1f);  //Wait for hand to attach
 
             gun.RemoveMagazine();
             oldMag.parent = transform;
@@ -135,8 +210,7 @@ public class CrewSeat : BasicSeat
 
             yield return new WaitForSeconds(1f); //Wait for hand to attach (and find the mag)
 
-            start = gun.magazineAttachPoint.localPosition;
-            correctedTrajectory = target - (start + oldMagRef.ejectVector);
+            correctedTrajectory = target - oldMagRef.ejectVector;
             ejectVector = mag.ejectVector;
 
             //Vectors (slopes are the same)
@@ -146,12 +220,12 @@ public class CrewSeat : BasicSeat
             count = totalTime;
             while (count > 0f)//Animate
             {
-                newMag.localPosition = start + projectedVector * projected.Integral(count) + lateralVector * lateral.Integral(count) + ejectVector * eject.Integral(count);
-                count -= Time.deltaTime;
+                count = Mathf.Max(0f, count - Time.deltaTime);
+                newMag.localPosition = projectedVector * projected.Integral(count) + lateralVector * lateral.Integral(count) + ejectVector * eject.Integral(count);
                 yield return null;
             }
             gun.LoadMagazine(mag);
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.8f);
             leftHandGrip = defaultLeftHand;
         }
 
@@ -175,45 +249,3 @@ public class CrewSeat : BasicSeat
         handsBusy = false;
     }
 }
-#if UNITY_EDITOR
-[CustomEditor(typeof(CrewSeat))]
-public class CrewSeatEditor : BasicSeatEditor
-{
-    public override void OnInspectorGUI()
-    {
-        base.OnInspectorGUI();
-        serializedObject.Update();
-
-        CrewSeat seat = (CrewSeat)target;
-
-        seat.audioRatio = EditorGUILayout.Slider("Audio Cockpit Ratio", seat.audioRatio, 0f, 1f);
-        seat.canopy = EditorGUILayout.ObjectField("Linked Canopy", seat.canopy, typeof(HydraulicSystem), true) as HydraulicSystem;
-        if (seat.canopy) seat.closedRatio = EditorGUILayout.Slider("Closed Canopy Ratio", seat.closedRatio, 0f, 1f);
-
-        GUI.color = Color.cyan;
-        EditorGUILayout.HelpBox("Visibility", MessageType.None);
-        GUI.color = GUI.backgroundColor;
-        SerializedProperty visibility = serializedObject.FindProperty("visibility");
-        EditorGUILayout.PropertyField(visibility, true);
-
-        GUI.color = Color.red;
-        EditorGUILayout.HelpBox("Weapons Management", MessageType.None);
-        GUI.color = GUI.backgroundColor;
-
-        SerializedProperty reloadableGuns = serializedObject.FindProperty("reloadableGuns");
-        EditorGUILayout.PropertyField(reloadableGuns, true);
-        if (seat.reloadableGuns != null && seat.reloadableGuns.Length > 0)
-        {
-            seat.magTrash = EditorGUILayout.ObjectField("Magazine Trash", seat.magTrash, typeof(Transform), true) as Transform;
-        }
-
-
-        if (GUI.changed)
-        {
-            EditorUtility.SetDirty(seat);
-            EditorSceneManager.MarkSceneDirty(seat.gameObject.scene);
-        }
-        serializedObject.ApplyModifiedProperties();
-    }
-}
-#endif

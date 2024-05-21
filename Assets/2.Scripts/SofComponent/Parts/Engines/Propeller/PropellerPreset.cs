@@ -3,7 +3,7 @@
 using UnityEditor;
 #endif
 
-[CreateAssetMenu(fileName = "New Propeller Preset", menuName = "Aircraft/Propeller Preset")]
+[CreateAssetMenu(fileName = "New Propeller", menuName = "SOF/Aircraft Modules/Propeller")]
 public class PropellerPreset : ScriptableObject
 {
     [HideInInspector] public float propPitch = 0f;

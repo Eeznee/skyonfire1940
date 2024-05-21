@@ -8,8 +8,9 @@ public class ObjectBubble : SofComponent
     {
         return 10;
     }
-    public float radius;
+
     public SphereCollider bubble;
+
     private List<Collider> colliders = new List<Collider>();
     private List<Collider> solidColliders = new List<Collider>();
     private float toggledTimer = 0f;
@@ -48,7 +49,7 @@ public class ObjectBubble : SofComponent
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer == 10 || other.gameObject.layer == 0) ToggleColliders(true);
+        if (other.gameObject.layer == 10 || other.gameObject.layer == 0) EnableColliders(true);
     }
     private void OnTriggerExit(Collider other)
     {
@@ -64,7 +65,7 @@ public class ObjectBubble : SofComponent
             collider.enabled = !collider.isTrigger;
         }
     }
-    public void ToggleColliders(bool solidOnly)
+    public void EnableColliders(bool solidOnly)
     {
         toggledTimer = timerThreshold;
 
@@ -92,7 +93,7 @@ public class ObjectBubble : SofComponent
     {
         if (data.relativeAltitude.Get < 15f)
         {
-            ToggleColliders(true);
+            EnableColliders(true);
         }
 
         if (solidToggled && toggledTimer < Time.deltaTime) DisableColliders();

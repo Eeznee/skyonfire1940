@@ -18,7 +18,7 @@ public class BailOut : CockpitInteractable
         base.OnRelease();
         if (Player.crew.transform.root != Player.aircraft.transform) return;
         Vector3 camLocal = bailOutPoint.InverseTransformPoint(Camera.main.transform.position);
-        if (camLocal.y > 0f) Player.crew.Bailout();
+        if (camLocal.y > 0f) Player.crew.bailOut.BailInstant();
         else SofVrRig.instance.ResetView();
     }
 
@@ -27,7 +27,7 @@ public class BailOut : CockpitInteractable
         CockpitInteractableUpdate();
         if (xrGrab && Player.seat.canopy)
         {
-            xrGrab.enabled = Player.crew.Seat.canopy.state > 0.7f;
+            xrGrab.enabled = Player.crew.seat.canopy.state > 0.7f;
             if (!xrGrab.enabled) outline.OutlineColor = new Color(0f, 0f, 0f, 0f);
         }
     }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Formation", menuName = "Map/Formation")]
+[CreateAssetMenu(fileName = "New Formation", menuName = "SOF/Game Data/Formation")]
 public class Formation : ScriptableObject
 {
     public string formationName = "V";

@@ -3,12 +3,12 @@ using UnityEditor;
 #endif
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Ammunition Preset", menuName = "Weapons/Ammunition")]
+[CreateAssetMenu(fileName = "New Ammunition", menuName = "SOF/Weapons/Ammunition")]
 public class AmmunitionPreset : ScriptableObject
 {
     public float caliber = 7.62f;
     public float caseLength = 51;
-    [HideInInspector] public float mass = 10.5f;
+    [HideInInspector] public float mass = 0.01f;
     [HideInInspector] public float defaultMuzzleVel = 750f;
     public BulletHits bulletHits;
 
@@ -57,7 +57,7 @@ public class AmmunitionPreset : ScriptableObject
             ammo.caliber = EditorGUILayout.FloatField("Caliber mm", ammo.caliber);
             ammo.caseLength = EditorGUILayout.FloatField("Case Length mm", ammo.caseLength);
             EditorGUILayout.LabelField("Dimensions", ammo.caliber.ToString() + "x" + ammo.caseLength.ToString() + " mm");
-            EditorGUILayout.LabelField("Whole Cartridge Mass", ammo.FullMass.ToString("0.0") + " kg");
+            EditorGUILayout.LabelField("Full Round Mass", ammo.FullMass.ToString("0.000") + " kg");
             ammo.mass = EditorGUILayout.FloatField("Bullet Mass kg", ammo.mass);
             ammo.defaultMuzzleVel = EditorGUILayout.FloatField("Default Muzzle Velocity m/s", ammo.defaultMuzzleVel);
 

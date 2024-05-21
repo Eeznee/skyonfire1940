@@ -63,7 +63,7 @@ public class FloatingOrigin : MonoBehaviour
             r.sleepThreshold = r.transform.position.sqrMagnitude > physicsThreshold2 ? float.MaxValue : defaultSleepThreshold;
         Physics.SyncTransforms();
 
-        GameManager.refPos = GameManager.gm.mapTr.position;
+        GameManager.refPos = GameManager.gm.mapmap.transform.position;
     }
 
     void LateUpdate()

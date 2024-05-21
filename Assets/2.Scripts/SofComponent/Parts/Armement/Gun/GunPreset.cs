@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu (fileName = "New Gun Preset", menuName = "Weapons/Gun")]
+[CreateAssetMenu (fileName = "New Gun", menuName = "SOF/Weapons/Gun")]
 public class GunPreset : ScriptableObject
 {
     public string Name;

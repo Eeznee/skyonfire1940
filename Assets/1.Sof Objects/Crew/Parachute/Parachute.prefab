@@ -27,6 +27,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3260305485407087906}
   m_RootOrder: 1
@@ -42,6 +43,7 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -157,6 +159,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2707428670918337584}
   m_RootOrder: 1
@@ -172,6 +175,7 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -287,6 +291,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.138, y: -0.70000005, z: -0.063}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5696597040133327481}
   m_RootOrder: 1
@@ -330,6 +335,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2707428670918337584}
   m_RootOrder: 0
@@ -345,6 +351,7 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -460,6 +467,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3260305485407087906}
   m_RootOrder: 2
@@ -475,6 +483,7 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -589,6 +598,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2817799948467790777}
   - {fileID: 3260305485407087906}
@@ -608,6 +618,7 @@ GameObject:
   - component: {fileID: 3414645787355955904}
   - component: {fileID: 8767049772878741315}
   - component: {fileID: 158622438553547532}
+  - component: {fileID: 5699285046051387301}
   m_Layer: 9
   m_Name: Parachute
   m_TagString: Untagged
@@ -625,6 +636,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8970592880966968672}
   - {fileID: 5696597040133327481}
@@ -643,28 +655,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7fe08735f2350f46a23d98c4178868f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 0}
+  tr: {fileID: 3041685066798675539}
   rb: {fileID: 0}
-  complex: {fileID: 0}
+  complex: {fileID: 3414645787355955904}
   aircraft: {fileID: 0}
   debris: {fileID: 0}
   simpleDamage: {fileID: 0}
   warOnly: 0
   destroyed: 0
   burning: 0
+  cogForwardDistance: 0
+  targetEmptyMass: 3000
   lod: {fileID: 0}
   bubble: {fileID: 0}
-  shaders: {fileID: 0}
-  data: {fileID: 0}
+  data: {fileID: 5699285046051387301}
   avm: {fileID: 0}
-  components: []
+  components:
+  - {fileID: 5699285046051387301}
+  - {fileID: 451626179859150544}
   parts: []
   modules: []
   airframes: []
-  complexMass: 1
-  useAutoMass: 1
-  cogForwardDistance: 0
-  targetEmptyMass: 3000
+  crew: []
   dragPoint: {x: 0, y: 2, z: 0}
   feetGroundOffset: -1.58
   radius: 2.6
@@ -706,6 +718,27 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &5699285046051387301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3041685066798675538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96d07c011fedd8e4ea48fe0210875bbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tr: {fileID: 3041685066798675539}
+  rb: {fileID: 0}
+  animator: {fileID: 0}
+  sofObject: {fileID: 3414645787355955904}
+  complex: {fileID: 3414645787355955904}
+  aircraft: {fileID: 0}
+  avm: {fileID: 0}
+  data: {fileID: 5699285046051387301}
+  localPos: {x: 0, y: 0, z: 0}
 --- !u!1 &3399854537590129068
 GameObject:
   m_ObjectHideFlags: 0
@@ -733,6 +766,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3260305485407087906}
   m_RootOrder: 3
@@ -748,6 +782,7 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -863,6 +898,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 894696014350178066}
   - {fileID: 8767607102180342513}
@@ -882,6 +918,7 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -995,6 +1032,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.88, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5696597040133327481}
   m_RootOrder: 0
@@ -1026,6 +1064,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2707428670918337584}
   m_RootOrder: 2
@@ -1041,6 +1080,7 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -1156,6 +1196,7 @@ Transform:
   m_LocalRotation: {x: 0.317847, y: -0.63856125, z: -0.6190502, w: 0.32861778}
   m_LocalPosition: {x: 0.2427, y: 0.65999997, z: 0.1304}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5696597040133327481}
   m_RootOrder: 3
@@ -1210,6 +1251,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.138, y: -0.70000005, z: -0.063}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5696597040133327481}
   m_RootOrder: 2
@@ -1253,6 +1295,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3260305485407087906}
   m_RootOrder: 0
@@ -1268,6 +1311,7 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -1383,6 +1427,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8784103197293539307}
   - {fileID: 5544101861007139076}
@@ -1402,6 +1447,7 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -1516,6 +1562,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2707428670918337584}
   m_RootOrder: 3
@@ -1531,6 +1578,7 @@ LineRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
@@ -1647,6 +1695,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8970592880966968672}
   m_RootOrder: 0
@@ -1670,6 +1719,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -1727,6 +1777,7 @@ Transform:
   m_LocalRotation: {x: 0.3178513, y: 0.638559, z: 0.6190504, w: 0.32861787}
   m_LocalPosition: {x: -0.2427, y: 0.65999997, z: 0.1304}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5696597040133327481}
   m_RootOrder: 4
@@ -1781,6 +1832,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -0.88, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6981468737211090324}
   - {fileID: 6965073713338561216}
@@ -1804,14 +1856,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tr: {fileID: 5696597040133327481}
   rb: {fileID: 0}
-  sofObject: {fileID: 0}
-  complex: {fileID: 0}
+  animator: {fileID: 0}
+  sofObject: {fileID: 3414645787355955904}
+  complex: {fileID: 3414645787355955904}
   aircraft: {fileID: 0}
   avm: {fileID: 0}
-  data: {fileID: 0}
+  data: {fileID: 5699285046051387301}
+  localPos: {x: 0, y: -0.88, z: 0}
+  role: 0
   externalViewPoint: {x: 0, y: 2, z: -12}
-  audioCockpitRatio: 1
-  headLookDirection: {x: 1, y: 0, z: 0}
+  goProViewPoint: {x: 1, y: 0, z: 0}
+  firstPersonViewPoint: {x: 0, y: 0, z: 0}
+  firstPersonZoomedViewPoint: {x: 0, y: 0, z: 0}
   defaultPOV: {fileID: 6981468737211090324}
   zoomedPOV: {fileID: 6981468737211090324}
   rightHandGrip: {fileID: 2561408882995612669}
@@ -1829,4 +1885,3 @@ MonoBehaviour:
     bottom: 0
   reloadableGuns: []
   magTrash: {fileID: 0}
-  target: {fileID: 0}

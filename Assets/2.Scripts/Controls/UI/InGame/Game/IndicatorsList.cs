@@ -47,22 +47,24 @@ public class IndicatorsList : MonoBehaviour
 
         if (!aircraft) return finalText;
 
-        if (thr)
-            finalText += "THR : " + (aircraft.boost ? "BOOST\n" : (Mathf.RoundToInt(aircraft.throttle * 100f) + " %\n"));
+        ArmamentManager arm = aircraft.armament;
 
-        if (ammo && aircraft.primaries.Length > 0)
+        if (thr)
+            finalText += "THR : " + (aircraft.engines.boost ? "BOOST\n" : (Mathf.RoundToInt(aircraft.engines.throttle * 100f) + " %\n"));
+
+        if (ammo && arm.primaries.Length > 0)
         {
-            string clip = aircraft.primaries[0].magStorage ? " | " + aircraft.primaries[0].magStorage.magsLeft : "";
-            finalText += "PRM : " + Gun.AmmunitionCount(aircraft.primaries) + clip + " \n";
+            string clip = arm.primaries[0].magStorage ? " | " + arm.primaries[0].magStorage.magsLeft : "";
+            finalText += "PRM : " + Gun.AmmunitionCount(arm.primaries) + clip + " \n";
         }
-        if (ammo && aircraft.secondaries.Length > 0)
+        if (ammo && arm.secondaries.Length > 0)
         {
-            string clip = aircraft.secondaries[0].magStorage ? " | " + aircraft.secondaries[0].magStorage.magsLeft : "";
-            finalText += "SCD : " + Gun.AmmunitionCount(aircraft.secondaries) +  clip + " \n";
+            string clip = arm.secondaries[0].magStorage ? " | " + arm.secondaries[0].magStorage.magsLeft : "";
+            finalText += "SCD : " + Gun.AmmunitionCount(arm.secondaries) +  clip + " \n";
         }
         if (fuel && aircraft)
         {
-            int fuelTime = (int)aircraft.fuelSystem.FuelTimer;
+            int fuelTime = (int)aircraft.fuel.FuelTimer;
             string minutes = (fuelTime / 60).ToString("D2");
             string seconds = (fuelTime % 60).ToString("D2");
             finalText += "FUE : " + minutes + ":" + seconds + "\n";
@@ -72,11 +74,11 @@ public class IndicatorsList : MonoBehaviour
             finalText += "GFR : " + Mathf.CeilToInt(data.gForce * 10f) / 10f + " G\n";
         if (hdg)
             finalText += "HDG : " + Mathf.CeilToInt(data.heading.Get) + " \n";
-        if (!aircraft ||aircraft.engines.Length == 0) return finalText;
+        if (!aircraft ||aircraft.engines.all.Length == 0) return finalText;
         if (temp)
-            finalText += "WTR : " + aircraft.engines[0].temp.waterTemperature.ToString("0.0") + " °C\n";
+            finalText += "WTR : " + aircraft.engines.main.temp.waterTemperature.ToString("0.0") + " °C\n";
         if (temp)
-            finalText += "OIL : " + aircraft.engines[0].temp.oilTemperature.ToString("0.0") + " °C\n";
+            finalText += "OIL : " + aircraft.engines.main.temp.oilTemperature.ToString("0.0") + " °C\n";
 
 
         return finalText;

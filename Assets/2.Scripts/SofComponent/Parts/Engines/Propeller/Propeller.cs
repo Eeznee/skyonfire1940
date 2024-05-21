@@ -24,7 +24,7 @@ public class Propeller : SofModule
 
     //Data
     public float rps { get { return engine.rps * reductionGear; } }
-    public float MomentOfInertia { get { return emptyMass * Mathv.SmoothStart(preset.diameter, 2) / 20f; } }
+    public float MomentOfInertia { get { return mass * Mathv.SmoothStart(preset.diameter, 2) / 20f; } }
     public float TotalSpeed { get { return Mathf.Sqrt(Mathv.SmoothStart(rps * preset.diameter / 13f, 2) + Mathv.SmoothStart(data.ias.Get, 2)); } }
     //Forces
     public float torque = 0f;
@@ -71,10 +71,10 @@ public class Propeller : SofModule
         {
             Vector2 tweakedForces = new Vector2();
             float rpsLerper = Mathf.InverseLerp(engine.preset.idleRPS, engine.preset.nominalRPS, engine.rps);
-            float desiredRps = engine.preset.TargetRPS(engine.throttleInput, aircraft.boost);
+            float desiredRps = engine.preset.TargetRPS(engine.throttleInput, aircraft.engines.boost);
 
             tweakedForces.x = efficiency * engine.trueThrottle * engine.brakePower / TotalSpeed;
-            tweakedForces.y = -engine.Power(rpsLerper, aircraft.boost, engine.rps) / desiredRps;
+            tweakedForces.y = -engine.Power(rpsLerper, aircraft.engines.boost, engine.rps) / desiredRps;
 
             Vector2 simulatedForces = preset.GetForces(data.ias.Get, rps, preset.phiOff, data.density.Get);
 
@@ -122,7 +122,7 @@ public class PropellerEditor : Editor
     SerializedProperty blurred;
     void OnEnable()
     {
-        mass = serializedObject.FindProperty("emptyMass");
+        mass = serializedObject.FindProperty("mass");
         gear = serializedObject.FindProperty("reductionGear");
         preset = serializedObject.FindProperty("preset");
         efficiency = serializedObject.FindProperty("efficiency");

@@ -4,7 +4,7 @@ using UnityEngine.Audio;
 using UnityEditor;
 #endif
 
-[CreateAssetMenu(fileName = "New Engine Preset", menuName = "Aircraft/Engine Preset")]
+[CreateAssetMenu(fileName = "New Engine", menuName = "SOF/Aircraft Modules/Engine")]
 public class EnginePreset : ScriptableObject
 {
     public enum Type

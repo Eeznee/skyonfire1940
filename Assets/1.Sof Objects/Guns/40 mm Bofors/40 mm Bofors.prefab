@@ -380,25 +380,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tr: {fileID: 7501945661026523373}
   rb: {fileID: 0}
+  animator: {fileID: 0}
   sofObject: {fileID: 238445306015949557}
   complex: {fileID: 238445306015949557}
   aircraft: {fileID: 0}
   avm: {fileID: 0}
   data: {fileID: 2907799334845312572}
-  emptyMass: 0
+  localPos: {x: -0.8789215, y: 1.8103911, z: -1.144165}
+  mass: 0
   material: {fileID: 11400000, guid: aae8ef80076325d4699c0031ae003f06, type: 2}
   structureDamage: 1
   ripped: 0
   burning: 0
-  audioCockpitRatio: 1
-  currentSeat: 0
   seats:
   - {fileID: 8155067803604597683}
-  crewGroup: []
   parachute: {fileID: 3414645787355955904, guid: a124fc22068e50a498cd4ad9141507a4,
     type: 3}
   specialPlayerParachute: {fileID: 0}
-  headLookAt: {x: 0, y: 0, z: 1}
+  seatIdTest: 0
 --- !u!136 &7461790824485519251
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -459,11 +458,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tr: {fileID: 8155067803069004724}
   rb: {fileID: 0}
+  animator: {fileID: 0}
   sofObject: {fileID: 238445306015949557}
   complex: {fileID: 238445306015949557}
   aircraft: {fileID: 0}
   avm: {fileID: 0}
   data: {fileID: 2907799334845312572}
+  localPos: {x: 0, y: 0, z: 0}
 --- !u!1 &8155067803150941402
 GameObject:
   m_ObjectHideFlags: 0
@@ -473,7 +474,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8155067803150941403}
-  - component: {fileID: 7565534157745625479}
+  - component: {fileID: 675430826767389359}
   - component: {fileID: 7261544260633682711}
   - component: {fileID: 7112097954470652888}
   m_Layer: 9
@@ -501,7 +502,7 @@ Transform:
   m_Father: {fileID: 8155067803483289766}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7565534157745625479
+--- !u!114 &675430826767389359
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -510,76 +511,137 @@ MonoBehaviour:
   m_GameObject: {fileID: 8155067803150941402}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e1fb4ee19e65ba4abb29beeb38a8af2, type: 3}
+  m_Script: {fileID: 11500000, guid: 526085a0bba086d489990067d03d9604, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   tr: {fileID: 8155067803150941403}
   rb: {fileID: 0}
+  animator: {fileID: 0}
   sofObject: {fileID: 238445306015949557}
   complex: {fileID: 238445306015949557}
   aircraft: {fileID: 0}
   avm: {fileID: 0}
   data: {fileID: 2907799334845312572}
+  localPos: {x: 0, y: 0, z: 0}
+  linkedHydraulics: {fileID: 0}
   preventSelfDamage: 0
-  animatedConstrains: 0
-  controlMode: 0
-  selfDamaging: 0
-  animationFactor: 0
+  hydraulicsEditorTest: 0
   traversor: {fileID: 8155067803371847379}
-  limitedTraverse: 0
-  traverseConstrains: {x: -60, y: 60}
-  traverseRate: 30
   elevator: {fileID: 8155067803681774956}
-  elevationRate: 30
-  elevationConstrain: 90
-  depressionConstrain:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: -5
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 360
-      value: -5
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  depressionConstrainAnimated:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 360
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  constrains:
+    limitedTraverse: 0
+    leftTraverseLimit: -60
+    rightTraverseLimit: 60
+    hasMinElevationCurve: 0
+    minElevation: -10
+    minElevationByTraverse:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: -180
+        value: -10
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 180
+        value: -10
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    hasMaxElevationCurve: 0
+    maxElevation: 90
+    maxElevationByTraverse:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: -180
+        value: 70
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 180
+        value: 70
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  hydraulicsConstrains:
+    limitedTraverse: 0
+    leftTraverseLimit: -60
+    rightTraverseLimit: 60
+    hasMinElevationCurve: 0
+    minElevation: -10
+    minElevationByTraverse:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: -180
+        value: -10
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 180
+        value: -10
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    hasMaxElevationCurve: 0
+    maxElevation: 90
+    maxElevationByTraverse:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: -180
+        value: 70
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 180
+        value: 70
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  horizontalRate: 60
+  verticalRate: 60
 --- !u!33 &7261544260633682711
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -773,18 +835,28 @@ MonoBehaviour:
   warOnly: 1
   destroyed: 0
   burning: 0
+  cogForwardDistance: 0
+  targetEmptyMass: 3000
   lod: {fileID: 0}
   bubble: {fileID: 0}
   data: {fileID: 2907799334845312572}
   avm: {fileID: 0}
-  components: []
-  parts: []
-  modules: []
+  components:
+  - {fileID: 2907799334845312572}
+  - {fileID: 675430826767389359}
+  - {fileID: 8155067804333574725}
+  - {fileID: 8155067803604597683}
+  - {fileID: 6914878273311552969}
+  - {fileID: 8155067804050703307}
+  - {fileID: 8913085849251016605}
+  parts:
+  - {fileID: 8155067804333574725}
+  - {fileID: 6914878273311552969}
+  modules:
+  - {fileID: 6914878273311552969}
   airframes: []
   crew:
   - {fileID: 6914878273311552969}
-  cogForwardDistance: 0
-  targetEmptyMass: 3000
 --- !u!114 &8155067803483289767
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -819,11 +891,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tr: {fileID: 8155067803483289766}
   rb: {fileID: 0}
+  animator: {fileID: 0}
   sofObject: {fileID: 238445306015949557}
   complex: {fileID: 238445306015949557}
   aircraft: {fileID: 0}
   avm: {fileID: 0}
   data: {fileID: 2907799334845312572}
+  localPos: {x: 0, y: 0, z: 0}
 --- !u!1 &8155067803604597693
 GameObject:
   m_ObjectHideFlags: 0
@@ -873,15 +947,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tr: {fileID: 8155067803604597682}
   rb: {fileID: 0}
+  animator: {fileID: 0}
   sofObject: {fileID: 238445306015949557}
   complex: {fileID: 238445306015949557}
   aircraft: {fileID: 0}
   avm: {fileID: 0}
   data: {fileID: 2907799334845312572}
+  localPos: {x: -0.87999725, y: 1.421, z: -1.1439972}
+  role: 2
   externalViewPoint: {x: 0, y: 2, z: -12}
   goProViewPoint: {x: 1, y: 0, z: 0}
-  audioCockpitRatio: 1
-  headLookDirection: {x: 0, y: 0, z: 0}
+  firstPersonViewPoint: {x: 0, y: 0, z: 0}
+  firstPersonZoomedViewPoint: {x: 0, y: 0, z: 0}
   defaultPOV: {fileID: 4577115825373651166}
   zoomedPOV: {fileID: 4577115825373651166}
   rightHandGrip: {fileID: 0}
@@ -899,9 +976,7 @@ MonoBehaviour:
     bottom: 0
   reloadableGuns: []
   magTrash: {fileID: 0}
-  localDirection: {x: 0, y: 0, z: 1}
-  target: {fileID: 0}
-  turret: {fileID: 7565534157745625479}
+  gunMount: {fileID: 675430826767389359}
   gunPovTarget: {fileID: 8155067803604597682}
   progressiveHydraulic: {fileID: 0}
 --- !u!1 &8155067803681774959
@@ -1035,11 +1110,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tr: {fileID: 8155067804050703306}
   rb: {fileID: 0}
+  animator: {fileID: 0}
   sofObject: {fileID: 238445306015949557}
   complex: {fileID: 238445306015949557}
   aircraft: {fileID: 0}
   avm: {fileID: 0}
   data: {fileID: 2907799334845312572}
+  localPos: {x: 0, y: 0, z: 0}
   localHolder: {fileID: 0}
   globalHolder: {fileID: 0}
   use3dSound: 0
@@ -1089,23 +1166,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tr: {fileID: 8155067804333574724}
   rb: {fileID: 0}
+  animator: {fileID: 0}
   sofObject: {fileID: 238445306015949557}
   complex: {fileID: 238445306015949557}
   aircraft: {fileID: 0}
   avm: {fileID: 0}
   data: {fileID: 2907799334845312572}
-  emptyMass: 500
+  localPos: {x: 0.069999695, y: 1.653, z: 2.2160034}
+  mass: 0
   controller: 0
-  ejection: {fileID: 0}
-  muzzleEffects: {fileID: 0}
-  bulletSpawn: {fileID: 0}
+  separateBulletPos: 0
+  ejectCasings: 0
+  ejectionPos: {x: 0, y: 0, z: 0}
+  muzzlePos: {x: 0, y: 0, z: 0}
+  bulletPos: {x: 0, y: 0, z: 0}
+  noConvergeance: 0
+  convergence: {x: 0, y: 0, z: 0, w: 0}
+  cheatConvergence: {x: 0, y: 0, z: 0, w: 0}
+  cheatTime: 0
   magazineAttachPoint: {fileID: 0}
   gunPreset: {fileID: 11400000, guid: 080b36c5bb9be1143ab991327203260f, type: 2}
   magStorage: {fileID: 0}
   magazine: {fileID: 0}
   clipAmmo: 1000
   bolt: {fileID: 0}
-  noConvergeance: 0
   mechanism: {fileID: 0}
   temperature: 0
   clips: 0

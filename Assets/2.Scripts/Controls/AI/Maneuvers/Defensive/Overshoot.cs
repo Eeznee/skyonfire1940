@@ -26,7 +26,7 @@ public class Overshoot : ActiveManeuver
         base.Execute(data);
 
         float throttle = (data.target.data.gsp.Get - aircraft.data.gsp.Get) / fullThrottleSpeedDelta;
-        aircraft.SetThrottle(Mathf.Clamp01(throttle));
+        aircraft.engines.SetThrottle(Mathf.Clamp01(throttle));
         if (turn == null || turn.ended)
         {
             if (data.crossAngle < 10f)
@@ -36,7 +36,7 @@ public class Overshoot : ActiveManeuver
             }
             else
             {
-                AircraftControl.Tracking(transform.position + data.target.transform.forward * 500f, aircraft, data.target.data.bankAngle.Get, 1f, true);
+                PointTracking.Tracking(transform.position + data.target.transform.forward * 500f, aircraft, data.target.data.bankAngle.Get, 1f, true);
             }
         }
         else

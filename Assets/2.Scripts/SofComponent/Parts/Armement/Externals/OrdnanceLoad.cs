@@ -21,9 +21,9 @@ public class OrdnanceLoad : SofPart
             launchPositions[i] = Vector3.Lerp(first, last, (float)i / (launchPositions.Length - 1));
         }
     }
-    public override float Mass()
+    public override float AdditionalMass()
     {
-        return Application.isPlaying ? emptyMass : emptyMass + OrdnanceMass();
+        return Application.isPlaying ? 0f : OrdnanceMass();
     }
     public float OrdnanceMass()
     {

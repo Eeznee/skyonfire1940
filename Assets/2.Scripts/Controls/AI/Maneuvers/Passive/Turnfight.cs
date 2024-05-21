@@ -19,7 +19,7 @@ public class Turnfight : Maneuver
         Vector3 target = Mathv.LerpDirection(flatTurnTarget, dumbTarget, Vector3.Dot(dumbTarget.normalized, tr.forward));
         target = tr.transform.position + target * 500f;
 
-        AircraftControl.Tracking(target, data.aircraft, 0f, 0f, true);
+        PointTracking.Tracking(target, data.aircraft, 0f, 0f, true);
     }
 
 }

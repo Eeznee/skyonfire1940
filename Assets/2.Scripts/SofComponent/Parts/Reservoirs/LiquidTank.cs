@@ -23,7 +23,7 @@ public class LiquidTank : SofModule
     const float massLostThreshold = 1f;
 
     public float fill { get { return fluidMass * capacityInvert; } }
-    public override float Mass() { return Application.isPlaying ? fluidMass : capacity; }
+    public override float AdditionalMass() { return Application.isPlaying ? fluidMass : capacity; }
     public override float EmptyMass() { return 0f; }
 
     public float CurrentAmount() { return fluidMass; }
@@ -65,8 +65,7 @@ public class LiquidTank : SofModule
         massShift += fluidMass - initialMass;
         if (Mathf.Abs(massShift) > massLostThreshold)
         {
-            Mass mass = new Mass(massShift, localPos);
-            complex.ShiftMass(mass);
+            complex.ShiftMass(new Mass(massShift, localPos));
             massShift = 0f;
         }
     }
