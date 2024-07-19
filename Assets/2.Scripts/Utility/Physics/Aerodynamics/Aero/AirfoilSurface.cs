@@ -36,14 +36,14 @@ public class AirfoilSurface
     }
     public virtual float Integrity()
     {
-        return airframe.Integrity;
+        return airframe.structureDamage;
     }
     protected float ApplyForcesSpecificQuad(Quad q, bool draw)
     {
         ObjectData data = airframe.data;
         Vector3 center = q.CenterAero(true);
         Vector3 aeroDir = q.AeroDir(true);
-        Vector3 vel = airframe.rb.GetPointVelocity(center);
+        Vector3 vel = airframe.rb.GetPointVelocity(center) + airframe.tr.root.forward * airframe.PropSpeedEffect();
         Vector3 projectedVel = Vector3.ProjectOnPlane(vel, aeroDir);
         Vector3 chord = Vector3.ProjectOnPlane(q.ChordDir(true), aeroDir);
 

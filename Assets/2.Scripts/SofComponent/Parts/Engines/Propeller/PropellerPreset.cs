@@ -13,6 +13,7 @@ public class PropellerPreset : ScriptableObject
     public AnimationCurve curve2;
 
     //Shape
+    public float mass = 150f;
     public float diameter = 2.6f;
     public int bladesAmount = 3;
     public Vector2[] propShape;

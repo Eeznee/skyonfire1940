@@ -28,7 +28,6 @@ public class SofComponent : MonoBehaviour  //Objects elements are the building b
     private bool initialized = false;
 
     public void SetReferences() {
-        if (complex == null) return;
         if (Application.isEditor)
         {
             complex = transform.root.GetComponent<SofComplex>();
@@ -36,6 +35,7 @@ public class SofComponent : MonoBehaviour  //Objects elements are the building b
             complex.SetReferences();
             return;
         }
+        if (complex == null) return;
         SetReferences(complex);
     }
     public virtual void SetReferences(SofComplex _complex)

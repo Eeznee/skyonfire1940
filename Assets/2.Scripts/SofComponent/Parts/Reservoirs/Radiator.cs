@@ -6,20 +6,22 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
-public class Radiator : SofModule
+public class Radiator : SofModule, IDamageTick
 {
     public LiquidTank mainTank;
     public Circuit circuit;
+
+    public override float EmptyMass => 0f;
+    public override bool NoCustomMass => true;
 
     public override void Initialize(SofComplex _complex)
     {
         base.Initialize(_complex);
         circuit = new Circuit(transform, mainTank);
     }
-    public override void DamageTick(float dt)
+    public void DamageTick(float dt)
     {
-        base.DamageTick(dt);
-        if (StructureIntegrity() < 1f) circuit.Leaking(Time.fixedDeltaTime);
+        if (structureDamage < 1f) circuit.Leaking(Time.fixedDeltaTime);
     }
     public override void KineticDamage(float damage, float caliber, float fireCoeff)
     {
@@ -29,26 +31,25 @@ public class Radiator : SofModule
 }
 #if UNITY_EDITOR
 [CustomEditor(typeof(Radiator))]
-public class RadiatorEditor : Editor
+public class RadiatorEditor : ModuleEditor
 {
-    Color backgroundColor;
+    static bool showRadiator = true;
+
     public override void OnInspectorGUI()
     {
-        backgroundColor = GUI.backgroundColor;
-        //
+        base.OnInspectorGUI();
+
         Radiator rad = (Radiator)target;
-        //
         serializedObject.Update();
 
-        rad.material = EditorGUILayout.ObjectField("Material", rad.material, typeof(ModuleMaterial), false) as ModuleMaterial;
-        rad.mainTank = EditorGUILayout.ObjectField("Attached Tank", rad.mainTank, typeof(LiquidTank), true) as LiquidTank;
-
-
-        if (GUI.changed)
+        showRadiator = EditorGUILayout.Foldout(showRadiator, "Radiator", true, EditorStyles.foldoutHeader);
+        if (showRadiator)
         {
-            EditorUtility.SetDirty(rad);
-            EditorSceneManager.MarkSceneDirty(rad.gameObject.scene);
+            EditorGUI.indentLevel++;
+            rad.mainTank = EditorGUILayout.ObjectField("Attached Tank", rad.mainTank, typeof(LiquidTank), true) as LiquidTank;
+            EditorGUI.indentLevel--;
         }
+
         serializedObject.ApplyModifiedProperties();
     }
 }

@@ -108,7 +108,7 @@ public class CrewAnimator : MonoBehaviour
 
         if (crew.IsVrPlayer) return SofCamera.tr.position;
 
-        Vector3 headPosition = CameraInputs.zoomed ? Seat.ZoomedHeadPosition : Seat.DefaultHeadPosition;
+        Vector3 headPosition = CameraInputs.zoomed && crew.IsPlayer ? Seat.ZoomedHeadPosition : Seat.DefaultHeadPosition;
 
         if (crew.IsPlayer)
         {

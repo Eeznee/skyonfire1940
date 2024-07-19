@@ -35,8 +35,8 @@ public class HumanBody
     public float Stamina() { return stamina* invertMaxStamina; }
     public float Blood() { return blood* invertBloodMax; }
     public bool Gloc() { return gloc; }
-    public float Sickness(){ return crew.Integrity <= 0f ? 0f : sicknessFeeling; }
-    public float Pain() { return crew.Integrity <= 0f ? 0f : pain; }
+    public float Sickness(){ return crew.structureDamage <= 0f ? 0f : sicknessFeeling; }
+    public float Pain() { return crew.structureDamage <= 0f ? 0f : pain; }
 
     public HumanBody(CrewMember _crew)
     {

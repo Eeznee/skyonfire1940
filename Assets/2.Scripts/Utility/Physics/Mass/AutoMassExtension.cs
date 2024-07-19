@@ -10,7 +10,7 @@ public static class AutoMassExtension
         SofAirframe[] airframes = complex.GetComponentsInChildren<SofAirframe>();
 
         foreach (SofAirframe airframe in airframes)
-            airframe.mass = airframe.ApproximateMass();
+            airframe.SetCustomMass(airframe.ApproximateMass());
 
         Mass fixedMass = new Mass(parts, true) - new Mass(airframes, true);
         Mass targetAirframeMass = targetEmptyMass - fixedMass;
@@ -33,7 +33,7 @@ public static class AutoMassExtension
 
         float factor = targetMass.mass / approximated.mass;
         foreach (SofAirframe airframe in airframes)
-            airframe.mass = factor * airframe.ApproximateMass();
+            airframe.SetCustomMass(factor * airframe.ApproximateMass());
     }
     static void BalanceFrontAndBack(Mass targetMass, SofAirframe[] airframes)
     {
@@ -52,9 +52,9 @@ public static class AutoMassExtension
         ComputeFrontBackFactors(targetMass, frontFrames, backFrames, out float frontFactor, out float backFactor);
 
         foreach (SofAirframe airframe in frontFrames)
-            airframe.mass *= frontFactor;
+            airframe.SetCustomMass(airframe.GetCustomMass()  * frontFactor);
         foreach (SofAirframe airframe in backFrames)
-            airframe.mass *= backFactor;
+            airframe.SetCustomMass(airframe.GetCustomMass() * backFactor);
     }
     static void ComputeFrontBackFactors(Mass targetMass, List<SofAirframe> frontFrames, List<SofAirframe> backFrames, out float frontFactor, out float backFactor)
     {

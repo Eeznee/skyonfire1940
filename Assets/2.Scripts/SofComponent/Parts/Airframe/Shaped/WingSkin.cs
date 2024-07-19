@@ -9,6 +9,8 @@ public class WingSkin : SofModule
     private Wing parentWing;
     const float caliberToHoleRatio = 25f;
 
+    public override float EmptyMass => 0f;
+
     public static WingSkin CreateSkin(Wing parentWing, Mesh skinMesh)
     {
         Transform parentTr = parentWing.tr;
@@ -25,14 +27,13 @@ public class WingSkin : SofModule
     }
     public override void Initialize(SofComplex _complex)
     {
-        mass = 0f;
         material = aircraft.materials.Material(this);
         base.Initialize(_complex);
     }
     public override void KineticDamage(float damage, float caliber, float fireCoeff)
     {
         float holeArea = Mathv.SmoothStart(caliber * caliberToHoleRatio / 2000f, 2) * Mathf.PI;
-        DamageIntegrity(holeArea / parentWing.area * Integrity);
+        Damage(holeArea / parentWing.area * structureDamage);
     }
     public override void BurnDamage(float damage)
     {

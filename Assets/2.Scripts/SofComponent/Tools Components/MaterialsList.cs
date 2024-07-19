@@ -49,5 +49,7 @@ public class MaterialsList : ScriptableObject
             skin.material = skinMat;
         foreach (Wheel wheel in aircraft.GetComponentsInChildren<Wheel>())
             wheel.material = wheelMat;
+        foreach (CustomWheel wheel in aircraft.GetComponentsInChildren<CustomWheel>())
+            wheel.material = wheelMat;
     }
 }

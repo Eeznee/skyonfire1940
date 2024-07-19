@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 using System;
-public class Engine : SofModule
+public class Engine : SofModule, IDamageTick
 {
     public enum EnginesState
     {
@@ -39,7 +39,8 @@ public class Engine : SofModule
     public Action OnIgnition;
     public Action OnTurnOff;
 
-    public override float EmptyMass() { return preset.weight; }
+    public override bool NoCustomMass => true;
+    public override float EmptyMass => preset.weight;
     public override void Initialize(SofComplex _complex)
     {
         material = preset.material;
@@ -72,15 +73,12 @@ public class Engine : SofModule
 
         aircraft.fuel.Consume(ConsumptionRate(), Time.fixedDeltaTime);
     }
-    public override void DamageTick(float dt)
+    public void DamageTick(float dt)
     {
-        base.DamageTick(dt);
-
-        if (StructureIntegrity() < 1f)
+        if (structureDamage < 1f)
         {
             oilCircuit.Leaking(dt);
             if (preset.WaterCooled()) waterCircuit.Leaking(dt);
-            Burning(dt);
         }
     }
     public void Set(bool on, bool instant)
@@ -130,13 +128,14 @@ public class Engine : SofModule
 }
 #if UNITY_EDITOR
 [CustomEditor(typeof(Engine))]
-public class EngineEditor : Editor
+public class EngineEditor : ModuleEditor
 {
     SerializedProperty preset;
     SerializedProperty oil;
     SerializedProperty water;
-    protected virtual void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
         preset = serializedObject.FindProperty("preset");
         oil = serializedObject.FindProperty("oil");
         water = serializedObject.FindProperty("water");
@@ -144,6 +143,8 @@ public class EngineEditor : Editor
 
     public override void OnInspectorGUI()
     {
+        base.OnInspectorGUI();
+
         serializedObject.Update();
 
         Engine engine = (Engine)target;

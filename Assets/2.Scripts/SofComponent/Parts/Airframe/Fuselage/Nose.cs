@@ -10,15 +10,12 @@ public class Nose : Fuselage
 {
     public Mesh brokenModel;
 
-    public override bool Detachable()
-    {
-        return false;
-    }
+    public override bool Detachable => false;
     public override void Rip()
     {
         if (ripped) return;
         base.Rip();
-        if (brokenModel && !Detachable()) GetComponent<MeshFilter>().mesh = brokenModel;
+        if (brokenModel) GetComponent<MeshFilter>().mesh = brokenModel;
     }
 }
 #if UNITY_EDITOR

@@ -15,18 +15,17 @@ public class SofComplex : SofObject
 
     protected Mass mass;
 
-
     public ObjectLOD lod;
     public ObjectBubble bubble;
     public ObjectData data;
     public ObjectAudio avm;
-
 
     public event Action<SofComplex> onPartDetached;
 
     public List<SofComponent> components;
     public List<SofPart> parts;
     public List<SofModule> modules;
+    public List<IDamageTick> damageTickers;
     public List<SofAirframe> airframes;
     public CrewMember[] crew;
 
@@ -38,13 +37,19 @@ public class SofComplex : SofObject
 
         crew = GetComponentsInChildren<CrewMember>();
 
-        components =  new List<SofComponent>(GetComponentsInChildren<SofComponent>());
+        components = new List<SofComponent>(GetComponentsInChildren<SofComponent>());
         parts = new List<SofPart>(GetComponentsInChildren<SofPart>());
         modules = new List<SofModule>(GetComponentsInChildren<SofModule>());
+        damageTickers = new List<IDamageTick>(GetComponentsInChildren<IDamageTick>());
         airframes = new List<SofAirframe>(GetComponentsInChildren<SofAirframe>());
 
         foreach (SofComponent component in components.ToArray())
             component.SetReferences(this);
+    }
+    public void Repair()
+    {
+        foreach (SofModule module in modules) module.Repair();
+        burning = false;
     }
     protected override void Initialize()
     {
@@ -57,12 +62,15 @@ public class SofComplex : SofObject
         foreach (SofComponent component in components.ToArray())
         {
             component.AttachNewComplex(complex);
-            if(!debris) component.Initialize(this);
+            if (!debris) component.Initialize(this);
         }
 
         SetMassFromParts();
         SetRigidbody();
+
+        //InvokeRepeating("DamageTick", damageTickInterval, damageTickInterval);
     }
+    const float damageTickInterval = 0.5f;
     private void SetRigidbody()
     {
         if (rb == GameManager.gm.mapmap.rb) return;
@@ -76,8 +84,9 @@ public class SofComplex : SofObject
     public Vector3 GetCenterOfMass() { return mass.center; }
     public void ShiftMass(float shift) { mass.mass += shift; UpdateRbMass(false); }
     public void ShiftMass(Mass shift) { mass += shift; UpdateRbMass(true); }
-    public void UpdateRbMass(bool centerOfMass) { 
-        complex.rb.mass = mass.mass; 
+    public void UpdateRbMass(bool centerOfMass)
+    {
+        complex.rb.mass = mass.mass;
         if (centerOfMass) complex.rb.centerOfMass = mass.center;
     }
     public void SetMassFromParts()
@@ -99,16 +108,10 @@ public class SofComplex : SofObject
         }
         else complex.rb.ResetInertiaTensor();
     }
-    const int damageTickCycle = 30;
-    private int damageTickFrameCount = 0;
-    protected void DamageTickFixedUpdate()
+    private void DamageTick()
     {
-        if (++damageTickFrameCount >= damageTickCycle)
-        {
-            foreach (SofModule module in modules.ToArray())
-                module.DamageTick(Time.fixedDeltaTime * damageTickCycle);
-            damageTickFrameCount = 0;
-        }
+        foreach (IDamageTick damageTicker in damageTickers.ToArray())
+            damageTicker.DamageTick(damageTickInterval);
     }
     public override void Explosion(Vector3 center, float tnt)
     {
@@ -127,6 +130,8 @@ public class SofComplex : SofObject
         if (module) modules.Add(module);
         SofAirframe airframe = component as SofAirframe;
         if (airframe) airframes.Add(airframe);
+        IDamageTick damageTicker = component as IDamageTick;
+        if (damageTicker != null) damageTickers.Add(damageTicker);
     }
     public void RemoveComponent(SofComponent component)
     {
@@ -141,7 +146,7 @@ public class SofComplex : SofObject
     public void OnPartDetach(SofComplex detachedDebris)
     {
         ShiftMass(new Mass(-detachedDebris.mass.mass, detachedDebris.mass.center));
-        if (mass.mass <= 0f) Debug.LogError("Mass below zero", gameObject);
+        if (mass.mass <= 0f) Debug.LogError(name + ": Mass below zero", gameObject);
 
         foreach (SofComponent component in detachedDebris.components) RemoveComponent(component);
 

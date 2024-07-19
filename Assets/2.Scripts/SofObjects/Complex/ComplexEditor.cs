@@ -42,6 +42,10 @@ public class SofComplexEditor : SofObjectEditor
 
         SofComplex complex = (SofComplex)target;
 
+        SofPart[] partsArray = complex.parts.ToArray();
+        emptyMass = new Mass(partsArray, true);
+        loadedMass = new Mass(partsArray, false);
+
         showMass = EditorGUILayout.Foldout(showMass, "Mass Infos", true, EditorStyles.foldoutHeader);
         if (showMass)
         {

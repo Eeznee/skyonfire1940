@@ -16,8 +16,8 @@ public class AmmoContainer : SofPart
     [HideInInspector] public HandGrip grip;
     [HideInInspector] public Gun attachedGun;
 
-    public override float AdditionalMass() { return gunPreset.ammunition.FullMass * (Application.isPlaying ? ammo : capacity); }
-    public float FullyLoadedMass() { return gunPreset.ammunition.FullMass * capacity + EmptyMass(); }
+    public override float AdditionalMass => gunPreset.ammunition.FullMass * (Application.isPlaying ? ammo : capacity);
+    public float FullyLoadedMass => gunPreset.ammunition.FullMass * capacity + EmptyMass;
 
     public override void Rearm()
     {

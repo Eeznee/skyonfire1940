@@ -3,22 +3,25 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
-public class SofPart : SofComponent       //Parts are Object Elements with mass
+public class SofPart : SofComponent
 {
-    public float mass;
+    [SerializeField] private float mass;
 
-    public float Mass()
+    public void SetCustomMass(float newMass)
     {
-        return EmptyMass() + AdditionalMass();
+        if (NoCustomMass) Debug.LogError("This SofPart does not use the custom mass",this);
+        mass = newMass;
     }
-    public virtual float AdditionalMass()
+    public float GetCustomMass()
     {
-        return 0f;
-    }
-    public virtual float EmptyMass()
-    {
+        if (NoCustomMass) Debug.LogError("This SofPart does not use the custom mass",this);
         return mass;
     }
+
+    public float Mass => EmptyMass + AdditionalMass;
+    public virtual float AdditionalMass => 0f;
+    public virtual float EmptyMass => mass;
+    public virtual bool NoCustomMass => false;
 }
 #if UNITY_EDITOR
 [CustomEditor(typeof(SofPart))]
@@ -28,15 +31,22 @@ public class PartEditor : Editor
     protected virtual void OnEnable()
     {
         mass = serializedObject.FindProperty("mass");
+        SofPart part = (SofPart)target;
+
+        part.SetReferences();
     }
-    protected bool ShowMass() { return true; }
     protected virtual string BasicName() { return "Part"; }
 
     static bool showBasic = true;
 
     protected virtual void BasicFoldout()
     {
-        if (ShowMass()) EditorGUILayout.PropertyField(mass);
+        SofPart part = (SofPart)target;
+        if (part.NoCustomMass)
+        {
+            EditorGUILayout.LabelField("Empty Mass", part.EmptyMass.ToString("0.0") + " kg");
+            EditorGUILayout.LabelField("Loaded Mass", part.Mass.ToString("0.0") + " kg");
+        } else EditorGUILayout.PropertyField(mass);
     }
 
     public override void OnInspectorGUI()

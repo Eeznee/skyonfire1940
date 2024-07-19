@@ -61,7 +61,7 @@ public class EngineTemp
         if (temperature > maximumTemperature * 1.12f) engine.Rip();
 
 
-        float frictionFactor = 1f - engine.Integrity * engine.oil.fill;
+        float frictionFactor = 1f - engine.structureDamage * engine.oil.fill;
         if (frictionFactor > 0.3f)
             engine.SimpleDamage(frictionFactor * engine.trueThrottle * fullFrictionDps * dt);
     }

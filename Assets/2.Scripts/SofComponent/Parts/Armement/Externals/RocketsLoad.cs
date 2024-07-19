@@ -10,19 +10,10 @@ public class RocketsLoad : OrdnanceLoad
 {
     public float dispersion = 0.5f;
     public float velocity = 525f;
-
     public Projectile rocketRef;
     private Projectile[] rockets;
 
-    public override float AdditionalMass()
-    {
-        return OrdnanceMass();
-    }
-
-    public override float SingleMass()
-    {
-        return rocketRef.p.mass;
-    }
+    public override float SingleMass => rocketRef.p.mass;
     protected override void Clear()
     {
         base.Clear();
@@ -60,7 +51,7 @@ public class RocketsLoad : OrdnanceLoad
         r.InitializeTrajectory(r.transform.forward * r.p.baseVelocity, r.transform.forward, complex.bubble.bubble,0f);
         r.GetComponentInChildren<ParticleSystem>().Play();
 
-        complex.ShiftMass(-SingleMass());
+        complex.ShiftMass(-SingleMass);
 
         base.Launch(delayFuse);
 

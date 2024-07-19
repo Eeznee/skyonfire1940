@@ -5,14 +5,14 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
-public class FuelTank : LiquidTank
+public class FuelTank : LiquidTank, IDamageTick
 {
     public bool selfSealing = true;
 
-    public override void DamageTick(float dt)
+    new public void DamageTick(float dt)
     {
         base.DamageTick(dt);
-        if (Integrity > 0.85f && selfSealing) circuit.holesArea = 0f;
+        if (structureDamage > 0.85f && selfSealing) circuit.holesArea = 0f;
     }
 }
 //
@@ -21,6 +21,9 @@ public class FuelTank : LiquidTank
 public class FuelTankEditor : LiquidTankEditor
 {
     SerializedProperty selfSealing;
+
+
+    static bool showFuelTank = true;
     protected override void OnEnable()
     {
         base.OnEnable();
@@ -32,8 +35,13 @@ public class FuelTankEditor : LiquidTankEditor
 
         serializedObject.Update();
 
-        EditorGUILayout.PropertyField(selfSealing);
-
+        showFuelTank = EditorGUILayout.Foldout(showFuelTank, "Fuel Tank", true, EditorStyles.foldoutHeader);
+        if (showFuelTank)
+        {
+            EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(selfSealing);
+            EditorGUI.indentLevel--;
+        }
         serializedObject.ApplyModifiedProperties();
     }
 }

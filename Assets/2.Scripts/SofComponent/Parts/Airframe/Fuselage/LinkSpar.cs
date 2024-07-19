@@ -16,7 +16,7 @@ public class LinkSpar : BoundedAirframe
         base.Rip();
         foreach(SofAirframe airf in linkedAirframes)
         {
-            airf.DamageIntegrity(damageRatio);
+            airf.Damage(damageRatio);
         }
     }
 }

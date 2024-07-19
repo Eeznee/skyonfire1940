@@ -36,10 +36,8 @@ public class FuselageCore : Fuselage
             if (Mathf.Abs(diff.x) < attachedMaxOffset) linkedFuselages.Add(fus);
         }
     }
-    public override bool Detachable()
-    {
-        return detachable;
-    }
+    public override bool Detachable => detachable;
+
     protected override void FixedUpdate()
     {
         if (aircraft) ExcessDrag();
@@ -47,8 +45,8 @@ public class FuselageCore : Fuselage
         float areas = CombinedArea();
         Vector2 coefs = Aerodynamics.SimpleCoefficients(data.angleOfSlip.Get, maxCl, cd, maxCd);
 
-        Vector3 lift = Aerodynamics.Lift(rb.velocity, data.tas.Get, transform.up, data.density.Get, areas, coefs.y, StructureIntegrity()); 
-        Vector3 drag = Aerodynamics.Drag(rb.velocity, data.tas.Get, data.density.Get, areas, coefs.x, StructureIntegrity());
+        Vector3 lift = Aerodynamics.Lift(rb.velocity, data.tas.Get, transform.up, data.density.Get, areas, coefs.y, structureDamage); 
+        Vector3 drag = Aerodynamics.Drag(rb.velocity, data.tas.Get, data.density.Get, areas, coefs.x, structureDamage);
 
         rb.AddForce(lift + drag);
     }

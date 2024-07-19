@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OrdnanceLoad : SofPart
+public abstract class OrdnanceLoad : SofPart
 {
     public Vector3[] launchPositions;
     public AudioClip[] launchClips;
@@ -21,18 +21,9 @@ public class OrdnanceLoad : SofPart
             launchPositions[i] = Vector3.Lerp(first, last, (float)i / (launchPositions.Length - 1));
         }
     }
-    public override float AdditionalMass()
-    {
-        return Application.isPlaying ? 0f : OrdnanceMass();
-    }
-    public float OrdnanceMass()
-    {
-        return SingleMass() * (Application.isPlaying ? Mathf.Max(launchPositions.Length - fireIndex, 0) : launchPositions.Length);
-    }
-    public virtual float SingleMass()
-    {
-        return 0f;
-    }
+    public override float AdditionalMass => SingleMass * (Application.isPlaying ? Mathf.Max(launchPositions.Length - fireIndex, 0) : launchPositions.Length);
+
+    public virtual float SingleMass => 0f;
     protected virtual void Clear()
     {
         fireIndex = launchPositions.Length;
@@ -42,7 +33,7 @@ public class OrdnanceLoad : SofPart
         base.Rearm();
         Clear();
         fireIndex = 0;
-        ordnanceMass = SingleMass() * launchPositions.Length;
+        ordnanceMass = SingleMass * launchPositions.Length;
     }
 
     public virtual bool Launch(float delayFuse)
@@ -55,7 +46,7 @@ public class OrdnanceLoad : SofPart
             complex.avm.persistent.global.PlayOneShot(clip);
         }
         fireIndex++;
-        ordnanceMass -= SingleMass();
+        ordnanceMass -= SingleMass;
 
         if (symmetrical) symmetrical.Launch(delayFuse);
 

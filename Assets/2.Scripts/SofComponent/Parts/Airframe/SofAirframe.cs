@@ -7,7 +7,7 @@ using UnityEditor.SceneManagement;
 #endif
 
 
-public abstract class SofAirframe : SofModule
+public abstract class SofAirframe : SofModule,IDamageTick
 {
     public float area = 5f;
     public Airfoil foil;
@@ -20,13 +20,18 @@ public abstract class SofAirframe : SofModule
     protected float randToughness = 1f;
     protected float floatLevel;
 
-    public override bool Detachable() { return true; }
+    public override float MaxHp => area * material.hpPerSq;
+
+    public virtual float PropSpeedEffect() { return 0f; }
+    public override bool Detachable => true;
     public virtual float MaxSpd() { return aircraft.maxSpeed; }
     public virtual float MaxG() { return aircraft.maxG * 1.5f; }
     public virtual float ApproximateMass() { return Mathf.Pow(area, 1.5f); }
     public virtual float AreaCd() { return 0f; }
     protected virtual Quad CreateQuad() { return null; }
     protected virtual AirfoilSurface CreateFoilSurface() { return new AirfoilSurface(this, CreateQuad(), foil); }
+
+    public virtual float AirframeDamage => Mathv.SmoothStop(structureDamage, 2);
 
     public virtual void UpdateAerofoil()
     {
@@ -44,7 +49,6 @@ public abstract class SofAirframe : SofModule
         vital = (this.GetComponentInActualChildren<Wing>() || this.GetComponentInActualChildren<Stabilizer>());
         randToughness = Random.Range(0.8f, 1.3f);
         floatLevel = 10f;
-        maxHp = area * material.hpPerSq;
     }
     protected virtual void FixedUpdate()
     {
@@ -57,16 +61,13 @@ public abstract class SofAirframe : SofModule
         if (vital && aircraft) aircraft.destroyed = true;  //If vital down the airplane
         foreach (SofModule module in ripOnRip)
             if (module) module.Rip();           //Rip the assigned surface is there is one
-        if (Detachable()) Detach();
+        if (Detachable) Detach();
     }
-    public override void DamageTick(float dt)
+    public void DamageTick(float dt)
     {
-        base.DamageTick(dt);
-
-        if (!aircraft || !Detachable()) return;
-        float damageCoeff = Mathv.SmoothStop(StructureIntegrity(), 2);
-        float maxG = MaxG() * damageCoeff;
-        float maxSpd = MaxSpd() * damageCoeff;
+        if (!aircraft || !Detachable) return;
+        float maxG = MaxG() * AirframeDamage;
+        float maxSpd = MaxSpd() * AirframeDamage;
         if (stress <= -1f && Mathf.Abs(data.gForce) < maxG && data.ias.Get < maxSpd) return;    //If no stress and low g/speed no need to compute anything
 
         //Compute torque and stress
@@ -76,7 +77,7 @@ public abstract class SofAirframe : SofModule
         float speedStress = excessSpeed / maxSpd * 10f;
         stress += Mathf.Max(gStress, speedStress) * dt;
         stress = Mathf.Clamp(stress, -1f, 5f);
-        if (stress > 0f) DamageIntegrity(stress * 0.2f * randToughness * dt);
+        if (stress > 0f) Damage(stress * 0.2f * randToughness * dt);
     }
     public void Floating()
     {
@@ -84,21 +85,26 @@ public abstract class SofAirframe : SofModule
         if (center.y < 0f)
         {
             float displacementMultiplier = Mathf.Clamp(-center.y, 0f, 0.5f);
-            float force = displacementMultiplier * Mass() * 10f * floatLevel;
+            float force = displacementMultiplier * Mass * 10f * floatLevel;
             if (!aircraft) force /= 7f;
             rb.AddForceAtPosition(Vector3.up * force, center);
             floatLevel = Mathf.Max(floatLevel - Time.fixedDeltaTime / 12f, 1f);
         }
     }
     public virtual void Draw() { }
+#if UNITY_EDITOR
     private void OnDrawGizmos()
     {
-        Draw();
+        if (SofWindow.showAirframesOverlay)
+        {
+            Draw();
+        }
     }
+#endif
 }
 #if UNITY_EDITOR
 [CustomEditor(typeof(SofAirframe)), CanEditMultipleObjects]
-public class AirframeEditor : PartEditor
+public class AirframeEditor : ModuleEditor
 {
     SerializedProperty ripOnRip;
     protected override void OnEnable()

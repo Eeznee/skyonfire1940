@@ -8,9 +8,9 @@ using UnityEditor;
 
 #if UNITY_EDITOR
 [CustomEditor(typeof(CrewMember)), CanEditMultipleObjects]
-public class CrewEditor : Editor
+public class CrewEditor : ModuleEditor
 {
-    static bool showMain = true;
+    static bool showSeats = true;
     SerializedProperty material;
     SerializedProperty seats;
 
@@ -18,8 +18,9 @@ public class CrewEditor : Editor
     SerializedProperty parachute;
     SerializedProperty specialPlayerParachute;
 
-    protected virtual void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
         material = serializedObject.FindProperty("material");
         seats = serializedObject.FindProperty("seats");
 
@@ -29,17 +30,17 @@ public class CrewEditor : Editor
 
     public override void OnInspectorGUI()
     {
+        base.OnInspectorGUI();
         serializedObject.Update();
 
         CrewMember crew = (CrewMember)target;
 
         GUILayout.Space(15f);
-        showMain = EditorGUILayout.Foldout(showMain, "Main", true, EditorStyles.foldoutHeader);
-        if (showMain)
+        showSeats = EditorGUILayout.Foldout(showSeats, "Seats", true, EditorStyles.foldoutHeader);
+        if (showSeats)
         {
             EditorGUI.indentLevel++;
 
-            EditorGUILayout.PropertyField(material);
             EditorGUILayout.PropertyField(seats);
 
             if (crew.complex)
@@ -62,7 +63,7 @@ public class CrewEditor : Editor
         }
         GUILayout.Space(15f);
         showParachutes = EditorGUILayout.Foldout(showParachutes, "Parachute", true, EditorStyles.foldoutHeader);
-        if (showMain)
+        if (showParachutes)
         {
             EditorGUI.indentLevel++;
 

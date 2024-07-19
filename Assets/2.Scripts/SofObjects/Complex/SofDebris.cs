@@ -29,7 +29,6 @@ public class SofDebris : SofComplex
     }
     private void FixedUpdate()
     {
-        DamageTickFixedUpdate();
         WaterPhysics();
     }
 

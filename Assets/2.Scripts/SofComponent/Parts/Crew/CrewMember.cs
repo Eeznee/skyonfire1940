@@ -17,8 +17,9 @@ public class CrewMember : SofModule
     public bool IsVrPlayer => Player.crew == this && GameManager.gm.vr && Application.isPlaying;
     public int SeatId => seats.IndexOf(seat);
 
-    public override float AdditionalMass() { return HumanBody.Weight(); }
-    public override float EmptyMass() { return 0f; }
+    public override bool NoCustomMass => true;
+    public override float AdditionalMass => HumanBody.Weight();
+    public override float EmptyMass => 0f;
 
     public const float eyeShift = 0.05f;
     public Vector3 EyesPosition() { return transform.position + transform.parent.up * eyeShift; }

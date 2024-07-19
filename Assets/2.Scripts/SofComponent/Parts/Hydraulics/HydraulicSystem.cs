@@ -84,6 +84,20 @@ public class HydraulicSystem : SofComponent
         state = Mathf.MoveTowards(state, stateInput, travel);
         ApplyStateAnimator();
     }
+    private float oneFrameStatePrevious;
+    public void OneFrameSetStart(float newState)
+    {
+        oneFrameStatePrevious = state;
+        state = Mathf.Clamp01(newState);
+        ApplyStateAnimator();
+        animator.Update(100f);
+    }
+    public void OneFrameSetEnd()
+    {
+        state = oneFrameStatePrevious;
+        ApplyStateAnimator();
+        animator.Update(100f);
+    }
     protected virtual void ApplyStateAnimator()
     {
         animator.SetFloat(animParameter, state);

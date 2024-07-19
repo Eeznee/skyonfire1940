@@ -55,7 +55,7 @@ public class ComplexAirfoilSurface : AirfoilSurface
     }
     public override float Integrity()
     {
-        if (skin) return skin.Integrity;
+        if (skin) return skin.structureDamage;
         return base.Integrity();
     }
     public override float ApplyForces()

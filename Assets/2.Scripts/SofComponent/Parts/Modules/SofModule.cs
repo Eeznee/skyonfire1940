@@ -3,40 +3,33 @@
 using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
-public class SofModule : SofPart       //Modules are parts with HP that can be destroyed
+
+
+public class SofModule : SofPart      //Modules are parts with HP that can be destroyed
 {
-    //Damage model
+
     public ModuleMaterial material;
-    protected float maxHp;
-    public float structureDamage = 1f;
+
+    public float structureDamage { get; private set; }
     public bool ripped;
-    public bool burning;
 
-    //References
-    protected ParticleSystem burningEffect;
-    protected AudioSource burningAudio;
+    private IgnitableExtension ignitableExtension;
 
-    public float Integrity { get { return structureDamage; } }
 
-    public virtual float StructureIntegrity() { return Mathf.Max(structureDamage, 0f); }
-    public void Repair() { structureDamage = 1f; ripped = false; burning = false; }
+    public virtual bool Detachable => false;
+    public virtual float MaxHp => material.hp;
+    public bool IsBurning => ignitableExtension ? ignitableExtension.burning : false;
 
-    public virtual bool Detachable()
-    {
-        return false;
-    }
     public override void Initialize(SofComplex _complex)
     {
         if (!material) Debug.LogError(name + " Has no material attached", this);
         base.Initialize(_complex);
-        maxHp = material.hp;
+        structureDamage = 1f;
+
+        if (material.ignitable) ignitableExtension = gameObject.AddComponent<IgnitableExtension>();
     }
 
-    public virtual void DamageTick(float dt) 
-    { 
-
-    }
-    public void DamageIntegrity(float integrityDamage)
+    public void Damage(float integrityDamage)
     {
         structureDamage -= integrityDamage;
         structureDamage = Mathf.Clamp01(structureDamage);
@@ -45,17 +38,17 @@ public class SofModule : SofPart       //Modules are parts with HP that can be d
     }
     public virtual void SimpleDamage(float damage)
     {
-        DamageIntegrity(damage / maxHp);
+        Damage(damage / MaxHp);
     }
     public virtual void KineticDamage(float damage, float caliber, float fireCoeff)
     {
-        DamageIntegrity(damage / maxHp);
+        Damage(damage / MaxHp);
 
-        TryBurn(caliber, fireCoeff);
+        ignitableExtension?.TryBurn(caliber, fireCoeff);
     }
     public virtual void BurnDamage(float damage)
     {
-        DamageIntegrity(damage);
+        Damage(damage);
     }
 
     const float explosionCoeff = 500f;
@@ -70,42 +63,12 @@ public class SofModule : SofPart       //Modules are parts with HP that can be d
             KineticDamage(dmg, hole, 0f);
         }
     }
-    public void TryBurn(float caliber, float fireCoeff)
-    {
-        if (!material.ignitable || burning || structureDamage > 0.8f) return;
-
-        float roundCoeff = fireCoeff * caliber * caliber / 60f;
-        float burnChance = (1f - Mathv.SmoothStart(structureDamage, 1)) * material.burningChance * roundCoeff;
-        if (Random.value < burnChance)
-        {
-            burning = true;
-            if (sofObject) sofObject.burning = true;
-
-            burningEffect = Instantiate(material.burningEffect, transform);
-            burningEffect.Play();
-
-            burningAudio = burningEffect.GetComponent<AudioSource>();
-            burningAudio.Play();
-        }
-    }
-
-    public virtual void Burning(float dt)
-    {
-        if (!burning) return;
-
-        foreach (SofModule module in complex.modules)
-        {
-            if (!module) continue;
-            float distanceSqr = (module.transform.position - transform.position).sqrMagnitude;
-            distanceSqr = Mathf.Max(distanceSqr, 4f);
-            float damage = dt * 0.07f / distanceSqr;
-            module.BurnDamage(damage);
-        }
-    }
     public virtual void Rip()
     {
         ripped = true;
     }
+
+    public void Repair() { structureDamage = 1f; ripped = false; ignitableExtension?.StopBurning(); }
 }
 #if UNITY_EDITOR
 [CustomEditor(typeof(SofModule)), CanEditMultipleObjects]

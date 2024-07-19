@@ -33,10 +33,7 @@ public class Wheel : SofModule
     private float rpm;
     private bool wheelDisabled = false;
 
-    public override bool Detachable()
-    {
-        return true;
-    }
+    public override bool Detachable => true;
     const float suspensionLength = 0.5f;
     const float stablePosition = 0.4f;
     const float springMultiplier = 100f;
@@ -168,11 +165,6 @@ public class Wheel : SofModule
         Destroy(wheel.gameObject);
         Destroy(this);
 
-    }
-    const float massConstant = 84f;
-    public static float Mass(float wheelDiameter)
-    {
-        return Mathv.SmoothStart(wheelDiameter, 2) * massConstant;
     }
     public JointSpring Suspension()
     {

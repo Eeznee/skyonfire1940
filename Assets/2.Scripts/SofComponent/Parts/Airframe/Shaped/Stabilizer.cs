@@ -12,6 +12,10 @@ public class Stabilizer : ShapedAirframe
     {
         return new ComplexAirfoilSurface(this, CreateQuad(), foil);
     }
+    public override float PropSpeedEffect()
+    {
+        return vertical ? 0f : 0f;
+    }
     protected override void FixedUpdate()
     {
         foilSurface.ApplyForces();

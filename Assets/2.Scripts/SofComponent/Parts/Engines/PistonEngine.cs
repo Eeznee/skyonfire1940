@@ -20,7 +20,7 @@ public class PistonEngine : Engine
     public float Power(float thr, bool boost, float radSec)
     {
         float basePower = preset.gear1.Evaluate(data.altitude.Get) * 745.7f;
-        float efficiency = preset.RpmPowerEffectiveness(radSec, boost) * Mathv.SmoothStart(Integrity, 2);
+        float efficiency = preset.RpmPowerEffectiveness(radSec, boost) * Mathv.SmoothStart(structureDamage, 2);
         return basePower * (boost ? preset.Boost(data.altitude.Get) : thr) * efficiency;
     }
     public override void Initialize(SofComplex _complex)
@@ -40,7 +40,7 @@ public class PistonEngine : Engine
         {
             float targetPower = Working() ? Power(trueThrottle, boosting, rps) : 0f;
             brakePower = Mathf.MoveTowards(brakePower, targetPower, Time.fixedDeltaTime * 1000000f);
-            float torque = (rps != 0f) ? Integrity * brakePower / rps : 0f;
+            float torque = (rps != 0f) ? structureDamage * brakePower / rps : 0f;
             torque += propeller.torque + preset.Friction(Working(), ripped) * randomFrictionModifier;
 
             float rpsSpeedUp = torque / (propeller.reductionGear * propeller.MomentOfInertia);

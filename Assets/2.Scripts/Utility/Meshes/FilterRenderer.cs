@@ -24,6 +24,7 @@ public struct FilterRenderer
         if (rend.GetComponent<MagazineStorage>()) return false;
         if (rend.GetComponent<Bomb>()) return false;
         if (rend.sharedMaterial != requiredMaterial) return false;
+        if (rend.GetComponentInParent<Cockpit>()) return false;
         return true;
     }
     public bool IsMobile(HydraulicSystem[] hydraulics, Transform[] mobileFiltersExceptions)

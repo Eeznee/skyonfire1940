@@ -72,8 +72,9 @@ public class Gun : SofPart
     const float absoluteTemperature = 800f;
     //const float maxDispersionTemperature = 550f;
 
-    public override float EmptyMass() { return gunPreset.mass; }
-    public override float AdditionalMass() { return !Application.isPlaying && !magazine ? clipAmmo * gunPreset.ammunition.FullMass : 0f; }
+    public override bool NoCustomMass => true;
+    public override float EmptyMass => gunPreset.mass;
+    public override float AdditionalMass => Application.isPlaying || magazine ? 0f : clipAmmo * gunPreset.ammunition.FullMass;
 
     public override void Rearm()
     {

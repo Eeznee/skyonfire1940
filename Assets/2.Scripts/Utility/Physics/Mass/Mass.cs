@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class Mass
+public struct Mass
 {
     public float mass;
     public Vector3 center;
@@ -14,7 +14,7 @@ public class Mass
     }
     public Mass(SofPart part, bool empty)
     {
-        float partMass = empty ? part.EmptyMass() : part.Mass();
+        float partMass = empty ? part.EmptyMass : part.Mass;
         mass = partMass;
         center = part.sofObject.transform.InverseTransformPoint(part.transform.position);
     }
@@ -41,7 +41,7 @@ public class Mass
             float x = new Vector2(localPos.y, localPos.z).sqrMagnitude;
             float y = new Vector2(localPos.x, localPos.z).sqrMagnitude;
             float z = new Vector2(localPos.x, localPos.y).sqrMagnitude;
-            inertiaMoment += new Vector3(x, y, z) * (empty ? part.EmptyMass() : part.Mass());
+            inertiaMoment += new Vector3(x, y, z) * (empty ? part.EmptyMass : part.Mass);
         }
         return inertiaMoment;
     }

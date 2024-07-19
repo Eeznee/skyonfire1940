@@ -27,7 +27,7 @@ public class Circuit
         mainTank.ShiftFluidMass(-leakRate * deltaTime);
 
         if (!leak) return;
-        bool leaking = !mainTank.burning && fill > 0f && holesArea > 0f;
+        bool leaking = !mainTank.IsBurning && fill > 0f && holesArea > 0f;
         if (leaking != leak.isPlaying)
         {
             if (leaking) leak.Play();

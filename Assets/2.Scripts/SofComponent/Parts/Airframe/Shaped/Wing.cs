@@ -36,11 +36,7 @@ public class Wing : ShapedAirframe
         if (!child) coeff += 0.15f;
         return aircraft.maxG * coeff;
     }
-    public override float StructureIntegrity()
-    {
-        if (skin) return base.StructureIntegrity() * skin.StructureIntegrity();
-        return base.StructureIntegrity();
-    }
+    public override float AirframeDamage => base.AirframeDamage * (skin ? skin.structureDamage : 1f );
     public override void SetReferences(SofComplex _complex)
     {
         child = transform.childCount > 0 ? transform.GetChild(0).GetComponent<Wing>() : null;

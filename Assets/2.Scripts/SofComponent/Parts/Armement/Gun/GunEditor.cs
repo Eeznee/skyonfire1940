@@ -5,7 +5,7 @@ using UnityEngine;
 
 #if UNITY_EDITOR
 [CustomEditor(typeof(Gun)), CanEditMultipleObjects]
-public class GunEditor : Editor
+public class GunEditor : PartEditor
 {
     SerializedProperty gunPreset;
     SerializedProperty controller;
@@ -21,8 +21,10 @@ public class GunEditor : Editor
     SerializedProperty clipAmmo;
     SerializedProperty magStorage;
     SerializedProperty magazineAttachPoint;
-    void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
+
         gunPreset = serializedObject.FindProperty("gunPreset");
         controller = serializedObject.FindProperty("controller");
         noConvergeance = serializedObject.FindProperty("noConvergeance");
@@ -43,7 +45,6 @@ public class GunEditor : Editor
     static bool showGunMain = true;
     static bool showPositions = true;
     static bool showAmmo = true;
-    static bool showMassInfo = true;
 
 
     public override void OnInspectorGUI()
@@ -113,22 +114,9 @@ public class GunEditor : Editor
 
             EditorGUI.indentLevel--;
         }
-
-        if (gun.gunPreset)
-        {
-            showMassInfo = EditorGUILayout.Foldout(showMassInfo, "Mass Infos", true, EditorStyles.foldoutHeader);
-            if (showMassInfo)
-            {
-                EditorGUI.indentLevel++;
-                float gunMass = gun.gunPreset.mass;
-                float ammoMass = gun.magazine ? gun.magazine.Mass() : gun.Mass() - gunMass;
-                EditorGUILayout.LabelField("Unloaded Gun", gunMass.ToString("0.0") + " Kg");
-                EditorGUILayout.LabelField("Loaded Gun", (ammoMass + gunMass).ToString("0.0") + " Kg");
-                //EditorGUILayout.LabelField("Mag + Ammo", ammoMass.ToString("0.0") + " Kg");
-                EditorGUI.indentLevel--;
-            }
-        }
         serializedObject.ApplyModifiedProperties();
+
+        base.OnInspectorGUI();
     }
     static Tool previousTool;
     static bool editShapePosition;

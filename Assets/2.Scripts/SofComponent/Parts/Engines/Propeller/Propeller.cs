@@ -6,6 +6,7 @@ using UnityEditor.SceneManagement;
 //
 public class Propeller : SofModule
 {
+    public override float EmptyMass => preset.mass;
     public override int DefaultLayer()
     {
         return 2;
@@ -24,7 +25,7 @@ public class Propeller : SofModule
 
     //Data
     public float rps { get { return engine.rps * reductionGear; } }
-    public float MomentOfInertia { get { return mass * Mathv.SmoothStart(preset.diameter, 2) / 20f; } }
+    public float MomentOfInertia { get { return Mass * Mathv.SmoothStart(preset.diameter, 2) / 20f; } }
     public float TotalSpeed { get { return Mathf.Sqrt(Mathv.SmoothStart(rps * preset.diameter / 13f, 2) + Mathv.SmoothStart(data.ias.Get, 2)); } }
     //Forces
     public float torque = 0f;

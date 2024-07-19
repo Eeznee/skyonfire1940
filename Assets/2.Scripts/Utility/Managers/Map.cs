@@ -57,8 +57,10 @@ public class Map : MonoBehaviour
         }
         texture2d.Apply();
 
-        SerializedObject obj = new SerializedObject(texture2d);
-        obj.ApplyModifiedProperties();
+
+        //editor variable causes error on build
+        //SerializedObject obj = new SerializedObject(texture2d);
+        //obj.ApplyModifiedProperties();
     }
 
     public float HeightAboveGround(Vector3 point)

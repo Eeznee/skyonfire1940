@@ -75,18 +75,25 @@ public class SofAircraft : SofComplex
         base.Initialize();
 
         InitializeMarkersAndGameReferences();
-        InitializeGearAndEngines();
+        GroundedInitialization();
 
         armament.ConvergeGuns(convergeance);
 
         hasPilot = GetComponentInChildren<PilotSeat>() && crew.Length > 0;
-
     }
     private void AssignImportantComponents()
     {
         lod = GetComponentInChildren<ObjectLOD>();
         if (!lod) lod = tr.CreateChild("LOD Manager").gameObject.AddComponent<ObjectLOD>();
         if (!simpleDamage) bubble = tr.CreateChild("Object Bubble").gameObject.AddComponent<ObjectBubble>();
+    }
+    private void GroundedInitialization()
+    {
+        bool grounded = squadron.airfield >= 0;
+
+        if(hydraulics.gear) hydraulics.gear.SetInstant(grounded);
+        engines.Initialize(grounded);
+        if (!grounded) data.rb.velocity = transform.forward * card.startingSpeed / 3.6f;
     }
     private void InitializeMarkersAndGameReferences()
     {
@@ -98,16 +105,6 @@ public class SofAircraft : SofComplex
         else GameManager.axisAircrafts.Add(this);
         GameManager.ui.CreateMarker(this);
     }
-    private void InitializeGearAndEngines()
-    {
-        bool grounded = squadron.airfield >= 0;
-
-        if (hydraulics.gear) hydraulics.gear.SetInstant(grounded);
-        if (!grounded) data.rb.velocity = transform.forward * card.startingSpeed / 3.6f;
-
-        engines.throttle = grounded ? 0f : 1f;
-        engines.SetEngines(!grounded, true);
-    }
     private void OnCollisionEnter(Collision col)
     {
         Transform tr = col.GetContact(0).thisCollider.transform;
@@ -118,11 +115,11 @@ public class SofAircraft : SofComplex
     }
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.K)) tr.position += Vector3.up * 0.60f;
         engines.Update();
     }
     private void FixedUpdate()
     {
-        DamageTickFixedUpdate();
         WaterPhysics();
 
         inputs.FixedUpdate();

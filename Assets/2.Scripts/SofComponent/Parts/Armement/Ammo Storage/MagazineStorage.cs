@@ -16,10 +16,8 @@ public class MagazineStorage : SofPart
     [HideInInspector] public int magsCount;
     [HideInInspector] public int magsLeft;
 
-    public override float AdditionalMass()
-    {
-        return magRef.FullyLoadedMass() * (Application.isPlaying ? magsLeft : Mathf.Min(positions.Length, localRotations.Length));
-    }
+    public override float AdditionalMass => magRef.FullyLoadedMass * (Application.isPlaying ? magsLeft : Mathf.Min(positions.Length, localRotations.Length));
+
     public override void Initialize(SofComplex _complex)
     {
         magsLeft = magsCount = Mathf.Min(positions.Length, localRotations.Length);

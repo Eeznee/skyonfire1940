@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using UnityEditor.Build.Pipeline;
-
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
