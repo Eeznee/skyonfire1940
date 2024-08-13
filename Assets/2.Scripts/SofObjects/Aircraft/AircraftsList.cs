@@ -18,7 +18,7 @@ public class AircraftsList : ScriptableObject
         {
             SofAircraft aircraft = list[i].aircraft.GetComponent<SofAircraft>();
             aircraft.card = list[i];
-            aircraft.SetReferences();
+            aircraft.EditorInitialization();
             if (list[i] != null)
             {
                 list[i].id = i;

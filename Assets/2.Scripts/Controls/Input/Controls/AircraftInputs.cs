@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Localization.Plugins.XLIFF.V20;
 using UnityEngine;
 
 public struct AircraftInputs
@@ -34,11 +35,10 @@ public struct AircraftInputs
     }
     public void SendAxes(AircraftAxes input, bool correctedPitch, bool instant)
     {
-        if (!aircraft.hasPilot) return;
         if (controlSent) return;
 
         target = rawUncorrected = input;
-        if (correctedPitch) target.CorrectPitch(aircraft, input.pitch, Time.fixedDeltaTime);
+        if (correctedPitch && aircraft.data.tas.Get > 30f) target.CorrectPitch(aircraft, input.pitch, Time.fixedDeltaTime);
 
         if (instant) current = target;
         controlSent = true;

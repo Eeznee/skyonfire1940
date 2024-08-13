@@ -12,36 +12,38 @@ public struct Mass
         mass = _mass;
         center = _center;
     }
-    public Mass(SofPart part, bool empty)
+    public Mass(IMassComponent part, bool empty)
     {
-        float partMass = empty ? part.EmptyMass : part.Mass;
+        float partMass = empty ? part.EmptyMass : part.LoadedMass;
         mass = partMass;
-        center = part.sofObject.transform.InverseTransformPoint(part.transform.position);
+        SofComponent component = part as SofComponent;
+        center = component.sofObject.transform.InverseTransformPoint(component.transform.position);
     }
-    public Mass(SofPart[] parts, bool empty)
+    public Mass(IMassComponent[] massComponents, bool empty)
     {
         mass = 0f;
         center = Vector3.zero;
 
-        foreach (SofPart part in parts)
+        foreach (IMassComponent massComponent in massComponents)
         {
-            Mass partMass = new Mass(part, empty);
+            Mass partMass = new Mass(massComponent, empty);
             mass += partMass.mass;
             center += partMass.mass * partMass.center;
         }
         if (mass > 0f) center /= mass;
     }
 
-    public static Vector3 InertiaMoment(SofPart[] parts, bool empty)
+    public static Vector3 InertiaMoment(IMassComponent[] massComponents, bool empty)
     {
         Vector3 inertiaMoment = Vector3.zero;
-        foreach (SofPart part in parts)
+        foreach (IMassComponent massComponent in massComponents)
         {
-            Vector3 localPos = part.transform.root.InverseTransformPoint(part.transform.position);
+            Transform tr = (massComponent as SofComponent).transform;
+            Vector3 localPos = tr.root.InverseTransformPoint(tr.position);
             float x = new Vector2(localPos.y, localPos.z).sqrMagnitude;
             float y = new Vector2(localPos.x, localPos.z).sqrMagnitude;
             float z = new Vector2(localPos.x, localPos.y).sqrMagnitude;
-            inertiaMoment += new Vector3(x, y, z) * (empty ? part.EmptyMass : part.Mass);
+            inertiaMoment += new Vector3(x, y, z) * (empty ? massComponent.EmptyMass : massComponent.LoadedMass);
         }
         return inertiaMoment;
     }

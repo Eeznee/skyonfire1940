@@ -13,20 +13,18 @@ public class CustomWheelEditor : ModuleEditor
     }
     static bool showWheel = true;
     private SerializedProperty radius;
-    private SerializedProperty tire;
+    private SerializedProperty frictionMultiplier;
+
+    static bool showBrakes = true;
     private SerializedProperty brakes;
     private SerializedProperty maxBrakeTorque;
-
-    private SerializedProperty activeFrictionPreset;
     protected override void OnEnable()
     {
         base.OnEnable();
         radius = serializedObject.FindProperty("radius");
-        tire = serializedObject.FindProperty("tire");
         brakes = serializedObject.FindProperty("brakes");
+        frictionMultiplier = serializedObject.FindProperty("frictionMultiplier");
         maxBrakeTorque = serializedObject.FindProperty("maxBrakeTorque");
-
-        activeFrictionPreset = serializedObject.FindProperty("activeFrictionPreset");
     }
     public override void OnInspectorGUI()
     {
@@ -36,20 +34,35 @@ public class CustomWheelEditor : ModuleEditor
 
         serializedObject.Update();
 
+        if (wheel.GetComponentInParent<Suspension>() == null)
+            EditorGUILayout.HelpBox("This wheel needs a suspension as its parent", MessageType.Warning);
+
         showWheel = EditorGUILayout.Foldout(showWheel, "Wheel", true, EditorStyles.foldoutHeader);
         if (showWheel)
         {
             EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(radius);
-            EditorGUILayout.PropertyField(tire);
-            EditorGUILayout.PropertyField(activeFrictionPreset);
-            EditorGUILayout.PropertyField(maxBrakeTorque);
+            EditorGUILayout.Slider(frictionMultiplier, 0f, 3f, new GUIContent("Side Friction Multiplier"));
 
-            EditorGUILayout.PropertyField(brakes);
-            if(wheel.brakes != CustomWheel.BrakeSystem.None)
+            if (wheel.brakes != CustomWheel.BrakeSystem.None)
             {
                 //EditorGUILayout.PropertyField(brakeForce, new GUIContent("Brake Force in N"));
             }
+
+            EditorGUI.indentLevel--;
+        }
+
+        showBrakes = EditorGUILayout.Foldout(showBrakes, "Brakes", true, EditorStyles.foldoutHeader);
+        if (showBrakes)
+        {
+            EditorGUI.indentLevel++;
+
+            EditorGUILayout.PropertyField(brakes);
+            if (wheel.brakes != CustomWheel.BrakeSystem.None)
+            {
+                EditorGUILayout.PropertyField(maxBrakeTorque, new GUIContent("Max Torque N.m"));
+            }
+
 
             EditorGUI.indentLevel--;
         }

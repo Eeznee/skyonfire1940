@@ -9,7 +9,7 @@ using UnityEditor.SceneManagement;
 
 #if UNITY_EDITOR
 [CustomEditor(typeof(Wheel))]
-public class WheelEditor : PartEditor
+public class WheelEditor : SofComponentEditor
 {
     SerializedProperty wheelCollider;
     SerializedProperty brakeMode;
@@ -62,8 +62,7 @@ public class WheelEditor : PartEditor
 
         Wheel wheel = (Wheel)target;
 
-        ModuleMaterial material = wheel.aircraft.materials.Material(wheel);
-        EditorGUILayout.LabelField("HP", material.hpPerSq.ToString("0") + " HP");
+        EditorGUILayout.LabelField("HP", wheel.MaxHp.ToString("0") + " HP");
     }
 }
 #endif

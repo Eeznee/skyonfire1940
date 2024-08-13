@@ -7,29 +7,34 @@ using UnityEditor.SceneManagement;
 #endif
 
 
-public class LiquidTank : SofModule, IDamageTick
+public class LiquidTank : SofModule, IDamageTick, IMassComponent, IIgnitable
 {
+    public override float MaxHp => ModulesHPData.liquidTankHpRatio * Mathf.Pow(capacity, 2f / 3f);
+    public float EmptyMass => 0f;
+    public float LoadedMass => Application.isPlaying ? fluidMass : capacity;
+    public override ModuleArmorValues Armor => new ModuleArmorValues(armorThickness, Mathf.Sqrt(fluidMass));
+
+
     public Liquid liquid;
     public float capacity;
-
-    private float capacityInvert;
+    public bool selfSealing = false;
+    public float armorThickness = 0f;
 
     public float fluidMass { get; private set; }
-    public bool Empty { get { return fluidMass <= 0f; } }
 
-    public Circuit circuit;
+    private Circuit circuit;
 
+    private float capacityInvert;
     private float massShift;
-    const float massLostThreshold = 1f;
 
-    public float fill { get { return fluidMass * capacityInvert; } }
+    public bool Ignitable => liquid.ignitable;
+    public float BurningChance => liquid.burningChance;
+    public float MaxStructureDamageToBurn => 0f;
+    public ParticleSystem BurningEffect => liquid.burningFx;
+    public bool Empty => fluidMass <= 0f;
+    public float FillRatio => fluidMass * capacityInvert;
 
-    public override float MaxHp => material.hpPerSq * Mathf.Pow(capacity, 2f / 3f);
-    public override bool NoCustomMass => true;
-    public override float AdditionalMass => Application.isPlaying ? fluidMass : capacity;
-    public override float EmptyMass => 0f;
 
-    public float CurrentAmount() { return fluidMass; }
     public override void Rearm()
     {
         base.Rearm();
@@ -41,19 +46,29 @@ public class LiquidTank : SofModule, IDamageTick
     public override void Initialize(SofComplex _complex)
     {
         if (!liquid) Debug.LogError("This Liquid Tank does not have any liquids assigned", this);
-        material = liquid.material;
+        if(liquid.type != LiquidType.Fuel)
+        {
+            selfSealing = false;
+            armorThickness = 0f;
+        }
         fluidMass = capacity;
         capacityInvert = 1f / capacity;
 
         circuit = new Circuit(transform, this);
         massShift = 0f;
         base.Initialize(_complex);
+
+        OnProjectileDamage += DamageCircuit;
     }
     public void DamageTick(float dt)
     {
-        if (structureDamage != 1f)
-            circuit.Leaking(dt);
+        if (structureDamage >= 1f) return;
+        if (selfSealing && structureDamage > 0f) { circuit.holesArea = 0f; return; }
+
+        circuit.Leaking(dt);
     }
+
+    const float massLostThreshold = 1f;
     public void ShiftFluidMass(float addedMass)
     {
         if (!complex) return;
@@ -68,9 +83,8 @@ public class LiquidTank : SofModule, IDamageTick
             massShift = 0f;
         }
     }
-    public override void KineticDamage(float damage, float caliber, float fireCoeff)
+    public void DamageCircuit(float damage, float caliber, float fireCoeff)
     {
-        base.KineticDamage(damage, caliber, fireCoeff);
         circuit.Damage(caliber);
     }
 }
@@ -80,6 +94,8 @@ public class LiquidTankEditor : ModuleEditor
 {
     SerializedProperty capacity;
     SerializedProperty content;
+    SerializedProperty selfSealing;
+    SerializedProperty armorThickness;
 
     static bool showLiquidTank = true;
 
@@ -88,6 +104,8 @@ public class LiquidTankEditor : ModuleEditor
         base.OnEnable();
         capacity = serializedObject.FindProperty("capacity");
         content = serializedObject.FindProperty("liquid");
+        selfSealing = serializedObject.FindProperty("selfSealing");
+        armorThickness = serializedObject.FindProperty("armorThickness");
     }
     
     public override void OnInspectorGUI()
@@ -105,6 +123,12 @@ public class LiquidTankEditor : ModuleEditor
             EditorGUILayout.PropertyField(content);
             EditorGUILayout.PropertyField(capacity);
             EditorGUILayout.LabelField("Capacity in Gallons : ", (tank.capacity / 4.55f).ToString("0.0"));
+            if(tank.liquid && tank.liquid.type == LiquidType.Fuel)
+            {
+                EditorGUILayout.PropertyField(selfSealing);
+                EditorGUILayout.PropertyField(armorThickness);
+            }
+
             EditorGUI.indentLevel--;
         }
        // EditorGUILayout.LabelField("30 cal empty time : ", (tank.capacity / (Mathf.Pow(7.62f / 2000f, 2) * tank.liquid.leakSpeed * 1000f * Mathf.PI)).ToString("0") + " s");

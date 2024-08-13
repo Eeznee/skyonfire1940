@@ -53,7 +53,7 @@ public class CrashEffect : SofComponent
         }
 
         foreach (CrewMember c in aircraft.GetComponentsInChildren<CrewMember>())
-            c.Damage(Mathf.InverseLerp(humanGTolerance,humanGLethal, g * Random.Range(0.9f, 1.1f)));
+            c.DirectStructuralDamage(Mathf.InverseLerp(humanGTolerance,humanGLethal, g * Random.Range(0.9f, 1.1f)));
         if (Player.tr != transform.root) return;
         foreach (SofAirframe frame in aircraft.GetComponentsInChildren<SofAirframe>())
             if (g > airframeGTolerance * Random.Range(0.8f, 1.2f)) frame.Rip();

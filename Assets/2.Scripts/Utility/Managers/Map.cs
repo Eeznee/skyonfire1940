@@ -8,6 +8,7 @@ using UnityEditor;
 public class Map : MonoBehaviour
 {
     public Airfield[] airfields;
+    public FrictionPreset frictionPreset;
     public Texture2D texture2d;
     public float spaceBetweenPoints = 20f;
     public float maxAltitude = 400f;

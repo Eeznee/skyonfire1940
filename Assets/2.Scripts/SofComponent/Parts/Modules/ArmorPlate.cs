@@ -3,33 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
-using UnityEditor.SceneManagement;
 #endif
 public class ArmorPlate : SofModule
 {
+    public float thickness;
+    public override float MaxHp => 1000f;
+
+    public override ModuleArmorValues Armor => new ModuleArmorValues(thickness,0f);
 
 }
 #if UNITY_EDITOR
 [CustomEditor(typeof(ArmorPlate)), CanEditMultipleObjects]
-public class ArmorPlateEditor : PartEditor
+public class ArmorPlateEditor : ModuleEditor
 {
-    SerializedProperty material;
+    SerializedProperty thickness;
     protected override void OnEnable()
     {
         base.OnEnable();
-        material = serializedObject.FindProperty("material");
+        thickness = serializedObject.FindProperty("thickness");
     }
     protected override string BasicName()
     {
         return "Armor Plate";
     }
+
     protected override void BasicFoldout()
     {
         base.BasicFoldout();
 
-        ArmorPlate module = (ArmorPlate)target;
-
-        EditorGUILayout.PropertyField(material);
+        EditorGUILayout.PropertyField(thickness);
     }
 }
 #endif

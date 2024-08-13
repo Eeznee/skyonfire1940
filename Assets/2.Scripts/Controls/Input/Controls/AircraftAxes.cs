@@ -30,13 +30,14 @@ public struct AircraftAxes
         AirfoilSim airfoil = aircraft.stats.airfoil.airfoilSim;
         float maxCl = Mathf.Lerp(-airfoil.minCl, airfoil.maxCl, target * 0.5f + 0.5f);
         float maxLift = maxCl * data.density.Get * Mathv.SmoothStart(spd, 2) * aircraft.stats.wingsArea * 0.45f;
+
         float gravityEffect = Physics.gravity.y * aircraft.tr.up.y * target;
 
         float maxTurnRate = (maxLift / aircraft.rb.mass + gravityEffect) / spd;
 
         float turnRateState = data.turnRate.Get / maxTurnRate;
-
         float inAirError = target - turnRateState;
+
         pitch = Mathf.Clamp(aircraft.pidElevator.UpdateAndDebugUnclamped(inAirError, t), -1f, 1f);
     }
 

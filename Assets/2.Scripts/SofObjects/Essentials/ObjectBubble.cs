@@ -45,6 +45,12 @@ public class ObjectBubble : SofComponent
 
         complex.onPartDetached += RemoveDetachedPartColliders;
 
+        foreach (MeshCollider col in aircraft.GetComponentsInChildren<MeshCollider>())
+        {
+            col.convex = true;
+            col.sharedMaterial = aircraft.materials.aircraftMat;
+        }
+
         DisableColliders();
     }
     private void OnTriggerEnter(Collider other)

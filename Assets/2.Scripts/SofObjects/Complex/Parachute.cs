@@ -34,7 +34,7 @@ public class Parachute : SofComplex
 
         _crew.transform.parent = seat.transform.parent;
 
-        Initialize();
+        GameInitialization();
 
         _crew.seats = new List<CrewSeat>(new CrewSeat[] { seat });
         _crew.SwitchSeat(0);
@@ -47,14 +47,15 @@ public class Parachute : SofComplex
         }
         aircraft.OnPartDetach(this);
     }
-    protected override void Initialize()
+    protected override void GameInitialization()
     {
-        base.Initialize();
+        base.GameInitialization();
+
         rotationSpeed = Random.Range(-2f, 2f);
-        dragCoeff = Random.Range(0.9f,1.1f) * 1600f / (terminalVelocity * terminalVelocity * Aerodynamics.seaLvlDensity * radius * radius * Mathf.PI);
+        dragCoeff = Random.Range(0.9f, 1.1f) * 1600f / (terminalVelocity * terminalVelocity * Aerodynamics.seaLvlDensity * radius * radius * Mathf.PI);
         rb.centerOfMass = Vector3.zero;
         rb.angularDrag = 1f;
-        rb.inertiaTensor = new Vector3(100f, 400f * Random.Range(0.8f,1.2f), 100f);
+        rb.inertiaTensor = new Vector3(100f, 400f * Random.Range(0.8f, 1.2f), 100f);
         rb.velocity = startVelocity;
         trueRadius = 0f;
         landed = false;

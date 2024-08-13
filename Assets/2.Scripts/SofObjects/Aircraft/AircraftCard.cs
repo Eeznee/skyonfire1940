@@ -29,7 +29,6 @@ public class AircraftCard : ScriptableObject
     public bool fighter;
     public bool bomber;
     public Formation formation;
-    public float startingSpeed = 350;
     public Sprite icon;
 
     public bool Available()

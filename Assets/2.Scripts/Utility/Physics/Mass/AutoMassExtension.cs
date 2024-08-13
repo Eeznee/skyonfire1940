@@ -6,17 +6,17 @@ public static class AutoMassExtension
 {
     public static void ComputeAutoMass(this SofComplex complex, Mass targetEmptyMass)
     {
-        SofPart[] parts = complex.GetComponentsInChildren<SofPart>();
+        IMassComponent[] massComponents = complex.GetComponentsInChildren<IMassComponent>();
         SofAirframe[] airframes = complex.GetComponentsInChildren<SofAirframe>();
 
         foreach (SofAirframe airframe in airframes)
-            airframe.SetCustomMass(airframe.ApproximateMass());
+            airframe.mass = airframe.ApproximateMass();
 
-        Mass fixedMass = new Mass(parts, true) - new Mass(airframes, true);
+        Mass fixedMass = new Mass(massComponents, true) - new Mass(airframes, true);
         Mass targetAirframeMass = targetEmptyMass - fixedMass;
 
         if (targetAirframeMass.mass < 0f) Debug.LogError("Target mass is too small, fixed mass parts already go above that weight !", complex);
-
+        
         ApproximateAirframesMass(targetAirframeMass, airframes);
         BalanceFrontAndBack(targetAirframeMass, airframes);
     }
@@ -33,7 +33,7 @@ public static class AutoMassExtension
 
         float factor = targetMass.mass / approximated.mass;
         foreach (SofAirframe airframe in airframes)
-            airframe.SetCustomMass(factor * airframe.ApproximateMass());
+            airframe.mass = factor * airframe.ApproximateMass();
     }
     static void BalanceFrontAndBack(Mass targetMass, SofAirframe[] airframes)
     {
@@ -52,9 +52,9 @@ public static class AutoMassExtension
         ComputeFrontBackFactors(targetMass, frontFrames, backFrames, out float frontFactor, out float backFactor);
 
         foreach (SofAirframe airframe in frontFrames)
-            airframe.SetCustomMass(airframe.GetCustomMass()  * frontFactor);
+            airframe.mass *= frontFactor;
         foreach (SofAirframe airframe in backFrames)
-            airframe.SetCustomMass(airframe.GetCustomMass() * backFactor);
+            airframe.mass *= backFactor;
     }
     static void ComputeFrontBackFactors(Mass targetMass, List<SofAirframe> frontFrames, List<SofAirframe> backFrames, out float frontFactor, out float backFactor)
     {

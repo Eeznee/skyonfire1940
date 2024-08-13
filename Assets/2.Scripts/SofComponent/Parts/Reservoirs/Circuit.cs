@@ -8,13 +8,12 @@ public class Circuit
     {
         holesArea = 0f;
         mainTank = attachedTank;
-        leak = Object.Instantiate(mainTank.liquid.leakFx, fxParent.transform);
+        leakEffect = Object.Instantiate(mainTank.liquid.leakFx, fxParent.transform);
     }
-    private SofModule module;
     public LiquidTank mainTank;
 
     public float holesArea;
-    protected ParticleSystem leak;
+    protected ParticleSystem leakEffect;
 
     public void Damage(float caliber)
     {
@@ -22,16 +21,16 @@ public class Circuit
     }
     public void Leaking(float deltaTime)
     {
-        float fill = mainTank.fill;
+        float fill = mainTank.FillRatio;
         float leakRate = holesArea * mainTank.liquid.leakSpeed * 1000f;
         mainTank.ShiftFluidMass(-leakRate * deltaTime);
 
-        if (!leak) return;
-        bool leaking = !mainTank.IsBurning && fill > 0f && holesArea > 0f;
-        if (leaking != leak.isPlaying)
+        if (!leakEffect) return;
+        bool leakingFx = fill > 0f && holesArea > 0f;
+        if (leakingFx != leakEffect.isPlaying)
         {
-            if (leaking) leak.Play();
-            else leak.Stop();
+            if (leakingFx) leakEffect.Play();
+            else leakEffect.Stop();
         }
     }
 }

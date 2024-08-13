@@ -31,6 +31,7 @@ public class PistonEngine : Engine
         if (preset.WaterCooled()) waterCircuit = new Circuit(transform, water);
         boostTime = preset.boostTime;
         randomFrictionModifier = Random.Range(0.5f, 2f);
+        OnProjectileDamage += OnDamageOilLeakChance;
     }
     public override float ConsumptionRate() { return preset.ConsumptionRate(trueThrottle,brakePower); }
     void FixedUpdate()
@@ -47,11 +48,9 @@ public class PistonEngine : Engine
             rps = Mathf.Clamp(rps + rpsSpeedUp * Time.fixedDeltaTime, 0f, preset.boostRPS);
         }
     }
-    public override void KineticDamage(float damage, float caliber, float fireCoeff)
+    public void OnDamageOilLeakChance(float damage, float caliber, float fireCoeff)
     {
-        base.KineticDamage(damage, caliber, fireCoeff);
         if (Random.value < leakChance) oilCircuit.Damage(caliber);
-        //if (Random.value < leakChance && waterCooled) waterCircuit.Damage(caliber);
     }
 }
 

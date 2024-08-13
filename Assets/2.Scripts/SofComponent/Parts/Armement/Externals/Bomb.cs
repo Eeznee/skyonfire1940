@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bomb : SofPart
+public class Bomb : SofComponent, IMassComponent
 {
+    public float LoadedMass => mass;
+    public float EmptyMass => 0f;
 
+    public float mass;
     public Mesh droppedMesh;
     public ExplosiveFiller filler;
 
     protected bool dropped = false;
 
     protected const float securityTimer = 1f;
-    public override float EmptyMass => 0f;
-    public override float AdditionalMass => base.EmptyMass;
 
     public virtual void Drop(float delayFuse, bool bay)
     {
@@ -32,7 +33,7 @@ public class Bomb : SofPart
 
         if (droppedMesh) GetComponent<MeshFilter>().sharedMesh = droppedMesh;
         rb.velocity += Random.insideUnitSphere * 0.4f;
-        rb.inertiaTensor = Vector3.one * Mass;
+        rb.inertiaTensor = Vector3.one * mass;
         GetComponent<Collider>().enabled = true;
     }
     private void FixedUpdate()
@@ -78,7 +79,7 @@ public class Bomb : SofPart
     }
     protected void Detonate()
     {
-        filler.Detonate(transform.position, Mass, null);
+        filler.Detonate(transform.position, mass, null);
         Destroy(transform.root.gameObject);
     }
 }

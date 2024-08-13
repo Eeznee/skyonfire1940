@@ -123,7 +123,7 @@ public class SofDevice : InputDevice, IInputUpdateCallbackReceiver
 
 
 #if UNITY_EDITOR
-    [MenuItem("Tools/Custom Device Sample/Create Device")]
+    //[MenuItem("Tools/Custom Device Sample/Create Device")]
     private static void CreateDevice()
     {
         InputSystem.AddDevice(new InputDeviceDescription
@@ -133,7 +133,7 @@ public class SofDevice : InputDevice, IInputUpdateCallbackReceiver
         });
     }
 
-    [MenuItem("Tools/Custom Device Sample/Remove Device")]
+    //[MenuItem("Tools/Custom Device Sample/Remove Device")]
     private static void RemoveDevice()
     {
         var customDevice = InputSystem.devices.FirstOrDefault(x => x is SofDevice);

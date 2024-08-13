@@ -8,29 +8,42 @@ using UnityEditor.SceneManagement;
 
 public class ObjectMaterials : SofComponent
 {
-    public Material glassMaterial;
+    public Material replacementMaterial;
+
+    private MeshRenderer coreRenderer;
+
     private static Shader lit;
     private static Shader simpleLit;
 
-    public MeshRenderer FuselageCore()
+    private Material MainMaterial
     {
-        return aircraft.GetComponentInChildren<FuselageCore>().GetComponent<MeshRenderer>();
-    }
-
-    private Material MainMaterial()
-    {
-        Material mainMat = new Material(FuselageCore().sharedMaterial);
-        mainMat.shader = QualitySettings.GetQualityLevel() == 0 ? simpleLit : lit;
-
-        string textureName = aircraft.squadron.textureName;
-        if (textureName != "")
+        get
         {
-            Texture2D texture = TextureTool.Load(TextureTool.FolderPath(aircraft.card.fileName) + textureName);
-            mainMat.mainTexture = texture;
-            mainMat.name += textureName;
+            Material mainMat = new Material(replacementMaterial? replacementMaterial : coreRenderer.sharedMaterial);
+            mainMat.shader = QualitySettings.GetQualityLevel() == 0 ? simpleLit : lit;
+
+            string textureName = aircraft.squadron.textureName;
+            if (textureName != "")
+            {
+                Texture2D texture = TextureTool.Load(TextureTool.FolderPath(aircraft.card.fileName) + textureName);
+                mainMat.mainTexture = texture;
+                mainMat.name += textureName;
+            }
+            return mainMat;
         }
-        return mainMat;
     }
+
+    public override void Initialize(SofComplex _complex)
+    {
+        base.Initialize(_complex);
+        if (lit == null) lit = Shader.Find("Universal Render Pipeline/Lit");
+        if (simpleLit == null) simpleLit = Shader.Find("Universal Render Pipeline/Simple Lit");
+
+        coreRenderer = aircraft.GetComponentInChildren<FuselageCore>().GetComponent<MeshRenderer>();
+
+        ReplaceMaterial(MainMaterial, coreRenderer);
+    }
+
     public void ReplaceMaterial(Material newMat, Renderer refRenderer)
     {
         foreach (Renderer renderer in complex.GetComponentsInChildren<Renderer>())
@@ -41,45 +54,19 @@ public class ObjectMaterials : SofComponent
         }
         refRenderer.sharedMaterial = newMat;
     }
-    public override void Initialize(SofComplex _complex)
-    {
-        base.Initialize(_complex);
-        if (lit == null) lit = Shader.Find("Universal Render Pipeline/Lit");
-        if (simpleLit == null) simpleLit = Shader.Find("Universal Render Pipeline/Simple Lit");
-
-        ReplaceMaterial(MainMaterial(), FuselageCore());
-        //Cockpit Material
-    }
 }
 #if UNITY_EDITOR
 [CustomEditor(typeof(ObjectMaterials))]
-public class ObjectMaterialsEditor : Editor
+public class ObjectMaterialsEditor : SofComponentEditor
 {
-    public Material materialToApply;
     public override void OnInspectorGUI()
     {
-        serializedObject.Update();
         base.OnInspectorGUI();
 
-        GUILayout.Space(10f);
+        serializedObject.Update();
 
-        ObjectMaterials objectMaterials = (ObjectMaterials)target;
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("replacementMaterial"));
 
-        materialToApply = EditorGUILayout.ObjectField("Material To Apply", materialToApply, typeof(Material), false) as Material;
-
-        if (GUILayout.Button("Apply To Renderers"))
-        {
-            if (!materialToApply) return;
-            objectMaterials.SetReferences();
-            objectMaterials.ReplaceMaterial(materialToApply, objectMaterials.FuselageCore());
-        }
-
-
-        if (GUI.changed)
-        {
-            EditorUtility.SetDirty(objectMaterials);
-            EditorSceneManager.MarkSceneDirty(objectMaterials.gameObject.scene);
-        }
         serializedObject.ApplyModifiedProperties();
     }
 }

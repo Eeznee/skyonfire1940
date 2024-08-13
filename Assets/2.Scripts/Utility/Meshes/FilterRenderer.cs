@@ -33,13 +33,16 @@ public struct FilterRenderer
         if (rend.GetComponent<Flap>()) return true;
         if (rend.GetComponent<Slat>()) return true;
         if (rend.GetComponent<Wheel>()) return true;
+        if (rend.GetComponent<CustomWheel>()) return true;
+        if (rend.GetComponent<Suspension>()) return true;
+        if (rend.GetComponent<GunsCover>()) return true;
         if (rend.GetComponent<GunMount>()) return true;
 
         foreach (HydraulicSystem hydraulic in hydraulics)
-            if (hydraulic.IsEssentialPart(rend.gameObject)) return true;
+            if (hydraulic.IsAnimated(rend.transform)) return true;
 
         foreach (Transform exception in mobileFiltersExceptions)
-            if (exception && (rend.transform == exception || rend.transform.parent == exception)) return true;
+            if (exception && rend.transform.IsChildOf(exception)) return true;
 
         return false;
     }

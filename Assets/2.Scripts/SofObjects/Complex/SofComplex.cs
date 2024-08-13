@@ -22,53 +22,59 @@ public class SofComplex : SofObject
 
     public event Action<SofComplex> onPartDetached;
 
-    public List<SofComponent> components;
-    public List<SofPart> parts;
-    public List<SofModule> modules;
-    public List<IDamageTick> damageTickers;
-    public List<SofAirframe> airframes;
+    public List<SofComponent> components = new List<SofComponent>();
+    public List<IMassComponent> massComponents = new List<IMassComponent>();
+    public List<SofModule> modules = new List<SofModule>();
+    public List<IDamageTick> damageTickers = new List<IDamageTick>();
+    public List<SofAirframe> airframes = new List<SofAirframe>();
     public CrewMember[] crew;
 
-    public override void SetReferences()
+    protected override void SetReferences()
     {
         base.SetReferences();
 
         data = this.GetCreateComponent<ObjectData>();
-
-        crew = GetComponentsInChildren<CrewMember>();
-
-        components = new List<SofComponent>(GetComponentsInChildren<SofComponent>());
-        parts = new List<SofPart>(GetComponentsInChildren<SofPart>());
-        modules = new List<SofModule>(GetComponentsInChildren<SofModule>());
-        damageTickers = new List<IDamageTick>(GetComponentsInChildren<IDamageTick>());
-        airframes = new List<SofAirframe>(GetComponentsInChildren<SofAirframe>());
-
-        foreach (SofComponent component in components.ToArray())
-            component.SetReferences(this);
     }
-    public void Repair()
+    public override void EditorInitialization()
     {
-        foreach (SofModule module in modules) module.Repair();
-        burning = false;
+        base.EditorInitialization();
+        GetSofComponentsAndSetReferences();
     }
-    protected override void Initialize()
+    protected override void GameInitialization()
     {
         avm = transform.CreateChild("Audio Visual Manager").gameObject.AddComponent<ObjectAudio>();
 
-        base.Initialize();
-
-        bool debris = GetComponent<SofDebris>();
-
-        foreach (SofComponent component in components.ToArray())
-        {
-            component.AttachNewComplex(complex);
-            if (!debris) component.Initialize(this);
-        }
+        base.GameInitialization();
+        GetSofComponentsAndSetReferences();
+        InitializeSofComponents();
 
         SetMassFromParts();
         SetRigidbody();
 
-        //InvokeRepeating("DamageTick", damageTickInterval, damageTickInterval);
+        InvokeRepeating("DamageTick", damageTickInterval, damageTickInterval);
+    }
+
+    protected virtual void GetSofComponentsAndSetReferences()
+    {
+        SofComponent[] allComponents = GetComponentsInChildren<SofComponent>();
+
+        components = new List<SofComponent>(allComponents);
+        massComponents = new List<IMassComponent>(GetComponentsInChildren<IMassComponent>());
+        modules = new List<SofModule>(GetComponentsInChildren<SofModule>());
+        damageTickers = new List<IDamageTick>(GetComponentsInChildren<IDamageTick>());
+        airframes = new List<SofAirframe>(GetComponentsInChildren<SofAirframe>());
+        crew = GetComponentsInChildren<CrewMember>();
+
+        foreach (SofComponent component in allComponents)
+            component.SetReferences(this);
+    }
+    protected virtual void InitializeSofComponents()
+    {
+        if (!Application.isPlaying) return;
+        if (GetComponent<SofDebris>()) return;
+
+        foreach (SofComponent component in components.ToArray())
+            component.Initialize(this);
     }
     const float damageTickInterval = 0.5f;
     private void SetRigidbody()
@@ -86,14 +92,15 @@ public class SofComplex : SofObject
     public void ShiftMass(Mass shift) { mass += shift; UpdateRbMass(true); }
     public void UpdateRbMass(bool centerOfMass)
     {
+        if (mass.mass < 1f) mass.mass = 1f;
         complex.rb.mass = mass.mass;
         if (centerOfMass) complex.rb.centerOfMass = mass.center;
     }
     public void SetMassFromParts()
     {
         mass = new Mass(0f, Vector3.zero);
-        foreach (SofPart part in parts)
-            mass += new Mass(part, false);
+        foreach (IMassComponent massComponent in massComponents)
+            mass += new Mass(massComponent, false);
 
         UpdateRbMass(true);
         ResetInertiaTensor();
@@ -102,11 +109,16 @@ public class SofComplex : SofObject
     {
         if (aircraft != null)
         {
-            Vector3 inertiaTensor = Mass.InertiaMoment(complex.parts.ToArray(), true);
+            Vector3 inertiaTensor = Mass.InertiaMoment(complex.massComponents.ToArray(), true);
             inertiaTensor *= 1.1f;
             complex.rb.inertiaTensor = inertiaTensor;
         }
         else complex.rb.ResetInertiaTensor();
+    }
+    public void Repair()
+    {
+        foreach (SofModule module in modules) module.Repair();
+        burning = false;
     }
     private void DamageTick()
     {
@@ -124,8 +136,8 @@ public class SofComplex : SofObject
     public void RegisterComponent(SofComponent component)
     {
         components.Add(component);
-        SofPart part = component as SofPart;
-        if (part) parts.Add(part);
+        IMassComponent massComponent = component as IMassComponent;
+        if (massComponent != null) massComponents.Add(massComponent);
         SofModule module = component as SofModule;
         if (module) modules.Add(module);
         SofAirframe airframe = component as SofAirframe;
@@ -136,12 +148,14 @@ public class SofComplex : SofObject
     public void RemoveComponent(SofComponent component)
     {
         components.Remove(component);
-        SofPart part = component as SofPart;
-        if (part) parts.Remove(part);
+        IMassComponent massComponent = component as IMassComponent;
+        if (massComponent != null) massComponents.Remove(massComponent);
         SofModule module = component as SofModule;
         if (module) modules.Remove(module);
         SofAirframe airframe = component as SofAirframe;
         if (airframe) airframes.Remove(airframe);
+        IDamageTick damageTicker = component as IDamageTick;
+        if (damageTicker != null) damageTickers.Remove(damageTicker);
     }
     public void OnPartDetach(SofComplex detachedDebris)
     {
@@ -170,7 +184,7 @@ public class SofComplex : SofObject
     private void OnValidate()
     {
         if (Application.isPlaying) return;
-        SetReferences();
+        EditorInitialization();
     }
 #endif
 }

@@ -55,7 +55,6 @@ public class AirfoilSurface
 
         Vector3 force = Aerodynamics.Lift(vel, data.tas.Get, aeroDir, data.density.Get, q.Area, coeffs.y, Integrity());
         force += Aerodynamics.Drag(vel, data.tas.Get, data.density.Get, q.Area, coeffs.x, Integrity());
-
         if (draw)
         {
             Debug.DrawRay(center, Vector3.Cross(vel, q.AeroDir(true)).normalized * alpha);

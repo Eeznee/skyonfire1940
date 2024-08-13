@@ -8,8 +8,9 @@ using UnityEditor.SceneManagement;
 
 public class ControlSurface : ShapedAirframe
 {
+    public override float MaxHp => area * ModulesHPData.controlHpPerSq;
     public enum Type { Aileron, Elevator, Rudder, Ruddervator }
-    public Type type;
+    public Type type { get; private set; }
 
     //Control angle model rotation cheating variables
     const float controlAngleStep = 0.5f;

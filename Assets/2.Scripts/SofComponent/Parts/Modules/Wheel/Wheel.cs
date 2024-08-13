@@ -11,6 +11,8 @@ public enum BrakeMode
 
 public class Wheel : SofModule
 {
+    public override ModuleArmorValues Armor => new ModuleArmorValues(0f, 0f);
+    public override float MaxHp => 0f;
     private float brakeInput;
     private float steeringInput;
 
@@ -178,6 +180,9 @@ public class Wheel : SofModule
 
 public class Steering : SofModule
 {
+    public override ModuleArmorValues Armor => new ModuleArmorValues(0f, 0f);
+    public override float MaxHp => 0f;
+
     private float steeringInput;
 
     public bool steering = false;

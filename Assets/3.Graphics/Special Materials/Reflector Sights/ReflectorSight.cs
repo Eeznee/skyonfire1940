@@ -14,6 +14,7 @@ public class ReflectorSight : MonoBehaviour
         None,
         SpanIndicators
     }
+    
 
     public Renderer[] reticles;
     private float[] maxEmmissions;

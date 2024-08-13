@@ -27,7 +27,6 @@ public class EnginePreset : ScriptableObject
     public FuelMixerType fuelMixer = FuelMixerType.Carburetor;
     public int cylinders = 12;
     public float weight = 500f;
-    public ModuleMaterial material;
 
     //Performances
     public float nominalRPS = 314.1592653f;
@@ -61,6 +60,7 @@ public class EnginePreset : ScriptableObject
     public ParticleSystem ignitionEffect;
     public ParticleSystem boostEffect;
     public ParticleSystem overHeatEffect;
+    public ParticleSystem burningEffect;
 
     //Audio and effects
     public AudioClip startUpAudio;
@@ -72,6 +72,8 @@ public class EnginePreset : ScriptableObject
     public AudioClip spatialAudio;
     public AudioClip[] enginePops;
     public float fullRps = 1500f;
+
+    public const float burningChance = 0.15f;
 
     public bool WaterCooled() {return type == Type.V || type == Type.Inverted; }
 
@@ -134,7 +136,6 @@ public class EnginePresetEditor : Editor
         preset.fuelMixer = (EnginePreset.FuelMixerType)EditorGUILayout.EnumPopup("Fuel Mixer", preset.fuelMixer);
         preset.cylinders = EditorGUILayout.IntField("No of cylinders", preset.cylinders);
         preset.weight = EditorGUILayout.FloatField("Dry weight (NO Propeller)", preset.weight);
-        preset.material = EditorGUILayout.ObjectField("Part Material", preset.material, typeof(ModuleMaterial), false) as ModuleMaterial;
 
         //Performances settings
         GUILayout.Space(15f);
@@ -184,6 +185,7 @@ public class EnginePresetEditor : Editor
         preset.ignitionEffect = EditorGUILayout.ObjectField("Ignition effect", preset.ignitionEffect, typeof(ParticleSystem), false) as ParticleSystem;
         preset.boostEffect = EditorGUILayout.ObjectField("Boost effect", preset.boostEffect, typeof(ParticleSystem), false) as ParticleSystem;
         preset.overHeatEffect = EditorGUILayout.ObjectField("Over Heat effect", preset.overHeatEffect, typeof(ParticleSystem), false) as ParticleSystem;
+        preset.burningEffect = EditorGUILayout.ObjectField("Burning effect", preset.burningEffect, typeof(ParticleSystem), false) as ParticleSystem;
 
         //Audio Settings
         GUILayout.Space(15f);

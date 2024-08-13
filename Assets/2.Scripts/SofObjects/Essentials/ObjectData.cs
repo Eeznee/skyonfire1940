@@ -6,6 +6,11 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
+public enum AircraftWorldState
+{
+    Flying,
+    TakingOff
+}
 public class ObjectData : SofComponent
 {
     public class Value<T>
@@ -70,13 +75,12 @@ public class ObjectData : SofComponent
         right = new Value<Vector3>(() => { return tr.right; }, this);
         position = new Value<Vector3>(() => { return tr.position; }, this);
     }
-
-    public override void AttachNewComplex(SofComplex _complex)
+    public override void SetReferences(SofComplex _complex)
     {
-        base.Initialize(_complex);
+        base.SetReferences(_complex);
         OnValuesReset = null;
         InitializeValues();
-        prevVel = rb.velocity;
+        if(rb) prevVel = rb.velocity;
     }
     void FixedUpdate()
     {
@@ -113,17 +117,11 @@ public class ObjectData : SofComponent
             gForceCounter = totalG = 0f;
         }
     }
-    public AircraftWorldState aircraftWorldState { get; private set; }
-    public float startTakeOffAltitude { get; private set; }
+
+    public bool grounded { get; private set; }
     protected void ComputeWorldState()
     {
-        bool grounded = data.relativeAltitude.Get < 5f && data.gsp.Get < aircraft.cruiseSpeed * 0.5f;
-        bool flyingLow = data.altitude.Get > startTakeOffAltitude;
-
-
-        if (grounded) aircraftWorldState = AircraftWorldState.Grounded;
-
-
+        grounded = data.relativeAltitude.Get < 5f && data.gsp.Get < aircraft.cruiseSpeed * 0.5f;
     }
 }
 

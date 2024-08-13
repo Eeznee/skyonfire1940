@@ -28,8 +28,8 @@ public class EngineTemp
 
     private float MaxSafeThrottle()
     {
-        float maxThrottle = Mathf.Lerp(maxThrottleNoCoolant, 1f, engine.oilCircuit.mainTank.fill);
-        if (preset.WaterCooled()) maxThrottle *= Mathf.Lerp(maxThrottleNoCoolant, 1f, engine.waterCircuit.mainTank.fill);
+        float maxThrottle = Mathf.Lerp(maxThrottleNoCoolant, 1f, engine.oilCircuit.mainTank.FillRatio);
+        if (preset.WaterCooled()) maxThrottle *= Mathf.Lerp(maxThrottleNoCoolant, 1f, engine.waterCircuit.mainTank.FillRatio);
         return maxThrottle;
     }
 
@@ -43,8 +43,8 @@ public class EngineTemp
     {
         temperature = value;
 
-        if (preset.WaterCooled()) waterTemperature = Thermodynamics.CoolantTemperature(preset.waterTemperature, engine.water.fill, preset.tempFull, temperature);
-        oilTemperature = Thermodynamics.CoolantTemperature(preset.oilTemperature, engine.oil.fill, preset.tempFull, temperature);
+        if (preset.WaterCooled()) waterTemperature = Thermodynamics.CoolantTemperature(preset.waterTemperature, engine.water.FillRatio, preset.tempFull, temperature);
+        oilTemperature = Thermodynamics.CoolantTemperature(preset.oilTemperature, engine.oil.FillRatio, preset.tempFull, temperature);
     }
 
     public void Update(float dt)
@@ -55,14 +55,14 @@ public class EngineTemp
         if (temperature > maximumTemperature && engine.Working())
         {
             float damagePerSecond = minDpsOverHeat + dpsGrowthPerDegree * (temperature - maximumTemperature);
-            engine.SimpleDamage(damagePerSecond * dt);
+            engine.DirectStructuralDamage(damagePerSecond * dt / engine.MaxHp);
         }
 
         if (temperature > maximumTemperature * 1.12f) engine.Rip();
 
 
-        float frictionFactor = 1f - engine.structureDamage * engine.oil.fill;
+        float frictionFactor = 1f - engine.structureDamage * engine.oil.FillRatio;
         if (frictionFactor > 0.3f)
-            engine.SimpleDamage(frictionFactor * engine.trueThrottle * fullFrictionDps * dt);
+            engine.DirectStructuralDamage(frictionFactor * engine.trueThrottle * fullFrictionDps * dt / engine.MaxHp);
     }
 }

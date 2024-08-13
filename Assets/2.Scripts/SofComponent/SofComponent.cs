@@ -8,31 +8,31 @@ using UnityEditor.SceneManagement;
 
 
 
-public class SofComponent : MonoBehaviour  //Objects elements are the building blocks of Sof Objects
+public abstract class SofComponent : MonoBehaviour  //Objects elements are the building blocks of Sof Objects
 {
     public virtual int DefaultLayer() { return sofObject.DefaultLayer(); }
 
-    [HideInInspector] public Transform tr;
-    [HideInInspector] public Rigidbody rb;
-    [HideInInspector] public Animator animator;
+    public Transform tr { get; private set; }
+    public Rigidbody rb { get; private set; }
+     public Animator animator { get; private set; }
 
-    [HideInInspector] public SofObject sofObject;
-    [HideInInspector] public SofComplex complex;
-    [HideInInspector] public SofAircraft aircraft;
+    public SofObject sofObject { get; private set; }
+    public SofComplex complex { get; private set; }
+    public SofAircraft aircraft { get; private set; }
 
-    [HideInInspector] public ObjectAudio avm;
-    [HideInInspector] public ObjectData data;
+    public ObjectData data { get; private set; }
 
-    [HideInInspector] public Vector3 localPos;
+    public Vector3 localPos { get; private set; }
 
     private bool initialized = false;
 
-    public void SetReferences() {
+    public void SetReferences()
+    {
         if (Application.isEditor)
         {
             complex = transform.root.GetComponent<SofComplex>();
             if (complex == null) { Debug.LogError("This Sof Component is not attached to Sof Complex", this); return; }
-            complex.SetReferences();
+            complex.EditorInitialization();
             return;
         }
         if (complex == null) return;
@@ -47,15 +47,10 @@ public class SofComponent : MonoBehaviour  //Objects elements are the building b
 
         tr = transform;
         rb = complex.rb;
-        avm = complex.avm;
         data = complex.data;
         animator = aircraft ? aircraft.animator : null;
 
         localPos = complex.transform.InverseTransformPoint(tr.position);
-    }
-    public virtual void AttachNewComplex(SofComplex newComplex)
-    {
-
     }
     public virtual void Initialize(SofComplex _complex)
     {
@@ -66,7 +61,6 @@ public class SofComponent : MonoBehaviour  //Objects elements are the building b
     public void SetInstanciatedComponent(SofComplex _complex)
     {
         SetReferences(_complex);
-        AttachNewComplex(_complex);
         if (!initialized) Initialize(_complex);
         complex.RegisterComponent(this);
     }
@@ -108,18 +102,47 @@ public static class SofComponentExtension
 [CustomEditor(typeof(SofComponent))]
 public class SofComponentEditor : Editor
 {
+    SerializedProperty mass;
+
+    protected virtual void OnEnable()
+    {
+        mass = serializedObject.FindProperty("mass");
+
+        SofComponent component = (SofComponent)target;
+        component.SetReferences();
+    }
+
+    protected virtual string BasicName() { return "Component"; }
+
+    protected virtual void BasicFoldout()
+    {
+        SofComponent component = (SofComponent)target;
+        IMassComponent massComponent = component as IMassComponent;
+        if (massComponent != null)
+        {
+            if (mass != null) EditorGUILayout.PropertyField(mass);
+            else
+            {
+                EditorGUILayout.LabelField("Empty Mass", massComponent.EmptyMass.ToString("0.0") + " kg");
+                EditorGUILayout.LabelField("Loaded Mass", massComponent.LoadedMass.ToString("0.0") + " kg");
+            }
+        }
+    }
+
+    static bool showBasic = true;
+
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
 
-        SofComponent sofComponent = (SofComponent)target;
-
-
-        if (GUI.changed)
+        showBasic = EditorGUILayout.Foldout(showBasic, BasicName(), true, EditorStyles.foldoutHeader);
+        if (showBasic)
         {
-            EditorUtility.SetDirty(sofComponent);
-            EditorSceneManager.MarkSceneDirty(sofComponent.gameObject.scene);
+            EditorGUI.indentLevel++;
+            BasicFoldout();
+            EditorGUI.indentLevel--;
         }
+
         serializedObject.ApplyModifiedProperties();
     }
 }

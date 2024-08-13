@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
-public class AmmoContainer : SofPart
+public class AmmoContainer : SofComponent, IMassComponent
 {
     public GunPreset gunPreset;
     public int capacity = 100;
@@ -16,7 +16,9 @@ public class AmmoContainer : SofPart
     [HideInInspector] public HandGrip grip;
     [HideInInspector] public Gun attachedGun;
 
-    public override float AdditionalMass => gunPreset.ammunition.FullMass * (Application.isPlaying ? ammo : capacity);
+    public float LoadedMass => gunPreset.ammunition.FullMass * (Application.isPlaying ? ammo : capacity);
+    public float EmptyMass => 0f;
+
     public float FullyLoadedMass => gunPreset.ammunition.FullMass * capacity + EmptyMass;
 
     public override void Rearm()

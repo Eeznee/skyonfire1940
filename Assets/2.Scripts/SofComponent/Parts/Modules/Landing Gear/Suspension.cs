@@ -4,23 +4,26 @@ using UnityEditor;
 using UnityEngine;
 
 
-public class Suspension : SofPart
+public class Suspension : SofComponent
 {
     public Vector3 axis = Vector3.up;
+
+
+    public bool preciseValues = false;
     public float springStrength = 300000f;
     public float springDamper = 30000f;
+    public float springStrengthFactor = 1f;
+    public float springDamperFactor = 1f;
 
-    public bool canSteer = false;
-    public float maxSteerAngle = 20f;
 
     private Transform parent;
     private Vector3 lowestPos;
 
     private CustomWheel wheel;
     private Vector3 wheelRestPos;
-    public float distance;
+    private float distance;
 
-    public float CurrentDistance => distance;
+    public float Distance => distance;
     public Vector3 LowestWheelPos => parent.TransformPoint(lowestPos) + tr.TransformDirection(wheelRestPos);
 
     public float forceApplied { get; private set; }
@@ -35,25 +38,24 @@ public class Suspension : SofPart
 
         wheel = GetComponentInChildren<CustomWheel>();
         if (!wheel) Debug.LogError(name + " has no Wheel child");
+
         wheelRestPos = tr.InverseTransformPoint(wheel.transform.position);
+        if (!preciseValues) SetAutomatedValues();
     }
-    private void FixedUpdate()
+    private void SetAutomatedValues()
     {
-        if (canSteer)
+        if (wheel.TailWheel())
         {
-            Vector3 pointDir = rb.GetPointVelocity(wheel.tr.position);
-            if (pointDir.magnitude < 2f) return;
-            pointDir = Vector3.ProjectOnPlane(pointDir, transform.up);
-            transform.localRotation = Quaternion.identity;
-            float steerAngle = Vector3.SignedAngle(transform.forward, pointDir, transform.up);
-            transform.localRotation = Quaternion.AngleAxis(steerAngle, axis);
-        }
-        if (false && canSteer)
+            springStrength = aircraft.targetEmptyMass * 20f * springStrengthFactor;
+            springDamper = aircraft.targetEmptyMass * 2.5f * springDamperFactor;
+        } else
         {
-            float steerAngle = aircraft ? aircraft.inputs.current.yaw * maxSteerAngle : 0f;
-            transform.localRotation = Quaternion.AngleAxis(steerAngle, axis);
+            springStrength = aircraft.targetEmptyMass * 100f * springStrengthFactor;
+            springDamper = aircraft.targetEmptyMass * 5f * springDamperFactor;
         }
     }
+
+
 
     public void ActOnSuspension(RaycastHit hit)
     {

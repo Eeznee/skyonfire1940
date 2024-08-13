@@ -7,9 +7,14 @@ using UnityEditor.SceneManagement;
 #endif
 
 
-public abstract class SofAirframe : SofModule,IDamageTick
+public abstract class SofAirframe : SofModule,IDamageTick, IMassComponent
 {
-    public float area = 5f;
+    public float EmptyMass => mass;
+    public float LoadedMass => mass;
+
+    public float mass;
+
+    public float area { get; private set; }
     public Airfoil foil;
     public AirfoilSurface foilSurface;
 
@@ -20,7 +25,7 @@ public abstract class SofAirframe : SofModule,IDamageTick
     protected float randToughness = 1f;
     protected float floatLevel;
 
-    public override float MaxHp => area * material.hpPerSq;
+    public override ModuleArmorValues Armor => ModulesHPData.DuraluminArmor;
 
     public virtual float PropSpeedEffect() { return 0f; }
     public override bool Detachable => true;
@@ -77,7 +82,7 @@ public abstract class SofAirframe : SofModule,IDamageTick
         float speedStress = excessSpeed / maxSpd * 10f;
         stress += Mathf.Max(gStress, speedStress) * dt;
         stress = Mathf.Clamp(stress, -1f, 5f);
-        if (stress > 0f) Damage(stress * 0.2f * randToughness * dt);
+        if (stress > 0f) DirectStructuralDamage(stress * 0.2f * randToughness * dt);
     }
     public void Floating()
     {
@@ -85,7 +90,7 @@ public abstract class SofAirframe : SofModule,IDamageTick
         if (center.y < 0f)
         {
             float displacementMultiplier = Mathf.Clamp(-center.y, 0f, 0.5f);
-            float force = displacementMultiplier * Mass * 10f * floatLevel;
+            float force = displacementMultiplier * LoadedMass * 10f * floatLevel;
             if (!aircraft) force /= 7f;
             rb.AddForceAtPosition(Vector3.up * force, center);
             floatLevel = Mathf.Max(floatLevel - Time.fixedDeltaTime / 12f, 1f);
@@ -119,15 +124,12 @@ public class AirframeEditor : ModuleEditor
 
     protected override void BasicFoldout()
     {
+        EditorGUILayout.PropertyField(ripOnRip);
+
         base.BasicFoldout();
 
         SofAirframe frame = (SofAirframe)target;
-
-        EditorGUILayout.PropertyField(ripOnRip);
         EditorGUILayout.LabelField("Area", frame.area.ToString("0.0") + " m²");
-        ModuleMaterial material = frame.aircraft.materials.Material(frame);
-        float hp = material.hpPerSq * frame.area;
-        EditorGUILayout.LabelField("HP", hp.ToString("0") + " HP");
     }
 }
 #endif

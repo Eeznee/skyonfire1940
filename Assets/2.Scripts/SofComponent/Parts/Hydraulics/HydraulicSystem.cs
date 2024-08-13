@@ -29,13 +29,10 @@ public class HydraulicSystem : SofComponent
 
         return true;
     }
-    public bool IsEssentialPart(GameObject gameObject)
+    public bool IsAnimated(Transform transformToCheck)
     {
         foreach (SofModule module in essentialParts)
-        {
-            if (module && module.gameObject == gameObject) return true;
-            if (module && module.transform == gameObject.transform.parent) return true;
-        }
+            if (module && transformToCheck.IsChildOf(module.tr)) return true;
         return false;
     }
     public override void Initialize(SofComplex _complex)
@@ -49,7 +46,8 @@ public class HydraulicSystem : SofComponent
         sofAudio = new SofAudio(complex.avm, clip, SofAudioGroup.Persistent, false);
         sofAudio.source.pitch = pitch;
 
-        SetInstant(defaultState);
+        if (control == HydraulicControl.Type.LandingGear) SetInstant(aircraft.GroundedStart);
+        else SetInstant(defaultState);
     }
     public virtual void SetDirection(int speed)
     {
@@ -60,12 +58,12 @@ public class HydraulicSystem : SofComponent
     public virtual void Set() { Set((stateInput == 0f) ? 1f : 0f); }
     public virtual void Set(bool s) { Set(s ? 1f : 0f); }
     public virtual void Set(float input) { stateInput = Mathf.Clamp01(input); }
-    public virtual void SetInstant(bool lowered) 
-    { 
-        SetInstant(lowered ? 1f : 0f); 
+    public virtual void SetInstant(bool lowered)
+    {
+        SetInstant(lowered ? 1f : 0f);
     }
-    public virtual void SetInstant(float input) 
-    { 
+    public virtual void SetInstant(float input)
+    {
         stateInput = state = Mathf.Clamp01(input);
         ApplyStateAnimator();
     }
@@ -135,7 +133,7 @@ public class HydraulicSystem : SofComponent
 
         sofAudio.source.volume = Mathf.MoveTowards(sofAudio.source.volume, play ? volume : 0f, Time.deltaTime * 5f);
 
-        if (extendedLockClip && animating && state == 1f) avm.persistent.local.PlayOneShot(extendedLockClip, 1f);
-        if (retractedLockClip && animating && state == 0f) avm.persistent.local.PlayOneShot(retractedLockClip, 1f);
+        if (extendedLockClip && animating && state == 1f) aircraft.avm.persistent.local.PlayOneShot(extendedLockClip, 1f);
+        if (retractedLockClip && animating && state == 0f) aircraft.avm.persistent.local.PlayOneShot(retractedLockClip, 1f);
     }
 }

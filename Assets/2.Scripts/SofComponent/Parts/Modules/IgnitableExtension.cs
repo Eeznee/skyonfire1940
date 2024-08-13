@@ -5,33 +5,39 @@ using UnityEngine;
 public class IgnitableExtension : MonoBehaviour
 {
     private SofModule module;
-    private ModuleMaterial material;
+    private IIgnitable iIgnitable;
 
     public bool burning { private set; get; }
 
     private ParticleSystem burningEffect;
     private AudioSource burningAudio;
 
-    private void Awake()
+    private void OnEnable()
     {
+        iIgnitable = GetComponent<IIgnitable>();
         module = GetComponent<SofModule>();
-        material = module.material;
+        module.OnProjectileDamage += TryBurn;
+        module.OnRepair += StopBurning;
 
-        if (!material.ignitable) Destroy(this);
+        if (iIgnitable == null || !iIgnitable.Ignitable) Destroy(this);
     }
-
-    public void TryBurn(float caliber, float fireCoeff)
+    private void OnDisable()
     {
-        if (!material.ignitable || burning || module.structureDamage > 0.8f) return;
+        module.OnProjectileDamage -= TryBurn;
+        module.OnRepair -= StopBurning;
+    }
+    public void TryBurn(float damage , float caliber, float fireCoeff)
+    {
+        if (burning || module.structureDamage > iIgnitable.MaxStructureDamageToBurn) return;
 
-        float roundCoeff = fireCoeff * caliber * caliber / 60f;
-        float burnChance = (1f - Mathv.SmoothStart(module.structureDamage, 1)) * material.burningChance * roundCoeff;
-        if (Random.value < burnChance)
+        float multiplier = fireCoeff * Mathv.SmoothStart(caliber / 7.62f,2);
+        float chanceNotToBurn = 1f - iIgnitable.BurningChance * multiplier;
+        if (Random.value > chanceNotToBurn)
         {
             burning = true;
             if (module.sofObject) module.sofObject.burning = true;
 
-            burningEffect = Instantiate(material.burningEffect, transform);
+            burningEffect = Instantiate(iIgnitable.BurningEffect, transform);
             burningEffect.Play();
 
             burningAudio = burningEffect.GetComponent<AudioSource>();
@@ -41,7 +47,7 @@ public class IgnitableExtension : MonoBehaviour
         }
     }
     const float burningTickInterval = 0.5f;
-    public virtual void Burning()
+    public void Burning()
     {
         if (!burning) return;
 
@@ -51,7 +57,7 @@ public class IgnitableExtension : MonoBehaviour
             float distanceSqr = (otherModules.transform.position - transform.position).sqrMagnitude;
             distanceSqr = Mathf.Max(distanceSqr, 4f);
             float damage = burningTickInterval * 0.07f / distanceSqr;
-            otherModules.BurnDamage(damage);
+            otherModules.DirectStructuralDamage(damage);
         }
     }
 

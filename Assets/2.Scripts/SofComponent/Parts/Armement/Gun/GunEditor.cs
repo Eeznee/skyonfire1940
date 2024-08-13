@@ -5,7 +5,7 @@ using UnityEngine;
 
 #if UNITY_EDITOR
 [CustomEditor(typeof(Gun)), CanEditMultipleObjects]
-public class GunEditor : PartEditor
+public class GunEditor : SofComponentEditor
 {
     SerializedProperty gunPreset;
     SerializedProperty controller;

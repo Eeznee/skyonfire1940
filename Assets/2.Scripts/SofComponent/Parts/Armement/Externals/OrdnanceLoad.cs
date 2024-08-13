@@ -2,8 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class OrdnanceLoad : SofPart
+public abstract class OrdnanceLoad : SofComponent, IMassComponent
 {
+    public float LoadedMass => SingleMass * (Application.isPlaying ? Mathf.Max(launchPositions.Length - fireIndex, 0) : launchPositions.Length);
+    public float EmptyMass => 0f;
+    public virtual float SingleMass => 0f;
+
     public Vector3[] launchPositions;
     public AudioClip[] launchClips;
 
@@ -21,9 +25,7 @@ public abstract class OrdnanceLoad : SofPart
             launchPositions[i] = Vector3.Lerp(first, last, (float)i / (launchPositions.Length - 1));
         }
     }
-    public override float AdditionalMass => SingleMass * (Application.isPlaying ? Mathf.Max(launchPositions.Length - fireIndex, 0) : launchPositions.Length);
 
-    public virtual float SingleMass => 0f;
     protected virtual void Clear()
     {
         fireIndex = launchPositions.Length;

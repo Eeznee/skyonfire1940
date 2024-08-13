@@ -119,6 +119,8 @@ public class ShapeDrawer : PropertyDrawer
         EditorGUI.EndProperty();
 
         height = position.y - startPos;
+
+        ResetValueIfDefault(property);
     }
     void Scale(ref Rect position, SerializedProperty property, bool snapped)
     {
@@ -153,6 +155,17 @@ public class ShapeDrawer : PropertyDrawer
         EditorGUIUtility.labelWidth = labelWidth;
         EditorGUI.indentLevel = indent;
         GUI.enabled = true;
+    }
+
+    private void ResetValueIfDefault(SerializedProperty property)
+    {
+        if (property.FindPropertyRelative("scale.x").floatValue != 0f) return;
+        if (property.FindPropertyRelative("scale.y").floatValue != 0f) return;
+        if (property.FindPropertyRelative("tipScale").floatValue != 0f) return;
+
+        property.FindPropertyRelative("scale.x").floatValue = 1f;
+        property.FindPropertyRelative("scale.y").floatValue = 1f;
+        property.FindPropertyRelative("tipScale").floatValue = 100f;
     }
 }
 #endif

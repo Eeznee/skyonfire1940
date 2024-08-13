@@ -6,7 +6,9 @@ using UnityEditor.SceneManagement;
 
 public class BoundedAirframe : SofAirframe
 {
-    public Bounds bounds;
+    public override float MaxHp => area * ModulesHPData.frameHpPerSq;
+
+    public Bounds bounds { get; private set; }
 
     public HydraulicSystem hydraulics;
     public bool customRipSpeed = false;

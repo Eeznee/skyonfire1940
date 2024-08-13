@@ -4,9 +4,10 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 //
-public class Propeller : SofModule
+public class Propeller : SofComponent, IMassComponent
 {
-    public override float EmptyMass => preset.mass;
+    public float EmptyMass => preset.mass;
+    public float LoadedMass => EmptyMass;
     public override int DefaultLayer()
     {
         return 2;
@@ -23,16 +24,17 @@ public class Propeller : SofModule
     public MeshRenderer blurredProp;
     private MaterialPropertyBlock blurredBlock;
 
+    public bool ripped { get; private set; }
+
     //Data
     public float rps { get { return engine.rps * reductionGear; } }
-    public float MomentOfInertia { get { return Mass * Mathv.SmoothStart(preset.diameter, 2) / 20f; } }
+    public float MomentOfInertia { get { return LoadedMass * Mathv.SmoothStart(preset.diameter, 2) / 20f; } }
     public float TotalSpeed { get { return Mathf.Sqrt(Mathv.SmoothStart(rps * preset.diameter / 13f, 2) + Mathv.SmoothStart(data.ias.Get, 2)); } }
     //Forces
     public float torque = 0f;
     public float thrust = 0f;
     public override void Initialize(SofComplex _complex)
     {
-        material = preset.material;
         base.Initialize(_complex);
 
         gameObject.layer = 2;
@@ -96,11 +98,8 @@ public class Propeller : SofModule
         if (tr.position.y < preset.diameter) engine.Rip();
     }
 
-    public override void KineticDamage(float damage, float caliber, float fireCoeff) { return; }
-
-    public override void Rip()
+    public void Rip()
     {
-        base.Rip();
         engine.Rip();
         engine.rps /= 10f;
         meshRenderer.enabled = blurredProp.enabled = false;
@@ -112,18 +111,17 @@ public class Propeller : SofModule
 //
 #if UNITY_EDITOR
 [CustomEditor(typeof(Propeller))]
-public class PropellerEditor : Editor
+public class PropellerEditor : SofComponentEditor
 {
-    SerializedProperty mass;
     SerializedProperty gear;
     SerializedProperty preset;
     SerializedProperty efficiency;
 
     SerializedProperty broken;
     SerializedProperty blurred;
-    void OnEnable()
+    protected override void OnEnable()
     {
-        mass = serializedObject.FindProperty("mass");
+        base.OnEnable();
         gear = serializedObject.FindProperty("reductionGear");
         preset = serializedObject.FindProperty("preset");
         efficiency = serializedObject.FindProperty("efficiency");
@@ -136,15 +134,15 @@ public class PropellerEditor : Editor
 
     public override void OnInspectorGUI()
     {
+        base.OnInspectorGUI();
+
         serializedObject.Update();
-        Propeller prop = (Propeller)target;
 
         showMain = EditorGUILayout.Foldout(showMain, "Main", true, EditorStyles.foldoutHeader);
         if (showMain)
         {
             EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(preset);
-            EditorGUILayout.PropertyField(mass);
             EditorGUILayout.PropertyField(gear);
             EditorGUILayout.Slider(efficiency, 0.6f, 1f);
 

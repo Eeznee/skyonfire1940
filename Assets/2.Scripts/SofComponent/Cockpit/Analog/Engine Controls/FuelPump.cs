@@ -54,11 +54,6 @@ public class FuelPumpEditor : AnalogInteractableEditor
         pump.engine = EditorGUILayout.ObjectField("Piston Engine", pump.engine, typeof(PistonEngine), true) as PistonEngine;
         pump.pumpActions = EditorGUILayout.IntField("Pumping Actions", pump.pumpActions);
 
-        if (GUI.changed)
-        {
-            EditorUtility.SetDirty(pump);
-            EditorSceneManager.MarkSceneDirty(pump.gameObject.scene);
-        }
         serializedObject.ApplyModifiedProperties();
     }
 }

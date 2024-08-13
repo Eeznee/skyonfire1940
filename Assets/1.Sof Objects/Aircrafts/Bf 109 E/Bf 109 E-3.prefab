@@ -107,25 +107,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f1f9cce42d03ed4982e5affc093be7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 8942854951716888322}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0, y: 0, z: 0}
-  mass: 344.19525
-  material: {fileID: 11400000, guid: b1e93b7e4c814ae4cb2589b6ed5b8492, type: 2}
-  ripped: 0
-  area: 6.7019644
+  mass: 255.76881
   foil: {fileID: 0}
   vital: 0
   ripOnRip: []
-  bounds:
-    m_Center: {x: 0, y: -0.0070421696, z: -0.076277494}
-    m_Extent: {x: 0.47691885, y: 0.5532182, z: 1.6264737}
   hydraulics: {fileID: 4502264776960370066}
   customRipSpeed: 0
   drag: 1
@@ -242,18 +227,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 315f7f1af855c3b4f8179756fe0c7665, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 7634810325616350204}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0, y: 0, z: 0}
   mobileFiltersExceptions:
   - {fileID: 2226621900694434826}
   - {fileID: 1904419311459284300}
+  - {fileID: 8091512069260231637}
+  - {fileID: 3230585738359080530}
   lod2: {fileID: 5875030516848424335}
   lod3: {fileID: 0}
 --- !u!1 &369888923818306498
@@ -302,18 +280,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3f2670b28284fd4290c309890724945, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 656852770692174341}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0, y: -0.49999988, z: 2}
-  mass: 0
-  material: {fileID: 11400000, guid: e485dc88fb9b31f48b04e678e89f9e4b, type: 2}
-  ripped: 0
   mainTank: {fileID: 4006082403658636004}
 --- !u!64 &4740412330942990415
 MeshCollider:
@@ -426,19 +392,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21bd7755c72173b4a9812e2c9ef00487, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 9102429200131791793}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 3.6, y: -0.050000012, z: 1.2}
-  mass: 6.0325065
-  material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  ripped: 0
-  area: 0.45220017
+  mass: 6.852779
   foil: {fileID: 11400000, guid: b14346ed97ae2f74fbf6cc1ccea1695d, type: 2}
   vital: 0
   ripOnRip: []
@@ -485,6 +439,7 @@ GameObject:
   - component: {fileID: 3230585738359080530}
   - component: {fileID: 2631260600668355921}
   - component: {fileID: 8245660645592725418}
+  - component: {fileID: 8135601664821858388}
   m_Layer: 9
   m_Name: Tail Wheel
   m_TagString: Untagged
@@ -557,6 +512,22 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8135601664821858388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 466074310807764550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62e3cd015ba35fb439550cd5476f1d02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radius: 0.13
+  brakes: 0
+  maxBrakeTorque: 3000
+  frictionMultiplier: 1
 --- !u!1 &613597760263742355
 GameObject:
   m_ObjectHideFlags: 0
@@ -753,16 +724,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ae16e75984dd9147939b5b512f648c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 2882905608340522844}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: -0.155, y: 0.4899999, z: 2.058}
-  mass: 0
   controller: 1
   separateBulletPos: 0
   ejectCasings: 0
@@ -883,19 +844,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d84636798da6bfc4eb6d4bfe6d358f32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 6211280066910005592}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0, y: 0.85000014, z: -4.3}
-  mass: 27.819082
-  material: {fileID: 11400000, guid: 5280c4897e67a2b4f98944da4f8e9f7a, type: 2}
-  ripped: 0
-  area: 1.4054041
+  mass: 24.56101
   foil: {fileID: 11400000, guid: 99be433a4519f0548aab2f2f9b3c20a0, type: 2}
   vital: 0
   ripOnRip:
@@ -1025,19 +974,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce8cef36737450646b64ce4a2fa71133, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 5443140367215013138}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0.7, y: 0.67626286, z: -4.45}
-  mass: 6.0366335
-  material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  ripped: 0
-  area: 0.5074998
+  mass: 5.3296447
   foil: {fileID: 11400000, guid: 7ac6c662e0a0f944a99b6c8566f898bb, type: 2}
   vital: 0
   ripOnRip: []
@@ -1053,7 +990,6 @@ MonoBehaviour:
     tipScale: 100
   angle: 0
   tipWidth: 100
-  type: 1
   controlState: 0
   controlAngle: 0
   sinControlAngle: 0
@@ -1172,25 +1108,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca377d44eabe6804c9f9153ea958e762, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 9014770606043619694}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0.5038106, y: -0.42323282, z: 1.3141174}
-  mass: 5.6622825
-  material: {fileID: 0}
-  ripped: 0
-  area: 0.43350413
+  mass: 6.4322143
   foil: {fileID: 0}
   vital: 0
   ripOnRip: []
-  bounds:
-    m_Center: {x: 0.59660476, y: 0.09106751, z: -0.10451648}
-    m_Extent: {x: 0.5273822, y: 0.105060965, z: 0.20549816}
   hydraulics: {fileID: 0}
   customRipSpeed: 0
   drag: 0
@@ -1324,15 +1245,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c01da559cffe1549a6763aeebf7b021, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 8640756158921094187}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0, y: -0.12900001, z: 0.353}
   xrGrab: {fileID: 0}
   grip: {fileID: 2195949091867550415}
   outline: {fileID: 5535275860965872339}
@@ -1389,20 +1301,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfac95405a6734e41afe8e2a4d0079fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 2053315891036334913}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0, y: -0.100000024, z: 2.9}
-  mass: 0
-  material: {fileID: 11400000, guid: 45acaca3a30e10a4f9b4fd89eccd3c1f, type: 2}
-  ripped: 0
   liquid: {fileID: 11400000, guid: 68457ace01f52344395295cea1fdfc23, type: 2}
   capacity: 15
+  selfSealing: 0
+  armorThickness: 0
 --- !u!64 &3429931879522672334
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1461,15 +1363,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14169b05039809848ad134040791c942, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 8050407387245151625}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0, y: 0, z: 0}
   control: 4
   animParameter: CanopyState
   binary: 1
@@ -1736,25 +1629,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19cf394275fd6aa4080fa856dc349359, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 6298901340469138000}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0, y: 0.25, z: -2.3}
-  mass: 55.54155
-  material: {fileID: 11400000, guid: b1e93b7e4c814ae4cb2589b6ed5b8492, type: 2}
-  ripped: 0
-  area: 2.2283566
+  mass: 49.036724
   foil: {fileID: 0}
   vital: 0
   ripOnRip: []
-  bounds:
-    m_Center: {x: 0, y: -0.06450041, z: -0.032585233}
-    m_Extent: {x: 0.3414773, y: 0.54302424, z: 0.62983406}
   hydraulics: {fileID: 0}
   customRipSpeed: 0
   drag: 0
@@ -1871,15 +1749,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bb3ba0dc6a02034abf16654c4af10e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 5491938606115595674}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: -0.35, y: 0.100000046, z: 0.35}
   xrGrab: {fileID: 0}
   grip: {fileID: 9082248257549538933}
   outline: {fileID: 0}
@@ -1907,6 +1776,8 @@ GameObject:
   - component: {fileID: 8091512069260231637}
   - component: {fileID: 1529851387305983551}
   - component: {fileID: 1545899190210420239}
+  - component: {fileID: 4625969469305600076}
+  - component: {fileID: 5869468937066910099}
   m_Layer: 9
   m_Name: Tail Wheel Holder
   m_TagString: Untagged
@@ -1922,7 +1793,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2387338436508746847}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.45, z: -0.2}
+  m_LocalPosition: {x: 0, y: -0.513, z: -0.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1980,6 +1851,39 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &4625969469305600076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2387338436508746847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d052091581ad0bf4e9c309a49aba58b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  axis: {x: 0, y: 1, z: 0}
+  preciseValues: 0
+  springStrength: 40000
+  springDamper: 6000
+  springStrengthFactor: 1
+  springDamperFactor: 1
+--- !u!114 &5869468937066910099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2387338436508746847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43134ea9514546b4980c348f1ec12fdc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  steeringControls: 1
+  axis: {x: 0, y: 1, z: 0}
+  maxSteerAngle: 20
 --- !u!1 &2684391048340459121
 GameObject:
   m_ObjectHideFlags: 0
@@ -2077,22 +1981,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d052091581ad0bf4e9c309a49aba58b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 8178818474104975214}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: -0.66952413, y: -1.2901915, z: 1.4899632}
-  mass: 0
   axis: {x: 0, y: 1, z: 0}
+  preciseValues: 0
   springStrength: 300000
   springDamper: 30000
-  canSteer: 0
-  maxSteerAngle: 20
-  distance: 0
+  springStrengthFactor: 1
+  springDamperFactor: 1
 --- !u!1 &2807377362267450626
 GameObject:
   m_ObjectHideFlags: 0
@@ -2192,19 +2086,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b67cb6eb98d4e24f82fddd31e3c7a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 4644308975494493761}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: -4.4, y: 0.01000008, z: 0.75}
-  mass: 22.712547
-  material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  ripped: 0
-  area: 1.0944
+  mass: 25.800898
   foil: {fileID: 11400000, guid: b14346ed97ae2f74fbf6cc1ccea1695d, type: 2}
   vital: 0
   ripOnRip:
@@ -2228,11 +2110,6 @@ MonoBehaviour:
   skin: {fileID: 0}
   skinMesh: {fileID: 1451194898622551586, guid: 7c6cd8a332bc7324eb396010459dc534,
     type: 3}
-  parent: {fileID: 4149851488456922653}
-  child: {fileID: 0}
-  root: {fileID: 8365611820299590523}
-  totalArea: 7.597861
-  alpha: 0
 --- !u!64 &4869051728225196828
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2349,25 +2226,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcb6fa826d4843f4e9b1ae661405ec67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 3619697795021423018}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0, y: -0.000000059604645, z: 2}
-  mass: 100.60655
-  material: {fileID: 11400000, guid: b1e93b7e4c814ae4cb2589b6ed5b8492, type: 2}
-  ripped: 0
-  area: 2.9517736
+  mass: 114.28658
   foil: {fileID: 0}
   vital: 0
   ripOnRip: []
-  bounds:
-    m_Center: {x: 0, y: -0.023139238, z: 0.31831515}
-    m_Extent: {x: 0.42359385, y: 0.53712094, z: 0.768119}
   hydraulics: {fileID: 0}
   customRipSpeed: 0
   drag: 0
@@ -2406,7 +2268,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7211829367479927250
 Transform:
   m_ObjectHideFlags: 0
@@ -2484,16 +2346,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f32a3f740c55824bad00a4044b4568c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 7211829367479927250}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0, y: -0.59999996, z: 0.49999997}
-  mass: 0
   launchPositions:
   - {x: 0.155, y: -0.18, z: 0.68}
   - {x: -0.155, y: -0.18, z: 0.68}
@@ -2600,16 +2452,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f32a3f740c55824bad00a4044b4568c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 0}
-  rb: {fileID: 0}
-  animator: {fileID: 0}
-  sofObject: {fileID: 0}
-  complex: {fileID: 0}
-  aircraft: {fileID: 0}
-  avm: {fileID: 0}
-  data: {fileID: 0}
-  localPos: {x: 0, y: 0, z: 0}
-  mass: 0
   launchPositions:
   - {x: 0, y: -0.25, z: 0}
   launchClips: []
@@ -2714,22 +2556,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d052091581ad0bf4e9c309a49aba58b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 6831542800035866962}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0.66952413, y: -1.2901915, z: 1.4899632}
-  mass: 0
   axis: {x: 0, y: 1, z: 0}
+  preciseValues: 0
   springStrength: 300000
   springDamper: 30000
-  canSteer: 0
-  maxSteerAngle: 20
-  distance: 0
+  springStrengthFactor: 1
+  springDamperFactor: 1
 --- !u!1 &3168847892604234349
 GameObject:
   m_ObjectHideFlags: 0
@@ -2775,20 +2607,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfac95405a6734e41afe8e2a4d0079fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 1916232059472016789}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0, y: 0.19999999, z: 1.15}
-  mass: 0
-  material: {fileID: 11400000, guid: 45acaca3a30e10a4f9b4fd89eccd3c1f, type: 2}
-  ripped: 0
   liquid: {fileID: 11400000, guid: 217f20f386632244287e0ed253fc03d7, type: 2}
   capacity: 32
+  selfSealing: 0
+  armorThickness: 0
 --- !u!64 &4008452749091970613
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2900,19 +2722,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21bd7755c72173b4a9812e2c9ef00487, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 9181697448637753031}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: -3.6, y: -0.050000012, z: 1.2}
-  mass: 6.0325065
-  material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  ripped: 0
-  area: 0.45220017
+  mass: 6.852779
   foil: {fileID: 11400000, guid: b14346ed97ae2f74fbf6cc1ccea1695d, type: 2}
   vital: 0
   ripOnRip: []
@@ -3062,15 +2872,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14169b05039809848ad134040791c942, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 7520557601303131533}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0, y: 0, z: 0}
   control: 2
   animParameter: FlapsState
   binary: 0
@@ -3185,19 +2986,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b67cb6eb98d4e24f82fddd31e3c7a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 3022087554701770622}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: -3.2, y: -0.109999955, z: 0.75}
-  mass: 62.62141
-  material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  ripped: 0
-  area: 2.1518605
+  mass: 71.13639
   foil: {fileID: 11400000, guid: b14346ed97ae2f74fbf6cc1ccea1695d, type: 2}
   vital: 1
   ripOnRip:
@@ -3220,11 +3009,6 @@ MonoBehaviour:
   skin: {fileID: 0}
   skinMesh: {fileID: -8337676489054914575, guid: 7c6cd8a332bc7324eb396010459dc534,
     type: 3}
-  parent: {fileID: 8365611820299590523}
-  child: {fileID: 9044854894741073952}
-  root: {fileID: 8365611820299590523}
-  totalArea: 7.597861
-  alpha: 0
 --- !u!64 &6414858165925136374
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -3412,15 +3196,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbab4d51ce040644c804042df3e96fef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 7563614455930787765}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0.01, y: -0.025921151, z: 0.09999862}
   role: 1
   externalViewPoint: {x: 0, y: 2, z: -10}
   goProViewPoint: {x: 1, y: 0, z: 0}
@@ -3552,8 +3327,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2736993667948053128}
-  - component: {fileID: 6651796750199002192}
   - component: {fileID: 3944122971455426415}
+  - component: {fileID: 5138860077169801100}
   m_Layer: 9
   m_Name: Main Fuel Tank
   m_TagString: Untagged
@@ -3576,33 +3351,6 @@ Transform:
   m_Father: {fileID: 8942854951716888322}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6651796750199002192
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4008550169680689590}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d6d4a8af8b3ea7441932ff1dd2eb73e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tr: {fileID: 2736993667948053128}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0, y: 0, z: 0}
-  mass: 0
-  material: {fileID: 11400000, guid: db30bb86e36dcbb4ea931db5056b7de1, type: 2}
-  ripped: 0
-  liquid: {fileID: 11400000, guid: b43c9aa9f703d61489aaa164d6f9cd40, type: 2}
-  capacity: 303
-  selfSealing: 1
 --- !u!64 &3944122971455426415
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -3617,6 +3365,22 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -4678039223394905848, guid: 7c6cd8a332bc7324eb396010459dc534, type: 3}
+--- !u!114 &5138860077169801100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4008550169680689590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfac95405a6734e41afe8e2a4d0079fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  liquid: {fileID: 11400000, guid: b43c9aa9f703d61489aaa164d6f9cd40, type: 2}
+  capacity: 303
+  selfSealing: 1
+  armorThickness: 0
 --- !u!1 &4137648180102722564
 GameObject:
   m_ObjectHideFlags: 0
@@ -3714,15 +3478,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd3194418db4c6c48a65acd0bd283613, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 3751281758880714319}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0.2702, y: 0.3302, z: 0.6928}
   xrGrab: {fileID: 0}
   grip: {fileID: 6387024045442518908}
   outline: {fileID: 0}
@@ -3837,25 +3592,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62e3cd015ba35fb439550cd5476f1d02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 1904419311459284300}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0.79109854, y: -1.4452957, z: 1.5012491}
-  mass: 0
-  material: {fileID: 0}
-  ripped: 0
   radius: 0.32
-  tire: {fileID: 11400000, guid: 757e377396eb63948ad7d8481becb448, type: 2}
   brakes: 2
-  maxBrakeTorque: 3000
-  suspension: {fileID: 0}
-  activeFrictionPreset: {fileID: 11400000, guid: f550961d8fc79d84abd7ca194acc766d,
-    type: 2}
+  maxBrakeTorque: 2000
+  frictionMultiplier: 1
 --- !u!1 &4323979747159232873
 GameObject:
   m_ObjectHideFlags: 0
@@ -3994,18 +3734,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3f2670b28284fd4290c309890724945, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 243896758911757607}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0.9, y: -0.53999996, z: 0.35}
-  mass: 0
-  material: {fileID: 11400000, guid: e485dc88fb9b31f48b04e678e89f9e4b, type: 2}
-  ripped: 0
   mainTank: {fileID: 248636422438972978}
 --- !u!64 &8835342832871732301
 MeshCollider:
@@ -4118,19 +3846,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce8cef36737450646b64ce4a2fa71133, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 3985341136383222213}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0, y: 0.85, z: -4.55}
-  mass: 6.669918
-  material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  ripped: 0
-  area: 0.5424
+  mass: 5.8887615
   foil: {fileID: 11400000, guid: 99be433a4519f0548aab2f2f9b3c20a0, type: 2}
   vital: 0
   ripOnRip: []
@@ -4146,7 +3862,6 @@ MonoBehaviour:
     tipScale: 100
   angle: 0
   tipWidth: 100
-  type: 2
   controlState: 0
   controlAngle: 0
   sinControlAngle: 0
@@ -4265,19 +3980,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d84636798da6bfc4eb6d4bfe6d358f32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 1490291899404527916}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0.7, y: 0.676263, z: -4.2}
-  mass: 22.361727
-  material: {fileID: 11400000, guid: 5280c4897e67a2b4f98944da4f8e9f7a, type: 2}
-  ripped: 0
-  area: 1.2149999
+  mass: 19.742804
   foil: {fileID: 11400000, guid: 7ac6c662e0a0f944a99b6c8566f898bb, type: 2}
   vital: 0
   ripOnRip: []
@@ -4351,16 +4054,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ae16e75984dd9147939b5b512f648c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 9219895042887560782}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: -2.188, y: -0.21499994, z: 1.5929999}
-  mass: 0
   controller: 2
   separateBulletPos: 0
   ejectCasings: 1
@@ -4480,25 +4173,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca377d44eabe6804c9f9153ea958e762, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 271759564827112958}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: -0.5038106, y: -0.42323282, z: 1.3141174}
-  mass: 5.6622825
-  material: {fileID: 0}
-  ripped: 0
-  area: 0.43350413
+  mass: 6.4322143
   foil: {fileID: 0}
   vital: 0
   ripOnRip: []
-  bounds:
-    m_Center: {x: -0.59660476, y: 0.09106751, z: -0.10451648}
-    m_Extent: {x: 0.5273822, y: 0.105060965, z: 0.20549816}
   hydraulics: {fileID: 0}
   customRipSpeed: 0
   drag: 0
@@ -4796,15 +4474,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14169b05039809848ad134040791c942, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 6612438394123782433}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0, y: 0, z: 0}
   control: 1
   animParameter: GearState
   binary: 1
@@ -4917,19 +4586,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce8cef36737450646b64ce4a2fa71133, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 7971844740117263799}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: -3.95, y: -0.05999992, z: 0.29500002}
-  mass: 7.8721333
-  material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  ripped: 0
-  area: 0.5400001
+  mass: 8.942551
   foil: {fileID: 11400000, guid: b14346ed97ae2f74fbf6cc1ccea1695d, type: 2}
   vital: 0
   ripOnRip: []
@@ -4945,7 +4602,6 @@ MonoBehaviour:
     tipScale: 100
   angle: 0
   tipWidth: 100
-  type: 1
   controlState: 0
   controlAngle: 0
   sinControlAngle: 0
@@ -5067,25 +4723,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19cf394275fd6aa4080fa856dc349359, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 6594220407796744221}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0, y: 0.35000014, z: -3.8}
-  mass: 46.18693
-  material: {fileID: 11400000, guid: b1e93b7e4c814ae4cb2589b6ed5b8492, type: 2}
-  ripped: 0
-  area: 1.9705409
+  mass: 40.777687
   foil: {fileID: 0}
   vital: 1
   ripOnRip: []
-  bounds:
-    m_Center: {x: 0, y: -0.10052428, z: 0.042984456}
-    m_Extent: {x: 0.22533302, y: 0.3946488, z: 0.7945962}
   hydraulics: {fileID: 0}
   customRipSpeed: 0
   drag: 0
@@ -5202,15 +4843,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41a8d9f12628b6342be3bab5d526501b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 4972533949644496278}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: -0.323, y: 0.2756, z: 0.5833}
   xrGrab: {fileID: 0}
   grip: {fileID: 7417824011191006013}
   outline: {fileID: 0}
@@ -5467,19 +5099,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b67cb6eb98d4e24f82fddd31e3c7a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 1314638991818118605}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 1.5, y: -0.28999996, z: 0.75}
-  mass: 180.08401
-  material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  ripped: 0
-  area: 4.3516
+  mass: 204.57103
   foil: {fileID: 11400000, guid: b14346ed97ae2f74fbf6cc1ccea1695d, type: 2}
   vital: 1
   ripOnRip:
@@ -5502,11 +5122,6 @@ MonoBehaviour:
   skin: {fileID: 0}
   skinMesh: {fileID: -2592425495496442804, guid: 7c6cd8a332bc7324eb396010459dc534,
     type: 3}
-  parent: {fileID: 0}
-  child: {fileID: 7501626145160231641}
-  root: {fileID: 5807151815599183277}
-  totalArea: 7.597861
-  alpha: 0
 --- !u!64 &3655834567213796973
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -5565,16 +5180,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ae16e75984dd9147939b5b512f648c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 5697007855872860092}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 2.188, y: -0.21499994, z: 1.5929999}
-  mass: 0
   controller: 2
   separateBulletPos: 0
   ejectCasings: 1
@@ -5777,19 +5382,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d84636798da6bfc4eb6d4bfe6d358f32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 8228777070923081170}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: -0.7, y: 0.676263, z: -4.2}
-  mass: 22.361727
-  material: {fileID: 11400000, guid: 5280c4897e67a2b4f98944da4f8e9f7a, type: 2}
-  ripped: 0
-  area: 1.2149999
+  mass: 19.742804
   foil: {fileID: 11400000, guid: 7ac6c662e0a0f944a99b6c8566f898bb, type: 2}
   vital: 0
   ripOnRip: []
@@ -6002,23 +5595,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58b66420e085b5b45973659114fb6101, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 7358826502971101831}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0, y: 0, z: 3.25}
-  mass: 0
-  material: {fileID: 11400000, guid: 5cbfe67f69818c64d9df40a0d192d45c, type: 2}
-  ripped: 0
   reductionGear: 0.645
   preset: {fileID: 11400000, guid: cfd6ea3fe7e6eb942803db87d24c5a84, type: 2}
   efficiency: 0.85
-  engine: {fileID: 4709869431585139969}
-  meshRenderer: {fileID: 0}
+  engine: {fileID: 0}
+  meshRenderer: {fileID: 5776096617014354557}
   brokenProp: {fileID: 146972047231075072}
   blurredProp: {fileID: 4618923583713639090}
   torque: 0
@@ -6241,18 +5822,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3f2670b28284fd4290c309890724945, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 7314527143371119319}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: -0.9, y: -0.53999996, z: 0.35}
-  mass: 0
-  material: {fileID: 11400000, guid: e485dc88fb9b31f48b04e678e89f9e4b, type: 2}
-  ripped: 0
   mainTank: {fileID: 248636422438972978}
 --- !u!64 &8875171651677707308
 MeshCollider:
@@ -6280,6 +5849,9 @@ GameObject:
   - component: {fileID: 4709869431585139969}
   - component: {fileID: 4058116060407032648}
   - component: {fileID: 2462761169513063388}
+  - component: {fileID: -3298496161107240405}
+  - component: {fileID: 803152510886794492}
+  - component: {fileID: 1969204476095831648}
   m_Layer: 9
   m_Name: DB 601
   m_TagString: Untagged
@@ -6315,18 +5887,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 984e19affcf9a5b4fb0ab0567e9c174f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 7856747549431711872}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0, y: -0.000000059604645, z: 2}
-  mass: 0
-  material: {fileID: 11400000, guid: 696c411f11dcf6249bb528ac39862a0f, type: 2}
-  ripped: 0
   preset: {fileID: 11400000, guid: 0ef79e22dc7f7a6489e4fe7eb6eff71b, type: 2}
   igniting: 0
   ignitionState: 0
@@ -6340,7 +5900,7 @@ MonoBehaviour:
   water: {fileID: 248636422438972978}
   propeller: {fileID: 4026652883361128871}
   brakePower: 0
-  boostTime: 0
+  boostTime: 300
 --- !u!64 &4058116060407032648
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -6367,17 +5927,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62213cb75f942e843a2f8c10c6807a0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 7856747549431711872}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0, y: -0.000000059604645, z: 2}
   exhaustMesh: {fileID: 2248891959807966640, guid: 7c6cd8a332bc7324eb396010459dc534,
     type: 3}
+--- !u!114 &-3298496161107240405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7312205124054756250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 860e08440c3975c4ab3bd349426051e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &803152510886794492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7312205124054756250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 860e08440c3975c4ab3bd349426051e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1969204476095831648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7312205124054756250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 860e08440c3975c4ab3bd349426051e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7329938071386538761
 GameObject:
   m_ObjectHideFlags: 0
@@ -6558,25 +6145,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca377d44eabe6804c9f9153ea958e762, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 7438089653902806004}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0.325, y: 0.36999997, z: 0}
-  mass: 5.9029193
-  material: {fileID: 0}
-  ripped: 0
-  area: 0.44570082
+  mass: 4.3864136
   foil: {fileID: 0}
   vital: 0
   ripOnRip: []
-  bounds:
-    m_Center: {x: -0.325, y: 0.20938729, z: -0.015215084}
-    m_Extent: {x: 0.32855886, y: 0.21179415, z: 0.33913326}
   hydraulics: {fileID: 0}
   customRipSpeed: 0
   drag: 0
@@ -6679,19 +6251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c61e93478feb854ca8724e7559cd051, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 4260265777964510349}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: -1.85, y: -0.36999992, z: -0.01999998}
-  mass: 16.726837
-  material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  ripped: 0
-  area: 0.89249974
+  mass: 12.429584
   foil: {fileID: 11400000, guid: b14346ed97ae2f74fbf6cc1ccea1695d, type: 2}
   vital: 0
   ripOnRip: []
@@ -6889,15 +6449,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9118bcd8cc20edb49a65c305ebd40108, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 6793079677898001828}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0, y: 0, z: 0}
   complexCockpit: {fileID: 4323979747159232873}
 --- !u!1 &7732750328516757726
 GameObject:
@@ -6954,16 +6505,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c57226eb60c63a7479219acbc238e907, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 7732750328516757722}
-  rb: {fileID: 7732750328516757725}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  debris: {fileID: 0}
-  simpleDamage: {fileID: 0}
   warOnly: 0
   destroyed: 0
   burning: 0
-  cogForwardDistance: 0.85
+  cogForwardDistance: 0.95
   targetEmptyMass: 2125
   lod: {fileID: 0}
   bubble: {fileID: 0}
@@ -6990,9 +6535,8 @@ MonoBehaviour:
   - {fileID: 7640800219831225122}
   - {fileID: 7691615797742450599}
   - {fileID: 5133748222156286613}
-  - {fileID: 6651796750199002192}
+  - {fileID: 5138860077169801100}
   - {fileID: 4006082403658636004}
-  - {fileID: 5190848808531454910}
   - {fileID: 5807151815599183277}
   - {fileID: 7501626145160231641}
   - {fileID: 6339268068208255781}
@@ -7023,6 +6567,9 @@ MonoBehaviour:
   - {fileID: 5907488478324561609}
   - {fileID: 5746597931944142429}
   - {fileID: 3599342900810725884}
+  - {fileID: 4625969469305600076}
+  - {fileID: 5869468937066910099}
+  - {fileID: 8135601664821858388}
   - {fileID: 320404404264765670}
   - {fileID: 4502264776960370066}
   - {fileID: 2761289559783609938}
@@ -7035,60 +6582,15 @@ MonoBehaviour:
   - {fileID: 7340940165500633215}
   - {fileID: 8724517178693676443}
   - {fileID: 5643653525375520971}
-  parts:
-  - {fileID: 2050766782551483488}
-  - {fileID: 4709869431585139969}
-  - {fileID: 4026652883361128871}
-  - {fileID: 8633270330203864812}
-  - {fileID: 8814756659170086264}
-  - {fileID: 6148338957544009869}
-  - {fileID: 248636422438972978}
-  - {fileID: 1679744628730029545}
-  - {fileID: 2420409189541632047}
-  - {fileID: 5133748222156286613}
-  - {fileID: 6651796750199002192}
-  - {fileID: 4006082403658636004}
-  - {fileID: 5190848808531454910}
-  - {fileID: 5807151815599183277}
-  - {fileID: 7501626145160231641}
-  - {fileID: 6339268068208255781}
-  - {fileID: 5146400041933702963}
-  - {fileID: 634032706710301657}
-  - {fileID: 1727254461762023015}
-  - {fileID: 2773677515804937000}
-  - {fileID: 3565915756369393962}
-  - {fileID: 5730244877817946330}
-  - {fileID: 3314505242267888690}
-  - {fileID: 6485327265944441295}
-  - {fileID: 8365611820299590523}
-  - {fileID: 4149851488456922653}
-  - {fileID: 9044854894741073952}
-  - {fileID: 4221726294686786244}
-  - {fileID: 1147810619986310695}
-  - {fileID: 4090783450219747866}
-  - {fileID: 6073420365989790855}
-  - {fileID: 1304984562810636725}
-  - {fileID: 8557343158597004804}
-  - {fileID: 8706062428492626738}
-  - {fileID: 8476332444915810893}
-  - {fileID: 4288052533878176537}
-  - {fileID: 3099167450786097212}
-  - {fileID: 1965988162045507135}
-  - {fileID: 6353847082226076539}
-  - {fileID: 2605869690719325640}
-  - {fileID: 5907488478324561609}
-  - {fileID: 5746597931944142429}
-  - {fileID: 3599342900810725884}
   modules:
   - {fileID: 2050766782551483488}
   - {fileID: 4709869431585139969}
-  - {fileID: 4026652883361128871}
   - {fileID: 6148338957544009869}
   - {fileID: 248636422438972978}
   - {fileID: 1679744628730029545}
   - {fileID: 2420409189541632047}
   - {fileID: 5133748222156286613}
-  - {fileID: 6651796750199002192}
+  - {fileID: 5138860077169801100}
   - {fileID: 4006082403658636004}
   - {fileID: 5807151815599183277}
   - {fileID: 7501626145160231641}
@@ -7116,6 +6618,7 @@ MonoBehaviour:
   - {fileID: 5907488478324561609}
   - {fileID: 5746597931944142429}
   - {fileID: 3599342900810725884}
+  - {fileID: 8135601664821858388}
   airframes:
   - {fileID: 2050766782551483488}
   - {fileID: 1679744628730029545}
@@ -7147,7 +6650,7 @@ MonoBehaviour:
   card: {fileID: 11400000, guid: 24fee2738d01ab848aadceff39f37629, type: 2}
   stations:
   - name: Bombs Load
-    picked: 1
+    picked: 0
     priority: 0
     symmetrical: 0
     options:
@@ -7163,14 +6666,13 @@ MonoBehaviour:
     roll: 2.6
     yaw: 1.5
   convergeance: 500
-  cruiseSpeed: 111.111115
-  customPIDValues: 1
+  customPIDValues: 0
   pidPitch:
-    pidValues: {x: 0, y: 0, z: 0}
+    pidValues: {x: 0.3, y: 0, z: 0.03}
   pidRoll:
-    pidValues: {x: 0, y: 0, z: 0}
+    pidValues: {x: 4, y: 0, z: 1}
   pidElevator:
-    pidValues: {x: 0, y: 0, z: 0}
+    pidValues: {x: 0.3, y: 0.7, z: 0.01}
   squadron:
     aircraftCard: {fileID: 0}
     team: 0
@@ -7190,11 +6692,6 @@ MonoBehaviour:
     bombsFuzeSeconds: 0
   squadronId: 0
   placeInSquad: 0
-  difficulty: 0
-  hasPilot: 1
-  bombardierSeat: {fileID: 0}
-  bombSight: {fileID: 0}
-  animator: {fileID: 1107555855967290558}
   turnRadius: 235
   minCrashDelay: 6
   minInvertAltitude: 200
@@ -7247,15 +6744,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96d07c011fedd8e4ea48fe0210875bbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 7732750328516757722}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0, y: 0, z: 0}
 --- !u!1 &7780052446757082406
 GameObject:
   m_ObjectHideFlags: 0
@@ -7353,19 +6841,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce8cef36737450646b64ce4a2fa71133, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 2886723391076323989}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 3.95, y: -0.059999913, z: 0.295}
-  mass: 7.8721333
-  material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  ripped: 0
-  area: 0.5400001
+  mass: 8.942551
   foil: {fileID: 11400000, guid: b14346ed97ae2f74fbf6cc1ccea1695d, type: 2}
   vital: 0
   ripOnRip: []
@@ -7381,7 +6857,6 @@ MonoBehaviour:
     tipScale: 100
   angle: 0
   tipWidth: 100
-  type: 1
   controlState: 0
   controlAngle: 0
   sinControlAngle: 0
@@ -7499,19 +6974,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c61e93478feb854ca8724e7559cd051, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 9128865362040448859}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 1.85, y: -0.36999992, z: -0.01999998}
-  mass: 16.726837
-  material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  ripped: 0
-  area: 0.89249974
+  mass: 12.429584
   foil: {fileID: 11400000, guid: b14346ed97ae2f74fbf6cc1ccea1695d, type: 2}
   vital: 0
   ripOnRip: []
@@ -7639,15 +7102,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0522340a8b7f4044ba67d6e8d9ff9903, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 6532815293224421988}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: -0.2591, y: 0.3387, z: 0.7187}
   xrGrab: {fileID: 0}
   grip: {fileID: 5609692732634111196}
   outline: {fileID: 0}
@@ -7762,15 +7216,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76f154398d001554884e6f17904f0f92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 2219847195633741759}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: -0.35, y: 0.100000046, z: 0.35}
   xrGrab: {fileID: 0}
   grip: {fileID: 6330561373471416319}
   outline: {fileID: 0}
@@ -7887,19 +7332,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b67cb6eb98d4e24f82fddd31e3c7a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 4659971092114886087}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 4.4, y: 0.01000008, z: 0.75}
-  mass: 22.712547
-  material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  ripped: 0
-  area: 1.0944
+  mass: 25.832829
   foil: {fileID: 11400000, guid: b14346ed97ae2f74fbf6cc1ccea1695d, type: 2}
   vital: 0
   ripOnRip:
@@ -7909,8 +7342,8 @@ MonoBehaviour:
   shape:
     parent: {fileID: 4659971092114886087}
     snapped: 1
-    localPosition: {x: 0.17, y: -0, z: 0.22}
-    scale: {x: 0.95, y: 1.28}
+    localPosition: {x: 0.16855192, y: -0.000829272, z: 0.21783096}
+    scale: {x: 0.95, y: 1.2810558}
     incidence: 0
     dihedral: 5.9
     sweep: -0.59999996
@@ -7923,11 +7356,6 @@ MonoBehaviour:
   skin: {fileID: 0}
   skinMesh: {fileID: 6845715684977622172, guid: 7c6cd8a332bc7324eb396010459dc534,
     type: 3}
-  parent: {fileID: 7501626145160231641}
-  child: {fileID: 0}
-  root: {fileID: 5807151815599183277}
-  totalArea: 7.597861
-  alpha: 0
 --- !u!64 &8365404885568579490
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -8122,19 +7550,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce8cef36737450646b64ce4a2fa71133, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 4896544410398440194}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: -0.7, y: 0.67626286, z: -4.45}
-  mass: 6.0366335
-  material: {fileID: 11400000, guid: 483d7d25fc7a0154391da65f4bba18e2, type: 2}
-  ripped: 0
-  area: 0.5074998
+  mass: 5.3296447
   foil: {fileID: 11400000, guid: 7ac6c662e0a0f944a99b6c8566f898bb, type: 2}
   vital: 0
   ripOnRip: []
@@ -8150,7 +7566,6 @@ MonoBehaviour:
     tipScale: 100
   angle: 0
   tipWidth: 100
-  type: 1
   controlState: 0
   controlAngle: 0
   sinControlAngle: 0
@@ -8181,6 +7596,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6458852982122809855}
   - component: {fileID: 8633270330203864812}
+  - component: {fileID: -7544266111704683341}
+  - component: {fileID: -8602487210486650407}
   m_Layer: 9
   m_Name: 7.92 MG17
   m_TagString: Untagged
@@ -8215,16 +7632,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ae16e75984dd9147939b5b512f648c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 6458852982122809855}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 0.155, y: 0.4899999, z: 2.058}
-  mass: 0
   controller: 1
   separateBulletPos: 0
   ejectCasings: 0
@@ -8235,17 +7642,41 @@ MonoBehaviour:
   convergence: {x: 0, y: 0, z: 0, w: 0}
   cheatConvergence: {x: 0, y: 0, z: 0, w: 0}
   cheatTime: 0
-  magazineAttachPoint: {fileID: 0}
+  magazineAttachPoint: {fileID: 6458852982122809855}
   gunPreset: {fileID: 11400000, guid: 80ba9ef034b63294c89d39a4463f079b, type: 2}
   magStorage: {fileID: 0}
   magazine: {fileID: 0}
   clipAmmo: 1000
   bolt: {fileID: 0}
-  mechanism: {fileID: 0}
+  mechanism: {fileID: -8602487210486650407}
   temperature: 0
   clips: 0
   fuzeDistance: 0
   reloading: 0
+--- !u!114 &-7544266111704683341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8605931293445951446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37aa2fcb4a87ad84e8c41780f66c030c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-8602487210486650407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8605931293445951446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50a02697fa2d7c144a233c9beec1d7a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8790368906309996508
 GameObject:
   m_ObjectHideFlags: 0
@@ -8679,25 +8110,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62e3cd015ba35fb439550cd5476f1d02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 2226621900694434826}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: -0.79109854, y: -1.4452957, z: 1.5012491}
-  mass: 0
-  material: {fileID: 0}
-  ripped: 0
   radius: 0.32
-  tire: {fileID: 11400000, guid: 757e377396eb63948ad7d8481becb448, type: 2}
   brakes: 2
-  maxBrakeTorque: 3000
-  suspension: {fileID: 0}
-  activeFrictionPreset: {fileID: 11400000, guid: f550961d8fc79d84abd7ca194acc766d,
-    type: 2}
+  maxBrakeTorque: 2000
+  frictionMultiplier: 1
 --- !u!1 &9109439920946255070
 GameObject:
   m_ObjectHideFlags: 0
@@ -8797,19 +8213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b67cb6eb98d4e24f82fddd31e3c7a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 3190758203134511045}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: 3.2, y: -0.109999955, z: 0.75}
-  mass: 62.62141
-  material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  ripped: 0
-  area: 2.1518605
+  mass: 71.39841
   foil: {fileID: 11400000, guid: b14346ed97ae2f74fbf6cc1ccea1695d, type: 2}
   vital: 1
   ripOnRip:
@@ -8818,8 +8222,8 @@ MonoBehaviour:
   shape:
     parent: {fileID: 3190758203134511045}
     snapped: 1
-    localPosition: {x: 0.16, y: -0.01, z: 0.22999999}
-    scale: {x: 1.48, y: 1.63}
+    localPosition: {x: 0.1599884, y: -0.0057221055, z: 0.23591352}
+    scale: {x: 1.48, y: 1.6339998}
     incidence: 0
     dihedral: 5.9
     sweep: -0.7
@@ -8832,11 +8236,6 @@ MonoBehaviour:
   skin: {fileID: 0}
   skinMesh: {fileID: -7933724939325308887, guid: 7c6cd8a332bc7324eb396010459dc534,
     type: 3}
-  parent: {fileID: 5807151815599183277}
-  child: {fileID: 6339268068208255781}
-  root: {fileID: 5807151815599183277}
-  totalArea: 7.597861
-  alpha: 0
 --- !u!64 &6893246696263332039
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -8952,19 +8351,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b67cb6eb98d4e24f82fddd31e3c7a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 4496439447973831729}
-  rb: {fileID: 7732750328516757725}
-  animator: {fileID: 1107555855967290558}
-  sofObject: {fileID: 402542259424422736}
-  complex: {fileID: 402542259424422736}
-  aircraft: {fileID: 402542259424422736}
-  avm: {fileID: 0}
-  data: {fileID: -2748228718922079972}
-  localPos: {x: -1.5, y: -0.28999996, z: 0.75}
-  mass: 180.08401
-  material: {fileID: 11400000, guid: c519254e5c365864d80acf46ba7f27a8, type: 2}
-  ripped: 0
-  area: 4.3516
+  mass: 204.57103
   foil: {fileID: 11400000, guid: b14346ed97ae2f74fbf6cc1ccea1695d, type: 2}
   vital: 1
   ripOnRip:
@@ -8987,11 +8374,6 @@ MonoBehaviour:
   skin: {fileID: 0}
   skinMesh: {fileID: -6564406515579875796, guid: 7c6cd8a332bc7324eb396010459dc534,
     type: 3}
-  parent: {fileID: 0}
-  child: {fileID: 4149851488456922653}
-  root: {fileID: 8365611820299590523}
-  totalArea: 7.597861
-  alpha: 0
 --- !u!64 &8989460131737600523
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -9031,32 +8413,32 @@ PrefabInstance:
     - target: {fileID: 77926662054274296, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.960811
+      value: 0.9608111
       objectReference: {fileID: 0}
     - target: {fileID: 77926662054274296, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.2772042
+      value: 0.2772041
       objectReference: {fileID: 0}
     - target: {fileID: 77926662054274296, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.00000019371507
+      value: -0.0000001490116
       objectReference: {fileID: 0}
     - target: {fileID: 77926662054274296, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0000001490116
+      value: -0.00000019371507
       objectReference: {fileID: 0}
     - target: {fileID: 151094661416021096, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -1.862646e-10
       objectReference: {fileID: 0}
     - target: {fileID: 151094661416021096, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.003977524
+      value: 0.0039775246
       objectReference: {fileID: 0}
     - target: {fileID: 151094661416021096, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
@@ -9066,22 +8448,22 @@ PrefabInstance:
     - target: {fileID: 151094661416021096, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.80106455
+      value: 0.8010648
       objectReference: {fileID: 0}
     - target: {fileID: 151094661416021096, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.5961021
+      value: 0.5961018
       objectReference: {fileID: 0}
     - target: {fileID: 151094661416021096, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.050382312
+      value: 0.05038233
       objectReference: {fileID: 0}
     - target: {fileID: 151094661416021096, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.020483186
+      value: 0.02048323
       objectReference: {fileID: 0}
     - target: {fileID: 197795391700173698, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
@@ -9281,37 +8663,37 @@ PrefabInstance:
     - target: {fileID: 999972292234801176, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.0000000016391277
+      value: 0.0000000017881393
       objectReference: {fileID: 0}
     - target: {fileID: 999972292234801176, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.0028291494
+      value: 0.0028291484
       objectReference: {fileID: 0}
     - target: {fileID: 999972292234801176, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -5.215407e-10
+      value: -2.9802327e-10
       objectReference: {fileID: 0}
     - target: {fileID: 999972292234801176, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.72993875
+      value: 0.7299397
       objectReference: {fileID: 0}
     - target: {fileID: 999972292234801176, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.5980835
+      value: 0.59808236
       objectReference: {fileID: 0}
     - target: {fileID: 999972292234801176, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.22568493
+      value: -0.22568525
       objectReference: {fileID: 0}
     - target: {fileID: 999972292234801176, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.24197516
+      value: -0.24197471
       objectReference: {fileID: 0}
     - target: {fileID: 1027995766080213223, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
@@ -9331,22 +8713,22 @@ PrefabInstance:
     - target: {fileID: 1027995766080213223, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.78083533
+      value: 0.78083557
       objectReference: {fileID: 0}
     - target: {fileID: 1027995766080213223, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.62057453
+      value: -0.6205743
       objectReference: {fileID: 0}
     - target: {fileID: 1027995766080213223, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.04813668
+      value: -0.048136614
       objectReference: {fileID: 0}
     - target: {fileID: 1027995766080213223, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.053538233
+      value: 0.053538226
       objectReference: {fileID: 0}
     - target: {fileID: 1045008078494664160, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
@@ -9406,32 +8788,32 @@ PrefabInstance:
     - target: {fileID: 1378186122521002755, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.00009673513
+      value: -0.00009673528
       objectReference: {fileID: 0}
     - target: {fileID: 1378186122521002755, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.00056766206
+      value: 0.00056766195
       objectReference: {fileID: 0}
     - target: {fileID: 1378186122521002755, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.58078545
+      value: 0.5807852
       objectReference: {fileID: 0}
     - target: {fileID: 1378186122521002755, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.80920005
+      value: 0.8092001
       objectReference: {fileID: 0}
     - target: {fileID: 1378186122521002755, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.088705525
+      value: -0.0887058
       objectReference: {fileID: 0}
     - target: {fileID: 1378186122521002755, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0038642904
+      value: 0.0038646252
       objectReference: {fileID: 0}
     - target: {fileID: 1620336723139607194, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
@@ -9541,22 +8923,22 @@ PrefabInstance:
     - target: {fileID: 1991565089480704521, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.984761
+      value: 0.98476094
       objectReference: {fileID: 0}
     - target: {fileID: 1991565089480704521, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.17391351
+      value: 0.17391348
       objectReference: {fileID: 0}
     - target: {fileID: 1991565089480704521, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.00000043181174
+      value: 0.00000028939448
       objectReference: {fileID: 0}
     - target: {fileID: 1991565089480704521, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.00000003494806
+      value: 0.00000012465198
       objectReference: {fileID: 0}
     - target: {fileID: 2105229444966899744, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
@@ -9581,22 +8963,22 @@ PrefabInstance:
     - target: {fileID: 2164300020591775340, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7816084
+      value: 0.7816081
       objectReference: {fileID: 0}
     - target: {fileID: 2164300020591775340, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.617817
+      value: -0.61781734
       objectReference: {fileID: 0}
     - target: {fileID: 2164300020591775340, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.053778477
+      value: 0.053778347
       objectReference: {fileID: 0}
     - target: {fileID: 2164300020591775340, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.06706988
+      value: -0.0670699
       objectReference: {fileID: 0}
     - target: {fileID: 2420193704280610750, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
@@ -9791,7 +9173,7 @@ PrefabInstance:
     - target: {fileID: 3207616891439325585, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.00009673573
+      value: -0.00009673581
       objectReference: {fileID: 0}
     - target: {fileID: 3207616891439325585, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
@@ -9801,22 +9183,22 @@ PrefabInstance:
     - target: {fileID: 3207616891439325585, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.58445
+      value: 0.5844499
       objectReference: {fileID: 0}
     - target: {fileID: 3207616891439325585, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.80791074
+      value: 0.8079108
       objectReference: {fileID: 0}
     - target: {fileID: 3207616891439325585, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.075443655
+      value: 0.075443685
       objectReference: {fileID: 0}
     - target: {fileID: 3207616891439325585, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.002613052
+      value: -0.0026131284
       objectReference: {fileID: 0}
     - target: {fileID: 3317275997310624110, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
@@ -9836,12 +9218,12 @@ PrefabInstance:
     - target: {fileID: 3317275997310624110, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.011922298
+      value: -0.01192227
       objectReference: {fileID: 0}
     - target: {fileID: 3317275997310624110, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.038848456
+      value: -0.038848445
       objectReference: {fileID: 0}
     - target: {fileID: 3317275997310624110, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
@@ -9866,27 +9248,27 @@ PrefabInstance:
     - target: {fileID: 3378431953450944264, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.5968177
+      value: 0.5968176
       objectReference: {fileID: 0}
     - target: {fileID: 3378431953450944264, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.6639089
+      value: -0.66390896
       objectReference: {fileID: 0}
     - target: {fileID: 3378431953450944264, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.33487007
+      value: -0.33486998
       objectReference: {fileID: 0}
     - target: {fileID: 3378431953450944264, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.30148906
+      value: -0.30148914
       objectReference: {fileID: 0}
     - target: {fileID: 3537683460257915928, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.00022553469
+      value: 0.00022553476
       objectReference: {fileID: 0}
     - target: {fileID: 3537683460257915928, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
@@ -9896,62 +9278,62 @@ PrefabInstance:
     - target: {fileID: 3537683460257915928, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.00007338227
+      value: 0.00007338235
       objectReference: {fileID: 0}
     - target: {fileID: 3537683460257915928, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.49778092
+      value: 0.49778044
       objectReference: {fileID: 0}
     - target: {fileID: 3537683460257915928, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.0121538965
+      value: -0.012153459
       objectReference: {fileID: 0}
     - target: {fileID: 3537683460257915928, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.6449315
+      value: -0.64493126
       objectReference: {fileID: 0}
     - target: {fileID: 3537683460257915928, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.5797671
+      value: 0.5797677
       objectReference: {fileID: 0}
     - target: {fileID: 4211424419198651307, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.00022553443
+      value: -0.00022553474
       objectReference: {fileID: 0}
     - target: {fileID: 4211424419198651307, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.0016670602
+      value: 0.0016670605
       objectReference: {fileID: 0}
     - target: {fileID: 4211424419198651307, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.0000733836
+      value: 0.00007338427
       objectReference: {fileID: 0}
     - target: {fileID: 4211424419198651307, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.3512399
+      value: 0.35123968
       objectReference: {fileID: 0}
     - target: {fileID: 4211424419198651307, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.1192171
+      value: 0.119217366
       objectReference: {fileID: 0}
     - target: {fileID: 4211424419198651307, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.39710787
+      value: 0.39710757
       objectReference: {fileID: 0}
     - target: {fileID: 4211424419198651307, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.83947796
+      value: -0.8394781
       objectReference: {fileID: 0}
     - target: {fileID: 4272207800201892441, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
@@ -10061,17 +9443,17 @@ PrefabInstance:
     - target: {fileID: 5394835276956092614, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.66390866
+      value: -0.66390884
       objectReference: {fileID: 0}
     - target: {fileID: 5394835276956092614, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.3348703
+      value: 0.33487016
       objectReference: {fileID: 0}
     - target: {fileID: 5394835276956092614, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.30148938
+      value: 0.30148917
       objectReference: {fileID: 0}
     - target: {fileID: 5400366130212364695, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
@@ -10266,17 +9648,17 @@ PrefabInstance:
     - target: {fileID: 5816458090495499669, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.17567024
+      value: 0.17567006
       objectReference: {fileID: 0}
     - target: {fileID: 5816458090495499669, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.0000002533197
+      value: -0.00000025331968
       objectReference: {fileID: 0}
     - target: {fileID: 5816458090495499669, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.000000044703476
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 6474473354837659675, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
@@ -10331,22 +9713,22 @@ PrefabInstance:
     - target: {fileID: 6508824908057761832, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9504136
+      value: 0.9504137
       objectReference: {fileID: 0}
     - target: {fileID: 6508824908057761832, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.18262327
+      value: -0.18262336
       objectReference: {fileID: 0}
     - target: {fileID: 6508824908057761832, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.20658113
+      value: -0.20658092
       objectReference: {fileID: 0}
     - target: {fileID: 6508824908057761832, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.1438296
+      value: 0.14382929
       objectReference: {fileID: 0}
     - target: {fileID: 6854969714132303030, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
@@ -10366,22 +9748,22 @@ PrefabInstance:
     - target: {fileID: 6854969714132303030, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9020316
+      value: 0.9020315
       objectReference: {fileID: 0}
     - target: {fileID: 6854969714132303030, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.06986722
+      value: -0.06986677
       objectReference: {fileID: 0}
     - target: {fileID: 6854969714132303030, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.36456004
+      value: -0.3645601
       objectReference: {fileID: 0}
     - target: {fileID: 6854969714132303030, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.22034892
+      value: -0.22034942
       objectReference: {fileID: 0}
     - target: {fileID: 6887243824115514669, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
@@ -10401,22 +9783,22 @@ PrefabInstance:
     - target: {fileID: 6887243824115514669, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.92247134
+      value: 0.9224715
       objectReference: {fileID: 0}
     - target: {fileID: 6887243824115514669, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.3860655
+      value: -0.386065
       objectReference: {fileID: 0}
     - target: {fileID: 6887243824115514669, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.00000020257136
+      value: -0.0000001199808
       objectReference: {fileID: 0}
     - target: {fileID: 6887243824115514669, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.00000001965512
+      value: -0.000000029051803
       objectReference: {fileID: 0}
     - target: {fileID: 7209828807653619503, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
@@ -10491,72 +9873,72 @@ PrefabInstance:
     - target: {fileID: 7476808328419990775, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.4901166e-10
+      value: -7.450583e-11
       objectReference: {fileID: 0}
     - target: {fileID: 7476808328419990775, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.003977522
+      value: 0.003977523
       objectReference: {fileID: 0}
     - target: {fileID: 7476808328419990775, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5.960477e-10
+      value: 2.9802386e-10
       objectReference: {fileID: 0}
     - target: {fileID: 7476808328419990775, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.8053117
+      value: 0.8053116
       objectReference: {fileID: 0}
     - target: {fileID: 7476808328419990775, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.58981484
+      value: 0.5898149
       objectReference: {fileID: 0}
     - target: {fileID: 7476808328419990775, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.056550004
+      value: -0.056550212
       objectReference: {fileID: 0}
     - target: {fileID: 7476808328419990775, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.019840999
+      value: -0.019841222
       objectReference: {fileID: 0}
     - target: {fileID: 7552115407673631882, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.0000000010430814
+      value: -9.685757e-10
       objectReference: {fileID: 0}
     - target: {fileID: 7552115407673631882, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.002829146
+      value: 0.0028291491
       objectReference: {fileID: 0}
     - target: {fileID: 7552115407673631882, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.4901161e-10
+      value: -7.45058e-10
       objectReference: {fileID: 0}
     - target: {fileID: 7552115407673631882, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.8391753
+      value: 0.8391757
       objectReference: {fileID: 0}
     - target: {fileID: 7552115407673631882, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.46952784
+      value: 0.46952707
       objectReference: {fileID: 0}
     - target: {fileID: 7552115407673631882, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.25390598
+      value: -0.25390634
       objectReference: {fileID: 0}
     - target: {fileID: 7552115407673631882, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.10421235
+      value: -0.10421201
       objectReference: {fileID: 0}
     - target: {fileID: 7552645729298158918, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
@@ -10596,17 +9978,17 @@ PrefabInstance:
     - target: {fileID: 7612654881303556135, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.0244548e-10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7612654881303556135, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.00029935717
+      value: 0.00029935598
       objectReference: {fileID: 0}
     - target: {fileID: 7612654881303556135, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.022158233
+      value: -0.022158232
       objectReference: {fileID: 0}
     - target: {fileID: 7612654881303556135, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
@@ -10616,17 +9998,17 @@ PrefabInstance:
     - target: {fileID: 7612654881303556135, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.44173256
+      value: 0.44173238
       objectReference: {fileID: 0}
     - target: {fileID: 7612654881303556135, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.00000013169908
+      value: -0.000000106948264
       objectReference: {fileID: 0}
     - target: {fileID: 7612654881303556135, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.00000006817552
+      value: -0.00000005265862
       objectReference: {fileID: 0}
     - target: {fileID: 7617574558164572757, guid: 3c0aa76f098b03b42adb66959826018b,
         type: 3}

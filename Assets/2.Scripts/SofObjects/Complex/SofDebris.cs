@@ -10,15 +10,15 @@ public class SofDebris : SofComplex
 {
     private void Awake()
     {
-        Initialize();
+        GameInitialization();
     }
     private void Start()
     {
         
     }
-    protected override void Initialize()
+    protected override void GameInitialization()
     {
-        base.Initialize();
+        base.GameInitialization();
 
         foreach (LineRenderer rope in GetComponentsInChildren<LineRenderer>()) rope.enabled = false;
         if (!GetComponentInChildren<Bomb>()) Destroy(gameObject, 25f);

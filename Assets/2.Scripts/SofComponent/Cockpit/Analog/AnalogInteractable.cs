@@ -161,11 +161,6 @@ public class AnalogInteractableEditor : CockpitInteractableEditor
         }
         analog.animationTime = EditorGUILayout.FloatField("Animation Time", analog.animationTime);
 
-        if (GUI.changed)
-        {
-            EditorUtility.SetDirty(analog);
-            EditorSceneManager.MarkSceneDirty(analog.gameObject.scene);
-        }
         serializedObject.ApplyModifiedProperties();
     }
 }

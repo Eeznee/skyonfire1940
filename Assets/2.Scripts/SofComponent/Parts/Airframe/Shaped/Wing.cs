@@ -6,6 +6,9 @@ using UnityEditor.SceneManagement;
 
 public class Wing : ShapedAirframe
 {
+    public override float MaxHp => area * ModulesHPData.sparHpPerSq;
+    public override ModuleArmorValues Armor => ModulesHPData.SparArmor;
+
     public bool split = false;
     public float splitFraction = 0.5f;
     public AirfoilSurface splitFoilSurface;
@@ -13,12 +16,27 @@ public class Wing : ShapedAirframe
     public float oswald = 0.75f;
     public WingSkin skin;
     public Mesh skinMesh;
-    public Wing parent;
-    public Wing child;
-    public Wing root;
-    public float totalArea;
 
-    public float alpha;
+    public Wing parent { get; private set; }
+    public Wing child { get; private set; }
+    public Wing root { get; private set; }
+
+    public float EntireWingArea
+    {
+        get
+        {
+            if (root != this)
+                return root.EntireWingArea;
+
+            float totalArea;
+            Wing currentWing = this;
+            for(totalArea = area; currentWing.child != null; totalArea += currentWing.area)
+                currentWing = currentWing.child;
+            return totalArea;
+        }
+    }
+
+    public float alpha { get; private set; }
 
     public override float AreaCd() { return area * foil.airfoilSim.minCd; }
 
@@ -53,7 +71,6 @@ public class Wing : ShapedAirframe
         root = rootWing;
         foil = root.foil;
         oswald = root.oswald;
-        totalArea = root.totalArea;
     }
     protected override AirfoilSurface CreateFoilSurface()
     {
@@ -65,8 +82,6 @@ public class Wing : ShapedAirframe
         {
             Wing[] wings = GetComponentsInChildren<Wing>();
             root = this;
-            totalArea = 0f;
-            foreach (Wing wing in wings) totalArea += wing.area;
             foreach (Wing wing in wings) wing.CopyRootValues(this); //Do not merge the loops !
         }
 
@@ -149,7 +164,7 @@ public class WingEditor : ShapedAirframeEditor
         EditorGUILayout.PropertyField(skinMesh, new GUIContent("Skin Collider"));
         base.BasicFoldout();
         Wing wing = (Wing)target;
-        EditorGUILayout.LabelField("Full Wing Area", wing.totalArea.ToString("0.00") + " m2");
+        EditorGUILayout.LabelField("Full Wing Area", wing.EntireWingArea.ToString("0.00") + " m2");
     }
     protected override void ShapeFoldout()
     {

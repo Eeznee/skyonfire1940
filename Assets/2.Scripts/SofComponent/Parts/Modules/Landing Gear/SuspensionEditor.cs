@@ -5,74 +5,73 @@ using UnityEngine;
 
 #if UNITY_EDITOR
 [CustomEditor(typeof(Suspension)), CanEditMultipleObjects]
-public class SuspensionEditor : PartEditor
+public class SuspensionEditor : SofComponentEditor
 {
-    static bool showSuspension = true;
     private SerializedProperty axis;
+
+    private SerializedProperty preciseValues;
+
     private SerializedProperty springStrength;
     private SerializedProperty springDamper;
 
-    private SerializedProperty compensateWeight;
+    private SerializedProperty springStrengthFactor;
+    private SerializedProperty springDamperFactor;
 
-    private SerializedProperty canSteer;
-    private SerializedProperty maxSteerAngle;
 
-    Mass emptyMass;
+    protected override string BasicName()
+    {
+        return "Suspension";
+    }
 
     protected override void OnEnable()
     {
         base.OnEnable();
 
         axis = serializedObject.FindProperty("axis");
+
+        preciseValues = serializedObject.FindProperty("preciseValues");
+
         springStrength = serializedObject.FindProperty("springStrength");
         springDamper = serializedObject.FindProperty("springDamper");
+        springStrengthFactor = serializedObject.FindProperty("springStrengthFactor");
+        springDamperFactor = serializedObject.FindProperty("springDamperFactor");
+    }
 
-        compensateWeight = serializedObject.FindProperty("compensateWeight");
-
-        canSteer = serializedObject.FindProperty("canSteer");
-        maxSteerAngle = serializedObject.FindProperty("maxSteerAngle");
+    protected override void BasicFoldout()
+    {
+        base.BasicFoldout();
 
         Suspension suspension = (Suspension)target;
-        SofPart[] partsArray = suspension.complex.parts.ToArray();
-        emptyMass = new Mass(partsArray, true);
+
+
+        EditorGUILayout.PropertyField(axis);
+
+        EditorGUILayout.PropertyField(preciseValues);
+
+        if (suspension.preciseValues)
+        {
+            EditorGUILayout.PropertyField(springStrength, new GUIContent("Strength N/m"));
+            EditorGUILayout.PropertyField(springDamper, new GUIContent("Damper kg/s"));
+
+            EditorGUILayout.HelpBox("strength close to mass * 100 for main gear \nstrength close to mass * 20 for tail gear", MessageType.Info);
+            EditorGUILayout.HelpBox("Damper close to strength / 20 \ndamper close to strength / 8 for tail gear", MessageType.Info);
+        }
+        else
+        {
+            EditorGUILayout.HelpBox("Higher damper values decrease oscillation", MessageType.Info);
+            EditorGUILayout.Slider(springStrengthFactor, 0f, 3f, new GUIContent("Strength"));
+            EditorGUILayout.Slider(springDamperFactor, 0f, 3f, new GUIContent("Damper"));
+        }
     }
 
     public override void OnInspectorGUI()
     {
-        base.OnInspectorGUI();
-
         Suspension suspension = (Suspension)target;
-
-        serializedObject.Update();
-
-        showSuspension = EditorGUILayout.Foldout(showSuspension, "Suspension", true, EditorStyles.foldoutHeader);
-        if (showSuspension)
-        {
-            EditorGUI.indentLevel++;
-
-            EditorGUILayout.PropertyField(axis);
-            EditorGUILayout.PropertyField(springStrength, new GUIContent("Spring Strength N/m"));
-            EditorGUILayout.PropertyField(springDamper, new GUIContent("Spring Damper N/(m/s)"));
+        if (suspension.GetComponentInChildren<CustomWheel>() == null)
+            EditorGUILayout.HelpBox("This suspension needs a wheel as its child", MessageType.Warning);
 
 
-            float recommendedMain = emptyMass.mass * 100f;
-            float recommendedTail = emptyMass.mass * 20f;
-            EditorGUILayout.LabelField("suggested main spring", recommendedMain.ToString("0") + " N/m");
-            EditorGUILayout.LabelField("suggested tail spring", recommendedTail.ToString("0") + " N/m");
-
-            EditorGUILayout.Space(10f);
-
-            EditorGUILayout.PropertyField(canSteer);
-            if (suspension.canSteer)
-                EditorGUILayout.PropertyField(maxSteerAngle);
-
-
-            if (Application.isPlaying) EditorGUILayout.LabelField("Force", suspension.forceApplied.ToString("0.0") + " N");
-            if (Application.isPlaying) EditorGUILayout.LabelField("Distance", suspension.distance.ToString(""));
-
-            EditorGUI.indentLevel--;
-        }
-        serializedObject.ApplyModifiedProperties();
+        base.OnInspectorGUI();
     }
 
     protected void OnSceneGUI()

@@ -83,7 +83,7 @@ public class Player : MonoBehaviour
 
         sofObj = complex = target;
         aircraft = sofObj.GetComponent<SofAircraft>();
-        tr = sofObj.tr;
+        tr = sofObj.transform;
 
         if (aircraft)
         {

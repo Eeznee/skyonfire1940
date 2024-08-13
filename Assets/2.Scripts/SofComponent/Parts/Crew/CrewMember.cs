@@ -1,8 +1,14 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class CrewMember : SofModule
+public class CrewMember : SofModule, IMassComponent
 {
+    public override ModuleArmorValues Armor => ModulesHPData.CrewmemberArmor;
+    public override float MaxHp => ModulesHPData.crewmember;
+
+    public float EmptyMass => 0f;
+    public float LoadedMass => HumanBody.Weight();
+
     public List<CrewSeat> seats;
     public Parachute parachute;
     public Parachute specialPlayerParachute;
@@ -13,13 +19,20 @@ public class CrewMember : SofModule
     public HumanBody humanBody { get; private set; }
     public CrewSeat seat { get; private set; }
 
+    public bool IsPilot
+    {
+        get
+        {
+            foreach (CrewSeat seat in seats)
+                if (seat.GetType() == typeof(PilotSeat)) return true;
+            return false;
+        }
+    }
+
     public bool IsPlayer => Player.crew == this;
     public bool IsVrPlayer => Player.crew == this && GameManager.gm.vr && Application.isPlaying;
     public int SeatId => seats.IndexOf(seat);
 
-    public override bool NoCustomMass => true;
-    public override float AdditionalMass => HumanBody.Weight();
-    public override float EmptyMass => 0f;
 
     public const float eyeShift = 0.05f;
     public Vector3 EyesPosition() { return transform.position + transform.parent.up * eyeShift; }
@@ -88,11 +101,11 @@ public class CrewMember : SofModule
     public void ChangeSeat(CrewSeat newSeat)
     {
         bool seatError = newSeat == null || newSeat.complex != complex || newSeat.seatedCrew != null;
-        if(seatError) UpdateSeatsList();
+        if (seatError) UpdateSeatsList();
         if (seatError || newSeat == seat) return;
 
         CrewSeat oldSeat = seat;
-        if(oldSeat) oldSeat.OnCrewLeaves();
+        if (oldSeat) oldSeat.OnCrewLeaves();
 
         seat = newSeat;
         seat.OnCrewSeats(this);
@@ -104,7 +117,7 @@ public class CrewMember : SofModule
     }
     public override void Rip()
     {
-        if (aircraft && this == aircraft.crew[0]) { aircraft.hasPilot = false; aircraft.destroyed = true; }
+        if (aircraft && IsPilot) aircraft.destroyed = true;
         base.Rip();
     }
 }

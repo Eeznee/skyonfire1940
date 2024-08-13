@@ -24,6 +24,8 @@ public class ArmamentManager
 
         rockets = Station.GetOrdnances<RocketsLoad>(aircraft.stations);
         bombs = Station.GetOrdnances<BombsLoad>(aircraft.stations);
+
+        ConvergeGuns(aircraft.convergeance);
     }
     public void CheatPointGuns(Vector3 worldPoint, float cheatFactor)
     {
@@ -42,8 +44,8 @@ public class ArmamentManager
         Vector3 point = aircraft.crew[0].seat.defaultPOV.position + tr.forward * convergence;
         float distance = (point - tr.position).magnitude;
 
-        List<Gun> guns = new List<Gun>(aircraft.armament.primaries);
-        guns.AddRange(aircraft.armament.secondaries);
+        List<Gun> guns = new List<Gun>(primaries);
+        guns.AddRange(secondaries);
 
         foreach (Gun gun in guns)
             if (gun && !gun.noConvergeance && gun.controller != GunController.Gunner)

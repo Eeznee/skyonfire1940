@@ -6,6 +6,8 @@ using UnityEditor.SceneManagement;
 
 public class Stabilizer : ShapedAirframe
 {
+    public override float MaxHp => area * ModulesHPData.stabilizerHpPerSq;
+
     public override float AreaCd() { return area * foil.airfoilSim.minCd; }
 
     protected override AirfoilSurface CreateFoilSurface()
@@ -14,7 +16,7 @@ public class Stabilizer : ShapedAirframe
     }
     public override float PropSpeedEffect()
     {
-        return vertical ? 0f : 0f;
+        return vertical && aircraft ? 60f * aircraft.engines.throttle : 0f;
     }
     protected override void FixedUpdate()
     {

@@ -4,12 +4,33 @@ using UnityEngine;
 
 public class AircraftStats
 {
-    public float wingSpan;
-    public float wingsArea;
-    public Wing rootWing;
-    public Airfoil airfoil;
+    public SofAircraft aircraft { get; private set; }
+    public Wing rootWing { get; private set; }
+    public Airfoil airfoil { get; private set; }
+    public float wingSpan { get; private set; }
+    public float wingsArea { get; private set; }
+    public float altitudeZeroMaxSpeed { get; private set; }
+    public float totalAreaCd { get; private set; }
 
-    public AircraftStats(SofAircraft aircraft)
+
+    private float[] maxSpeedsAt1000Intervals;
+
+
+    public AircraftStats(SofAircraft _aircraft)
+    {
+        aircraft = _aircraft;
+        
+        ComputeWingStats();
+        ComputeMinTakeOffSpeed();
+        ComputeTotalAreaCd();
+
+        maxSpeedsAt1000Intervals = new float[10];
+        for (int i = 0; i < maxSpeedsAt1000Intervals.Length; i++)
+            maxSpeedsAt1000Intervals[i] = MaxSpeed(i * 1000f, 1f);
+
+        altitudeZeroMaxSpeed = MaxSpeed(0f, 1f);
+    }
+    private void ComputeWingStats()
     {
         Wing[] wings = aircraft.GetComponentsInChildren<Wing>();
         wingsArea = 0f;
@@ -18,28 +39,33 @@ public class AircraftStats
         {
             if (!wing.parent)
             {
-                wingsArea += wing.totalArea;
+                wingsArea += wing.EntireWingArea;
                 rootWing = wing;
             }
             if (!wing.child)
             {
                 Vector3 tipPos = (wing.split ? wing.splitFoilSurface : wing.foilSurface).quad.TopAeroPos(true) + wing.tr.right * 0.1f;
-                wingSpan = Mathf.Max(aircraft.tr.InverseTransformPoint(tipPos).x * 2f, wingSpan) ;
+                wingSpan = Mathf.Max(aircraft.tr.InverseTransformPoint(tipPos).x * 2f, wingSpan);
             }
         }
         airfoil = rootWing.foil;
     }
+    private void ComputeMinTakeOffSpeed()
+    {
+        //float weight = aircraft.rb.mass * -Physics.gravity.y;
+        //float density = Aerodynamics.seaLvlDensity;
 
-    public float TotalAreaCd(SofAircraft aircraft)
-    {
-        float areaCd = 0f;
-        foreach (SofAirframe airframe in aircraft.GetComponentsInChildren<SofAirframe>())
-            areaCd += airframe.AreaCd();
-        return areaCd;
+        airfoil.Coefficients(10f);
     }
-    public float MaxSpeed(SofAircraft aircraft, float totalAreaCd, float altitude, float throttle)
+    private void ComputeTotalAreaCd()
     {
-        Engine[] engines = aircraft.engines.all;
+        totalAreaCd = 0f;
+        foreach (SofAirframe airframe in aircraft.GetComponentsInChildren<SofAirframe>())
+            totalAreaCd += airframe.AreaCd();
+    }
+    public float MaxSpeed(float altitude, float throttle)
+    {
+        Engine[] engines = aircraft.GetComponentsInChildren<Engine>();
         float totalDrag = totalAreaCd * 0.5f * Aerodynamics.GetAirDensity(altitude);
         bool jet = engines[0].preset.type == EnginePreset.Type.Jet;
         if (jet)
@@ -50,8 +76,8 @@ public class AircraftStats
         }
         else
         {
-            float totalPower = throttle * engines.Length * engines[0].preset.gear1.Evaluate(altitude) * 745.7f * aircraft.GetComponentInChildren<Propeller>().efficiency;
-            return Mathf.Pow(totalPower / totalDrag, 0.333333f);
+            float totalThrust = throttle * engines.Length * engines[0].preset.gear1.Evaluate(altitude) * 745.7f * aircraft.GetComponentInChildren<Propeller>().efficiency;
+            return Mathf.Pow(totalThrust / totalDrag, 0.333333f);
         }
     }
 }

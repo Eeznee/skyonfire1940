@@ -64,7 +64,7 @@ public class CrewBailing
     {
         if (!aircraft || crew.ripped) return;
         tryingToBail = false;
-        if (crew == aircraft.crew[0]) { aircraft.hasPilot = false; aircraft.destroyed = true; }
+        if (crew.IsPilot) aircraft.destroyed = true;
         Parachute para = crew.specialPlayerParachute && Player.crew == crew ? crew.specialPlayerParachute : crew.parachute;
         GameObject.Instantiate(para, tr.position, tr.rotation).TriggerParachute(aircraft, crew);
     }

@@ -7,7 +7,6 @@ public class GunPreset : ScriptableObject
 {
     public string Name;
     public float mass = 20f;
-    public ModuleMaterial material;
     public AmmunitionPreset ammunition;
     public bool openBolt = false;
     public bool boltCatch = false;

@@ -1,66 +1,55 @@
 ﻿using UnityEngine;
+using System;
 #if UNITY_EDITOR
 using UnityEditor;
-using UnityEditor.SceneManagement;
 #endif
 
-
-public class SofModule : SofPart      //Modules are parts with HP that can be destroyed
+public abstract class SofModule : SofComponent
 {
-
-    public ModuleMaterial material;
-
     public float structureDamage { get; private set; }
-    public bool ripped;
+    public bool ripped { get; private set; }
 
-    private IgnitableExtension ignitableExtension;
-
-
+    public abstract ModuleArmorValues Armor { get; }
+    public abstract float MaxHp { get; }
     public virtual bool Detachable => false;
-    public virtual float MaxHp => material.hp;
-    public bool IsBurning => ignitableExtension ? ignitableExtension.burning : false;
+
+    public event Action<float, float, float> OnProjectileDamage;
+    public event Action OnRepair;
+    
 
     public override void Initialize(SofComplex _complex)
     {
-        if (!material) Debug.LogError(name + " Has no material attached", this);
         base.Initialize(_complex);
         structureDamage = 1f;
 
-        if (material.ignitable) ignitableExtension = gameObject.AddComponent<IgnitableExtension>();
+        IIgnitable iIgnitable = GetComponent<IIgnitable>();
+        if (iIgnitable != null && iIgnitable.Ignitable) gameObject.AddComponent<IgnitableExtension>();
     }
 
-    public void Damage(float integrityDamage)
+    public void DirectStructuralDamage(float integrityDamage)
     {
-        structureDamage -= integrityDamage;
-        structureDamage = Mathf.Clamp01(structureDamage);
+        structureDamage = Mathf.Clamp01(structureDamage - integrityDamage);
 
         if (structureDamage <= 0f && !ripped) Rip();
     }
-    public virtual void SimpleDamage(float damage)
+    public virtual void ProjectileDamage(float hpDamage, float caliber, float fireCoeff)
     {
-        Damage(damage / MaxHp);
-    }
-    public virtual void KineticDamage(float damage, float caliber, float fireCoeff)
-    {
-        Damage(damage / MaxHp);
+        DirectStructuralDamage(hpDamage / MaxHp);
 
-        ignitableExtension?.TryBurn(caliber, fireCoeff);
-    }
-    public virtual void BurnDamage(float damage)
-    {
-        Damage(damage);
+        OnProjectileDamage?.Invoke(hpDamage, caliber, fireCoeff);
     }
 
     const float explosionCoeff = 500f;
     const float holeCoeff = 10f;
-    public virtual void ExplosionDamage(Vector3 center, float tnt)
+
+    public void ExplosionDamage(Vector3 center, float tnt)
     {
         float sqrDis = (center - transform.position).sqrMagnitude;
         if (tnt > sqrDis / 500f)
         {
-            float dmg = explosionCoeff * tnt / sqrDis * Random.Range(0.65f, 1.5f);
+            float dmg = explosionCoeff * tnt / sqrDis * UnityEngine.Random.Range(0.65f, 1.5f);
             float hole = dmg * holeCoeff;
-            KineticDamage(dmg, hole, 0f);
+            ProjectileDamage(dmg, hole, 0f);
         }
     }
     public virtual void Rip()
@@ -68,18 +57,15 @@ public class SofModule : SofPart      //Modules are parts with HP that can be de
         ripped = true;
     }
 
-    public void Repair() { structureDamage = 1f; ripped = false; ignitableExtension?.StopBurning(); }
+    public void Repair() { structureDamage = 1f; ripped = false; OnRepair?.Invoke(); }
 }
 #if UNITY_EDITOR
 [CustomEditor(typeof(SofModule)), CanEditMultipleObjects]
-public class ModuleEditor : PartEditor
+public class ModuleEditor : SofComponentEditor
 {
-    SerializedProperty material;
-
     protected override void OnEnable()
     {
         base.OnEnable();
-        material = serializedObject.FindProperty("material");
     }
     protected override string BasicName()
     {
@@ -91,11 +77,7 @@ public class ModuleEditor : PartEditor
 
         SofModule module = (SofModule)target;
 
-        EditorGUILayout.PropertyField(material);
-        if (module.material)
-        {
-            EditorGUILayout.LabelField("HP", module.material.hp.ToString("0") + " HP");
-        }
+        EditorGUILayout.LabelField("HP", module.MaxHp.ToString("0") + " HP");
     }
 }
 #endif

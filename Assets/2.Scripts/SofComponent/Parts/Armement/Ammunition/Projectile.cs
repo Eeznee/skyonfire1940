@@ -147,11 +147,11 @@ public class Projectile : MonoBehaviour //Follows a trajectory using drag, weigh
         if (module == null) return true;
         float penetrationPower = p.basePenetration * sqrVelocity / (p.baseVelocity * p.baseVelocity);
         float alpha = Vector3.Angle(-hit.normal, tr.forward);
-        float armor = Random.Range(0.8f, 1.2f) * module.material.armor / Mathf.Cos(alpha * Mathf.Deg2Rad);
+        float armor = Random.Range(0.8f, 1.2f) * module.Armor.surfaceArmor / Mathf.Cos(alpha * Mathf.Deg2Rad);
         if (penetrationPower > armor)//If penetration occurs
         {
-            module.KineticDamage(p.diameter * p.diameter / 30f, p.diameter, p.FireChance());
-            armor += Random.Range(0.8f, 1.2f) * module.material.totalThickness;
+            module.ProjectileDamage(p.diameter * p.diameter / 30f, p.diameter, p.FireChance());
+            armor += Random.Range(0.8f, 1.2f) * module.Armor.fullPenArmor;
             sqrVelocity *= 1f - armor / penetrationPower;
             return sqrVelocity > 0f;
         }

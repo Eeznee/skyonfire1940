@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 using System;
-public class Engine : SofModule, IDamageTick
+public class Engine : SofModule, IMassComponent, IDamageTick, IIgnitable
 {
     public enum EnginesState
     {
@@ -39,11 +39,30 @@ public class Engine : SofModule, IDamageTick
     public Action OnIgnition;
     public Action OnTurnOff;
 
-    public override bool NoCustomMass => true;
-    public override float EmptyMass => preset.weight;
+    public bool Ignitable => true;
+    public float BurningChance => EnginePreset.burningChance;
+    public float MaxStructureDamageToBurn => 0.8f;
+    public ParticleSystem BurningEffect => preset.burningEffect;
+
+    public float EmptyMass => preset.weight;
+    public float LoadedMass => EmptyMass;
+
+    public override ModuleArmorValues Armor => ModulesHPData.EngineArmor;
+    public override float MaxHp
+    {
+        get
+        {
+            switch (preset.type)
+            {
+                case EnginePreset.Type.Radial: return ModulesHPData.engineRadial;
+                case EnginePreset.Type.Jet: return ModulesHPData.engineJet;
+            }
+            return ModulesHPData.engineInLine;
+        }
+    }
+
     public override void Initialize(SofComplex _complex)
     {
-        material = preset.material;
         base.Initialize(_complex);
 
         oilCircuit = new Circuit(transform, oil);

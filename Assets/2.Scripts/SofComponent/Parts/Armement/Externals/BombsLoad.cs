@@ -13,7 +13,7 @@ public class BombsLoad : OrdnanceLoad
 
     private Bomb[] bombs;
 
-    public override float SingleMass => bombRef.Mass;
+    public override float SingleMass => bombRef.mass;
     protected override void Clear()
     {
         base.Clear();

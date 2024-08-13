@@ -20,12 +20,10 @@ public class EnginesManager
         aircraft = _aircraft;
 
         all = aircraft.GetComponentsInChildren<Engine>();
-    }
-    public void Initialize(bool grounded)
-    {
-        throttle = grounded ? 0f : 1f;
+
+        throttle = aircraft.GroundedStart ? 0f : 1f;
         boost = false;
-        SetEngines(!grounded, true);
+        SetEngines(!aircraft.GroundedStart, true);
     }
     public void Update()
     {

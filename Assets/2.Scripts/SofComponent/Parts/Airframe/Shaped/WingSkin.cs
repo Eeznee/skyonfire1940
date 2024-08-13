@@ -6,10 +6,12 @@ using UnityEditor.SceneManagement;
 
 public class WingSkin : SofModule
 {
+    public override ModuleArmorValues Armor => ModulesHPData.DuraluminArmor;
+    public override float MaxHp => 100f;
+
     private Wing parentWing;
     const float caliberToHoleRatio = 25f;
 
-    public override float EmptyMass => 0f;
 
     public static WingSkin CreateSkin(Wing parentWing, Mesh skinMesh)
     {
@@ -25,19 +27,10 @@ public class WingSkin : SofModule
         skin.parentWing = parentWing;
         return skin;
     }
-    public override void Initialize(SofComplex _complex)
-    {
-        material = aircraft.materials.Material(this);
-        base.Initialize(_complex);
-    }
-    public override void KineticDamage(float damage, float caliber, float fireCoeff)
+    public override void ProjectileDamage(float damage, float caliber, float fireCoeff)
     {
         float holeArea = Mathv.SmoothStart(caliber * caliberToHoleRatio / 2000f, 2) * Mathf.PI;
-        Damage(holeArea / parentWing.area * structureDamage);
-    }
-    public override void BurnDamage(float damage)
-    {
-        base.BurnDamage(damage * 0.4f);
+        DirectStructuralDamage(holeArea / parentWing.area * structureDamage);
     }
     public override void Rip()
     {

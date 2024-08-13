@@ -12,7 +12,6 @@ using UnityEditor.SceneManagement;
 public class SofAircraftEditor : SofComplexEditor
 {
     static bool showMain = true;
-    SerializedProperty card;
     SerializedProperty materials;
     SerializedProperty convergence;
     SerializedProperty axesSpeed;
@@ -21,8 +20,6 @@ public class SofAircraftEditor : SofComplexEditor
     SerializedProperty stations;
 
     static bool showAutoPilot = true;
-    SerializedProperty cruiseSpeed;
-    SerializedProperty bankTurnAngle;
     SerializedProperty customPID;
     SerializedProperty pidElevator;
     SerializedProperty pidPitch;
@@ -33,7 +30,6 @@ public class SofAircraftEditor : SofComplexEditor
     {
         base.OnEnable();
 
-        card = serializedObject.FindProperty("card");
         materials = serializedObject.FindProperty("materials");
         convergence = serializedObject.FindProperty("convergeance");
         axesSpeed = serializedObject.FindProperty("axesSpeed");
@@ -41,8 +37,6 @@ public class SofAircraftEditor : SofComplexEditor
         maxSpeed = serializedObject.FindProperty("maxSpeed");
         stations = serializedObject.FindProperty("stations");
 
-        cruiseSpeed = serializedObject.FindProperty("cruiseSpeed");
-        bankTurnAngle = serializedObject.FindProperty("bankTurnAngle");
         customPID = serializedObject.FindProperty("customPIDValues");
         pidElevator = serializedObject.FindProperty("pidElevator.pidValues");
         pidPitch = serializedObject.FindProperty("pidPitch.pidValues");
@@ -81,7 +75,6 @@ public class SofAircraftEditor : SofComplexEditor
         {
             EditorGUI.indentLevel++;
 
-            EditorGUILayout.PropertyField(cruiseSpeed);
             EditorGUILayout.PropertyField(customPID);
 
             if (aircraft.customPIDValues)

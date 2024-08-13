@@ -8,6 +8,7 @@ using UnityEditor.SceneManagement;
 
 public class Slat : ShapedAirframe
 {
+    public override float MaxHp => ModulesHPData.controlHpPerSq;
     //Settings
     public float distance = 0.06f;
     public float extendedSpeed = 70f;

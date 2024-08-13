@@ -22,7 +22,7 @@ public abstract class ShapedAirframe : SofAirframe
     protected override Quad CreateQuad() { return shape.ToQuad(); }
     public override void UpdateAerofoil()
     {
-        shape.parent = tr;
+        shape.parent = transform;
         shape.snapped = GetComponent<Wing>() && tr.parent.GetComponent<Wing>();
 
         vertical = Mathf.Abs(shape.localRight.y) > 0.9f;
@@ -56,7 +56,6 @@ public class ShapedAirframeEditor : AirframeEditor
     protected override void OnEnable()
     {
         base.OnEnable();
-
         shape = serializedObject.FindProperty("shape");
 
         tipWidth = serializedObject.FindProperty("tipWidth");

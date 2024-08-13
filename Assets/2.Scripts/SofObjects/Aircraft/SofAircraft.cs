@@ -1,12 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public enum AircraftWorldState
-{
-    Flying,
-    Grounded,
-    TakingOff
-}
+
 public class SofAircraft : SofComplex
 {
     public AircraftCard card;
@@ -17,7 +12,6 @@ public class SofAircraft : SofComplex
     public AircraftAxes axesSpeed = new AircraftAxes(2f, 1.5f, 2f);
     public float convergeance = 300f;
 
-    public float cruiseSpeed = 400f / 3.6f;
     public bool customPIDValues;
     public PID pidPitch;
     public PID pidRoll;
@@ -26,19 +20,20 @@ public class SofAircraft : SofComplex
     public Game.Squadron squadron;
     public int squadronId;
     public int placeInSquad;
-    public float difficulty;
+    public float difficulty { get; private set; }
 
     public AircraftInputs inputs;
-    public bool hasPilot;
 
-    public BombardierSeat bombardierSeat;
-    public Bombsight bombSight;
-    public Animator animator;
-    public AircraftStats stats;
-    public HydraulicsManager hydraulics;
-    public FuelManager fuel;
-    public ArmamentManager armament;
-    public EnginesManager engines;
+    public BombardierSeat bombardierSeat { get; private set; }
+    public Bombsight bombSight { get; private set; }
+    public Animator animator { get; private set; }
+    public AircraftStats stats { get; private set; }
+    public HydraulicsManager hydraulics { get; private set; }
+    public FuelManager fuel { get; private set; }
+    public ArmamentManager armament { get; private set; }
+    public EnginesManager engines { get; private set; }
+
+    public float cruiseSpeed => stats.altitudeZeroMaxSpeed;
 
 
     //Deprecated
@@ -46,7 +41,9 @@ public class SofAircraft : SofComplex
     public float minCrashDelay = 6f;
     public float minInvertAltitude = 200f;
 
-    public override void SetReferences()
+    public bool GroundedStart => squadron.airfield >= 0;
+
+    protected override void SetReferences()
     {
         foreach (Station s in stations) if (stations != null && s != null) s.UpdateOptions();
 
@@ -55,45 +52,39 @@ public class SofAircraft : SofComplex
         bombardierSeat = GetComponentInChildren<BombardierSeat>();
         bombSight = GetComponentInChildren<Bombsight>();
         animator = GetComponent<Animator>();
+    }
+    protected override void GameInitialization()
+    {
+        if (!customPIDValues) SetDefaultPIDValues();
+
+        AddEssentialComponents();
+
+        for (int i = 0; i < stations.Length; i++) stations[i].ChooseOption(squadron.stations[i]);
+
+        base.GameInitialization();
+
+        InitializeMarkersAndGameReferences();
+        if (!GroundedStart) data.rb.velocity = transform.forward * stats.MaxSpeed(data.altitude.Get, 1f);
+
+        CreateManagers();
+    }
+    protected override void GetSofComponentsAndSetReferences()
+    {
+        base.GetSofComponentsAndSetReferences();
         stats = new AircraftStats(this);
+    }
+    private void AddEssentialComponents()
+    {
+        lod = this.GetCreateComponentInChildren<ObjectLOD>();
+        if (!simpleDamage) bubble = transform.CreateChild("Object Bubble").gameObject.AddComponent<ObjectBubble>();
+    }
+    private void CreateManagers()
+    {
         hydraulics = new HydraulicsManager(this);
         armament = new ArmamentManager(this);
         engines = new EnginesManager(this);
         fuel = new FuelManager(this);
-    }
-    protected override void Initialize()
-    {
-        if (!customPIDValues) SetDefaultPIDValues();
         inputs = new AircraftInputs(this);
-
-        AssignImportantComponents();
-
-        for (int i = 0; i < stations.Length; i++) stations[i].ChooseOption(squadron.stations[i]);
-
-        materials.ApplyMaterials(this);
-
-        base.Initialize();
-
-        InitializeMarkersAndGameReferences();
-        GroundedInitialization();
-
-        armament.ConvergeGuns(convergeance);
-
-        hasPilot = GetComponentInChildren<PilotSeat>() && crew.Length > 0;
-    }
-    private void AssignImportantComponents()
-    {
-        lod = GetComponentInChildren<ObjectLOD>();
-        if (!lod) lod = tr.CreateChild("LOD Manager").gameObject.AddComponent<ObjectLOD>();
-        if (!simpleDamage) bubble = tr.CreateChild("Object Bubble").gameObject.AddComponent<ObjectBubble>();
-    }
-    private void GroundedInitialization()
-    {
-        bool grounded = squadron.airfield >= 0;
-
-        if(hydraulics.gear) hydraulics.gear.SetInstant(grounded);
-        engines.Initialize(grounded);
-        if (!grounded) data.rb.velocity = transform.forward * card.startingSpeed / 3.6f;
     }
     private void InitializeMarkersAndGameReferences()
     {
@@ -108,14 +99,13 @@ public class SofAircraft : SofComplex
     private void OnCollisionEnter(Collision col)
     {
         Transform tr = col.GetContact(0).thisCollider.transform;
-        tr = tr.name.Contains("Skin") ? tr.parent : tr;
+        tr = tr.GetComponent<WingSkin>() ? tr.parent : tr;
         SofAirframe collided = tr.GetComponent<SofAirframe>();
         if (collided && col.impulse.magnitude > 10000f) collided.Rip();
 
     }
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.K)) tr.position += Vector3.up * 0.60f;
         engines.Update();
     }
     private void FixedUpdate()

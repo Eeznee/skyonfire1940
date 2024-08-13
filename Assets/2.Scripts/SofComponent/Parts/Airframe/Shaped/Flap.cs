@@ -8,6 +8,8 @@ using UnityEditor.SceneManagement;
 
 public class Flap : ShapedAirframe
 {
+    public override float MaxHp => ModulesHPData.controlHpPerSq;
+
     //Settings
     public float extendedRipSpeed = 60f;
 

@@ -9,25 +9,20 @@ public class SofObject : MonoBehaviour
 {
     public virtual int DefaultLayer() { return 0; }
     //References
-    public Transform tr;
-    public Rigidbody rb;
+    public Transform tr { get; private set; }
+    public Rigidbody rb { get; private set; }
 
-    public SofComplex complex;
-    public SofAircraft aircraft;
-    public SofDebris debris;
-    public SofSimple simpleDamage;
+    public SofComplex complex { get; private set; }
+    public SofAircraft aircraft { get; private set; }
+    public SofDebris debris { get; private set; }
+    public SofSimple simpleDamage { get; private set; }
 
     public bool warOnly;
 
     public bool destroyed = false;
     public bool burning = false;
 
-    private void Start()
-    {
-        if (warOnly && !GameManager.war) Destroy(gameObject);
-        Initialize();
-    }
-    public virtual void SetReferences()
+    protected virtual void SetReferences()
     {
         tr = transform;
 
@@ -35,16 +30,28 @@ public class SofObject : MonoBehaviour
         complex = GetComponent<SofComplex>();
         debris = GetComponent<SofDebris>();
         aircraft = GetComponent<SofAircraft>();
+
+
         if (Application.isPlaying)
         {
             gameObject.layer = complex ? 9 : 0;
             rb = tr.IsChildOf(GameManager.gm.mapmap.transform) ? GameManager.gm.mapmap.rb : this.GetCreateComponent<Rigidbody>();
         }
+
     }
-    protected virtual void Initialize()
+
+    private void Start()
+    {
+        if (warOnly && !GameManager.war) Destroy(gameObject);
+        GameInitialization();
+    }
+    public virtual void EditorInitialization()
     {
         SetReferences();
-
+    }
+    protected virtual void GameInitialization()
+    {
+        SetReferences();
         GameManager.sofObjects.Add(this);
     }
     public virtual void Explosion(Vector3 center, float tnt)
@@ -66,11 +73,6 @@ public class SofObjectEditor : Editor
 
         if (!sofObj.aircraft) sofObj.warOnly = EditorGUILayout.Toggle("War Only", sofObj.warOnly);
 
-        if (GUI.changed)
-        {
-            EditorUtility.SetDirty(sofObj);
-            EditorSceneManager.MarkSceneDirty(sofObj.gameObject.scene);
-        }
         serializedObject.ApplyModifiedProperties();
     }
 }

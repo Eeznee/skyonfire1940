@@ -6,8 +6,11 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
-public class MagazineStorage : SofPart
+public class MagazineStorage : SofComponent, IMassComponent
 {
+    public float LoadedMass => magRef.FullyLoadedMass * (Application.isPlaying ? magsLeft : Mathf.Min(positions.Length, localRotations.Length));
+    public float EmptyMass => 0f;
+
     public Magazine magRef;
 
     public Vector3[] positions;
@@ -15,8 +18,6 @@ public class MagazineStorage : SofPart
 
     [HideInInspector] public int magsCount;
     [HideInInspector] public int magsLeft;
-
-    public override float AdditionalMass => magRef.FullyLoadedMass * (Application.isPlaying ? magsLeft : Mathf.Min(positions.Length, localRotations.Length));
 
     public override void Initialize(SofComplex _complex)
     {

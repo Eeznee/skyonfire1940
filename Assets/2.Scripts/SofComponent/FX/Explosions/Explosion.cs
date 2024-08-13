@@ -66,12 +66,12 @@ public struct ExplosiveFiller
             if (module == null) continue;
             float penetrationPower = pen * sqrVelocity / (fragmentsVelocity * fragmentsVelocity);
             float alpha = Vector3.Angle(-h.normal, vel);
-            float armor = Random.Range(0.8f, 1.2f) * module.material.armor / Mathf.Cos(alpha * Mathf.Deg2Rad);
+            float armor = Random.Range(0.8f, 1.2f) * module.Armor.surfaceArmor / Mathf.Cos(alpha * Mathf.Deg2Rad);
             if (penetrationPower > armor)//If penetration occurs
             {
                 //part.Damage(mass * sqrVelocity / 2000f, diam, 0f);
-                module.KineticDamage(diam * diam / 5f, diam, 0f);
-                armor += Random.Range(0.8f, 1.2f) * module.material.totalThickness;
+                module.ProjectileDamage(diam * diam / 5f, diam, 0f);
+                armor += Random.Range(0.8f, 1.2f) * module.Armor.fullPenArmor;
                 sqrVelocity *= 1f - armor / penetrationPower;
                 if (sqrVelocity <= 0f) return;
             }
