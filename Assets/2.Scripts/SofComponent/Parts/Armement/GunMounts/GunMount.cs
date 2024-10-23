@@ -15,7 +15,7 @@ abstract public class GunMount : SofComponent
 
     protected Gun[] guns;
 
-    public Vector3 AimPosition => aimingPOV.position;
+    public Vector3 AimPosition => aimingPOV ? aimingPOV.position : transform.position;
 
     public virtual float TargetAvailability(Vector3 pos)
     {
@@ -46,7 +46,7 @@ abstract public class GunMount : SofComponent
 
         foreach (Gun g in guns) g.Trigger();
     }
-    public void SetFuze(float dis) {  foreach (Gun g in guns) g.fuzeDistance = dis; }
+    public void SetFuze(float dis) { foreach (Gun g in guns) g.SetFuze(dis / g.gunPreset.ammunition.defaultMuzzleVel); }
     public bool Firing
     {
         get

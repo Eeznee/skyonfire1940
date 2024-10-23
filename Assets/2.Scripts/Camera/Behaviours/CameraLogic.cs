@@ -82,7 +82,7 @@ public abstract class CameraLogic
         {
             case CamPos.Game:
 
-                return (Player.role == SeatRole.Pilot ? subCam.Target().tr : subCam.TargetCrew().seat.tr).position;
+                return (Player.role == SeatRole.Pilot ? subCam.Target().tr : subCam.TargetCrew().Seat.tr).position;
 
             case CamPos.SofObject:
 
@@ -95,7 +95,7 @@ public abstract class CameraLogic
 
             case CamPos.FirstPerson:
 
-                return subCam.TargetCrew().EyesPosition();
+                return subCam.TargetCrew().CameraPosition;
 
             case CamPos.Bomber:
 
@@ -114,7 +114,7 @@ public abstract class CameraLogic
         {
             case CamDir.SeatAligned:
 
-                return subCam.TargetCrew().seat.LookingDirection;
+                return subCam.TargetCrew().Seat.LookingDirection;
 
             case CamDir.Tracking:
 
@@ -134,7 +134,7 @@ public abstract class CameraLogic
                 return Vector3.forward;
 
         }
-        return subCam.TargetCrew().seat.LookingDirection;
+        return subCam.TargetCrew().Seat.LookingDirection;
     }
     public Transform RelativeTransform()
     {

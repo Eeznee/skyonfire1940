@@ -97,7 +97,6 @@ public class SofCamera : MonoBehaviour
             Log.Print("Camera Switch To " + subCam.logName, "Camera Mode");
         }
 
-        if (Player.crew && Player.crew.crewAnimator) Player.crew.crewAnimator.ToggleFirstPersonModel();
         bool resetRotation = GetSubCam(viewMode).logic.BaseDirMode != GetSubCam(previousViewMode).logic.BaseDirMode;
         resetRotation |= viewMode == previousViewMode;
         resetRotation &= viewMode != 2;

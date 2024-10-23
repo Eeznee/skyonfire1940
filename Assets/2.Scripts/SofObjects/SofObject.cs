@@ -22,7 +22,7 @@ public class SofObject : MonoBehaviour
     public bool destroyed = false;
     public bool burning = false;
 
-    protected virtual void SetReferences()
+    public virtual void SetReferences()
     {
         tr = transform;
 
@@ -34,7 +34,7 @@ public class SofObject : MonoBehaviour
 
         if (Application.isPlaying)
         {
-            gameObject.layer = complex ? 9 : 0;
+            gameObject.layer = complex ? (simpleDamage ? 0 : 9) : 0;
             rb = tr.IsChildOf(GameManager.gm.mapmap.transform) ? GameManager.gm.mapmap.rb : this.GetCreateComponent<Rigidbody>();
         }
 
@@ -44,10 +44,6 @@ public class SofObject : MonoBehaviour
     {
         if (warOnly && !GameManager.war) Destroy(gameObject);
         GameInitialization();
-    }
-    public virtual void EditorInitialization()
-    {
-        SetReferences();
     }
     protected virtual void GameInitialization()
     {

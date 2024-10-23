@@ -27,7 +27,7 @@ public class BailOut : CockpitInteractable
         CockpitInteractableUpdate();
         if (xrGrab && Player.seat.canopy)
         {
-            xrGrab.enabled = Player.crew.seat.canopy.state > 0.7f;
+            xrGrab.enabled = Player.crew.Seat.canopy.state > 0.7f;
             if (!xrGrab.enabled) outline.OutlineColor = new Color(0f, 0f, 0f, 0f);
         }
     }

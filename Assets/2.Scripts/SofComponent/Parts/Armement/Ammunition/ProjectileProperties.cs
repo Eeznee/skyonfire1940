@@ -31,6 +31,8 @@ public class ProjectileProperties
     public bool displayAsBullet = false;
     public bool approximated;
 
+    public float Energy => baseVelocity * baseVelocity * mass * 0.5f;
+
 
     public ProjectileProperties(string n, float m, float d, float bv, float bp)
     {

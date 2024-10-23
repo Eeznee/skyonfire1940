@@ -43,15 +43,22 @@ public class SofAircraft : SofComplex
 
     public bool GroundedStart => squadron.airfield >= 0;
 
-    protected override void SetReferences()
+    public void ResetStationsToDefault()
     {
-        foreach (Station s in stations) if (stations != null && s != null) s.UpdateOptions();
+        foreach (Station s in stations) if (stations != null && s != null) s.SelectAndDisactivate(0);
+    }
 
-        base.SetReferences();
+    public override void SetReferences()
+    {
+        foreach (Station s in stations) if (stations != null && s != null) s.SelectAndDisactivate();
 
         bombardierSeat = GetComponentInChildren<BombardierSeat>();
         bombSight = GetComponentInChildren<Bombsight>();
         animator = GetComponent<Animator>();
+
+        base.SetReferences();
+
+        stats = new AircraftStats(this);
     }
     protected override void GameInitialization()
     {
@@ -59,19 +66,15 @@ public class SofAircraft : SofComplex
 
         AddEssentialComponents();
 
-        for (int i = 0; i < stations.Length; i++) stations[i].ChooseOption(squadron.stations[i]);
+        for (int i = 0; i < stations.Length; i++) stations[i].SelectAndDestroy(squadron.stations[i]);
 
         base.GameInitialization();
 
         InitializeMarkersAndGameReferences();
+
         if (!GroundedStart) data.rb.velocity = transform.forward * stats.MaxSpeed(data.altitude.Get, 1f);
 
         CreateManagers();
-    }
-    protected override void GetSofComponentsAndSetReferences()
-    {
-        base.GetSofComponentsAndSetReferences();
-        stats = new AircraftStats(this);
     }
     private void AddEssentialComponents()
     {

@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
+[AddComponentMenu("Sof Components/Weapons/Heavy Ordnance/Rockets Load")]
 public class RocketsLoad : OrdnanceLoad
 {
     public float dispersion = 0.5f;

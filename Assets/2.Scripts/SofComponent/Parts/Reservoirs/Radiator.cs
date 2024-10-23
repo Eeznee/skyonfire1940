@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
+[AddComponentMenu("Sof Components/Liquid Systems/Radiator")]
 public class Radiator : SofModule, IDamageTick
 {
     public LiquidTank mainTank;

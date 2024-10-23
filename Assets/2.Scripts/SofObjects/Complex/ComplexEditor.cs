@@ -10,18 +10,17 @@ using UnityEditor.SceneManagement;
 [CustomEditor(typeof(SofComplex))]
 public class SofComplexEditor : SofObjectEditor
 {
-    private Mass emptyMass;
-    private Mass loadedMass;
-
-
-
     SerializedProperty targetEmptyMass;
     SerializedProperty cogForwardDis;
 
     protected virtual void OnEnable()
     {
+        SofComplex complex = (SofComplex)target;
+
         targetEmptyMass = serializedObject.FindProperty("targetEmptyMass");
         cogForwardDis = serializedObject.FindProperty("cogForwardDistance");
+
+        complex.SetReferences();
     }
 
     static bool showMass = true;
@@ -40,13 +39,10 @@ public class SofComplexEditor : SofObjectEditor
         {
             EditorGUI.indentLevel++;
 
-            IMassComponent[] massComponents = complex.massComponents.ToArray();
-            emptyMass = new Mass(massComponents, true);
-            loadedMass = new Mass(massComponents, false);
-            EditorGUILayout.LabelField("Empty Mass", emptyMass.mass.ToString("0.00") + " kg");
-            EditorGUILayout.LabelField("Loaded Mass", loadedMass.mass.ToString("0.00") + " kg");
-            EditorGUILayout.LabelField("Empty COG", emptyMass.center.ToString("F2"));
-            EditorGUILayout.LabelField("Loaded COG", loadedMass.center.ToString("F2"));
+            EditorGUILayout.LabelField("Empty Mass", complex.EmptyMass.mass.ToString("0.00") + " kg");
+            EditorGUILayout.LabelField("Loaded Mass", complex.LoadedMass.mass.ToString("0.00") + " kg");
+            EditorGUILayout.LabelField("Empty COG", complex.EmptyMass.center.ToString("F2"));
+            EditorGUILayout.LabelField("Loaded COG", complex.LoadedMass.center.ToString("F2"));
 
             EditorGUI.indentLevel--;
         }

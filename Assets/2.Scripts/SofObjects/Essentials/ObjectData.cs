@@ -74,13 +74,19 @@ public class ObjectData : SofComponent
         up = new Value<Vector3>(() => { return tr.up; }, this);
         right = new Value<Vector3>(() => { return tr.right; }, this);
         position = new Value<Vector3>(() => { return tr.position; }, this);
+
+        prevVelFirstValue = false;
     }
     public override void SetReferences(SofComplex _complex)
     {
         base.SetReferences(_complex);
         OnValuesReset = null;
         InitializeValues();
-        if(rb) prevVel = rb.velocity;
+    }
+    public override void Initialize(SofComplex _complex)
+    {
+        base.Initialize(_complex);
+        if (rb) prevVel = rb.velocity;
     }
     void FixedUpdate()
     {
@@ -91,6 +97,7 @@ public class ObjectData : SofComponent
             ComputeWorldState();
         }
     }
+    private bool prevVelFirstValue;
     protected Vector3 prevVel { get; private set; }
     public Vector3 acceleration { get; private set; }
     public float truegForce { get; private set; }
@@ -102,6 +109,12 @@ public class ObjectData : SofComponent
     const float invertGravity = 1f / 9.81f;
     protected void ComputeAcceleration()
     {
+        if (!prevVelFirstValue)
+        {
+            prevVel = rb.velocity;
+            prevVelFirstValue = true;
+        }
+
         //Acceleration
         acceleration = (rb.velocity - prevVel) * TimeManager.invertFixedDelta;
         acceleration = tr.InverseTransformDirection(acceleration);

@@ -6,12 +6,13 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
-
+[AddComponentMenu("Sof Components/Liquid Systems/Liquid Tank")]
 public class LiquidTank : SofModule, IDamageTick, IMassComponent, IIgnitable
 {
     public override float MaxHp => ModulesHPData.liquidTankHpRatio * Mathf.Pow(capacity, 2f / 3f);
     public float EmptyMass => 0f;
-    public float LoadedMass => Application.isPlaying ? fluidMass : capacity;
+    public float LoadedMass => capacity;
+    public float RealMass => fluidMass;
     public override ModuleArmorValues Armor => new ModuleArmorValues(armorThickness, Mathf.Sqrt(fluidMass));
 
 

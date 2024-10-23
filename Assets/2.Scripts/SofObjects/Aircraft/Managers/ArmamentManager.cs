@@ -24,6 +24,7 @@ public class ArmamentManager
 
         rockets = Station.GetOrdnances<RocketsLoad>(aircraft.stations);
         bombs = Station.GetOrdnances<BombsLoad>(aircraft.stations);
+        torpedoes = Station.GetOrdnances<TorpedosLoad>(aircraft.stations);
 
         ConvergeGuns(aircraft.convergeance);
     }
@@ -41,7 +42,7 @@ public class ArmamentManager
     {
         Transform tr = aircraft.transform;
 
-        Vector3 point = aircraft.crew[0].seat.defaultPOV.position + tr.forward * convergence;
+        Vector3 point = aircraft.crew[0].Seat.defaultPOV.position + tr.forward * convergence;
         float distance = (point - tr.position).magnitude;
 
         List<Gun> guns = new List<Gun>(primaries);
@@ -89,6 +90,7 @@ public class ArmamentManager
     public void DropBomb()
     {
         OrdnanceLoad.LaunchOptimal(bombs, 5f);
+        DropTorpedo();
     }
     public void FireRocket()
     {

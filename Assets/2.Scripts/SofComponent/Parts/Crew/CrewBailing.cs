@@ -2,11 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CrewBailing
+[RequireComponent(typeof(CrewMember))]
+[AddComponentMenu("Sof Components/Crew Seats/Crew Bailing")]
+public class CrewBailing : MonoBehaviour
 {
+    public Parachute parachute;
+    public Parachute specialPlayerParachute;
+
+    private Parachute selectedParachute => specialPlayerParachute && Player.crew == crew ? specialPlayerParachute : parachute;
+
     private CrewMember crew;
-    private SofAircraft aircraft;
-    private Transform tr;
+    private SofAircraft aircraft => crew.aircraft;
+    private Transform tr => crew.tr;
 
     private float bailingCount;
     private bool tryingToBail = false;
@@ -15,27 +22,27 @@ public class CrewBailing
     const float minBailAltitude = 30f;
     const float minCrashTime = 2f;
 
-    public CrewBailing(CrewMember _crew)
+    private void Awake()
     {
-        crew = _crew;
-        aircraft = crew.aircraft;
-        tr = crew.tr;
+        crew = GetComponent<CrewMember>();
     }
     private void AutoBail()
     {
         if (tryingToBail) return;
         bool aircraftDestroyed = aircraft && (aircraft.burning || aircraft.destroyed);
         bool notInPlayerAircraft = Player.aircraft != aircraft;
-        if (aircraftDestroyed && notInPlayerAircraft) Start(Random.Range(1f, 3f));
+        if (aircraftDestroyed && notInPlayerAircraft) StartBailing(Random.Range(1f, 3f));
     }
     private bool CanBail()
     {
         bool canBail = crew.data.relativeAltitude.Get + crew.data.vsp.Get * minCrashTime > minBailAltitude;
-        if (crew.seat.canopy) canBail &= crew.seat.canopy.state > 0.5f || crew.seat.canopy.disabled;
+        if (crew.Seat.canopy) canBail &= crew.Seat.canopy.state > 0.5f || crew.Seat.canopy.disabled;
         return canBail;
     }
-    public void Update()
+    private void Update()
     {
+        if (crew.ActionsUnavailable) return;
+
         AutoBail();
 
         if (tryingToBail && CanBail())
@@ -47,25 +54,24 @@ public class CrewBailing
         }
     }
 
-    public void Start(float delay)
+    public void StartBailing(float delay)
     {
         if (!aircraft || crew.ripped || tryingToBail) return;
         tryingToBail = true;
-        if (crew.seat.canopy) crew.seat.canopy.Set(1f);
+        if (crew.Seat.canopy) crew.Seat.canopy.Set(1f);
         bailingCount = bailTime + delay;
     }
-    public void Cancel()
+    public void CancelBailing()
     {
         if (!aircraft || crew.ripped) return;
         tryingToBail = false;
-        if (crew.seat.canopy) crew.seat.canopy.Set(0f);
+        if (crew.Seat.canopy) crew.Seat.canopy.Set(0f);
     }
     public void BailInstant()
     {
         if (!aircraft || crew.ripped) return;
         tryingToBail = false;
         if (crew.IsPilot) aircraft.destroyed = true;
-        Parachute para = crew.specialPlayerParachute && Player.crew == crew ? crew.specialPlayerParachute : crew.parachute;
-        GameObject.Instantiate(para, tr.position, tr.rotation).TriggerParachute(aircraft, crew);
+        Instantiate(selectedParachute, tr.position, tr.rotation).TriggerParachute(aircraft, crew);
     }
 }

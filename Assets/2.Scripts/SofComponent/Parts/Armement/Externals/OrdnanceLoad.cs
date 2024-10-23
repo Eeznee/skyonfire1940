@@ -4,7 +4,8 @@ using UnityEngine;
 
 public abstract class OrdnanceLoad : SofComponent, IMassComponent
 {
-    public float LoadedMass => SingleMass * (Application.isPlaying ? Mathf.Max(launchPositions.Length - fireIndex, 0) : launchPositions.Length);
+    public float RealMass => SingleMass * Mathf.Max(launchPositions.Length - fireIndex);
+    public float LoadedMass => SingleMass * launchPositions.Length;
     public float EmptyMass => 0f;
     public virtual float SingleMass => 0f;
 
@@ -47,8 +48,13 @@ public abstract class OrdnanceLoad : SofComponent, IMassComponent
             AudioClip clip = launchClips[Random.Range(0, launchClips.Length)];
             complex.avm.persistent.global.PlayOneShot(clip);
         }
+
+        Mass mass = new Mass(SingleMass, localPos + launchPositions[fireIndex]);
+        complex.ShiftMass(-mass);
+
         fireIndex++;
         ordnanceMass -= SingleMass;
+
 
         if (symmetrical) symmetrical.Launch(delayFuse);
 

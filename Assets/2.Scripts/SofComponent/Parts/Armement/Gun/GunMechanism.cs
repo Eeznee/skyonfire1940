@@ -37,7 +37,7 @@ public class GunMechanism : MonoBehaviour
 
         gun.OnTriggerEvent += OnTrigger;
     }
-    public void Reset()
+    public void ResetMechanism()
     {
         cycleState = gunPreset.openBolt ? 0f : 1f;
         roundState = gunPreset.openBolt ? RoundState.None : RoundState.HotRound;

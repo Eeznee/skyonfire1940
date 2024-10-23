@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -12,10 +9,23 @@ public class AircraftsListTool : MonoBehaviour
 {
     public AircraftsList list;
 
+    void CheckFramesColliders(SofAircraft aircraft)
+    {
+        SofFrame[] boundedFrames = aircraft.GetComponentsInChildren<SofFrame>();
+        foreach (SofFrame frame in boundedFrames)
+        {
+            if (!frame.GetComponent<Collider>() && frame.Detachable) Debug.Log(aircraft.name + " : " + frame.name + " has no collider");
+        }
+    }
 
     ///WRITE YOUR CUSTOM CODE HERE
     public void CustomFunction(SofAircraft aircraft)
     {
+        LinkSpar[] linkSpars = aircraft.GetComponentsInChildren<LinkSpar>();
+        foreach (LinkSpar spar in linkSpars)
+        {
+            Debug.Log(aircraft.name + "  :  " + spar.name);
+        }
     }
 }
 #if UNITY_EDITOR

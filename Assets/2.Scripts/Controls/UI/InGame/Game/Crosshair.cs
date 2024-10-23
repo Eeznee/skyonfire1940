@@ -11,7 +11,7 @@ public class Crosshair : MonoBehaviour
     }
     void LateUpdate()
     {
-        if (Player.aircraft && !Player.crew.ripped && !Player.crew.humanBody.Gloc())
+        if (Player.aircraft && !Player.crew.ripped && !Player.crew.ActionsUnavailable)
         {
             Vector3 position = Player.seat.CrosshairPosition;
             transform.position = SofCamera.cam.WorldToScreenPoint(position);

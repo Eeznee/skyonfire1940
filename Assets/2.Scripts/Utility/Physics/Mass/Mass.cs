@@ -12,28 +12,29 @@ public struct Mass
         mass = _mass;
         center = _center;
     }
-    public Mass(IMassComponent part, bool empty)
+    public Mass(IMassComponent part, MassCategory category)
     {
-        float partMass = empty ? part.EmptyMass : part.LoadedMass;
+        float partMass = part.Mass(category);
         mass = partMass;
         SofComponent component = part as SofComponent;
         center = component.sofObject.transform.InverseTransformPoint(component.transform.position);
     }
-    public Mass(IMassComponent[] massComponents, bool empty)
+    public Mass(IMassComponent[] massComponents, MassCategory category)
     {
         mass = 0f;
         center = Vector3.zero;
 
         foreach (IMassComponent massComponent in massComponents)
         {
-            Mass partMass = new Mass(massComponent, empty);
+            Mass partMass = new Mass(massComponent, category);
             mass += partMass.mass;
             center += partMass.mass * partMass.center;
         }
+
         if (mass > 0f) center /= mass;
     }
 
-    public static Vector3 InertiaMoment(IMassComponent[] massComponents, bool empty)
+    public static Vector3 InertiaMoment(IMassComponent[] massComponents, MassCategory category)
     {
         Vector3 inertiaMoment = Vector3.zero;
         foreach (IMassComponent massComponent in massComponents)
@@ -43,7 +44,7 @@ public struct Mass
             float x = new Vector2(localPos.y, localPos.z).sqrMagnitude;
             float y = new Vector2(localPos.x, localPos.z).sqrMagnitude;
             float z = new Vector2(localPos.x, localPos.y).sqrMagnitude;
-            inertiaMoment += new Vector3(x, y, z) * (empty ? massComponent.EmptyMass : massComponent.LoadedMass);
+            inertiaMoment += new Vector3(x, y, z) * massComponent.Mass(category);
         }
         return inertiaMoment;
     }
@@ -57,5 +58,10 @@ public struct Mass
     {
         m2.mass = -m2.mass;
         return m1 + m2;
+    }
+    public static Mass operator -(Mass m1)
+    {
+        m1.mass = -m1.mass;
+        return m1;
     }
 }

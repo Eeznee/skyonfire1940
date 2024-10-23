@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
+[AddComponentMenu("Sof Components/Weapons/Heavy Ordnance/Bombs Load")]
 public class BombsLoad : OrdnanceLoad
 {
     public bool bombBay;
@@ -13,7 +14,7 @@ public class BombsLoad : OrdnanceLoad
 
     private Bomb[] bombs;
 
-    public override float SingleMass => bombRef.mass;
+    public override float SingleMass => bombRef ? bombRef.mass : base.SingleMass;
     protected override void Clear()
     {
         base.Clear();
@@ -39,7 +40,7 @@ public class BombsLoad : OrdnanceLoad
         if (fireIndex >= launchPositions.Length) return false;
         if (bombBay && aircraft.hydraulics.bombBay.state < 1f) return false;
 
-        bombs[fireIndex].Drop(5f, bombBay);
+        bombs[fireIndex].Drop();
 
         base.Launch(delayFuse);
 

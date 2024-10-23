@@ -11,7 +11,6 @@ public class BulletHits : ScriptableObject
     public GameObject woodHit;
     public GameObject metalHit;
     public GameObject waterHit;
-    public GameObject explosiveHit;
     public GameObject incendiaryHit;
     public GameObject debris;
     public GameObject bulletHole;

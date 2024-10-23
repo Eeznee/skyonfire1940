@@ -25,7 +25,7 @@ public class UndercarriageManager
     }
     void SolveSuspensionsBalance()
     {
-        CustomWheel[] wheels = aircraft.GetComponentsInChildren<CustomWheel>();
+        Wheel[] wheels = aircraft.GetComponentsInChildren<Wheel>();
         Vector3[] positions = new Vector3[wheels.Length];
         Matrix4x4 flattenWheels = FlattenMatrix(wheels);
         Vector3 centerOfGravity = flattenWheels * aircraft.GetCenterOfMass();
@@ -40,7 +40,7 @@ public class UndercarriageManager
 
        // for (int i = 0; i < positions.Length; i++) wheels[i].suspension.AdjustSuspension(positions[i].z > 0f ? noseNormalForce : rearNormalForce);
     }
-    private Matrix4x4 FlattenMatrix(CustomWheel[] wheels)
+    private Matrix4x4 FlattenMatrix(Wheel[] wheels)
     {
         Vector3 forwardPos = wheels[0].localPos;
         Vector3 rearwardPos = wheels[0].localPos;

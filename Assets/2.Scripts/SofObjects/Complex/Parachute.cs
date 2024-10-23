@@ -45,7 +45,7 @@ public class Parachute : SofComplex
             //else PlayerCamera.ResetRotation(false);
             Player.Set(this);
         }
-        aircraft.OnPartDetach(this);
+        aircraft.RemoveComponentRoot(_crew);
     }
     protected override void GameInitialization()
     {

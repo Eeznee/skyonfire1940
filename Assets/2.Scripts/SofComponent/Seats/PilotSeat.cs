@@ -7,6 +7,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
+[AddComponentMenu("Sof Components/Crew Seats/Pilot Seat")]
 public class PilotSeat : CrewSeat
 {
     public Transform zoomedPOV;
@@ -107,7 +108,7 @@ public class PilotSeat : CrewSeat
             float pitch = aircraft.inputs.target.pitch;
 
             pitch = Mathf.Min(pitch, Mathf.Lerp(0.7f, 1f, difficulty));
-            pitch *= crew.humanBody.Stamina();
+            pitch *= crew.forcesEffect.Stamina();
 
             aircraft.inputs.target.pitch = pitch;
         }

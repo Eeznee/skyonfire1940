@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
+
+[AddComponentMenu("Sof Components/Undercarriage/Steering Axis")]
 public class SteeringAxis : SofComponent
 {
     public enum Controls
@@ -16,6 +18,13 @@ public class SteeringAxis : SofComponent
     public float maxSteerAngle = 20f;
 
     private float steerAngle = 0f;
+    private Wheel wheel;
+
+    public override void Initialize(SofComplex _complex)
+    {
+        base.Initialize(_complex);
+        wheel = GetComponentInChildren<Wheel>();
+    }
 
     private void FixedUpdate()
     {
@@ -35,6 +44,8 @@ public class SteeringAxis : SofComponent
     const float freeWheelMaxForwardSpeed = 6f;
     private void FreeWheelFixedUpdate()
     {
+        if (!wheel.grounded) return;
+
         Vector3 pointDir = rb.GetPointVelocity(tr.position);
         float groundSpeed = pointDir.magnitude;
         float forwardSpeed = Vector3.Dot(pointDir, tr.root.forward);

@@ -33,6 +33,6 @@ public class GoProCam : CameraLogic
 
     public override Vector3 DefaultStartingPos()
     {
-        return subCam.TargetCrew().seat.tr.TransformPoint(subCam.TargetCrew().seat.goProViewPoint);
+        return subCam.TargetCrew().Seat.tr.TransformPoint(subCam.TargetCrew().Seat.goProViewPoint);
     }
 }

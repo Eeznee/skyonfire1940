@@ -6,13 +6,13 @@ using UnityEngine;
 [System.Serializable]
 public class Quad
 {
-    public Quad(Transform _tr,Vector3 lt, Vector3 lb, Vector3 tt, Vector3 tb)
+    public Quad(Transform _tr,Vector3 _leadingTop, Vector3 _leadingBot, Vector3 _trailingTop, Vector3 _trailingBot)
     {
         tr = _tr;
-        leadingTop = lt;
-        leadingBot = lb;
-        trailingTop = tt;
-        trailingBot = tb;
+        leadingTop = _leadingTop;
+        leadingBot = _leadingBot;
+        trailingTop = _trailingTop;
+        trailingBot = _trailingBot;
 
         botAeroPos = Vector3.Lerp(trailingBot, leadingBot, liftLine);
         topAeroPos = Vector3.Lerp(trailingTop, leadingTop, liftLine);
@@ -78,6 +78,7 @@ public class Quad
     public Vector3 AeroDir(bool world) { return world ? tr.TransformDirection(aeroDir) : aeroDir; }
     public Vector3 CenterAero(bool world) { return world ? tr.TransformPoint(centerAero) : centerAero; }
     public Vector3 CenterMass(bool world) { return world ? tr.TransformPoint(centerMass) : centerMass; }
+    public Vector3 ControlSurfaceAxis() { return (leadingTop - leadingBot).normalized; }
 
     protected float area;
     protected float span;

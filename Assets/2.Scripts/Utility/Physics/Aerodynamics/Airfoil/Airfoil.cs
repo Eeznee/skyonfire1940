@@ -6,7 +6,7 @@ using UnityEditor;
 #endif
 
 [CreateAssetMenu(fileName = "New Airfoil", menuName = "SOF/Aircraft Modules/Airfoil")]
-public class Airfoil : ScriptableObject
+public class Airfoil : ScriptableObject, IAirfoil
 {
     public enum AirfoilType
     {

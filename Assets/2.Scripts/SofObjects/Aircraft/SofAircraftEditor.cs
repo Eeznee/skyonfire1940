@@ -65,7 +65,7 @@ public class SofAircraftEditor : SofComplexEditor
             EditorGUILayout.PropertyField(axesSpeed);
             EditorGUILayout.PropertyField(convergence, new GUIContent("Gun Convergence"));
             EditorGUILayout.PropertyField(stations);
-            foreach (Station s in aircraft.stations) if (aircraft.stations != null && s != null) s.UpdateOptions();
+            foreach (Station s in aircraft.stations) if (aircraft.stations != null && s != null) s.SelectAndDisactivate();
 
             EditorGUI.indentLevel--;
         }

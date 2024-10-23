@@ -30,7 +30,7 @@ public static class ModulesHPData
     public const float stabilizerHpPerSq = 30f;
     public const float sparHpPerSq = 45f;
 
-    public const float wheelHpPerSq = 70f;
+    public const float wheelHpPerSq = 150f;
 
 
     //Hp based on other ratios
@@ -39,9 +39,9 @@ public static class ModulesHPData
 
 
     //Armor values
-    public static ModuleArmorValues DuraluminArmor => new ModuleArmorValues(0.25f,0.5f);
-    public static ModuleArmorValues EngineArmor => new ModuleArmorValues(2f, 20f);
+    public static ModuleArmorValues DuraluminArmor => new ModuleArmorValues(0.5f,1f);
+    public static ModuleArmorValues EngineArmor => new ModuleArmorValues(4f, 30f);
     public static ModuleArmorValues WheelArmor => new ModuleArmorValues(0.5f, 2f);
-    public static ModuleArmorValues CrewmemberArmor => new ModuleArmorValues(0f, 1f);
-    public static ModuleArmorValues SparArmor => new ModuleArmorValues(0f, 4f);
+    public static ModuleArmorValues CrewmemberArmor => new ModuleArmorValues(0f, 3f);
+    public static ModuleArmorValues SparArmor => new ModuleArmorValues(2f, 6f);
 }

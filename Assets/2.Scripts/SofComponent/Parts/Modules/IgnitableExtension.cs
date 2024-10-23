@@ -26,11 +26,11 @@ public class IgnitableExtension : MonoBehaviour
         module.OnProjectileDamage -= TryBurn;
         module.OnRepair -= StopBurning;
     }
-    public void TryBurn(float damage , float caliber, float fireCoeff)
+    public void TryBurn(float damage, float caliber, float fireCoeff)
     {
         if (burning || module.structureDamage > iIgnitable.MaxStructureDamageToBurn) return;
 
-        float multiplier = fireCoeff * Mathv.SmoothStart(caliber / 7.62f,2);
+        float multiplier = fireCoeff * Mathv.SmoothStart(caliber / 7.62f, 2);
         float chanceNotToBurn = 1f - iIgnitable.BurningChance * multiplier;
         if (Random.value > chanceNotToBurn)
         {
@@ -51,13 +51,15 @@ public class IgnitableExtension : MonoBehaviour
     {
         if (!burning) return;
 
-        foreach (SofModule otherModules in module.complex.modules)
+        SofModule[] modules = module.complex.modules.ToArray();
+
+        foreach (SofModule moduleToBurn in modules)
         {
-            if (!otherModules) continue;
-            float distanceSqr = (otherModules.transform.position - transform.position).sqrMagnitude;
+            if (!moduleToBurn) continue;
+            float distanceSqr = (moduleToBurn.transform.position - transform.position).sqrMagnitude;
             distanceSqr = Mathf.Max(distanceSqr, 4f);
             float damage = burningTickInterval * 0.07f / distanceSqr;
-            otherModules.DirectStructuralDamage(damage);
+            moduleToBurn.DirectStructuralDamage(damage);
         }
     }
 

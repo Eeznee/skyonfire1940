@@ -5,6 +5,8 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
+
+[AddComponentMenu("Sof Components/Crew Seats/Gunner Seat")]
 public class GunnerSeat : CrewSeat
 {
     private bool mainGun = false;

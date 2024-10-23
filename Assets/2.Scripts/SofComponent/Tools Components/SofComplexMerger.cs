@@ -32,6 +32,8 @@ public class SofComplexMerger
                 Transform root = renderer.transform.root;
                 MeshFilter filter = filtRends[i].filter;
                 combine[i].mesh = filter.sharedMesh;
+                if (!filtRends[i].rend.gameObject.activeSelf) combine[i].mesh = new Mesh();
+
                 Vector3 translate = root.InverseTransformPoint(filter.transform.position);
                 Quaternion rotate = Quaternion.Inverse(root.rotation) * filter.transform.rotation;
                 combine[i].transform = Matrix4x4.TRS(translate, rotate, Vector3.one);
@@ -66,7 +68,6 @@ public class SofComplexMerger
         foreach (Renderer renderer in detachedRenderers)
         {
             FilterRenderer filtRend = new FilterRenderer(renderer);
-
             if (unMergedFiltRends.Remove(filtRend)) continue;
             fullMerged.filtRends.Remove(filtRend);
             if (mobileFiltRends.Remove(filtRend)) continue;
@@ -74,6 +75,11 @@ public class SofComplexMerger
             fixedMerged.filtRends.Remove(filtRend);
             renderer.enabled = true;
         }
+        fixedMerged.CombineAndMerge();
+        fullMerged.CombineAndMerge();
+    }
+    public void UpdateMergedModel()
+    {
         fixedMerged.CombineAndMerge();
         fullMerged.CombineAndMerge();
     }

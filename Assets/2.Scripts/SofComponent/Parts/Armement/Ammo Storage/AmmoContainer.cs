@@ -16,8 +16,9 @@ public class AmmoContainer : SofComponent, IMassComponent
     [HideInInspector] public HandGrip grip;
     [HideInInspector] public Gun attachedGun;
 
-    public float LoadedMass => gunPreset.ammunition.FullMass * (Application.isPlaying ? ammo : capacity);
+    public float RealMass => gunPreset.ammunition.FullMass * ammo;
     public float EmptyMass => 0f;
+    public float LoadedMass => gunPreset.ammunition.FullMass * capacity;
 
     public float FullyLoadedMass => gunPreset.ammunition.FullMass * capacity + EmptyMass;
 

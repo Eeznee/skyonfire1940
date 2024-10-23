@@ -42,7 +42,7 @@ public class MechanicalAudio : AudioComponent
         bool wheelGrounded = false;
         foreach (Wheel wheel in wheels)
         {
-            if (false && wheel.data == data) wheelGrounded = wheelGrounded || wheel.wheel.isGrounded;
+            if (false && wheel.data == data) wheelGrounded = wheelGrounded || wheel.grounded;
         }
         targetVolume = wheelGrounded ? Mathf.InverseLerp(5f, 20f, data.gsp.Get) : 0f;
         wheelRoll.source.volume = Mathf.MoveTowards(wheelRoll.source.volume, targetVolume, Time.deltaTime * 5f);

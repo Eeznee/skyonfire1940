@@ -6,7 +6,9 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 using System;
-public class Engine : SofModule, IMassComponent, IDamageTick, IIgnitable
+
+
+public abstract class Engine : SofModule, IMassComponent, IDamageTick, IIgnitable
 {
     public enum EnginesState
     {
@@ -44,14 +46,17 @@ public class Engine : SofModule, IMassComponent, IDamageTick, IIgnitable
     public float MaxStructureDamageToBurn => 0.8f;
     public ParticleSystem BurningEffect => preset.burningEffect;
 
-    public float EmptyMass => preset.weight;
+    public float EmptyMass => preset ? preset.weight : 0f;
     public float LoadedMass => EmptyMass;
+    public float RealMass => EmptyMass;
 
     public override ModuleArmorValues Armor => ModulesHPData.EngineArmor;
     public override float MaxHp
     {
         get
         {
+            if (!preset) return ModulesHPData.engineInLine;
+
             switch (preset.type)
             {
                 case EnginePreset.Type.Radial: return ModulesHPData.engineRadial;
@@ -179,7 +184,6 @@ public class EngineEditor : ModuleEditor
         }
         else
         {
-            GUI.color = Color.red;
             GUILayout.Space(20f);
             EditorGUILayout.HelpBox("Please assign an engine preset", MessageType.Warning);
         }

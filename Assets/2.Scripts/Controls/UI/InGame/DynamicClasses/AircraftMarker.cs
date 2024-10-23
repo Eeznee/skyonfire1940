@@ -79,7 +79,7 @@ public class AircraftMarker : DynamicUI
             }
             else
             {
-                txt += target.crew[0].Action();
+                txt += target.crew[0].Seat.Action;
             }
             infos.text = txt;
         }

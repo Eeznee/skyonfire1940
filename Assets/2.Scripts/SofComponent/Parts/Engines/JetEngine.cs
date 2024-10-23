@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
-
+[AddComponentMenu("Sof Components/Power Group/Jet Engine")]
 public class JetEngine : Engine
 {
     public Transform inlet;

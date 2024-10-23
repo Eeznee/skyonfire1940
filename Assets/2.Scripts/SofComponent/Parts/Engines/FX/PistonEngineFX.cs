@@ -53,7 +53,7 @@ public class PistonEngineFX : AudioComponent
             else popCooldown -= Time.deltaTime;
         }
 
-        bool boost = engine.boosting && engine.boostTime > 0f && complex && complex.lod.LOD() <= 2;
+        bool boost = engine.boosting && engine.boostTime > 0f && complex && complex.lod && complex.lod.LOD() <= 2;
         if (boost && !boostEffect.isPlaying) boostEffect.Play();
         else if (!boost && boostEffect.isPlaying) boostEffect.Stop();
 

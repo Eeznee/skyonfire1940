@@ -37,7 +37,7 @@ public class ObjectLOD : SofComponent
         merger = new SofComplexMerger(this, mobileFiltersExceptions);
         ResetLODGroup();
 
-        complex.onPartDetached += OnPartDetached;
+        complex.onComponentRootRemoved += OnComponentDetached;
     }
     void Update()
     {
@@ -47,27 +47,32 @@ public class ObjectLOD : SofComponent
             if (OnSwitchEvent != null) OnSwitchEvent(lod);
         }
     }
-    private void OnPartDetached(SofComplex debris)
+    public void UpdateMergedModel()
     {
-        Renderer[] detachedRenderers = debris.GetComponentsInChildren<Renderer>();
+        merger.UpdateMergedModel();
+    }
+    private void OnComponentDetached(SofComponent detachedComponent)
+    {
+        Renderer[] detachedRenderers = detachedComponent.GetComponentsInChildren<Renderer>();
         merger.OnPartDetached(detachedRenderers);
 
-        if (!brokenMode)
-        {
-            foreach (Renderer renderer in detachedRenderers)
-                if (!merger.mobileFiltRends.Contains(new FilterRenderer(renderer)))
-                    ToggleBrokenMode();
-        }
+        TryTogglingBrokenMode(detachedRenderers);
         ResetLODGroup();
     }
-    private void ToggleBrokenMode()
+    private void TryTogglingBrokenMode(Renderer[] detachedRenderers)
     {
         if (brokenMode) return;
-        brokenMode = true;
-        lod2.gameObject.DestroyAllChildren();
-        lod2.materials = new Material[0];
-        lod3.gameObject.DestroyAllChildren();
-        lod3.materials = new Material[0];
+
+        foreach (Renderer renderer in detachedRenderers)
+            if (!merger.mobileFiltRends.Contains(new FilterRenderer(renderer)))
+            {
+                brokenMode = true;
+                lod2.gameObject.DestroyAllChildren();
+                lod2.materials = new Material[0];
+                lod3.gameObject.DestroyAllChildren();
+                lod3.materials = new Material[0];
+                return;
+            }
     }
 
     const float lod0Limit = 0.5f;
@@ -84,6 +89,8 @@ public class ObjectLOD : SofComponent
         lods[2].renderers = brokenMode ? BrokenModeLOD2orLOD3(false) : LOD2Renderers();
         lods[3].renderers = brokenMode ? BrokenModeLOD2orLOD3(true) : LOD3Renderers();
         lodGroup.SetLODs(lods);
+        lodGroup.size = aircraft.stats.wingSpan;
+        lodGroup.localReferencePoint = Vector3.zero;
     }
     private Renderer[] LOD0Renderers()
     {
@@ -140,10 +147,12 @@ public class ObjectLOD : SofComponent
     {
         //TODO OnPlayerChange instead
         //if (PlayerManager.complex == complex) return 0;
-        int newLod = 0;
+        int newLod;
         if (merger.fullMerged.renderer.isVisible) newLod = 1;
-        if (lod2.isVisible) newLod = 2;
-        if (lod3.isVisible) newLod = 3;
+        else if (lod2.isVisible) newLod = 2;
+        else if (lod3.isVisible) newLod = 3;
+        else if (merger.fixedMerged.renderer.isVisible) newLod = 0;
+        else newLod = 4;
 
         return newLod;
     }
@@ -160,7 +169,7 @@ public class LodManagerEditor : Editor
 
         ObjectLOD lodManager = (ObjectLOD)target;
         if (lodManager.lod2 && !lodManager.lod2.transform.IsChildOf(lodManager.transform))
-            EditorGUILayout.HelpBox("LOD's must be children of this gameObject",MessageType.Error);
+            EditorGUILayout.HelpBox("LOD's must be children of this gameObject", MessageType.Error);
         if (lodManager.lod3 && !lodManager.lod3.transform.IsChildOf(lodManager.transform))
             EditorGUILayout.HelpBox("LOD's must be children of this gameObject", MessageType.Error);
 

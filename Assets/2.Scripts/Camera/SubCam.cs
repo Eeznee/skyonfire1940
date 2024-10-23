@@ -97,7 +97,7 @@ public class SubCam
         if (logic.Adjustment == CamAdjustment.Position)
             customPos = logic.RelativeTransform().InverseTransformPoint(logic.DefaultStartingPos());
         if (logic.Adjustment == CamAdjustment.Offset)
-            customOffset = TargetCrew().seat.externalViewPoint;
+            customOffset = TargetCrew().Seat.externalViewPoint;
     }
     public void ChangeLogic(CustomCamLogic newLogic)
     {

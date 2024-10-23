@@ -6,7 +6,7 @@ using UnityEngine;
 public class ThirdPersonGameCam : CameraLogic
 {
     public override string Name => "Third Person";
-    public override CamPos BasePosMode { get { return CamPos.SofObject; } }
+    public override CamPos BasePosMode { get { return CamPos.Game; } }
     public override CamDir BaseDirMode { get { return CamDir.SeatAligned; } }
     public override CamUp UpMode { get { return CamUp.Adaptative; } }
     public override bool FollowBaseDir { get { return ControlsManager.CurrentMode() != ControlsMode.Tracking; } }

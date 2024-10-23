@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class SofComplex : SofObject
 {
@@ -13,14 +14,17 @@ public class SofComplex : SofObject
     public float cogForwardDistance = 0f;
     public float targetEmptyMass = 3000f;
 
-    protected Mass mass;
+    public Mass EmptyMass;
+    public Mass LoadedMass;
+    protected Mass realMass;
 
     public ObjectLOD lod;
     public ObjectBubble bubble;
     public ObjectData data;
     public ObjectAudio avm;
 
-    public event Action<SofComplex> onPartDetached;
+    public event Action<SofComponent> onComponentAdded;
+    public event Action<SofComponent> onComponentRootRemoved;
 
     public List<SofComponent> components = new List<SofComponent>();
     public List<IMassComponent> massComponents = new List<IMassComponent>();
@@ -29,33 +33,12 @@ public class SofComplex : SofObject
     public List<SofAirframe> airframes = new List<SofAirframe>();
     public CrewMember[] crew;
 
-    protected override void SetReferences()
+    public override void SetReferences()
     {
         base.SetReferences();
 
         data = this.GetCreateComponent<ObjectData>();
-    }
-    public override void EditorInitialization()
-    {
-        base.EditorInitialization();
-        GetSofComponentsAndSetReferences();
-    }
-    protected override void GameInitialization()
-    {
-        avm = transform.CreateChild("Audio Visual Manager").gameObject.AddComponent<ObjectAudio>();
 
-        base.GameInitialization();
-        GetSofComponentsAndSetReferences();
-        InitializeSofComponents();
-
-        SetMassFromParts();
-        SetRigidbody();
-
-        InvokeRepeating("DamageTick", damageTickInterval, damageTickInterval);
-    }
-
-    protected virtual void GetSofComponentsAndSetReferences()
-    {
         SofComponent[] allComponents = GetComponentsInChildren<SofComponent>();
 
         components = new List<SofComponent>(allComponents);
@@ -67,7 +50,23 @@ public class SofComplex : SofObject
 
         foreach (SofComponent component in allComponents)
             component.SetReferences(this);
+
+        EmptyMass = new Mass(massComponents.ToArray(), MassCategory.Empty);
+        LoadedMass = new Mass(massComponents.ToArray(), MassCategory.Loaded);
     }
+    protected override void GameInitialization()
+    {
+        avm = transform.CreateChild("Audio Visual Manager").gameObject.AddComponent<ObjectAudio>();
+
+        base.GameInitialization();
+        InitializeSofComponents();
+
+        RecomputeRealMass();
+        SetRigidbody();
+
+        InvokeRepeating("DamageTick", damageTickInterval, damageTickInterval);
+    }
+
     protected virtual void InitializeSofComponents()
     {
         if (!Application.isPlaying) return;
@@ -86,21 +85,19 @@ public class SofComplex : SofObject
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
         rb.interpolation = RigidbodyInterpolation.Extrapolate;
     }
-    public float GetMass() { return mass.mass; }
-    public Vector3 GetCenterOfMass() { return mass.center; }
-    public void ShiftMass(float shift) { mass.mass += shift; UpdateRbMass(false); }
-    public void ShiftMass(Mass shift) { mass += shift; UpdateRbMass(true); }
+    public float GetMass() { return realMass.mass; }
+    public Vector3 GetCenterOfMass() { return realMass.center; }
+    public void ShiftMass(float shift) { realMass.mass += shift; UpdateRbMass(false); }
+    public void ShiftMass(Mass shift) { realMass += shift; UpdateRbMass(true); }
     public void UpdateRbMass(bool centerOfMass)
     {
-        if (mass.mass < 1f) mass.mass = 1f;
-        complex.rb.mass = mass.mass;
-        if (centerOfMass) complex.rb.centerOfMass = mass.center;
+        if (realMass.mass < 1f) realMass.mass = 1f;
+        rb.mass = realMass.mass;
+        if (centerOfMass) rb.centerOfMass = realMass.center;
     }
-    public void SetMassFromParts()
+    public void RecomputeRealMass()
     {
-        mass = new Mass(0f, Vector3.zero);
-        foreach (IMassComponent massComponent in massComponents)
-            mass += new Mass(massComponent, false);
+        realMass = new Mass(massComponents.ToArray(), MassCategory.Real);
 
         UpdateRbMass(true);
         ResetInertiaTensor();
@@ -109,11 +106,11 @@ public class SofComplex : SofObject
     {
         if (aircraft != null)
         {
-            Vector3 inertiaTensor = Mass.InertiaMoment(complex.massComponents.ToArray(), true);
+            Vector3 inertiaTensor = Mass.InertiaMoment(massComponents.ToArray(), MassCategory.Real);
             inertiaTensor *= 1.1f;
-            complex.rb.inertiaTensor = inertiaTensor;
+            rb.inertiaTensor = inertiaTensor;
         }
-        else complex.rb.ResetInertiaTensor();
+        else rb.ResetInertiaTensor();
     }
     public void Repair()
     {
@@ -133,8 +130,14 @@ public class SofComplex : SofObject
         if (tnt * 2000f < sqrDis) return;   //no calculations if too far
         foreach (SofModule m in modules.ToArray()) if (m) m.ExplosionDamage(center, tnt);
     }
-    public void RegisterComponent(SofComponent component)
+    public void AddInstantiatedComponent(SofComponent component)
     {
+        if (!component.transform.IsChildOf(transform))
+        {
+            Debug.LogError("There was an attempt to attach a component that is not in the hierarchy of its complex", gameObject);
+            return;
+        }
+
         components.Add(component);
         IMassComponent massComponent = component as IMassComponent;
         if (massComponent != null) massComponents.Add(massComponent);
@@ -144,10 +147,17 @@ public class SofComplex : SofObject
         if (airframe) airframes.Add(airframe);
         IDamageTick damageTicker = component as IDamageTick;
         if (damageTicker != null) damageTickers.Add(damageTicker);
+
+        onComponentAdded?.Invoke(component);
     }
-    public void RemoveComponent(SofComponent component)
+    private void RemoveComponentReferences(SofComponent component)
     {
-        components.Remove(component);
+        if (!components.Remove(component))
+        {
+            Debug.LogError("There was an attempt to remove a component that does not belong to a complex", gameObject);
+            return;
+        }
+
         IMassComponent massComponent = component as IMassComponent;
         if (massComponent != null) massComponents.Remove(massComponent);
         SofModule module = component as SofModule;
@@ -157,22 +167,29 @@ public class SofComplex : SofObject
         IDamageTick damageTicker = component as IDamageTick;
         if (damageTicker != null) damageTickers.Remove(damageTicker);
     }
-    public void OnPartDetach(SofComplex detachedDebris)
+    public void RemoveComponentRoot(SofComponent rootComponent)
     {
-        ShiftMass(new Mass(-detachedDebris.mass.mass, detachedDebris.mass.center));
-        if (mass.mass <= 0f) Debug.LogError(name + ": Mass below zero", gameObject);
+        SofComponent[] debrisComponents = rootComponent.GetComponentsInChildren<SofComponent>();
 
-        foreach (SofComponent component in detachedDebris.components) RemoveComponent(component);
+        foreach (SofComponent component in debrisComponents)
+        {
+            RemoveComponentReferences(component);
+            IMassComponent imass = component.GetComponent<IMassComponent>();
+            if (imass != null)
+            {
+                ShiftMass(-new Mass(imass, MassCategory.Real));
+                if (realMass.mass <= 0f) Debug.LogError(name + ": Mass below zero", gameObject);
+            }
 
-        onPartDetached?.Invoke(detachedDebris);
+        }
+        onComponentRootRemoved?.Invoke(rootComponent);
     }
-
     private bool submerged = false;
     protected void WaterPhysics()
     {
         if (data.altitude.Get < 5f) foreach (SofAirframe airframe in airframes) if (airframe) airframe.Floating();
 
-        bool newSubmerged = data.altitude.Get < 1f;
+        bool newSubmerged = data.altitude.Get < 1f && rb;
         if (newSubmerged != submerged)
         {
             submerged = newSubmerged;
@@ -180,11 +197,4 @@ public class SofComplex : SofObject
             rb.drag = submerged ? 1f : 0f;
         }
     }
-#if UNITY_EDITOR
-    private void OnValidate()
-    {
-        if (Application.isPlaying) return;
-        EditorInitialization();
-    }
-#endif
 }

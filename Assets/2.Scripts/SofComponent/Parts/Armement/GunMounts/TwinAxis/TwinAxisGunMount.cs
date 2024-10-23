@@ -47,12 +47,13 @@ public abstract class TwinAxisGunMount : GunMount
         float elevationTarget = Vector3.SignedAngle(elevator.forward, elevatorAim, -elevator.right);
 
         Vector2 input = new Vector2(traverseTarget / horizontalRate, elevationTarget / verticalRate) / Time.deltaTime;
-
-        if (float.IsNaN(input.x + input.y)) input = Vector2.zero;
+        if (!float.IsFinite(input.x) || !float.IsFinite(input.y)) input = Vector2.zero;
         OperateMainManual(input);
     }
     public override void OperateMainManual(Vector2 input)
     {
+        if (input.sqrMagnitude > 1f) input /= input.magnitude;
+
         Traverse(horizontalRate * Time.deltaTime * input.x);
         Elevate(verticalRate * Time.deltaTime * input.y);
 

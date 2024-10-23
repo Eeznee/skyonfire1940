@@ -112,11 +112,12 @@ public class TwinAxisGunMountEditor : GunMountEditor
     protected Vector3 PointPosition(float traverseAngle, float arcSize, bool upperLimit)
     {
         TwinAxisGunMount t = (TwinAxisGunMount)target;
+        Transform tr = Tr() ? Tr() : t.transform;
 
-        Vector3 dir = Tr().forward;
+        Vector3 dir = tr.forward;
         float limit = upperLimit ? t.MaximumElevation(traverseAngle) : t.MinimumElevation(traverseAngle);
-        dir = Quaternion.AngleAxis(limit, -Tr().right) * dir;
-        dir = Quaternion.AngleAxis(traverseAngle, Tr().up) * dir;
+        dir = Quaternion.AngleAxis(limit, -tr.right) * dir;
+        dir = Quaternion.AngleAxis(traverseAngle, tr.up) * dir;
         return dir * arcSize + OriginPos(traverseAngle);
     }
     protected virtual Vector2 DrawAnglesRange()

@@ -8,6 +8,7 @@ public class EnginesManager
     private SofAircraft aircraft;
 
     public Engine[] all;
+    public Propeller[] propellers;
 
     public EnginesState state;
     public float throttle;
@@ -20,6 +21,7 @@ public class EnginesManager
         aircraft = _aircraft;
 
         all = aircraft.GetComponentsInChildren<Engine>();
+        propellers = aircraft.GetComponentsInChildren<Propeller>();
 
         throttle = aircraft.GroundedStart ? 0f : 1f;
         boost = false;

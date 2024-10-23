@@ -5,19 +5,13 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
-
+[AddComponentMenu("Sof Components/Weapons/Gun Mounts/Pintle")]
 public class PintleGunMount : TwinAxisGunMount
 {
     public override void Initialize(SofComplex _complex)
     {
         base.Initialize(_complex);
         verticalRate = horizontalRate;
-    }
-    public override void OperateMainManual(Vector2 input)
-    {
-        if (input.sqrMagnitude > 1f) input /= input.magnitude;
-
-        base.OperateMainManual(input);
     }
 }
 #if UNITY_EDITOR

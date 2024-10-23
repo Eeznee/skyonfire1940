@@ -10,8 +10,8 @@ public class Station
 {
     public string name = "Bombs Load";
     public int picked;
-    public int priority;
     public bool symmetrical;
+    public int priority;
     public Transform[] options;
     public Transform[] symmetricalOptions;
 
@@ -29,7 +29,7 @@ public class Station
     {
         return options[p] == null ? "Empty" : options[p].name;
     }
-    public void UpdateOptions()
+    public void SelectAndDisactivate()
     {
         for (int i = 0; i < options.Length; i++)
         {
@@ -39,11 +39,16 @@ public class Station
                 symmetricalOptions[i].gameObject.SetActive(i == picked);
         }
     }
-    public void ChooseOption()
+    public void SelectAndDisactivate(int p)
     {
-        ChooseOption(picked);
+        picked = p;
+        SelectAndDisactivate();
     }
-    public void ChooseOption(int p)
+    public void SelectAndDestroy()
+    {
+        SelectAndDestroy(picked);
+    }
+    public void SelectAndDestroy(int p)
     {
         picked = p;
         SetupPickedOption();

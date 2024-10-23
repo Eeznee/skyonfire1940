@@ -4,10 +4,13 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 //
+
+[AddComponentMenu("Sof Components/Power Group/Propeller")]
 public class Propeller : SofComponent, IMassComponent
 {
-    public float EmptyMass => preset.mass;
+    public float EmptyMass => preset ? preset.mass : 0f;
     public float LoadedMass => EmptyMass;
+    public float RealMass => EmptyMass;
     public override int DefaultLayer()
     {
         return 2;
@@ -28,11 +31,11 @@ public class Propeller : SofComponent, IMassComponent
 
     //Data
     public float rps { get { return engine.rps * reductionGear; } }
-    public float MomentOfInertia { get { return LoadedMass * Mathv.SmoothStart(preset.diameter, 2) / 20f; } }
+    public float MomentOfInertia { get { return RealMass * Mathv.SmoothStart(preset.diameter, 2) / 20f; } }
     public float TotalSpeed { get { return Mathf.Sqrt(Mathv.SmoothStart(rps * preset.diameter / 13f, 2) + Mathv.SmoothStart(data.ias.Get, 2)); } }
     //Forces
-    public float torque = 0f;
-    public float thrust = 0f;
+    public float torque { get; private set; }
+    public float thrust { get; private set; }
     public override void Initialize(SofComplex _complex)
     {
         base.Initialize(_complex);
@@ -84,8 +87,9 @@ public class Propeller : SofComponent, IMassComponent
             thrust = Mathf.Lerp(simulatedForces.x, tweakedForces.x, engine.trueThrottle);
             torque = engine.Working() ? tweakedForces.y : simulatedForces.y * reductionGear;
         }
-
         if (aircraft && TotalSpeed > 0f && !float.IsNaN(thrust)) rb.AddForceAtPosition(transform.forward * thrust, transform.position, ForceMode.Force);
+
+
         if (false && aircraft && TotalSpeed > 0f && !float.IsNaN(torque))
         {
             Vector3 upForce = transform.root.up * torque / preset.diameter; //The diameter and torque are divided by 2, cancelling each other
@@ -97,13 +101,17 @@ public class Propeller : SofComponent, IMassComponent
 
         if (tr.position.y < preset.diameter) engine.Rip();
     }
-
+    
     public void Rip()
     {
         engine.Rip();
         engine.rps /= 10f;
         meshRenderer.enabled = blurredProp.enabled = false;
         brokenProp.enabled = true;
+
+        ripped = true;
+
+        if(complex.lod) complex.lod.UpdateMergedModel();
     }
 
     void OnTriggerEnter(Collider other) { Rip(); }

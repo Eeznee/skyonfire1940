@@ -13,7 +13,7 @@ public class TrackingCrosshair : MonoBehaviour
 
     void LateUpdate()
     {
-        if (Player.aircraft && !Player.crew.ripped && !Player.crew.humanBody.Gloc())
+        if (Player.aircraft && !Player.crew.ripped && !Player.crew.ActionsUnavailable)
         {
             Vector3 pos = SofCamera.cam.WorldToScreenPoint(Player.tr.position + SofCamera.directionInput * Player.aircraft.convergeance);
             transform.position = pos;

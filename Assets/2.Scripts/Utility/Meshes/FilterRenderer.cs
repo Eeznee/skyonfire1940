@@ -33,7 +33,6 @@ public struct FilterRenderer
         if (rend.GetComponent<Flap>()) return true;
         if (rend.GetComponent<Slat>()) return true;
         if (rend.GetComponent<Wheel>()) return true;
-        if (rend.GetComponent<CustomWheel>()) return true;
         if (rend.GetComponent<Suspension>()) return true;
         if (rend.GetComponent<GunsCover>()) return true;
         if (rend.GetComponent<GunMount>()) return true;

@@ -11,21 +11,12 @@ using UnityEditor;
 public class CrewEditor : ModuleEditor
 {
     static bool showSeats = true;
-    SerializedProperty material;
     SerializedProperty seats;
-
-    static bool showParachutes = true;
-    SerializedProperty parachute;
-    SerializedProperty specialPlayerParachute;
 
     protected override void OnEnable()
     {
         base.OnEnable();
-        material = serializedObject.FindProperty("material");
         seats = serializedObject.FindProperty("seats");
-
-        parachute = serializedObject.FindProperty("parachute");
-        specialPlayerParachute = serializedObject.FindProperty("specialPlayerParachute");
     }
 
     public override void OnInspectorGUI()
@@ -45,6 +36,8 @@ public class CrewEditor : ModuleEditor
 
             if (crew.complex)
             {
+                if (crew.seats == null) crew.seats = new List<CrewSeat>();
+
                 string[] names = new string[crew.seats.Count];
                 int[] values = new int[crew.seats.Count];
 
@@ -56,19 +49,12 @@ public class CrewEditor : ModuleEditor
                     values[i] = i;
                 }
                 crew.seatIdTest = EditorGUILayout.IntPopup("Test Seat Animation", crew.seatIdTest, names, values);
+
+                if (crew.seats.Count == 0) EditorGUILayout.HelpBox("You must assign a seat to this crewmember", MessageType.Warning);
             }
 
 
-            EditorGUI.indentLevel--;
-        }
-        GUILayout.Space(15f);
-        showParachutes = EditorGUILayout.Foldout(showParachutes, "Parachute", true, EditorStyles.foldoutHeader);
-        if (showParachutes)
-        {
-            EditorGUI.indentLevel++;
 
-            EditorGUILayout.PropertyField(parachute);
-            EditorGUILayout.PropertyField(specialPlayerParachute);
 
             EditorGUI.indentLevel--;
         }

@@ -4,7 +4,8 @@ using System;
 using UnityEngine;
 
 
-public enum PurchasableGroup{
+public enum PurchasableGroup
+{
     BaseGame,
     BritishPack,
     GermanPack,
@@ -19,17 +20,31 @@ public class AircraftCard : ScriptableObject
     public PurchasableGroup purchasableGroup = PurchasableGroup.BaseGame;
     public GameObject aircraft;
     public SofAircraft sofAircraft;
-    public GameObject fixedModel;
     public Game.Team team = Game.Team.Ally;
-    public bool bomb;
-    public bool bombBay;
     public bool forwardGuns;
-    public bool gunner;
-    public bool airbrakes;
     public bool fighter;
     public bool bomber;
     public Formation formation;
     public Sprite icon;
+
+    public float standardEmptyMass;
+    public float standardLoadedMass;
+
+    public void UpdateAircraft(int listId)
+    {
+        id =listId;
+        if (!sofAircraft) sofAircraft = aircraft.GetComponent<SofAircraft>();
+
+        sofAircraft.card = this;
+        sofAircraft.ResetStationsToDefault();
+        sofAircraft.SetReferences();
+
+        Mass emptyMass = new Mass(sofAircraft.massComponents.ToArray(), MassCategory.Empty);
+        Mass loadedMass = new Mass(sofAircraft.massComponents.ToArray(), MassCategory.Loaded);
+
+        standardEmptyMass = emptyMass.mass;
+        standardLoadedMass = loadedMass.mass;
+    }
 
     public bool Available()
     {
@@ -46,5 +61,5 @@ public class AircraftCard : ScriptableObject
         return false;
 #endif
     }
-    [HideInInspector]public int id;
+    [HideInInspector] public int id;
 }

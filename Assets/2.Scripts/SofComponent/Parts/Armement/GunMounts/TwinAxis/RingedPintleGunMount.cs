@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
-
+[AddComponentMenu("Sof Components/Weapons/Gun Mounts/Ringed Pintle")]
 public class RingedPintleGunMount : PintleGunMount
 {
     public Transform turretRing;

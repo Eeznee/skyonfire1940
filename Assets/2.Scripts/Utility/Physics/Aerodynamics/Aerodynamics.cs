@@ -20,15 +20,6 @@ public static class Aerodynamics
     public static float GetAirDensity(float alt) { return GetAirDensity(GetTemperature(alt),GetPressure(alt)); }
 
 
-    public static Vector2 SimpleCoefficients(float alpha,float maxCl,float minCd,float maxCd)
-    {
-        float rad = alpha * Mathf.Deg2Rad;
-        float cd = (1f - Mathv.QuickLoopingCos(rad)) * (maxCd - minCd) * 0.5f + minCd;
-        float cl = Mathv.QuickLoopingSin(rad) * maxCl;
-
-        return new Vector2(cd, cl);
-    }
-
 
     //Aerodynamic forces calculations ------------------------------------------------------------------------------------------------------------------------------------------------
     const float maxDrag = 3f;

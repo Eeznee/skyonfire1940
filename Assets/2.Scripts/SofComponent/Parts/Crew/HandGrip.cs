@@ -70,13 +70,6 @@ public class HandGripEditor : Editor
             grip.rightEulerOffset = -grip.leftEulerOffset;
             grip.rightEulerOffset.x *= -1f;
         }
-
-
-        if (GUI.changed)
-        {
-            EditorUtility.SetDirty(grip);
-            EditorSceneManager.MarkSceneDirty(grip.gameObject.scene);
-        }
         serializedObject.ApplyModifiedProperties();
     }
 }

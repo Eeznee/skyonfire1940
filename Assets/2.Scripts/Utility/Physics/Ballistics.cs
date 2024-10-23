@@ -4,6 +4,55 @@ using UnityEngine;
 
 public static class Ballistics
 {
+    public struct ProjectileChart
+    {
+        public float basePenetration;
+        public float atBaseVelocity;
+
+        public float diameter;
+        public float fireChance;
+
+        public ProjectileChart(float _basePen, float _baseVel, float _diameter, float _fireChance)
+        {
+            basePenetration = _basePen;
+            atBaseVelocity = _baseVel;
+            diameter = _diameter;
+            fireChance = _fireChance;  
+        }
+
+        public float Pen(float sqrVelocity)
+        {
+            return basePenetration * sqrVelocity / (atBaseVelocity * atBaseVelocity);
+        }
+
+        public float Pen(Vector3 velocity)
+        {
+            return basePenetration * velocity.sqrMagnitude / (atBaseVelocity * atBaseVelocity);
+        }
+    }
+    public enum HitSummary
+    {
+        NoHit,
+        Penetration,
+        Stopped
+    }
+    public struct HitResult
+    {
+        public RaycastHit firstHit;
+        public RaycastHit lastHit;
+        public Vector3 velocityLeft;
+        public HitSummary summary;
+
+        public HitResult(RaycastHit _firstHit,RaycastHit _lastHit, Vector3 _velocityLeft,HitSummary _summary)
+        {
+            firstHit = _firstHit;
+            lastHit = _lastHit;
+            velocityLeft = _velocityLeft;
+            summary = _summary;
+        }
+
+        public static HitResult NoHit(Vector3 velocity) { return new HitResult (new RaycastHit(), new RaycastHit(),velocity,HitSummary.NoHit); }
+    }
     public static Quaternion Spread(Quaternion rotation, float maxAngle)
     {
         rotation *= Quaternion.Euler(0f, 0f, Random.Range(-90, 90));
@@ -35,13 +84,62 @@ public static class Ballistics
                 if (hits[j].distance > hits[j + 1].distance) { RaycastHit jplus1 = hits[j + 1]; hits[j + 1] = hits[j]; hits[j] = jplus1; }
         return hits;
     }
-    public static float ExplosionRangeSimple(float kg)
+    public static HitResult RaycastDamage(Vector3 position , Vector3 velocity, float range, ProjectileChart chart)
     {
-        return Mathf.Sqrt(kg);
+        RaycastHit[] hits = RaycastAndSort(position, velocity, range, LayerMask.GetMask("SofComplex"));
+        if (hits.Length == 0) return HitResult.NoHit(velocity);
+
+        float sqrVelocity = velocity.sqrMagnitude;
+
+        bool oneConfirmedHit = false;
+        RaycastHit firstHit = new RaycastHit();
+        RaycastHit lastHit = new RaycastHit();
+
+        foreach (RaycastHit hit in hits)
+        {
+            SofModule module = hit.collider.GetComponent<SofModule>();
+            if (module == null) continue;
+
+            if(firstHit.collider == null) firstHit = hit;
+            lastHit = hit;
+            oneConfirmedHit = true;
+
+            float penetrationPower = chart.Pen(sqrVelocity);
+
+            float alpha = Vector3.Angle(-hit.normal, velocity);
+            float armor = Random.Range(0.8f, 1.2f) * module.Armor.surfaceArmor / Mathf.Cos(alpha * Mathf.Deg2Rad);
+            if (penetrationPower > armor)//If penetration occurs
+            {
+                module.ProjectileDamage(chart.diameter * chart.diameter / 30f, chart.diameter, chart.fireChance);
+                armor += Random.Range(0.8f, 1.2f) * module.Armor.fullPenArmor;
+                sqrVelocity *= 1f - armor / penetrationPower;
+
+                if (sqrVelocity <= 0f) return new HitResult(firstHit, lastHit, Vector3.zero, HitSummary.Stopped);
+            }
+            else return new HitResult(firstHit,lastHit, velocity.normalized* Mathf.Sqrt(sqrVelocity),HitSummary.Stopped);
+        }
+
+        if(!oneConfirmedHit) return HitResult.NoHit(velocity);
+
+        velocity = velocity.normalized * Mathf.Sqrt(sqrVelocity);
+        return new HitResult(firstHit,lastHit, velocity,HitSummary.Penetration);
     }
-    public static float HalfExplosionRangeSimple(float kg)
+    public static float ExplosionRangeSimple(float kgTnt)
     {
-        return Mathf.Sqrt(kg) * 2f;
+        return Mathf.Sqrt(kgTnt);
+    }
+    public static float HalfExplosionRangeSimple(float kgTnt)
+    {
+        return Mathf.Sqrt(kgTnt) * 2f;
+    }
+    const float explosionRangeFactor = 8f;
+    public static float MaxExplosionDamageRange(float kgTnt)
+    {
+        return Mathf.Sqrt(kgTnt) * explosionRangeFactor;
+    }
+    public static float MaxExplosionDamageRangeSqrt(float kgTnt)
+    {
+        return kgTnt * explosionRangeFactor * explosionRangeFactor;
     }
     public static float InterceptionTime(float shotSpeed, Vector3 relativePos, Vector3 relativeVel)
     {

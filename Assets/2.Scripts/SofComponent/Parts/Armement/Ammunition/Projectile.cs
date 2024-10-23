@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Ballistics;
 
 public class Projectile : MonoBehaviour //Follows a trajectory using drag, weight and thrust (rocket).
 {
@@ -56,8 +57,8 @@ public class Projectile : MonoBehaviour //Follows a trajectory using drag, weigh
         tracerDir = _tracerDir;
         delay = _delay;
         dragCoeff = Mathv.SmoothStart(p.diameter / 2000f, 2) * Mathf.PI * 0.1f / p.mass;
-        lifetime = Mathf.Lerp(2f, 10f, Mathf.InverseLerp(7.62f, 40f, p.diameter));
-        if (p.diameter == 9f) lifetime = 1.5f;
+        float lifeTimeFactor = Mathf.InverseLerp(4000f, 20000f, p.Energy);
+        lifetime = Mathf.Lerp(4f, 10f, lifeTimeFactor);
         points = Mathf.RoundToInt(lifetime * pointsPerSecond);
         worldPos = Ballistics.BallisticPath(initDir, initSpeed, dragCoeff, points, lifetime);
         if (p.fuze > 0f) StartFuze(p.fuze);
@@ -94,15 +95,15 @@ public class Projectile : MonoBehaviour //Follows a trajectory using drag, weigh
         if (detonationTime != 0f && Time.time > detonationTime) Detonate(tr.position,null);
     }
     const float maxRicochetChance = 0.5f;
-    public void Ricochet(RaycastHit hit, float speed)
+    public void TryRicochet(RaycastHit hit, float speed)
     {
         tr.position = hit.point;
         float alpha = Vector3.Angle(tr.forward, -hit.normal);
         float chance = Mathf.InverseLerp(noRicochetAlpha, ricochetAlpha, alpha);
-        if (Random.value < chance && Random.value < maxRicochetChance)
+        if (Random.value < chance && Random.value < maxRicochetChance && speed > 50f)
         {
             tr.forward = Vector3.Reflect(tr.forward, hit.normal);
-            tr.rotation = Ballistics.Spread(tr.rotation, 7f);
+            tr.rotation = Spread(tr.rotation, 7f);
             InitializeTrajectory(tr.forward * speed * 0.4f * Mathf.Sin(alpha * Mathf.Deg2Rad),tr.forward,ignoreCollider,delay);
         }
         else Destroy(gameObject);
@@ -121,44 +122,36 @@ public class Projectile : MonoBehaviour //Follows a trajectory using drag, weigh
         ObjectBubble bubble = obj.GetComponent<ObjectBubble>();
         if (!bubble) return;
         bubble.EnableColliders(false);
-        RaycastDamage(Vel(counter), obj.transform.root.GetComponent<Rigidbody>().velocity, bubble.bubble.radius * 2f + box.size.z);
+        StartDamage(Vel(counter),bubble.bubble.radius * 2f + box.size.z);
     }
-    public void RaycastDamage(Vector3 velocity, Vector3 targetVelocity, float range)
+
+    public void StartDamage(Vector3 velocity, float range)
     {
-        Vector3 relativeVelocity = velocity - targetVelocity;
-
-        RaycastHit[] hits = Ballistics.RaycastAndSort(transform.position, relativeVelocity, range, LayerMask.GetMask("SofComplex"));
-        if (hits.Length == 0) return;
-
-
-        if (p.explosive) { Detonate(hits[0].point, hits[0].collider.transform.root); return; }
-        if (p.bulletHits) p.bulletHits.AircraftHit(p.incendiary && !p.explosive, hits[0]);
-        float sqrVelocity = relativeVelocity.sqrMagnitude;
-
-        foreach (RaycastHit h in hits)
-            if (!TryPenPart(h.collider.GetComponent<SofModule>(), h, ref sqrVelocity)) return;
-
-        float spread = Mathf.Lerp(5f, 0f, sqrVelocity / relativeVelocity.sqrMagnitude);
-        Vector3 newVelocity = Mathf.Sqrt(sqrVelocity) * (Ballistics.Spread(transform.rotation, spread) * Vector3.forward);
-        InitializeTrajectory(newVelocity, Vector3.zero, ignoreCollider,delay);
-    }
-    private bool TryPenPart(SofModule module, RaycastHit hit, ref float sqrVelocity)
-    {
-        if (module == null) return true;
-        float penetrationPower = p.basePenetration * sqrVelocity / (p.baseVelocity * p.baseVelocity);
-        float alpha = Vector3.Angle(-hit.normal, tr.forward);
-        float armor = Random.Range(0.8f, 1.2f) * module.Armor.surfaceArmor / Mathf.Cos(alpha * Mathf.Deg2Rad);
-        if (penetrationPower > armor)//If penetration occurs
+        if (p.explosive)
         {
-            module.ProjectileDamage(p.diameter * p.diameter / 30f, p.diameter, p.FireChance());
-            armor += Random.Range(0.8f, 1.2f) * module.Armor.fullPenArmor;
-            sqrVelocity *= 1f - armor / penetrationPower;
-            return sqrVelocity > 0f;
+            RaycastHit hit;
+            if(Physics.Raycast(transform.position, velocity, out hit, range, LayerMask.GetMask("SofComplex")))
+                Detonate(hit.point, hit.collider.transform.root);
         }
-        else //Try ricochet if penetration fails
+        else
         {
-            Ricochet(hit, Mathf.Sqrt(sqrVelocity));
-            return false;
+            ProjectileChart chart = new ProjectileChart(p.basePenetration, p.baseVelocity, p.diameter, p.FireChance());
+
+            HitResult result = RaycastDamage(transform.position, velocity, range, chart);
+
+            if (result.summary == HitSummary.NoHit) return;
+
+            if (p.bulletHits) p.bulletHits.AircraftHit(p.incendiary && !p.explosive, result.firstHit);
+
+            if (result.summary == HitSummary.Penetration)
+            {
+                
+                float sqrVelocityLeftRatio = result.velocityLeft.sqrMagnitude / velocity.sqrMagnitude;
+                float spread = Mathf.Lerp(5f, 0f,sqrVelocityLeftRatio);
+                Vector3 newVelocity = Spread(Quaternion.identity, spread) * result.velocityLeft;
+                InitializeTrajectory(newVelocity, Vector3.zero, ignoreCollider, delay);
+            }
+            else TryRicochet(result.lastHit, result.velocityLeft.magnitude);
         }
     }
     private void CollideTerrain(Collider obj)
@@ -174,8 +167,8 @@ public class Projectile : MonoBehaviour //Follows a trajectory using drag, weigh
         if (p.explosive) Detonate(hit.point, obj.transform);
         else
         {
-            if (p.bulletHits) p.bulletHits.CreateHit(obj.sharedMaterial.name, hit.point, Quaternion.LookRotation(hit.normal), null);
-            Ricochet(hit, velocity.magnitude);
+            if (p.bulletHits) p.bulletHits.CreateHit(obj.sharedMaterial?.name, hit.point, Quaternion.LookRotation(hit.normal), null);
+            TryRicochet(hit, velocity.magnitude);
         }
     }
     private void CollideWater()

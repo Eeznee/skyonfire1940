@@ -40,7 +40,7 @@ public class EnginePreset : ScriptableObject
     public float boostMaxAltitude = 5000f;
     public AnimationCurve gear1 = AnimationCurve.Linear(0f, 1000f, 10000f, 1000f);
     public AnimationCurve gear2 = AnimationCurve.Linear(0f, 1000f, 10000f, 1000f);
-    public const float minPowEff = 0.6f;
+    public const float minPowEff = 0.3f;
     public const float engineFriction = -300f;
 
     public float maxThrust;
@@ -81,7 +81,7 @@ public class EnginePreset : ScriptableObject
     {
         float targetRps = boost ? boostRPS : nominalRPS;
         if (radSec < targetRps)
-            return Mathf.Lerp(minPowEff, 1f, Mathv.SmoothStart(radSec / targetRps, 2));
+            return Mathf.Lerp(0f, 1f, Mathv.SmoothStart(radSec / targetRps, 2));
         else
             return Mathf.InverseLerp(targetRps * 2f, targetRps, radSec);
     }

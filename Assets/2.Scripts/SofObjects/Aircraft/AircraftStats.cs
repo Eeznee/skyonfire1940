@@ -54,8 +54,8 @@ public class AircraftStats
     {
         //float weight = aircraft.rb.mass * -Physics.gravity.y;
         //float density = Aerodynamics.seaLvlDensity;
-
-        airfoil.Coefficients(10f);
+        
+        airfoil?.Coefficients(10f);
     }
     private void ComputeTotalAreaCd()
     {

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+[AddComponentMenu("Sof Components/Crew Seats/Bombsight")]
 public class Bombsight : SofComponent
 {
     public float fov = 12f;

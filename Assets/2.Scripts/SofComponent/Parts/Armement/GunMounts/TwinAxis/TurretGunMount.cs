@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
-
+[AddComponentMenu("Sof Components/Weapons/Gun Mounts/Turret")]
 public class TurretGunMount : TwinAxisGunMount
 {
     public override bool ForceJoystickControls => true;

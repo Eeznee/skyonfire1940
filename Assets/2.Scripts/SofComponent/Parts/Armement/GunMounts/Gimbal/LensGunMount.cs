@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
+[AddComponentMenu("Sof Components/Weapons/Gun Mounts/Lens Mount")]
 public class LensGunMount : GimbalGunMount
 {
     public Transform lens;

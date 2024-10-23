@@ -32,8 +32,14 @@ public class PostProcessFX : MonoBehaviour
     private float damageVignetteIntensityLW = 0.7f;
     private float veinsTransparencyMax = 0.35f;
 
-    private HumanBody body;
-    private float blackout;
+    private CrewForcesEffect body;
+
+
+    private float sickness => body ? body.Sickness() : 0f;
+    private float pain => body ? body.Pain() : 0f;
+    private bool GLoc => body ? body.Gloc() : false;
+
+    private float blackout => body ? Mathf.Clamp(body.Blood() * (1f - body.Stamina()), -1f, 1f) : 0f;
 
     void Start()
     {
@@ -63,7 +69,7 @@ public class PostProcessFX : MonoBehaviour
         aberration.intensity.value = 0f;
         colors.saturation.value = 0f;
         lens.intensity.value = 0f;
-        
+
     }
     private void UpdateLightWeight()
     {
@@ -71,14 +77,16 @@ public class PostProcessFX : MonoBehaviour
         Color fullColor = Color.Lerp(Color.black, Color.red * 0.65f, -blackout * 3f);
         fullColor = Color.Lerp(damageFilterLW, fullColor, Mathf.Abs(blackout));
         fullColor.a = Mathf.Max(Mathf.Abs(blackout), (1f - Player.crew.structureDamage) * damageVignetteIntensityLW);
-        fullColor = Mathv.CombineColors(fullColor, new Color(0.4f, 0.4f, 0.4f, body.Sickness() * 0.5f));
-        if (body.Gloc()) fullColor = Color.black;
+
+        fullColor = Mathv.CombineColors(fullColor, new Color(0.4f, 0.4f, 0.4f, sickness * 0.5f));
+        if (GLoc) fullColor = Color.black;
+
         fullScreenFilter.color = Vector4.Lerp(fullScreenFilter.color, fullColor, Time.deltaTime);
 
         //Vignette
         Color vignetteColor = Color.Lerp(Color.black, Color.red * 0.65f, -blackout * 3f);
         vignetteColor = Color.Lerp(damageVignetteLW, vignetteColor, Mathf.Abs(blackout));
-        vignetteColor.a = body.Gloc() ? 0f : fullColor.a;
+        vignetteColor.a = GLoc ? 0f : fullColor.a;
         vignetteFilter.color = vignetteColor;
     }
     private void UpdatePostFx()
@@ -94,23 +102,23 @@ public class PostProcessFX : MonoBehaviour
         Color targetFilter = Color.Lerp(Color.white, blackout > 0f ? blackoutFilter : redoutFilter, blackout > 0f ? blackout * blackout : -blackout * 2f);
         damageColor = Color.Lerp(damageFilter, Color.white, crewHealth);
         targetFilter = Color.Lerp(damageColor, targetFilter, Mathf.Abs(blackout));
-        if (body.Gloc()) targetFilter = Color.black;
+        if (GLoc) targetFilter = Color.black;
         colors.colorFilter.value = Vector4.Lerp(colors.colorFilter.value, targetFilter, Time.deltaTime);
 
         //Black And White
         colors.saturation.value = -100f * Mathf.Clamp01(blackout * Mathf.Abs(blackout) + (1f - crewHealth) / 2f);
 
         //Pain Effects
-        aberration.intensity.value = body.Pain();
-        lens.intensity.value = Mathf.Clamp(body.Pain() * -0.3f, -0.5f, 0f);
+        aberration.intensity.value = pain;
+        lens.intensity.value = Mathf.Clamp(pain * -0.3f, -0.5f, 0f);
 
         //Sickness Effects
         Vector2 center = new Vector2(0.5f, 0.5f);
-        center.x += 0.1f * Mathf.Sin(Time.time) * body.Sickness();
-        center.y += 0.1f * Mathf.Cos(Mathf.PI * Time.time / 4f) * body.Sickness();
+        center.x += 0.1f * Mathf.Sin(Time.time) * sickness;
+        center.y += 0.1f * Mathf.Cos(Mathf.PI * Time.time / 4f) * sickness;
         lens.center.value = center;
-        lens.intensity.value += Mathf.Lerp(0f, -0.3f, body.Sickness());
-        colors.saturation.value = Mathf.Lerp(colors.saturation.value, Mathf.Min(colors.saturation.value, -50f), body.Sickness());
+        lens.intensity.value += Mathf.Lerp(0f, -0.3f, sickness);
+        colors.saturation.value = Mathf.Lerp(colors.saturation.value, Mathf.Min(colors.saturation.value, -50f), sickness);
     }
     void Update()
     {
@@ -120,8 +128,7 @@ public class PostProcessFX : MonoBehaviour
             return;
         }
 
-        body = Player.crew.humanBody;
-        blackout = Mathf.Clamp(body.Blood() * (1f - body.Stamina()), -1f, 1f);
+        body = Player.crew.forcesEffect;
 
         float a = veinsTransparencyMax * Mathv.SmoothStart(1f - Player.crew.structureDamage, 2);
         veins.color = new Color(veins.color.r, veins.color.g, veins.color.b, a);

@@ -18,7 +18,7 @@ public class PlayerActions : MonoBehaviour
 
     private static bool PlayerAvailable()
     {
-        return Player.aircraft && !Player.crew.humanBody.Gloc();
+        return Player.aircraft && !Player.crew.ActionsUnavailable;
     }
     private void OnEnable()
     {
@@ -155,7 +155,7 @@ public class PlayerActions : MonoBehaviour
         switch (action)
         {
             case "Reload":
-                Player.crew.seat.TryReload(false);
+                Player.crew.Seat.TryReload(false);
                 break;
             case "Bomb":
                 if (Player.role == SeatRole.Bombardier) Player.aircraft.bombSight.StartReleaseSequence();
@@ -190,11 +190,11 @@ public class PlayerActions : MonoBehaviour
                 break;
             case "StartBailout":
                 for (int i = 0; i < Player.aircraft.crew.Length; i++)
-                    Player.aircraft.crew[i].bailOut.Start(Random.Range(0.1f, 1f));
+                    Player.aircraft.crew[i].bailOut?.StartBailing(Random.Range(0.1f, 1f));
                 break;
             case "CancelBailout":
                 for (int i = 0; i < Player.aircraft.crew.Length; i++)
-                    Player.aircraft.crew[i].bailOut.Cancel();
+                    Player.aircraft.crew[i].bailOut?.CancelBailing();
                 break;
         }
     }

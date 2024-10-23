@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[AddComponentMenu("Sof Components/Weapons/Guns/Gun Cover")]
 public class GunsCover : SofComponent
 {
     public Gun linkedGun;

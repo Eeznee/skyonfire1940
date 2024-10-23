@@ -13,7 +13,7 @@ public struct ExplosiveFiller
 	public ExplosionFX fx;
 
 
-    const int fragmentsAmountRef = 20;
+    const int fragmentsAmountRef = 30;
     const float fragmentsMassRef = 0.115f;
     const float totalAreaRef = 4500f;
     const float fragmentsVelocity = 1000f;
@@ -23,71 +23,62 @@ public struct ExplosiveFiller
     {
         return Mathf.RoundToInt(fragmentsAmountRef * Mathf.Pow(fragMass / fragmentsMassRef, 0.225f));
     }
-    private float Diameter(int fragments, float fragMass)
+    private float FragmentDiameter(int fragments, float fragMass)
     {
         float totalArea = totalAreaRef * fragMass / fragmentsMassRef;
         return Mathf.Sqrt(totalArea / fragments / Mathf.PI);
     }
-    private float Range(float individualMass)
+    const float maxAbsoluteRange = 1000f;
+    private float FragmentRange(float individualMass)
     {
         float individualMassRef =  fragmentsMassRef / fragmentsAmountRef;
-        return Mathf.Pow(individualMass / individualMassRef , 5f / 8f) * fragmentsRangeRef;
+        float range = Mathf.Pow(individualMass / individualMassRef, 5f / 8f) * fragmentsRangeRef;
+        return Mathf.Min(range,maxAbsoluteRange);
     }
     public void Detonate(Vector3 pos, float totalMass, Transform tr)
     {
-        //FX
         ExplosionFX instance = Object.Instantiate(fx, pos, Quaternion.identity,tr);
         instance.Explode(mass * explosive.tntMultiplier);
 
-        //Blast Damage
+        bool water = pos.y < 2f;
+        BlastDamage(pos, water);
+        if (water) return;
+        ProjectFragments(pos,totalMass);
+    }
+    private void BlastDamage(Vector3 pos, bool water)
+    {
+        float tntEquivalent = mass * explosive.tntMultiplier;
+        if (water) tntEquivalent *= 0.25f;
         foreach (SofObject obj in GameManager.sofObjects.ToArray())
-            if (obj) obj.Explosion(pos, mass * explosive.tntMultiplier);
-
-        //Fragmentation Damage
+            if (obj) obj.Explosion(pos, tntEquivalent);
+    }
+    private void ProjectFragments(Vector3 pos, float totalMass)
+    {
         float fragmentsMass = totalMass - mass;
         int fragments = AmountFragments(fragmentsMass);
         float individualMass = fragmentsMass / fragments;
-        float diameter = Diameter(fragments,fragmentsMass);
-        float range = Range(individualMass);
+        float diameter = FragmentDiameter(fragments, fragmentsMass);
+        float range = FragmentRange(individualMass);
         float penetration = Ballistics.ApproximatePenetration(individualMass, fragmentsVelocity, diameter);
-        for (int i = 0; i < fragments; i++) RaycastFragment(pos, individualMass, diameter, range,penetration);
-    }
-    private void RaycastFragment(Vector3 pos,float mass, float diam, float range, float pen) 
-    {
-        Vector3 vel = Random.onUnitSphere * fragmentsVelocity;
+        int bubbleLayerMask = LayerMask.GetMask("Bubble");
 
-        RaycastHit[] hits = Ballistics.RaycastAndSort(pos, vel, range, LayerMask.GetMask("SofComplex"));
-        if (hits.Length == 0) return;
-
-        float sqrVelocity = fragmentsVelocity * fragmentsVelocity;
-        foreach (RaycastHit h in hits)
+        Ballistics.ProjectileChart chart = new Ballistics.ProjectileChart(penetration, fragmentsVelocity, diameter, 0f);
+        for (int i = 0; i < fragments; i++)
         {
-            SofModule module = h.collider.GetComponent<SofModule>();
-            if (module == null) continue;
-            float penetrationPower = pen * sqrVelocity / (fragmentsVelocity * fragmentsVelocity);
-            float alpha = Vector3.Angle(-h.normal, vel);
-            float armor = Random.Range(0.8f, 1.2f) * module.Armor.surfaceArmor / Mathf.Cos(alpha * Mathf.Deg2Rad);
-            if (penetrationPower > armor)//If penetration occurs
+            Vector3 vel = Random.onUnitSphere * fragmentsVelocity;
+            RaycastHit hit;
+            if (Physics.Raycast(pos, vel, out hit, range, bubbleLayerMask))
             {
-                //part.Damage(mass * sqrVelocity / 2000f, diam, 0f);
-                module.ProjectileDamage(diam * diam / 5f, diam, 0f);
-                armor += Random.Range(0.8f, 1.2f) * module.Armor.fullPenArmor;
-                sqrVelocity *= 1f - armor / penetrationPower;
-                if (sqrVelocity <= 0f) return;
+                ObjectBubble bubble = hit.collider.GetComponent<ObjectBubble>();
+                if (!bubble) continue;
+                bubble.EnableColliders(false);
+                Ballistics.HitResult result = Ballistics.RaycastDamage(hit.point, vel, bubble.bubble.radius * 2f, chart);
+
+                if(result.summary != Ballistics.HitSummary.NoHit)
+                    StaticReferences.Instance.fragmentsHits.AircraftHit(false, result.firstHit);
             }
-            else return;
         }
     }
-
-    /* Old fragmentation
-    float realDis = Mathf.Max(1f, Mathf.Sqrt(sqrDis));
-    bool shrapnelhit = Random.value * 10f < shrapnel / realDis;
-    if (shrapnelhit)
-    {
-        float shrapnelDamage = Mathf.Lerp(Mathf.Sqrt(shrapnel) / 5f, 0f, sqrDis / tnt) * Random.Range(0.5f, 2f);
-        Damage(shrapnelDamage, 10f, 0f);
-    }
-    */
 #if UNITY_EDITOR
 
     [CustomPropertyDrawer(typeof(ExplosiveFiller))]

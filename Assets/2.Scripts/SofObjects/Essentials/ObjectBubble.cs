@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class ObjectBubble : SofComponent
 {
+    public enum CollidersGroup
+    {
+        All,
+        Solid,
+        None
+    }
     public override int DefaultLayer()
     {
         return 10;
@@ -15,15 +21,14 @@ public class ObjectBubble : SofComponent
     private List<Collider> solidColliders = new List<Collider>();
     private float toggledTimer = 0f;
 
-    private bool solidToggled;
-    private bool allToggled;
+    public CollidersGroup activeColliders { get; private set; }
 
     const float timerThreshold = 5f;
 
-    private void AssignColliders()
+    private void AddCollidersArray(Collider[] collidersToAdd)
     {
         colliders = solidColliders = new List<Collider>();
-        foreach (Collider col in transform.root.GetComponentsInChildren<Collider>())
+        foreach (Collider col in collidersToAdd)
         {
             if (col.gameObject.layer == 9 && !col.GetComponent<WheelCollider>())
             {
@@ -37,13 +42,15 @@ public class ObjectBubble : SofComponent
     {
         base.Initialize(_complex);
 
-        AssignColliders();
+        colliders = solidColliders = new List<Collider>();
+        AddCollidersArray(transform.root.GetComponentsInChildren<Collider>());
 
         bubble = gameObject.AddComponent<SphereCollider>();
         bubble.isTrigger = true;
         bubble.radius = aircraft.stats.wingSpan * 0.5f + 5f;
 
-        complex.onPartDetached += RemoveDetachedPartColliders;
+        complex.onComponentRootRemoved += RemoveDetachedPartColliders;
+        complex.onComponentAdded += AddInstantiatedCollider;
 
         foreach (MeshCollider col in aircraft.GetComponentsInChildren<MeshCollider>())
         {
@@ -53,17 +60,17 @@ public class ObjectBubble : SofComponent
 
         DisableColliders();
     }
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.layer == 10 || other.gameObject.layer == 0) EnableColliders(true);
     }
-    private void OnTriggerExit(Collider other)
+    private void AddInstantiatedCollider(SofComponent component)
     {
-
+        AddCollidersArray(component.GetComponentsInChildren<Collider>());
     }
-    private void RemoveDetachedPartColliders(SofComplex debris)
+    private void RemoveDetachedPartColliders(SofComponent component)
     {
-        foreach(Collider collider in debris.GetComponentsInChildren<Collider>())
+        foreach(Collider collider in component.GetComponents<Collider>())
         {
             colliders.Remove(collider);
             if (!collider.isTrigger) solidColliders.Remove(collider);
@@ -75,10 +82,9 @@ public class ObjectBubble : SofComponent
     {
         toggledTimer = timerThreshold;
 
-        if ((solidOnly && solidToggled) || allToggled) return;
+        if ((solidOnly && activeColliders == CollidersGroup.Solid) || activeColliders == CollidersGroup.All) return;
 
-        solidToggled = true;
-        if (!solidOnly) allToggled = true;
+        activeColliders = solidOnly ? CollidersGroup.Solid : CollidersGroup.All;
 
         foreach (Collider col in solidOnly ? solidColliders : colliders)
             if (col) col.enabled = true;
@@ -93,16 +99,14 @@ public class ObjectBubble : SofComponent
         }
 
         toggledTimer = 0f;
-        solidToggled = allToggled = false;
+        activeColliders = CollidersGroup.None;
     }
     void Update()
     {
-        if (data.relativeAltitude.Get < 15f)
-        {
-            EnableColliders(true);
-        }
+        if (data.relativeAltitude.Get < 15f) EnableColliders(true);
 
-        if (solidToggled && toggledTimer < Time.deltaTime) DisableColliders();
+        if (activeColliders != CollidersGroup.None && toggledTimer < Time.deltaTime) DisableColliders();
+
         toggledTimer -= Time.deltaTime;
     }
 }

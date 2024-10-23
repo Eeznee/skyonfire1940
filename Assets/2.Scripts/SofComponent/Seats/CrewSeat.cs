@@ -7,6 +7,8 @@ using UnityStandardAssets.CrossPlatformInput;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
+
+[AddComponentMenu("Sof Components/Crew Seats/Crew Seat")]
 public enum SeatRole { Simple, Pilot, Gunner, Bombardier }
 public struct SeatId
 {
@@ -108,7 +110,7 @@ public class CrewSeat : SofComponent
         visibility.Initialize(this);
         spotted = new List<SofAircraft>();
     }
-    public virtual void OnCrewSeats(CrewMember newCrew)
+    public virtual void OnCrewEnters(CrewMember newCrew)
     {
         seatedCrew = newCrew;
     }

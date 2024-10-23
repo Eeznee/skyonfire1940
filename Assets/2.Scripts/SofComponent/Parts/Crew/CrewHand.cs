@@ -25,6 +25,8 @@ public class CrewHand : MonoBehaviour
     }
     public void SetHandPose(Animator crew, HandGrip handGrip)
     {
+        if (handGrip == null || crew == null) return;
+
         bool changed = false;
         changed |= SetHandAnim("ThumbDown", ref thumbDown, handGrip.thumbDown);
         changed |= SetHandAnim("ThumbIn", ref thumbIn, handGrip.thumbIn);

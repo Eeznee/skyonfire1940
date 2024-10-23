@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
+[AddComponentMenu("Sof Components/Power Group/Piston Engine")]
 public class PistonEngine : Engine
 {
     //References
@@ -40,7 +41,8 @@ public class PistonEngine : Engine
         if (!igniting)
         {
             float targetPower = Working() ? Power(trueThrottle, boosting, rps) : 0f;
-            brakePower = Mathf.MoveTowards(brakePower, targetPower, Time.fixedDeltaTime * 1000000f);
+            brakePower = Mathf.MoveTowards(brakePower, targetPower, Time.fixedDeltaTime * 5000000f);
+
             float torque = (rps != 0f) ? structureDamage * brakePower / rps : 0f;
             torque += propeller.torque + preset.Friction(Working(), ripped) * randomFrictionModifier;
 

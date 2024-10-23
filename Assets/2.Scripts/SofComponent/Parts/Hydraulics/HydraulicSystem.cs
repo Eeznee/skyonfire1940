@@ -3,6 +3,7 @@ using UnityEngine.Rendering.VirtualTexturing;
 
 
 
+[AddComponentMenu("Sof Components/Liquid Systems/Hydraulics")]
 public class HydraulicSystem : SofComponent
 {
     public HydraulicControl.Type control;
@@ -21,14 +22,14 @@ public class HydraulicSystem : SofComponent
 
     protected bool animating;
 
-    public bool IsDisabled()
+
+    protected void Awake()
     {
-        if (essentialParts.Length == 0) return false;
-
-        foreach (SofModule p in essentialParts) if (p && p.data == data && !p.ripped) return false;
-
-        return true;
+        animator = GetComponentInParent<Animator>();
+        if (control != HydraulicControl.Type.Custom) animParameter = control.StringParameter();
+        SetInstant(0f);
     }
+
     public bool IsAnimated(Transform transformToCheck)
     {
         foreach (SofModule module in essentialParts)
@@ -39,7 +40,6 @@ public class HydraulicSystem : SofComponent
     {
         base.Initialize(_complex);
 
-        if (control != HydraulicControl.Type.Custom) animParameter = control.StringParameter();
         if (control.IsAlwaysBinary()) binary = true;
         if (!control.HasCustomDefaultState()) defaultState = control.DefaultState();
 
@@ -48,6 +48,14 @@ public class HydraulicSystem : SofComponent
 
         if (control == HydraulicControl.Type.LandingGear) SetInstant(aircraft.GroundedStart);
         else SetInstant(defaultState);
+
+        complex.onComponentRootRemoved += CheckIfDisabled;
+    }
+    public void CheckIfDisabled(SofComponent root)
+    {
+        disabled = true;
+        if (essentialParts.Length == 0) disabled = false;
+        foreach (SofModule p in essentialParts) if (p && p.data == data && !p.ripped) disabled = false;
     }
     public virtual void SetDirection(int speed)
     {
@@ -74,12 +82,12 @@ public class HydraulicSystem : SofComponent
     }
     protected virtual void AnimateUpdate()
     {
-        disabled = IsDisabled();
         animating = (state != stateInput) && !disabled;
         if (!animating) return;
 
         float travel = Time.deltaTime / (stateInput > state ? loweringTime : retractingTime);
         state = Mathf.MoveTowards(state, stateInput, travel);
+        if (control == HydraulicControl.Type.LandingGear) complex.RecomputeRealMass();
         ApplyStateAnimator();
     }
     private float oneFrameStatePrevious;

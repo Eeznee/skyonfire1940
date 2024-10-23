@@ -3,38 +3,45 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-    public class Pedal : MonoBehaviour
+public class Pedal : SofComponent
+{
+    public bool offset;
+    public float maxOffset = 0.1f;
+    public bool rotation;
+    public float maxRotation = 10f;
+    public Vector3 axis = Vector3.right;
+
+    Vector3 originalPos;
+    Quaternion originalRot;
+
+    SofAircraft controller;
+
+    private float currentYawInput;
+
+    private void Start()
     {
-        public bool offset;
-        public float maxOffset = 0.1f;
-        public bool rotation;
-        public float maxRotation = 10f;
-        public Vector3 axis = Vector3.right;
+        controller = GetComponentInParent<SofAircraft>();
+        originalPos = transform.localPosition;
+        originalRot = transform.localRotation;
+    }
 
-        Vector3 originalPos;
-        Quaternion originalRot;
+    private void Update()
+    {
+        if (aircraft.lod.LOD() != 0) return;
 
-        SofAircraft controller;
+        if (currentYawInput == controller.inputs.current.yaw) return;
+        currentYawInput = controller.inputs.current.yaw;
 
-        private void Start()
+        if (offset)
         {
-            controller = GetComponentInParent<SofAircraft>();
-            originalPos = transform.localPosition;
-            originalRot = transform.localRotation;
+            transform.localPosition = originalPos;
+            transform.localPosition += Vector3.forward * maxOffset * controller.inputs.current.yaw;
         }
-
-        private void Update()
+        if (rotation)
         {
-            if (offset)
-            {
-                transform.localPosition = originalPos;
-                transform.localPosition += Vector3.forward * maxOffset * controller.inputs.current.yaw;
-            }
-            if (rotation)
-            {
-                transform.localRotation = originalRot;
-                transform.Rotate(axis, controller.inputs.current.yaw * maxRotation);
-            }
+            transform.localRotation = originalRot;
+            transform.Rotate(axis, currentYawInput * maxRotation);
         }
     }
+}
 

@@ -4,6 +4,8 @@ using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.InputSystem.LowLevel;
 
+
+[AddComponentMenu("Sof Components/Liquid Systems/Split Hydraulics")]
 public class SplitHydraulics : HydraulicSystem
 {
     public string[] parameters;
@@ -34,7 +36,10 @@ public class SplitHydraulics : HydraulicSystem
     protected override void ApplyStateAnimator()
     {
         for (int i = 0; i < parameters.Length; i++)
-            animator.SetFloat(parameters[i], curves[i].ModifiedValue(state));
+        {
+            if (curves != null && curves[i] != null) animator.SetFloat(parameters[i], curves[i].ModifiedValue(state));
+            animator.SetFloat(parameters[i], state);
+        }
     }
 }
 public class HydraulicsCurve
@@ -55,8 +60,8 @@ public class HydraulicsCurve
         earlyFinish = Random.Range(0.6f, 1f);
         reverse = _reverse;
 
-        firstPoint = new Vector2(Random.Range(0.1f, 0.4f), Random.Range(0.1f, 0.4f));
-        secondPoint = new Vector2(Random.Range(0.6f, 0.9f), Random.Range(0.6f, 0.9f));
+        firstPoint = new Vector2(Random.Range(0.05f, 0.4f), Random.Range(0.05f, 0.4f));
+        secondPoint = new Vector2(Random.Range(0.6f, 0.95f), Random.Range(0.6f, 0.95f));
     }
     public float ModifiedValue(float value)
     {

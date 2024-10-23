@@ -10,6 +10,7 @@ public enum GunController
     PilotPrimary,
     PilotSecondary,
 }
+[AddComponentMenu("Sof Components/Weapons/Guns/Gun")]
 public class Gun : SofComponent, IMassComponent
 {
     public static Gun[] FilterByController(GunController controller, Gun[] guns)
@@ -65,20 +66,34 @@ public class Gun : SofComponent, IMassComponent
 
     public int clips;
     private int currentBullet = 0;
-    public float fuzeDistance = 0f;
+    private float fuzeTimer = 0f;
     public bool reloading = false;
 
     const float critTemperature = 450f;
     const float absoluteTemperature = 800f;
     //const float maxDispersionTemperature = 550f;
 
-    public float LoadedMass => EmptyMass + (Application.isPlaying || magazine ? 0f : clipAmmo * gunPreset.ammunition.FullMass);
-    public float EmptyMass => gunPreset.mass;
+    public float RealMass => EmptyMass;
+    public float LoadedMass
+    {
+        get
+        {
+            if (magazine) return EmptyMass;
+            if (!gunPreset) return EmptyMass;
+            return EmptyMass + clipAmmo * gunPreset.ammunition.FullMass;
+        }
+    }
+    public float EmptyMass => gunPreset ? gunPreset.mass : 0f;
 
     public override void Rearm()
     {
         base.Rearm();
-        mechanism.Reset();
+        mechanism.ResetMechanism();
+    }
+    public void SetFuze(float _fuzeTimer)
+    {
+        if (ammunition.caliber < 35f) fuzeTimer = 0f;
+        else fuzeTimer = _fuzeTimer;
     }
     public override void Initialize(SofComplex _complex)
     {
@@ -109,7 +124,6 @@ public class Gun : SofComponent, IMassComponent
         OnChamberRoundEvent += CycleNextBullet;
 
         temperature = data.temperature.Get;
-        fuzeDistance = 0f;
 
         gameObject.AddComponent<GunFX>();
     }
@@ -134,13 +148,14 @@ public class Gun : SofComponent, IMassComponent
         Projectile bullet = Instantiate(bullets[ammunition.defaultBelt[currentBullet]], tr.TransformPoint(bulletPos), rot);
         bullet.gameObject.SetActive(true);
 
-        bullet.RaycastDamage(bullet.p.baseVelocity * bullet.transform.forward + rb.velocity, rb.velocity, 10f);
+        bullet.StartDamage(bullet.p.baseVelocity * bullet.transform.forward, 10f);
 
         bullet.transform.position += rb.velocity * Time.fixedDeltaTime;
         bullet.transform.position += bullet.transform.forward * bullet.p.baseVelocity * delay * 0.85f;
         Collider ignoreCollider = complex.bubble ? complex.bubble.bubble : null;
         bullet.InitializeTrajectory(bullet.transform.forward * bullet.p.baseVelocity + rb.velocity, transform.forward, ignoreCollider, delay);
-        if (fuzeDistance > 50f) bullet.StartFuze(fuzeDistance / bullet.p.baseVelocity);
+
+        if (fuzeTimer > 0.1f) bullet.StartFuze(fuzeTimer);
     }
     private void RecoilAndHeatup(float delay)
     {

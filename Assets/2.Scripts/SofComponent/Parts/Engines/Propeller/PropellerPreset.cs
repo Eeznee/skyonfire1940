@@ -25,6 +25,8 @@ public class PropellerPreset : ScriptableObject
 
     //Return thrust and torque
 
+    public float Area => diameter * diameter * Mathf.PI * 0.25f;
+
     public Vector2 GetForces(float forwardSpeed, float rps, float phi)
     {
         float density = Aerodynamics.GetAirDensity(20f, Aerodynamics.SeaLvlPressure);

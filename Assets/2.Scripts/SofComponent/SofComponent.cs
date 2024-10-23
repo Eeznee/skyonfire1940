@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -14,7 +14,7 @@ public abstract class SofComponent : MonoBehaviour  //Objects elements are the b
 
     public Transform tr { get; private set; }
     public Rigidbody rb { get; private set; }
-     public Animator animator { get; private set; }
+    public Animator animator { get; protected set; }
 
     public SofObject sofObject { get; private set; }
     public SofComplex complex { get; private set; }
@@ -31,9 +31,7 @@ public abstract class SofComponent : MonoBehaviour  //Objects elements are the b
         if (Application.isEditor)
         {
             complex = transform.root.GetComponent<SofComplex>();
-            if (complex == null) { Debug.LogError("This Sof Component is not attached to Sof Complex", this); return; }
-            complex.EditorInitialization();
-            return;
+            if (complex) complex.SetReferences();
         }
         if (complex == null) return;
         SetReferences(complex);
@@ -54,34 +52,32 @@ public abstract class SofComponent : MonoBehaviour  //Objects elements are the b
     }
     public virtual void Initialize(SofComplex _complex)
     {
+        if (Application.isEditor && !Application.isPlaying) Debug.LogError("Initialize should never be called in editor");
         initialized = true;
         gameObject.layer = DefaultLayer();
         Rearm();
     }
     public void SetInstanciatedComponent(SofComplex _complex)
     {
+        _complex.AddInstantiatedComponent(this);
+
         SetReferences(_complex);
         if (!initialized) Initialize(_complex);
-        complex.RegisterComponent(this);
     }
-    public void Detach()
+    public void DetachAndCreateDebris()
     {
         SofComplex oldComplex = complex;
 
-        Vector3 velocity = sofObject.rb.velocity;
-        GameObject detached = new GameObject(name + " Ripped Off");
-        detached.AddComponent<Rigidbody>().velocity = velocity;
-        detached.transform.SetPositionAndRotation(transform.position, transform.rotation);
-        transform.parent = detached.transform;
+        Transform debrisTr = new GameObject(name + " debris").transform;
+        debrisTr.SetPositionAndRotation(tr.position,tr.rotation);
+        transform.parent = debrisTr;
+        debrisTr.position += rb.velocity * (Time.fixedTime - Time.time);
 
-        SofDebris debris = detached.AddComponent<SofDebris>();
+        Rigidbody detachedRb = debrisTr.gameObject.AddComponent<Rigidbody>();
+        detachedRb.velocity = rb.velocity + Random.insideUnitSphere * 5f;
 
-        oldComplex.OnPartDetach(debris);
-    }
-    protected void OnDestroy()
-    {
-        if (!complex) return;
-        complex.RemoveComponent(this);
+        debrisTr.gameObject.AddComponent<SofDebris>();
+        oldComplex.RemoveComponentRoot(this);
     }
     public virtual void Rearm()
     {
@@ -93,6 +89,10 @@ public static class SofComponentExtension
     public static T AddSofComponent<T>(this GameObject mono, SofComplex complex) where T : SofComponent
     {
         T sofComponent = mono.gameObject.AddComponent<T>();
+        if (!mono.gameObject.transform.IsChildOf(complex.transform))
+        {
+            sofComponent.transform.parent = complex.transform;
+        }
         sofComponent.SetInstanciatedComponent(complex);
         return sofComponent;
     }
@@ -133,6 +133,9 @@ public class SofComponentEditor : Editor
 
     public override void OnInspectorGUI()
     {
+        SofComponent component = (SofComponent)target;
+        component.SetReferences();
+
         serializedObject.Update();
 
         showBasic = EditorGUILayout.Foldout(showBasic, BasicName(), true, EditorStyles.foldoutHeader);

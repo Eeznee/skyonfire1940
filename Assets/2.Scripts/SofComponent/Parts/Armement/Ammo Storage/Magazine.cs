@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
+[AddComponentMenu("Sof Components/Weapons/Guns/Magazine")]
 public class Magazine : AmmoContainer
 {
     [System.Serializable]

@@ -97,18 +97,21 @@ public class Player : MonoBehaviour
         }
         else Log.Print("Controlling " + complex.name, "Controlling Object");
 
-        crew = null;
         SetCrew(0);
     }
     public static void SetCrew(CrewMember newCrew)
     {
         if (newCrew == crew || !complex) return;
 
+        if (newCrew.complex != complex)
+        {
+            Set(newCrew.complex);
+        }
+
         CrewMember previousCrew = crew;
 
         crew = newCrew;
         newCrew.AttachPlayer();
-
         if (previousCrew) previousCrew.DetachPlayer();
 
         string txt = "Switched to crew " + (crewId + 1);
@@ -141,8 +144,8 @@ public class Player : MonoBehaviour
 
         crew.SwitchSeat(seatId);
 
-        seat = crew.seat;
-        role = crew.seat.role;
+        seat = crew.Seat;
+        role = crew.Seat.role;
         pilotSeat = role == SeatRole.Pilot ? (PilotSeat)seat : null;
         gunnerSeat = role == SeatRole.Gunner ? (GunnerSeat)seat : null;
         bombardierSeat = role == SeatRole.Bombardier ? (BombardierSeat)seat : null;

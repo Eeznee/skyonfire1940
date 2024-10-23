@@ -7,6 +7,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
+[AddComponentMenu("Sof Components/Crew Seats/Bombardier Seat")]
 public class BombardierSeat : CrewSeat
 {
     private Bombsight bombsight;

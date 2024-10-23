@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
+[AddComponentMenu("Sof Components/Weapons/Gun Mounts/Gimbal Mount")]
 public class GimbalGunMount : GunMount
 {
     public Transform rotator;

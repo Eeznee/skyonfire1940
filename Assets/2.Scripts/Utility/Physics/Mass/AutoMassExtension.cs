@@ -12,7 +12,7 @@ public static class AutoMassExtension
         foreach (SofAirframe airframe in airframes)
             airframe.mass = airframe.ApproximateMass();
 
-        Mass fixedMass = new Mass(massComponents, true) - new Mass(airframes, true);
+        Mass fixedMass = new Mass(massComponents, MassCategory.Empty) - new Mass(airframes, MassCategory.Empty);
         Mass targetAirframeMass = targetEmptyMass - fixedMass;
 
         if (targetAirframeMass.mass < 0f) Debug.LogError("Target mass is too small, fixed mass parts already go above that weight !", complex);
@@ -58,8 +58,8 @@ public static class AutoMassExtension
     }
     static void ComputeFrontBackFactors(Mass targetMass, List<SofAirframe> frontFrames, List<SofAirframe> backFrames, out float frontFactor, out float backFactor)
     {
-        Mass front = new Mass(frontFrames.ToArray(), true);
-        Mass back = new Mass(backFrames.ToArray(), true);
+        Mass front = new Mass(frontFrames.ToArray(), MassCategory.Empty);
+        Mass back = new Mass(backFrames.ToArray(), MassCategory.Empty);
 
         float targetZ = targetMass.center.z;
         float frontZ = front.center.z;

@@ -6,29 +6,32 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
+[AddComponentMenu("Sof Components/Weapons/Guns/Magazine Storage")]
 public class MagazineStorage : SofComponent, IMassComponent
 {
-    public float LoadedMass => magRef.FullyLoadedMass * (Application.isPlaying ? magsLeft : Mathf.Min(positions.Length, localRotations.Length));
+    public float RealMass => magRef.FullyLoadedMass * magsLeft;
+    public float LoadedMass => magRef.FullyLoadedMass * MagsCount;
     public float EmptyMass => 0f;
+
+    public int MagsCount => Mathf.Min(positions.Length, localRotations.Length);
 
     public Magazine magRef;
 
     public Vector3[] positions;
     public Vector3[] localRotations;
 
-    [HideInInspector] public int magsCount;
     [HideInInspector] public int magsLeft;
 
     public override void Initialize(SofComplex _complex)
     {
-        magsLeft = magsCount = Mathf.Min(positions.Length, localRotations.Length);
+        magsLeft = MagsCount;
         base.Initialize(_complex);
         Merge();
     }
     private void Merge()
     {
-        CombineInstance[] combineInstances = new CombineInstance[magsCount];
-        for (int i = 0; i < magsCount; i++)
+        CombineInstance[] combineInstances = new CombineInstance[MagsCount];
+        for (int i = 0; i < MagsCount; i++)
         {
             combineInstances[i].mesh = magRef.simpleMeshForStorage;
             combineInstances[i].transform = Matrix4x4.TRS(positions[i], Quaternion.Euler(localRotations[i]), Vector3.one);
@@ -57,10 +60,9 @@ public class MagazineStorage : SofComponent, IMassComponent
 #if UNITY_EDITOR
     public void ChildrenToPositions()
     {
-        magsCount = transform.childCount;
-        positions = new Vector3[magsCount];
-        localRotations = new Vector3[magsCount];
-        for (int i = 0; i < magsCount; i++)
+        positions = new Vector3[transform.childCount];
+        localRotations = new Vector3[transform.childCount];
+        for (int i = 0; i < transform.childCount; i++)
         {
             Transform child = transform.GetChild(i);
 
@@ -70,8 +72,7 @@ public class MagazineStorage : SofComponent, IMassComponent
     }
     public void PositionsToChildren()
     {
-        magsCount = Mathf.Min(positions.Length, localRotations.Length);
-        for (int i = 0; i < magsCount; i++)
+        for (int i = 0; i < MagsCount; i++)
         {
             Transform magTr = Instantiate(magRef, transform).transform;
             magTr.localPosition = positions[i];
@@ -93,7 +94,7 @@ public class MagazineStorageEditor : Editor
 
         MagazineStorage magStorage = (MagazineStorage)target;
 
-        EditorGUILayout.LabelField("Magazines Count", magStorage.magsCount.ToString());
+        EditorGUILayout.LabelField("Magazines Count", magStorage.MagsCount.ToString());
 
         if (magStorage.transform.childCount > 0 && GUILayout.Button("Children to positions"))
             magStorage.ChildrenToPositions();

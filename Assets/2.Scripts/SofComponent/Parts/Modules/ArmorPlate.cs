@@ -6,10 +6,16 @@ using UnityEditor;
 #endif
 public class ArmorPlate : SofModule
 {
-    public float thickness;
+    public float thickness = 6f;
     public override float MaxHp => 1000f;
 
     public override ModuleArmorValues Armor => new ModuleArmorValues(thickness,0f);
+
+    public override void Initialize(SofComplex _complex)
+    {
+        base.Initialize(_complex);
+        if (thickness <= 0f) Debug.LogError("This armor plate has no thickness value", this);
+    }
 
 }
 #if UNITY_EDITOR
