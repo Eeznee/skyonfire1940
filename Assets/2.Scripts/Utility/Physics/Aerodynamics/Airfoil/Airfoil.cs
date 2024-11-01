@@ -23,7 +23,15 @@ public class Airfoil : ScriptableObject, IAirfoil
     public AnimationCurve clPlot;
     public AnimationCurve cdPlot;
     public AnimationCurve testPlot;
+    public float MinCD()
+    {
+        return airfoilSim.minCd;
+    }
 
+    public float PeakAlpha()
+    {
+        return airfoilSim.maxAlpha;
+    }
     public float Gradient(float flaps)
     {
         if (flaps <= 0f) return airfoilSim.Gradient();

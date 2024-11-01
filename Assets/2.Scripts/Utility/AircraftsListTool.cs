@@ -21,11 +21,7 @@ public class AircraftsListTool : MonoBehaviour
     ///WRITE YOUR CUSTOM CODE HERE
     public void CustomFunction(SofAircraft aircraft)
     {
-        LinkSpar[] linkSpars = aircraft.GetComponentsInChildren<LinkSpar>();
-        foreach (LinkSpar spar in linkSpars)
-        {
-            Debug.Log(aircraft.name + "  :  " + spar.name);
-        }
+
     }
 }
 #if UNITY_EDITOR

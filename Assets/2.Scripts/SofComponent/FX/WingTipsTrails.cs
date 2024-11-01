@@ -19,7 +19,7 @@ public class WingTipsTrails : AudioComponent
         for (int i = 0; i < wingTips.Count; i++)
         {
             Wing wing = wingTips[i];
-            Vector3 tipPos = (wing.split ? wing.splitFoilSurface : wing.foilSurface).quad.TopAeroPos(true) + tr.right * 0.1f;
+            Vector3 tipPos = wing.OuterQuad.TopAeroPos(true) + tr.right * 0.1f;
             tipTrails[i] = Instantiate(trailReference, tipPos, wing.tr.rotation, wing.tr);
             tipTrails[i].emitting = false;
         }
@@ -36,7 +36,7 @@ public class WingTipsTrails : AudioComponent
             bool emitting = Player.aircraft;
             emitting &= wing && wing.tr.root == tr.root;
             emitting &= data.ias.Get > 20f;
-            emitting &= wing.alpha * Mathf.Min(data.ias.Get * 0.02f, 1f) > wing.foil.airfoilSim.maxAlpha * 0.8f;
+            emitting &= wing.alpha * Mathf.Min(data.ias.Get * 0.02f, 1f) > wing.Airfoil.PeakAlpha() * 0.8f;
 
             if (tipTrails[i] && tipTrails[i].emitting != emitting) tipTrails[i].emitting = emitting;
         }

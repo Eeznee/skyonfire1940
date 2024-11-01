@@ -29,6 +29,7 @@ public struct AircraftInputs
     }
     public void FixedUpdate()
     {
+        current.CorrectPitcher(aircraft, target.pitch * 20f);
         current.MoveTowards(controlSent ? target : AircraftAxes.zero, aircraft.axesSpeed, Time.fixedDeltaTime);
         controlSent = false;
     }

@@ -42,6 +42,14 @@ public class SimpleAirfoil : IAirfoil
     {
         return Coefficients(alpha);
     }
+    public float PeakAlpha()
+    {
+        return 45f;
+    }
+    public float MinCD()
+    {
+        return minCd;
+    }
     public float Gradient() { return gradient; }
     public float Gradient(float flaps) { return gradient; }
 }

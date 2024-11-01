@@ -13,10 +13,8 @@ public class Flap : Subsurface
     //Settings
     public float extendedRipSpeed = 60f;
 
-    public override float MaxSpd()
-    {
-        return Mathf.Lerp(base.MaxSpd(), extendedRipSpeed, aircraft.hydraulics.flaps.state);
-    }
+    public override float MaxSpd => Mathf.Lerp(base.MaxSpd, extendedRipSpeed, aircraft.hydraulics.flaps.state);
+    
 #if UNITY_EDITOR
     protected override Color FillColor()
     {

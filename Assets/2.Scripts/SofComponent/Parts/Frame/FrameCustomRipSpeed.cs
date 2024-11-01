@@ -29,7 +29,7 @@ public class FrameCustomRipSpeed
     {
         if (hydraulics)
         {
-            return Mathf.Lerp(frame.MaxSpd(), customRipSpeed, hydraulics.state);
+            return Mathf.Lerp(frame.MaxSpd, customRipSpeed, hydraulics.state);
         }
         else
         {

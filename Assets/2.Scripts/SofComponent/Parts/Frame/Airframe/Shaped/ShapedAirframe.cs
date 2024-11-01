@@ -15,14 +15,7 @@ public abstract class ShapedAirframe : SofAirframe
 
     [SerializeField] public Shape shape;
 
-    public Airfoil foil;
-
-    protected override AeroSurface CreateFoilSurface()
-    {
-        return new AeroSurface(this, CreateQuad(), foil);
-    }
-
-    protected override Quad CreateQuad() { return shape.ToQuad(); }
+    public override void UpdateQuad() { quad = shape.ToQuad(); }
     public override void UpdateAerofoil()
     {
         shape.parent = transform;
@@ -44,7 +37,7 @@ public abstract class ShapedAirframe : SofAirframe
 
     protected virtual Color FillColor() { return Vector4.zero; }
 #if UNITY_EDITOR
-    public override void Draw() { foilSurface.quad.Draw(FillColor(), bordersColor, false); }
+    public override void Draw() { quad.Draw(FillColor(), bordersColor, false); }
 #endif
 }
 #if UNITY_EDITOR

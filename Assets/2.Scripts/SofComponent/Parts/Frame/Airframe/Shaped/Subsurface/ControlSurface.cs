@@ -34,7 +34,7 @@ public class ControlSurface : Subsurface
     {
         base.Initialize(_complex);
 
-        localRotateAxis = foilSurface.quad.ControlSurfaceAxis() * left;
+        localRotateAxis = quad.ControlSurfaceAxis() * left;
         constantPos = Mathf.Sin(Mathf.Deg2Rad * Mathf.Abs(maxDeflection)) * effectiveSpeed * effectiveSpeed;
         constantNeg = Mathf.Sin(Mathf.Deg2Rad * Mathf.Abs(minDeflection)) * effectiveSpeed * effectiveSpeed;
     }

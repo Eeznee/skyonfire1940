@@ -34,6 +34,8 @@ public class SofComplexEditor : SofObjectEditor
 
         SofComplex complex = (SofComplex)target;
 
+        complex.SetReferences();
+
         showMass = EditorGUILayout.Foldout(showMass, "Mass Infos", true, EditorStyles.foldoutHeader);
         if (showMass)
         {

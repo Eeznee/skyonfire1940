@@ -22,7 +22,7 @@ public struct AircraftAxes
         yaw = pitchYawRoll.y;
         roll = pitchYawRoll.z;
     }
-    public void CorrectPitch(SofAircraft aircraft, float target, float t)
+    public void CorrectPitch(SofAircraft aircraft, float target, float dt)
     {
         ObjectData data = aircraft.data;
 
@@ -38,13 +38,33 @@ public struct AircraftAxes
         float turnRateState = data.turnRate.Get / maxTurnRate;
         float inAirError = target - turnRateState;
 
-        pitch = Mathf.Clamp(aircraft.pidElevator.UpdateAndDebugUnclamped(inAirError, t), -1f, 1f);
+        pitch = Mathf.Clamp(aircraft.pidElevator.UpdateUnclamped(inAirError, dt), -1f, 1f);
+    }
+
+
+    public void CorrectPitcher(SofAircraft aircraft, float targetAoA)
+    {
+        Wing[] wings = aircraft.GetComponentsInChildren<Wing>();
+        float cl = wings[0].Coefficients(targetAoA).y;
+        float wingsAreaCl = cl * aircraft.stats.wingsArea;
+
+        float d = aircraft.rb.centerOfMass.z - aircraft.tr.InverseTransformPoint(wings[0].quad.CenterAero(true)).z;
+        float torque = wingsAreaCl * d;
+
+        Debug.Log(targetAoA);
     }
 
     public void MoveTowards(AircraftAxes target, AircraftAxes speed, float dt)
     {
-        pitch = Mathf.MoveTowards(pitch, target.pitch, speed.pitch * dt);
+
+        TonedMovedForward(ref pitch, target.pitch, speed.pitch, dt);
         roll = Mathf.MoveTowards(roll, target.roll, speed.roll * dt);
-        yaw = Mathf.MoveTowards(yaw, target.yaw, speed.yaw * dt);
+        TonedMovedForward(ref yaw, target.yaw, speed.yaw, dt);
+    }
+    private void TonedMovedForward(ref float axis,float target, float speed, float dt)
+    {
+        float tonedSpeed = Mathf.Lerp(speed * 0.1f, speed , Mathf.Abs(axis - target));
+
+        axis = Mathf.MoveTowards(axis, target, tonedSpeed * dt);
     }
 }

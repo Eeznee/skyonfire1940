@@ -34,7 +34,7 @@ public struct Shape
 
     public Vector3 controlSurfaceAxis { get { return localRotation * Vector3.forward; } }
 
-    public Quad ToQuad()
+    public SurfaceQuad ToQuad()
     {
         Vector3 sweepAngleOffset = localForward * Mathf.Abs(scale.x) / Mathf.Tan((90f - sweep) * Mathf.Deg2Rad);
         Vector3 rootLiftPos = localPosition - (localRight * (scale.x * 0.5f));
@@ -43,12 +43,12 @@ public struct Shape
         tipLiftPos += sweepAngleOffset;
 
         Vector3 forward = localForward * scale.y;
-        Vector3 lt = tipLiftPos + (forward * (1f - Quad.liftLine) * tipScale / 100f);
-        Vector3 lb = rootLiftPos + (forward * (1f - Quad.liftLine));
-        Vector3 tt = tipLiftPos - (forward * Quad.liftLine * tipScale / 100f);
-        Vector3 tb = rootLiftPos - (forward * Quad.liftLine);
+        Vector3 lt = tipLiftPos + (forward * (1f - SurfaceQuad.liftLine) * tipScale / 100f);
+        Vector3 lb = rootLiftPos + (forward * (1f - SurfaceQuad.liftLine));
+        Vector3 tt = tipLiftPos - (forward * SurfaceQuad.liftLine * tipScale / 100f);
+        Vector3 tb = rootLiftPos - (forward * SurfaceQuad.liftLine);
 
-        return new Quad(parent, lt, lb, tt, tb);
+        return new SurfaceQuad(parent, lt, lb, tt, tb);
     }
     public bool SnapTo(ShapedAirframe snapTo)
     {

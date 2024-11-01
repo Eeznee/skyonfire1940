@@ -4,9 +4,9 @@ using UnityEditor;
 using UnityEngine;
 
 [System.Serializable]
-public class Quad
+public class SurfaceQuad
 {
-    public Quad(Transform _tr,Vector3 _leadingTop, Vector3 _leadingBot, Vector3 _trailingTop, Vector3 _trailingBot)
+    public SurfaceQuad(Transform _tr,Vector3 _leadingTop, Vector3 _leadingBot, Vector3 _trailingTop, Vector3 _trailingBot)
     {
         tr = _tr;
         leadingTop = _leadingTop;
@@ -30,17 +30,17 @@ public class Quad
         chordDir = (leadingTop + leadingBot - trailingTop - trailingBot).normalized;
     }
 
-    public Quad[] Split(float fraction)
+    public SurfaceQuad[] Split(float fraction)
     {
         Vector3 leadingFraction = Vector3.Lerp(leadingBot, leadingTop, fraction);
         Vector3 trailingFraction = Vector3.Lerp(trailingBot, trailingTop, fraction);
-        return new Quad[] { 
-            new Quad(tr, leadingFraction, leadingBot, trailingFraction, trailingBot),
-            new Quad(tr, leadingTop, leadingFraction, trailingTop, trailingFraction),
+        return new SurfaceQuad[] { 
+            new SurfaceQuad(tr, leadingFraction, leadingBot, trailingFraction, trailingBot),
+            new SurfaceQuad(tr, leadingTop, leadingFraction, trailingTop, trailingFraction),
         };
     }
 
-    public static float Overlap(Quad main,Quad sub)
+    public static float Overlap(SurfaceQuad main,SurfaceQuad sub)
     {
         Vector3 dir = main.BotToTopDir(true);
         Vector3 subMaxDir = sub.BotAeroPos(true) - main.CenterAero(true);

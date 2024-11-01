@@ -9,4 +9,9 @@ public interface IAirfoil
 
     public float Gradient();
     public float Gradient(float flaps);
+
+    public float MinCD();
+
+    public float PeakAlpha();
+
 }

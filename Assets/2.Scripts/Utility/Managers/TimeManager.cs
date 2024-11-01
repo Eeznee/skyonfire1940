@@ -44,7 +44,7 @@ public class TimeManager : MonoBehaviour
         SetSlowMo(TimeScaleFactor() + input);
 
         Time.timeScale = paused ? 0f : timeScale;
-        Time.fixedDeltaTime = Time.timeScale * 0.0166667f ;
+        Time.fixedDeltaTime = Time.timeScale * 0.0166667f;
         invertFixedDelta = 1f / Time.fixedDeltaTime;
         fixedTimeDifference = Time.time - Time.fixedTime;
     }

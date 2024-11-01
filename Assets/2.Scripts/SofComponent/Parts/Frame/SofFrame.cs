@@ -27,8 +27,8 @@ public abstract class SofFrame : SofModule, IDamageTick, IMassComponent
     private FrameCustomRipSpeed customRipSpeed;
 
     public override bool Detachable => true;
-    public virtual float MaxSpd() { return aircraft.maxSpeed; }
-    public virtual float MaxG() { return aircraft.maxG * 1.5f; }
+    public virtual float MaxSpd => aircraft.maxSpeed;
+    public virtual float MaxG => aircraft.maxG * 1.5f;
     public abstract float ApproximateMass();
 
     public virtual float AirframeDamage => Mathv.SmoothStop(structureDamage, 2);
@@ -56,8 +56,8 @@ public abstract class SofFrame : SofModule, IDamageTick, IMassComponent
     public void DamageTick(float dt)
     {
         if (!aircraft || !Detachable) return;
-        float maxG = MaxG() * AirframeDamage;
-        float maxSpd = (customRipSpeed != null ? customRipSpeed.MaxSpeed(this) : MaxSpd()) * AirframeDamage;
+        float maxG = MaxG * AirframeDamage;
+        float maxSpd = (customRipSpeed != null ? customRipSpeed.MaxSpeed(this) : MaxSpd) * AirframeDamage;
         if (stress <= -1f && Mathf.Abs(data.gForce) < maxG && data.ias.Get < maxSpd) return;    //If no stress and low g/speed no need to compute anything
 
         //Compute torque and stress

@@ -5,14 +5,11 @@ using UnityEditor.SceneManagement;
 #endif
 
 [AddComponentMenu("Sof Components/Aerodynamic Surfaces/Stabilizer")]
-public class Stabilizer : ShapedAirframe
+public class Stabilizer : MainSurface
 {
     private Propeller propeller;
 
-
     public override float HpPerSquareMeter => ModulesHPData.stabilizerHpPerSq;
-
-    public override float AreaCd() { return foil ? area * foil.airfoilSim.minCd : 0f; }
 
 
     public override void Initialize(SofComplex _complex)
@@ -25,14 +22,11 @@ public class Stabilizer : ShapedAirframe
         foreach(Propeller p in allPropellers)
         {
             Vector3 deltaPos = p.localPos - localPos;
+            if (deltaPos.z < 0f) continue;
             deltaPos.z = 0f;
 
             if (deltaPos.magnitude < p.preset.diameter) propeller = p;
         }
-    }
-    protected override AeroSurface CreateFoilSurface()
-    {
-        return new ComplexAeroSurface(this, CreateQuad(), foil);
     }
     public override float PropSpeedEffect()
     {
@@ -51,33 +45,19 @@ public class Stabilizer : ShapedAirframe
     }
     protected override void FixedUpdate()
     {
-        foilSurface.ApplyForces();
+        float aoa = ApplyForces();
     }
 #if UNITY_EDITOR
     public override void Draw()
     {
-        foilSurface.quad.Draw(vertical ? rudderColor : elevatorColor, bordersColor, true);
+        quad.Draw(vertical ? rudderColor : elevatorColor, bordersColor, true);
     }
 #endif
 }
 #if UNITY_EDITOR
 [CustomEditor(typeof(Stabilizer)), CanEditMultipleObjects]
-public class StabilizerEditor : ShapedAirframeEditor
+public class StabilizerEditor : MainSurfaceEditor
 {
-    SerializedProperty foil;
-    protected override void OnEnable()
-    {
-        base.OnEnable();
-        foil = serializedObject.FindProperty("foil");
-    }
-    public override void OnInspectorGUI()
-    {
-        base.OnInspectorGUI();
-        serializedObject.Update();
 
-        EditorGUILayout.PropertyField(foil);
-
-        serializedObject.ApplyModifiedProperties();
-    }
 }
 #endif

@@ -9,20 +9,25 @@ using UnityEditor.SceneManagement;
 [AddComponentMenu("Sof Components/Airframe/Fuselage")]
 public class Fuselage : BoundedAirframe
 {
-    
-    public override float MaxSpd()
+    public override float MaxSpd => base.MaxSpd * 1.5f;
+
+    public SurfaceQuad secondQuad;
+
+    public override void UpdateQuad()
     {
-        return base.MaxSpd() * 1.5f;
+        quad = CreateQuadBounds(true);
+        secondQuad = CreateQuadBounds(false);
     }
-    protected override AeroSurface CreateFoilSurface()
+    public override void UpdateArea()
     {
-        return new DoubleAeroSurface(this, new SimpleAirfoil(bounds,0f), CreateQuadBounds(true), CreateQuadBounds(false));
+        area = quad.Area + secondQuad.Area;
     }
+
 #if UNITY_EDITOR
     public override void Draw()
     {
-        foilSurface.quad.Draw(Vector4.zero, new Vector4(1f,0f,0f,0.2f),false);
-        ((DoubleAeroSurface)foilSurface).secondQuad.Draw(Vector4.zero, new Vector4(0f, 1f, 0f, 0.2f), false);
+        quad.Draw(Vector4.zero, new Vector4(1f,0f,0f,0.2f),false);
+        secondQuad.Draw(Vector4.zero, new Vector4(0f, 1f, 0f, 0.2f), false);
     }
 #endif
 }

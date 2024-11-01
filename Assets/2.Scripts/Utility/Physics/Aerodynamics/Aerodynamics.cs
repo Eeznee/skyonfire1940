@@ -15,14 +15,14 @@ public static class Aerodynamics
     public const float invertSeaLvlDensity = 1f / seaLvlDensity;
 
     public static float GetTemperature(float alt) { return seaLvlTemp - alt * temperatureLapseRate; }
-    public static float GetPressure(float alt) { return SeaLvlPressure * Mathv.SmoothStart(1f - temperatureLapseRate/(seaLvlTemp+kelvin) * alt,5); }
+    public static float GetPressure(float alt) { return SeaLvlPressure * Mathv.SmoothStart(1f - temperatureLapseRate / (seaLvlTemp + kelvin) * alt, 5); }
     public static float GetAirDensity(float temp, float press) { return press / ((temp + kelvin) * airConstant); }
-    public static float GetAirDensity(float alt) { return GetAirDensity(GetTemperature(alt),GetPressure(alt)); }
+    public static float GetAirDensity(float alt) { return GetAirDensity(GetTemperature(alt), GetPressure(alt)); }
 
 
 
     //Aerodynamic forces calculations ------------------------------------------------------------------------------------------------------------------------------------------------
-    const float maxDrag = 3f;
+    const float maxDragCoeffDamaged = 3f;
 
     public static float GetGroundEffect(float relativeAltitude, float wingSpan)
     {
@@ -31,15 +31,15 @@ public static class Aerodynamics
         return 1f / groundEffect + 1f;
     }
 
-    public static Vector3 Lift(Vector3 velocity, float speed,Vector3 aeroDir, float dens, float surface , float cl, float dmg)
+    public static Vector3 Lift(Vector3 velocity, float speed, Vector3 aeroDir, float dens, float surface, float cl, float dmg)
     {
         Vector3 liftDir = Vector3.Cross(velocity, aeroDir);
-        float dmgLiftCoeff = dmg*dmg*dmg;
+        float dmgLiftCoeff = dmg * dmg * dmg;
         return liftDir * speed * 0.5f * surface * dens * cl * dmgLiftCoeff;
     }
     public static Vector3 Drag(Vector3 velocity, float speed, float dens, float surface, float cd, float dmg)
     {
-        float dmgDragCoeff = maxDrag - dmg * (maxDrag - 1f);
+        float dmgDragCoeff = maxDragCoeffDamaged - dmg * (maxDragCoeffDamaged - 1f);
         return -velocity * speed * 0.5f * surface * dens * cd * dmgDragCoeff;
     }
     public static float MaxDeflection(float speed, float constant)
@@ -48,3 +48,12 @@ public static class Aerodynamics
     }
 }
 
+public struct AerodynamicForces
+{
+    public Vector3 worldPoint;
+    public Vector3 drag;
+    public Vector3 lift;
+
+
+
+}
