@@ -15,11 +15,13 @@ public class SofCamera : MonoBehaviour
 
     public static Quaternion desiredRotation { get; private set; }
     public static Vector3 directionInput { get; private set; }         //Aircraft and turret guns will track this direction when controlled by the player
+    public static Vector3 CurrentDirection => desiredRotation * Vector3.forward;
     public static bool lookAround { get; private set; }
+
     private static Vector2 axis;
     private static Vector2 savedAxis;
 
-    const float smoothDampSpeed = 10f;
+    const float smoothDampSpeed = 20f;
 
     public static event Action OnSwitchCamEvent;
 

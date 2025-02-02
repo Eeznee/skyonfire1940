@@ -44,7 +44,7 @@ public static class Game
             amount = _amount;
             difficulty = dif;
             player = _player;
-            stations = new int[card.sofAircraft.stations.Length];
+            stations = new int[card.sofAircraft.Stations.Length];
 
             hiddenId = idCounter;
             idCounter++;
@@ -73,7 +73,7 @@ public static class Game
             squadron.rocketsFuzeMeters = PlayerPrefs.GetFloat(start + "RocketsFuze", 0f);
             squadron.bombsFuzeSeconds = PlayerPrefs.GetFloat(start + "BombsFuze", 3f);
             squadron.textureName = PlayerPrefs.GetString(start + "TextureName", "");
-            Station[] stations = squadron.aircraftCard.aircraft.GetComponent<SofAircraft>().stations;
+            Station[] stations = squadron.aircraftCard.aircraft.GetComponent<SofAircraft>().Stations;
             squadron.stations = new int[stations.Length];
             for (int i = 0; i < stations.Length; i++)
                 squadron.stations[i] = PlayerPrefs.GetInt(start + "Station" + i, 0);
@@ -100,7 +100,7 @@ public static class Game
             PlayerPrefs.SetFloat(start + "Convergeance", convergeance);
             PlayerPrefs.SetFloat(start + "RocketsFuze", rocketsFuzeMeters);
             PlayerPrefs.SetFloat(start + "BombsFuze", bombsFuzeSeconds);
-            for (int i = 0; i < aircraftCard.sofAircraft.stations.Length; i++)
+            for (int i = 0; i < aircraftCard.sofAircraft.Stations.Length; i++)
                 PlayerPrefs.SetInt(start + "Station" + i, i < stations.Length ? stations[i] : 0);
             PlayerPrefs.SetString(start + "TextureName", textureName);
         }

@@ -1,0 +1,50 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public static class Aerodynamics
+{
+    //Atmospheric calculations -----------------------------------------------------------------------------------------------------------------------------------------------------------------
+    const float atmosphericLayerHeight = 12000f;
+    const float temperatureLapseRate = 0.0068f;
+    const float airConstant = 287f;
+    const float kelvin = 273.15f;
+
+    public const float seaLvlTemp = 20f;
+    public const float SeaLvlPressure = 101325f;
+    public const float seaLvlDensity = SeaLvlPressure / ((20f + kelvin) * airConstant);
+    public const float invertSeaLvlDensity = 1f / seaLvlDensity;
+
+
+    public static float GetTemperature(float alt) { return seaLvlTemp - alt * temperatureLapseRate; }
+    public static float GetPressure(float alt) { return SeaLvlPressure * Mathv.SmoothStart(1f - temperatureLapseRate / (seaLvlTemp + kelvin) * alt, 5); }
+    public static float GetAirDensity(float temp, float press) { return press / ((temp + kelvin) * airConstant); }
+    public static float GetAirDensity(float alt) { return GetAirDensity(GetTemperature(alt), GetPressure(alt)); }
+
+
+
+    //Airfoils & Aerodynaimc forces calculations ------------------------------------------------------------------------------------------------------------------------------------------------
+    
+    public const float liftLine = 0.75f;
+    const float maxDragCoeffDamaged = 3f;
+
+    public static float GetGroundEffect(float relativeAltitude, float wingSpan)
+    {
+        if (relativeAltitude > 50f) return 1f;
+        float ratio = relativeAltitude / wingSpan;
+        float groundEffect = ratio * Mathf.Sqrt(ratio) * 33f;
+        return 1f / groundEffect + 1f;
+    }
+
+    public static Vector3 Lift(Vector3 velocity, Vector3 aeroDir, float dens, float surface, float cl, float dmg)
+    {
+        Vector3 liftDir = Vector3.Cross(velocity, aeroDir);
+        float dmgLiftCoeff = dmg * dmg * dmg;
+        return 0.5f * cl * dens * dmgLiftCoeff * surface * velocity.magnitude * liftDir;
+    }
+    public static Vector3 Drag(Vector3 velocity, float dens, float surface, float cd, float dmg)
+    {
+        float dmgDragCoeff = maxDragCoeffDamaged - dmg * (maxDragCoeffDamaged - 1f);
+        return 0.5f * cd * dens * dmgDragCoeff * surface * velocity.magnitude * -velocity;
+    }
+}

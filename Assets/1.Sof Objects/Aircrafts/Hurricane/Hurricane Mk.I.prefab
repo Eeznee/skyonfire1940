@@ -81,7 +81,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6146339375675368691
 Transform:
   m_ObjectHideFlags: 0
@@ -137,6 +137,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2106347413659888618}
   - component: {fileID: 3953774239667772144}
+  - component: {fileID: 2090526644657251618}
   m_Layer: 9
   m_Name: Oil Tank
   m_TagString: Untagged
@@ -152,7 +153,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 577964320893081087}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.1, z: -1.3}
+  m_LocalPosition: {x: 0, y: 0.4, z: 0.85}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -175,6 +176,20 @@ MonoBehaviour:
   capacity: 31
   selfSealing: 0
   armorThickness: 0
+--- !u!64 &2090526644657251618
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 577964320893081087}
+  m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 2263595233118544283, guid: eb9a644f6aac1d64e8500855fe1c02fe, type: 3}
 --- !u!1 &674701092704951660
 GameObject:
   m_ObjectHideFlags: 0
@@ -273,10 +288,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcb6fa826d4843f4e9b1ae661405ec67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 72.49353
+  mass: 76.71524
   ripOnRip: []
-  secondQuad:
-    tr: {fileID: 4048494487401377252}
   brokenModel: {fileID: 0}
 --- !u!64 &8529009214913166454
 MeshCollider:
@@ -365,7 +378,6 @@ Transform:
   - {fileID: 3908008062787611785}
   - {fileID: 2908872691136053467}
   - {fileID: 2893420883685870155}
-  - {fileID: 3204578827860034396}
   m_Father: {fileID: 7732750328516757722}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -431,10 +443,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f1f9cce42d03ed4982e5affc093be7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 490.8281
+  mass: 519.4118
   ripOnRip: []
-  secondQuad:
-    tr: {fileID: 8599845104496506997}
   cd: 0.016
   linkedFuselages:
   - {fileID: 6782565755807613106}
@@ -737,11 +747,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c61e93478feb854ca8724e7559cd051, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 3.0026848
+  mass: 2.627157
   ripOnRip: []
-  vertical: 0
   shape:
-    parent: {fileID: 7179436708402481019}
+    tr: {fileID: 7179436708402481019}
     snapped: 0
     localPosition: {x: -0, y: 0, z: 0}
     scale: {x: 0.84, y: 0.47}
@@ -871,7 +880,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1043758386556984169}
   m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.20366679, y: 0.05, z: 0.05}
@@ -987,8 +996,8 @@ GameObject:
   - component: {fileID: 8399377932782600445}
   - component: {fileID: 1136314250254718256}
   - component: {fileID: 1866730644841282320}
-  - component: {fileID: 2855146946634628553}
   - component: {fileID: 8207107651626737035}
+  - component: {fileID: 8107538539031986951}
   m_Layer: 9
   m_Name: Right Aileron
   m_TagString: Untagged
@@ -1061,37 +1070,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2855146946634628553
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1488563313201264065}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce8cef36737450646b64ce4a2fa71133, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mass: 10.427512
-  ripOnRip:
-  - {fileID: 0}
-  vertical: 0
-  shape:
-    parent: {fileID: 8399377932782600445}
-    snapped: 0
-    localPosition: {x: -0.1016541, y: 0.00000010430813, z: -0.08062768}
-    scale: {x: 2.35, y: 0.42}
-    incidence: -1.5
-    dihedral: 3.4
-    sweep: 7.3
-    tipScale: 72.3
-  controlState: 0
-  controlAngle: 0
-  sinControlAngle: 0
-  maxDeflection: 22
-  minDeflection: 21
-  effectiveSpeed: 102.77778
 --- !u!64 &8207107651626737035
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1106,6 +1084,31 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 652252202226417596, guid: eb9a644f6aac1d64e8500855fe1c02fe, type: 3}
+--- !u!114 &8107538539031986951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1488563313201264065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dae893b9d1a6774891ec70e9cc62847, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mass: 8.303842
+  ripOnRip: []
+  shape:
+    tr: {fileID: 8399377932782600445}
+    snapped: 0
+    localPosition: {x: -0.1016541, y: 0.00000010430813, z: -0.08062768}
+    scale: {x: 2.35, y: 0.42}
+    incidence: -1.5
+    dihedral: 3.4
+    sweep: 7.3
+    tipScale: 72.3
+  maxDeflection: 22
+  minDeflection: 21
 --- !u!1 &1539439826598366427
 GameObject:
   m_ObjectHideFlags: 0
@@ -1161,8 +1164,8 @@ GameObject:
   - component: {fileID: 4294451407995247059}
   - component: {fileID: 4635761817530808844}
   - component: {fileID: 3601896715334185751}
-  - component: {fileID: 7595441232819029818}
   - component: {fileID: 2955667184351156518}
+  - component: {fileID: 7940598593098352054}
   m_Layer: 9
   m_Name: Left Elevator
   m_TagString: Untagged
@@ -1235,37 +1238,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7595441232819029818
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1685515643770037253}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce8cef36737450646b64ce4a2fa71133, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mass: 6.357927
-  ripOnRip:
-  - {fileID: 0}
-  vertical: 0
-  shape:
-    parent: {fileID: 4294451407995247059}
-    snapped: 0
-    localPosition: {x: -0.19999999, y: 0, z: -0.17999999}
-    scale: {x: -1.55, y: 0.42}
-    incidence: 0
-    dihedral: 0
-    sweep: 0
-    tipScale: 100
-  controlState: 0
-  controlAngle: 0
-  sinControlAngle: 0
-  maxDeflection: 27
-  minDeflection: 26
-  effectiveSpeed: 133.33334
 --- !u!64 &2955667184351156518
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1280,6 +1252,31 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -4853732392073258614, guid: eb9a644f6aac1d64e8500855fe1c02fe, type: 3}
+--- !u!114 &7940598593098352054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1685515643770037253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af134185884ac4e4ca1ac48a2f9e9e3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mass: 5.56278
+  ripOnRip: []
+  shape:
+    tr: {fileID: 4294451407995247059}
+    snapped: 0
+    localPosition: {x: -0.19999999, y: 0, z: -0.17999999}
+    scale: {x: -1.55, y: 0.42}
+    incidence: 0
+    dihedral: 0
+    sweep: 0
+    tipScale: 100
+  maxDeflection: 27
+  minDeflection: 26
 --- !u!1 &1718098596599645411
 GameObject:
   m_ObjectHideFlags: 0
@@ -1443,20 +1440,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d84636798da6bfc4eb6d4bfe6d358f32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 32.965744
+  mass: 28.84292
   ripOnRip:
-  - {fileID: 2802373439120541775}
-  vertical: 1
+  - {fileID: 4352497840146142611}
   shape:
-    parent: {fileID: 7718599313678801013}
+    tr: {fileID: 7718599313678801013}
     snapped: 0
-    localPosition: {x: -0, y: -0.07, z: 0.35}
-    scale: {x: 1.4, y: 1.99}
+    localPosition: {x: 0, y: -0.40378022, z: 0.3122844}
+    scale: {x: 1.97, y: 2.32}
     incidence: 0
     dihedral: 90
     sweep: -26
     tipScale: 40
-  airfoil: {fileID: 11400000, guid: aeb6d627fe55d334fb9200b4a2222673, type: 2}
 --- !u!64 &8081937710911446419
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1881,12 +1876,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d84636798da6bfc4eb6d4bfe6d358f32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 25.459225
-  ripOnRip:
-  - {fileID: 7595441232819029818}
-  vertical: 0
+  mass: 22.275196
+  ripOnRip: []
   shape:
-    parent: {fileID: 8597139436129681535}
+    tr: {fileID: 8597139436129681535}
     snapped: 0
     localPosition: {x: -0.19999999, y: -0, z: 0.12}
     scale: {x: -1.5999999, y: 1.1999999}
@@ -1894,7 +1887,6 @@ MonoBehaviour:
     dihedral: 0
     sweep: -9
     tipScale: 71
-  airfoil: {fileID: 11400000, guid: ecfbfb6be7ebb2a46bf9086d8de8c9cd, type: 2}
 --- !u!64 &5402624599853128403
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2107,7 +2099,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6787649434714850388
 Transform:
   m_ObjectHideFlags: 0
@@ -2254,22 +2246,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b67cb6eb98d4e24f82fddd31e3c7a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 108.2046
+  mass: 114.50598
   ripOnRip:
   - {fileID: 7740569824078787057}
-  vertical: 0
   shape:
-    parent: {fileID: 1482645828760619528}
+    tr: {fileID: 1482645828760619528}
     snapped: 1
-    localPosition: {x: 0.1525091, y: -0.03771769, z: 0.21309154}
+    localPosition: {x: 0.1523298, y: -0.04081391, z: 0.2115368}
     scale: {x: -1.9, y: 2.12}
-    incidence: 0
-    dihedral: -3.1999998
+    incidence: -1
+    dihedral: -3
     sweep: 0
     tipScale: 80
   airfoil: {fileID: 11400000, guid: 75ff8ba979368c14ea630b03506cf08d, type: 2}
-  split: 1
-  splitFraction: 0.55
   oswald: 0.75
   skin: {fileID: 0}
   skinMesh: {fileID: -6282164833570575446, guid: eb9a644f6aac1d64e8500855fe1c02fe,
@@ -2664,22 +2653,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b67cb6eb98d4e24f82fddd31e3c7a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 58.017826
+  mass: 61.396534
   ripOnRip:
-  - {fileID: 2855146946634628553}
-  vertical: 0
+  - {fileID: 8107538539031986951}
   shape:
-    parent: {fileID: 7276279027922493657}
+    tr: {fileID: 7276279027922493657}
     snapped: 1
-    localPosition: {x: -0.08052921, y: -0.034322284, z: 0.22749162}
+    localPosition: {x: -0.07976246, y: -0.047680434, z: 0.22431338}
     scale: {x: 1.65, y: 1.6959999}
-    incidence: 0
-    dihedral: 3.5
+    incidence: -1
+    dihedral: 3
     sweep: 1
     tipScale: 71
   airfoil: {fileID: 11400000, guid: 75ff8ba979368c14ea630b03506cf08d, type: 2}
-  split: 0
-  splitFraction: 0.5
   oswald: 0.75
   skin: {fileID: 0}
   skinMesh: {fileID: 3338264275839729080, guid: eb9a644f6aac1d64e8500855fe1c02fe,
@@ -2795,58 +2781,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1 &2650358323174193224
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3204578827860034396}
-  - component: {fileID: 2722073169569423636}
-  m_Layer: 9
-  m_Name: Torpedo Test
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3204578827860034396
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2650358323174193224}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.27, z: -0.32}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8599845104496506997}
-  m_RootOrder: 9
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2722073169569423636
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2650358323174193224}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ddfde6b24578d346adb57baafc61322, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  launchPositions:
-  - {x: 0, y: 0, z: 0}
-  launchClips: []
-  symmetrical: {fileID: 0}
-  priority: 0
-  bombBay: 0
-  torpedoRef: {fileID: -5791603581320613226, guid: 785aaa7b292864341b049b3439f428e7,
-    type: 3}
 --- !u!1 &2686028327606201565
 GameObject:
   m_ObjectHideFlags: 0
@@ -2873,7 +2807,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2686028327606201565}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.3, z: 0.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2920,6 +2854,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5151935273538332371}
   - component: {fileID: 8474962087984619769}
+  - component: {fileID: 8746093725877600250}
   m_Layer: 9
   m_Name: Water Tank
   m_TagString: Untagged
@@ -2958,6 +2893,20 @@ MonoBehaviour:
   capacity: 10
   selfSealing: 0
   armorThickness: 0
+--- !u!64 &8746093725877600250
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3242189441499855287}
+  m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -6465252514528117496, guid: eb9a644f6aac1d64e8500855fe1c02fe, type: 3}
 --- !u!1 &3360668801467431963
 GameObject:
   m_ObjectHideFlags: 0
@@ -3056,10 +3005,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19cf394275fd6aa4080fa856dc349359, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 88.229675
+  mass: 77.195335
   ripOnRip: []
-  secondQuad:
-    tr: {fileID: 277811494060460030}
 --- !u!64 &2155503145401191708
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -3286,11 +3233,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c61e93478feb854ca8724e7559cd051, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 10.724911
+  mass: 9.383613
   ripOnRip: []
-  vertical: 0
   shape:
-    parent: {fileID: 6513763260965042580}
+    tr: {fileID: 6513763260965042580}
     snapped: 0
     localPosition: {x: 0, y: 0, z: 0}
     scale: {x: -2.05, y: 0.45}
@@ -3484,7 +3430,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3677074657003297431}
   m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.33424804, y: 0.06, z: 0.06}
@@ -3910,7 +3856,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4177530457990453593}
   m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.20366679, y: 0.05, z: 0.05}
@@ -4403,22 +4349,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b67cb6eb98d4e24f82fddd31e3c7a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 58.017826
+  mass: 61.396534
   ripOnRip:
-  - {fileID: 2448003060767669263}
-  vertical: 0
+  - {fileID: 4334427598525578676}
   shape:
-    parent: {fileID: 6516489787954382120}
+    tr: {fileID: 6516489787954382120}
     snapped: 1
-    localPosition: {x: 0.08052921, y: -0.034322225, z: 0.22749195}
+    localPosition: {x: 0.07976246, y: -0.047680374, z: 0.22431372}
     scale: {x: -1.65, y: 1.6959999}
-    incidence: 0
-    dihedral: -3.5
+    incidence: -1
+    dihedral: -3
     sweep: 1
     tipScale: 71
   airfoil: {fileID: 11400000, guid: 75ff8ba979368c14ea630b03506cf08d, type: 2}
-  split: 0
-  splitFraction: 0.5
   oswald: 0.75
   skin: {fileID: 0}
   skinMesh: {fileID: 4785583892542966424, guid: eb9a644f6aac1d64e8500855fe1c02fe,
@@ -4617,23 +4560,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b67cb6eb98d4e24f82fddd31e3c7a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 106.07603
+  mass: 112.25344
   ripOnRip:
   - {fileID: 3418019877036066621}
   - {fileID: 2241448064731886608}
-  vertical: 0
   shape:
-    parent: {fileID: 7404608693423545380}
+    tr: {fileID: 7404608693423545380}
     snapped: 0
     localPosition: {x: 0.14999999, y: -0.08, z: 0.19999999}
     scale: {x: -1.5, y: 2.6499999}
-    incidence: 0
+    incidence: -1
     dihedral: -3
     sweep: 1
     tipScale: 80
   airfoil: {fileID: 11400000, guid: 75ff8ba979368c14ea630b03506cf08d, type: 2}
-  split: 0
-  splitFraction: 0.5
   oswald: 0.75
   skin: {fileID: 0}
   skinMesh: {fileID: -1362674080852256170, guid: eb9a644f6aac1d64e8500855fe1c02fe,
@@ -4786,6 +4726,37 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 1428583587942017702, guid: eb9a644f6aac1d64e8500855fe1c02fe, type: 3}
+--- !u!1 &5562605297363496057
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4160554540729060893}
+  m_Layer: 9
+  m_Name: Control Surfaces Link
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4160554540729060893
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5562605297363496057}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2656119874584657505}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5731609867385414666
 GameObject:
   m_ObjectHideFlags: 0
@@ -4893,7 +4864,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5731609867385414666}
   m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.07, y: 0.07, z: 0.95778143}
@@ -5174,23 +5145,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b67cb6eb98d4e24f82fddd31e3c7a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 106.07603
+  mass: 112.25344
   ripOnRip:
   - {fileID: 1544961727042902158}
   - {fileID: 7392429609244442575}
-  vertical: 0
   shape:
-    parent: {fileID: 656057182248926254}
+    tr: {fileID: 656057182248926254}
     snapped: 0
     localPosition: {x: -0.14999999, y: -0.08, z: 0.19999999}
     scale: {x: 1.5, y: 2.6499999}
-    incidence: 0
+    incidence: -1
     dihedral: 3
     sweep: 1
     tipScale: 80
   airfoil: {fileID: 11400000, guid: 75ff8ba979368c14ea630b03506cf08d, type: 2}
-  split: 0
-  splitFraction: 0.5
   oswald: 0.75
   skin: {fileID: 0}
   skinMesh: {fileID: -2668604610660389477, guid: eb9a644f6aac1d64e8500855fe1c02fe,
@@ -5396,11 +5364,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c61e93478feb854ca8724e7559cd051, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 3.0026848
+  mass: 2.627157
   ripOnRip: []
-  vertical: 0
   shape:
-    parent: {fileID: 7208399528028919904}
+    tr: {fileID: 7208399528028919904}
     snapped: 0
     localPosition: {x: -0, y: 0, z: 0}
     scale: {x: -0.84, y: 0.47}
@@ -5619,10 +5586,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19cf394275fd6aa4080fa856dc349359, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 33.392582
+  mass: 29.216375
   ripOnRip: []
-  secondQuad:
-    tr: {fileID: 7043142175645803413}
 --- !u!64 &7853182329726861978
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -6164,11 +6129,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c61e93478feb854ca8724e7559cd051, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 10.724911
+  mass: 9.383613
   ripOnRip: []
-  vertical: 0
   shape:
-    parent: {fileID: 5093346435367993429}
+    tr: {fileID: 5093346435367993429}
     snapped: 0
     localPosition: {x: 0, y: 0, z: 0}
     scale: {x: 2.05, y: 0.45}
@@ -6289,12 +6253,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d84636798da6bfc4eb6d4bfe6d358f32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 25.459225
-  ripOnRip:
-  - {fileID: 2920842613537356008}
-  vertical: 0
+  mass: 22.275196
+  ripOnRip: []
   shape:
-    parent: {fileID: 2895003419501398407}
+    tr: {fileID: 2895003419501398407}
     snapped: 0
     localPosition: {x: 0.19999999, y: -0, z: 0.12}
     scale: {x: 1.5999999, y: 1.1999999}
@@ -6302,7 +6264,6 @@ MonoBehaviour:
     dihedral: 0
     sweep: -9
     tipScale: 71
-  airfoil: {fileID: 11400000, guid: ecfbfb6be7ebb2a46bf9086d8de8c9cd, type: 2}
 --- !u!64 &6705874960757650412
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -6474,7 +6435,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca377d44eabe6804c9f9153ea958e762, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 6.3422413
+  mass: 5.549056
   ripOnRip: []
 --- !u!1 &7647876807724159107
 GameObject:
@@ -6516,7 +6477,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7647876807724159107}
-  m_Mesh: {fileID: -116540680262965239, guid: 483cdd845f4dced46b940c24002a506b, type: 3}
+  m_Mesh: {fileID: 2790597658239107848, guid: 483cdd845f4dced46b940c24002a506b, type: 3}
 --- !u!23 &3901378815587265013
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -6590,6 +6551,7 @@ Transform:
   - {fileID: 8517498936593911478}
   - {fileID: 4686195648558220117}
   - {fileID: 6951057208341471786}
+  - {fileID: 4160554540729060893}
   m_Father: {fileID: 7732750328516757722}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6651,14 +6613,14 @@ MonoBehaviour:
   warOnly: 0
   destroyed: 0
   burning: 0
-  cogForwardDistance: 0.12
+  cogForwardDistance: 0.18
   targetEmptyMass: 2374
   EmptyMass:
-    mass: 2347.1248
-    center: {x: 0.000000027629488, y: -0.20154998, z: 0.11598594}
+    mass: 2374
+    center: {x: 0.000000012854919, y: -0.20545103, z: 0.17999993}
   LoadedMass:
-    mass: 3586.4978
-    center: {x: 0.000000013827156, y: -0.4272825, z: 0.015629234}
+    mass: 2653.3733
+    center: {x: 0.000000014376783, y: -0.16681598, z: 0.18738042}
   lod: {fileID: 0}
   bubble: {fileID: 0}
   data: {fileID: 800713831381647759}
@@ -6684,11 +6646,10 @@ MonoBehaviour:
   - {fileID: 921654078457317917}
   - {fileID: 3504688139231061270}
   - {fileID: 2093053036319049979}
-  - {fileID: 2722073169569423636}
   - {fileID: 8041740409355677518}
   - {fileID: 576187449850319068}
   - {fileID: 2394215899466260449}
-  - {fileID: 2855146946634628553}
+  - {fileID: 8107538539031986951}
   - {fileID: 4491152728689807141}
   - {fileID: 7392429609244442575}
   - {fileID: 5232233383033127643}
@@ -6696,11 +6657,10 @@ MonoBehaviour:
   - {fileID: 4083152240909905664}
   - {fileID: 7667043837145605817}
   - {fileID: 1968755319452101598}
-  - {fileID: 5482827565237959399}
   - {fileID: 3862669380175756608}
   - {fileID: 664228770329043945}
   - {fileID: 5680453361475038964}
-  - {fileID: 2448003060767669263}
+  - {fileID: 4334427598525578676}
   - {fileID: 7740569824078787057}
   - {fileID: 2241448064731886608}
   - {fileID: 7819115118044471098}
@@ -6708,15 +6668,14 @@ MonoBehaviour:
   - {fileID: 6436393135555754475}
   - {fileID: 4370812891435315440}
   - {fileID: 8853615230242352514}
-  - {fileID: 3025185698561084300}
   - {fileID: 8489293493741924466}
   - {fileID: 5145302736653803461}
   - {fileID: 8722683730702524512}
-  - {fileID: 2920842613537356008}
+  - {fileID: 5526958767973389213}
   - {fileID: 2824488520492334483}
-  - {fileID: 7595441232819029818}
+  - {fileID: 7940598593098352054}
   - {fileID: 1090266236202511690}
-  - {fileID: 2802373439120541775}
+  - {fileID: 4352497840146142611}
   - {fileID: 5603953330126241378}
   - {fileID: 2381839967161674789}
   - {fileID: 1544961727042902158}
@@ -6764,25 +6723,23 @@ MonoBehaviour:
   - {fileID: 8041740409355677518}
   - {fileID: 576187449850319068}
   - {fileID: 2394215899466260449}
-  - {fileID: 2855146946634628553}
+  - {fileID: 8107538539031986951}
   - {fileID: 4491152728689807141}
   - {fileID: 7392429609244442575}
-  - {fileID: 5482827565237959399}
   - {fileID: 3862669380175756608}
   - {fileID: 664228770329043945}
   - {fileID: 5680453361475038964}
-  - {fileID: 2448003060767669263}
+  - {fileID: 4334427598525578676}
   - {fileID: 7740569824078787057}
   - {fileID: 2241448064731886608}
-  - {fileID: 3025185698561084300}
   - {fileID: 8489293493741924466}
   - {fileID: 5145302736653803461}
   - {fileID: 8722683730702524512}
-  - {fileID: 2920842613537356008}
+  - {fileID: 5526958767973389213}
   - {fileID: 2824488520492334483}
-  - {fileID: 7595441232819029818}
+  - {fileID: 7940598593098352054}
   - {fileID: 1090266236202511690}
-  - {fileID: 2802373439120541775}
+  - {fileID: 4352497840146142611}
   - {fileID: 5603953330126241378}
   - {fileID: 2381839967161674789}
   - {fileID: 1544961727042902158}
@@ -6804,49 +6761,38 @@ MonoBehaviour:
   - {fileID: 8041740409355677518}
   - {fileID: 576187449850319068}
   - {fileID: 2394215899466260449}
-  - {fileID: 2855146946634628553}
+  - {fileID: 8107538539031986951}
   - {fileID: 4491152728689807141}
   - {fileID: 7392429609244442575}
   - {fileID: 3862669380175756608}
   - {fileID: 664228770329043945}
   - {fileID: 5680453361475038964}
-  - {fileID: 2448003060767669263}
+  - {fileID: 4334427598525578676}
   - {fileID: 7740569824078787057}
   - {fileID: 2241448064731886608}
   - {fileID: 8489293493741924466}
   - {fileID: 5145302736653803461}
   - {fileID: 8722683730702524512}
-  - {fileID: 2920842613537356008}
+  - {fileID: 5526958767973389213}
   - {fileID: 2824488520492334483}
-  - {fileID: 7595441232819029818}
+  - {fileID: 7940598593098352054}
   - {fileID: 1090266236202511690}
-  - {fileID: 2802373439120541775}
+  - {fileID: 4352497840146142611}
   crew:
   - {fileID: 4678163980961681957}
   card: {fileID: 11400000, guid: 1d509bf11308abe4e8aa9b59081e5a37, type: 2}
-  stations:
-  - name: Torpedo
-    picked: 0
-    symmetrical: 0
-    priority: 0
-    options:
-    - {fileID: 3204578827860034396}
-    symmetricalOptions: []
-  materials: {fileID: 11400000, guid: bae97854bf44eec4fab4c954dc405fcd, type: 2}
+  stations: []
   maxG: 10
-  maxSpeed: 191.66667
-  axesSpeed:
-    pitch: 3
-    roll: 2
-    yaw: 1.5
+  speedLimitKph: 690
   convergeance: 230
   customPIDValues: 0
   pidPitch:
-    pidValues: {x: 0, y: 0, z: 0}
+    pidValues: {x: 0.03, y: 0, z: 0.005}
   pidRoll:
-    pidValues: {x: 0, y: 0, z: 0}
-  pidElevator:
-    pidValues: {x: 0, y: 0, z: 0}
+    pidValues: {x: 2, y: 0, z: 0.5}
+  stickTorqueFactor: 1
+  stallMarginAngle: 1
+  hydraulicControls: 0
   squadron:
     aircraftCard: {fileID: 0}
     team: 0
@@ -6864,11 +6810,7 @@ MonoBehaviour:
     convergeance: 0
     rocketsFuzeMeters: 0
     bombsFuzeSeconds: 0
-  squadronId: 0
   placeInSquad: 0
-  turnRadius: 220
-  minCrashDelay: 6.5
-  minInvertAltitude: 230
 --- !u!95 &1107555855967290558
 Animator:
   serializedVersion: 5
@@ -6966,18 +6908,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   preset: {fileID: 11400000, guid: bf7cf14c18a2f8d49bf8688ec40b16c7, type: 2}
-  igniting: 0
-  ignitionState: 0
-  pumped: 0
-  rps: 0
-  onInput: 0
-  throttleInput: 0
-  trueThrottle: 0
-  boosting: 0
   oil: {fileID: 3953774239667772144}
   water: {fileID: 8474962087984619769}
+  onInput: 0
+  pumped: 0
   propeller: {fileID: 924893162482051689}
-  brakePower: 0
   boostTime: 300
 --- !u!64 &1052083950249468450
 MeshCollider:
@@ -7292,22 +7227,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b67cb6eb98d4e24f82fddd31e3c7a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 108.2046
+  mass: 114.50597
   ripOnRip:
   - {fileID: 4491152728689807141}
-  vertical: 0
   shape:
-    parent: {fileID: 2035427740012139659}
+    tr: {fileID: 2035427740012139659}
     snapped: 1
-    localPosition: {x: -0.1525091, y: -0.03771775, z: 0.21309122}
+    localPosition: {x: -0.1523298, y: -0.04081397, z: 0.21153647}
     scale: {x: 1.9, y: 2.12}
-    incidence: 0
-    dihedral: 3.1999998
+    incidence: -1
+    dihedral: 3
     sweep: 0
     tipScale: 80
   airfoil: {fileID: 11400000, guid: 75ff8ba979368c14ea630b03506cf08d, type: 2}
-  split: 1
-  splitFraction: 0.55
   oswald: 0.75
   skin: {fileID: 0}
   skinMesh: {fileID: 6396011147377445515, guid: eb9a644f6aac1d64e8500855fe1c02fe,
@@ -7447,7 +7379,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8002175175857517564}
   m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.33424804, y: 0.06, z: 0.06}
@@ -7463,8 +7395,8 @@ GameObject:
   - component: {fileID: 7082472746563344243}
   - component: {fileID: 3940071360483179778}
   - component: {fileID: 5356447796574788178}
-  - component: {fileID: 2802373439120541775}
   - component: {fileID: 4584736726272418233}
+  - component: {fileID: 4352497840146142611}
   m_Layer: 9
   m_Name: Rudder
   m_TagString: Untagged
@@ -7537,37 +7469,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2802373439120541775
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8074686057419612094}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce8cef36737450646b64ce4a2fa71133, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mass: 15.025085
-  ripOnRip:
-  - {fileID: 0}
-  vertical: 1
-  shape:
-    parent: {fileID: 7082472746563344243}
-    snapped: 0
-    localPosition: {x: 0, y: -0, z: 0}
-    scale: {x: 1.65, y: 0.7}
-    incidence: 0
-    dihedral: 90
-    sweep: 0
-    tipScale: 100
-  controlState: 0
-  controlAngle: 0
-  sinControlAngle: 0
-  maxDeflection: 28
-  minDeflection: 28
-  effectiveSpeed: 69.44444
 --- !u!64 &4584736726272418233
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -7582,6 +7483,31 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4492670477811702767, guid: eb9a644f6aac1d64e8500855fe1c02fe, type: 3}
+--- !u!114 &4352497840146142611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8074686057419612094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf07bb776d7cd554aa5c627fb6bf5c4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mass: 13.14599
+  ripOnRip: []
+  shape:
+    tr: {fileID: 7082472746563344243}
+    snapped: 0
+    localPosition: {x: 0, y: -0, z: 0}
+    scale: {x: 1.65, y: 0.7}
+    incidence: 0
+    dihedral: 90
+    sweep: 0
+    tipScale: 100
+  maxDeflection: 28
+  minDeflection: 28
 --- !u!1 &8099413073618273020
 GameObject:
   m_ObjectHideFlags: 0
@@ -7593,8 +7519,8 @@ GameObject:
   - component: {fileID: 6618333666996204302}
   - component: {fileID: 6762913357955031931}
   - component: {fileID: 627919389444557312}
-  - component: {fileID: 2920842613537356008}
   - component: {fileID: 7784618788356976834}
+  - component: {fileID: 5526958767973389213}
   m_Layer: 9
   m_Name: Right Elevator
   m_TagString: Untagged
@@ -7667,37 +7593,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2920842613537356008
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8099413073618273020}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce8cef36737450646b64ce4a2fa71133, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mass: 6.357927
-  ripOnRip:
-  - {fileID: 0}
-  vertical: 0
-  shape:
-    parent: {fileID: 6618333666996204302}
-    snapped: 0
-    localPosition: {x: 0.19999999, y: -0, z: -0.17999999}
-    scale: {x: 1.55, y: 0.42}
-    incidence: 0
-    dihedral: 0
-    sweep: 0
-    tipScale: 100
-  controlState: 0
-  controlAngle: 0
-  sinControlAngle: 0
-  maxDeflection: 27
-  minDeflection: 26
-  effectiveSpeed: 133.33334
 --- !u!64 &7784618788356976834
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -7712,6 +7607,31 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -8705772104896277660, guid: eb9a644f6aac1d64e8500855fe1c02fe, type: 3}
+--- !u!114 &5526958767973389213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8099413073618273020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af134185884ac4e4ca1ac48a2f9e9e3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mass: 5.56278
+  ripOnRip: []
+  shape:
+    tr: {fileID: 6618333666996204302}
+    snapped: 0
+    localPosition: {x: 0.19999999, y: -0, z: -0.17999999}
+    scale: {x: 1.55, y: 0.42}
+    incidence: 0
+    dihedral: 0
+    sweep: 0
+    tipScale: 100
+  maxDeflection: 27
+  minDeflection: 26
 --- !u!1 &8224948602702151461
 GameObject:
   m_ObjectHideFlags: 0
@@ -8116,7 +8036,7 @@ GameObject:
   - component: {fileID: 924893162482051689}
   - component: {fileID: 1517750791874035019}
   m_Layer: 2
-  m_Name: Propeller
+  m_Name: De Havilland Constant Speed Propeller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8202,6 +8122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58b66420e085b5b45973659114fb6101, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  radius: 1.5
   reductionGear: 0.477
   preset: {fileID: 11400000, guid: 9c6dcfc12a72b174d8bb07f71f825abb, type: 2}
   efficiency: 0.8
@@ -8298,8 +8219,8 @@ GameObject:
   - component: {fileID: 86324396072859829}
   - component: {fileID: 6545021961451182947}
   - component: {fileID: 1673046121685291542}
-  - component: {fileID: 2448003060767669263}
   - component: {fileID: 6983578884767999316}
+  - component: {fileID: 4334427598525578676}
   m_Layer: 9
   m_Name: Left Aileron
   m_TagString: Untagged
@@ -8372,37 +8293,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2448003060767669263
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8877256807955066499}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce8cef36737450646b64ce4a2fa71133, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mass: 10.427512
-  ripOnRip:
-  - {fileID: 0}
-  vertical: 0
-  shape:
-    parent: {fileID: 86324396072859829}
-    snapped: 0
-    localPosition: {x: 0.10165405, y: 0.00000010430813, z: -0.08062768}
-    scale: {x: -2.35, y: 0.42}
-    incidence: -1.5
-    dihedral: -3.4
-    sweep: 7.3
-    tipScale: 72.3
-  controlState: 0
-  controlAngle: 0
-  sinControlAngle: 0
-  maxDeflection: 22
-  minDeflection: 21
-  effectiveSpeed: 102.77778
 --- !u!64 &6983578884767999316
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -8417,6 +8307,31 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -1592895588405412630, guid: eb9a644f6aac1d64e8500855fe1c02fe, type: 3}
+--- !u!114 &4334427598525578676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8877256807955066499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dae893b9d1a6774891ec70e9cc62847, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mass: 8.303842
+  ripOnRip: []
+  shape:
+    tr: {fileID: 86324396072859829}
+    snapped: 0
+    localPosition: {x: 0.10165405, y: 0.00000010430813, z: -0.08062768}
+    scale: {x: -2.35, y: 0.42}
+    incidence: -1.5
+    dihedral: -3.4
+    sweep: 7.3
+    tipScale: 72.3
+  maxDeflection: 22
+  minDeflection: 21
 --- !u!1 &8956102384615063829
 GameObject:
   m_ObjectHideFlags: 0
@@ -8524,7 +8439,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8956102384615063829}
   m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.07, y: 0.07, z: 0.95778143}

@@ -5,7 +5,7 @@ using UnityEditor;
 #if UNITY_EDITOR
 public class SofWindow : EditorWindow
 {
-    [MenuItem("Window/SOF")]
+    [MenuItem("Sky On Fire/Window")]
     public static void ShowWindow()
     {
         GetWindow<SofWindow>("SOF Toolbar");
@@ -13,26 +13,39 @@ public class SofWindow : EditorWindow
 
 
 
-    public static bool showAirframesOverlay;
+    public static bool showFuselageOverlay;
+    public static bool showWingsOverlay;
     public static bool showCrewMembers;
 
     private void OnGUI()
     {
-        showAirframesOverlay = EditorGUILayout.Toggle("Airframes Overlay",showAirframesOverlay);
-        //showCrewMembers = EditorGUILayout.Toggle("Show Crew Members", showCrewMembers);
+        EditorGUI.BeginChangeCheck();
+
+        showFuselageOverlay = EditorGUILayout.Toggle("Fuselage Overlay",showFuselageOverlay);
+        showWingsOverlay = EditorGUILayout.Toggle("Wings Overlay", showWingsOverlay);
+        showCrewMembers = EditorGUILayout.Toggle("Show Crew Members", showCrewMembers);
+
+        if (EditorGUI.EndChangeCheck())
+        {
+            SaveEditorPrefs();
+            SceneView.RepaintAll();
+        }
     }
-
-
     private void OnEnable()
     {
-        showAirframesOverlay = PlayerPrefs.GetInt("AirframesOverlay", 1) == 1;
-        showCrewMembers = PlayerPrefs.GetInt("ShowCrewMembers", 1) == 1;
+        showFuselageOverlay = EditorPrefs.GetBool("FuselageOverlay", true);
+        showWingsOverlay = EditorPrefs.GetBool("WingsOverlay", true);
+        showCrewMembers = EditorPrefs.GetBool("ShowCrewMembers", true);
     }
-
-    private void OnValidate()
+    private void SaveEditorPrefs()
     {
-        PlayerPrefs.SetInt("AirframesOverlay", showAirframesOverlay ? 1 : 0);
-        PlayerPrefs.SetInt("ShowCrewMembers", showCrewMembers ? 1 : 0);
+        EditorPrefs.SetBool("FuselageOverlay", showFuselageOverlay);
+        EditorPrefs.SetBool("WingsOverlay", showWingsOverlay);
+        EditorPrefs.SetBool("ShowCrewMembers", showCrewMembers);
+    }
+    private void OnDisable()
+    {
+        SaveEditorPrefs();
     }
 }
 #endif

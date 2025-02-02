@@ -106,8 +106,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mass: 782.4925
   ripOnRip: []
-  secondQuad:
-    tr: {fileID: 8942854951716888322}
   cd: 0.013
   linkedFuselages:
   - {fileID: 5534627747435684210}
@@ -513,9 +511,9 @@ MonoBehaviour:
   ripOnRip:
   - {fileID: 2605869690719325640}
   - {fileID: 5746597931944142429}
-  vertical: 1
+  - {fileID: 8685997455971422034}
   shape:
-    parent: {fileID: 6211280066910005592}
+    tr: {fileID: 6211280066910005592}
     snapped: 0
     localPosition: {x: -0, y: 0.22, z: 0.59}
     scale: {x: 1.8, y: 2.49}
@@ -523,7 +521,6 @@ MonoBehaviour:
     dihedral: 90
     sweep: -33.5
     tipScale: 22.9
-  airfoil: {fileID: 11400000, guid: 516ba998e1b47ad48b3d10f4bc6e512f, type: 2}
 --- !u!64 &9112347228458026075
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -549,8 +546,8 @@ GameObject:
   - component: {fileID: 5443140367215013138}
   - component: {fileID: 6317457663074861273}
   - component: {fileID: 8607010685124941148}
-  - component: {fileID: 5907488478324561609}
   - component: {fileID: 5591101521799108946}
+  - component: {fileID: 4323621046101425884}
   m_Layer: 9
   m_Name: Elevator
   m_TagString: Untagged
@@ -623,37 +620,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &5907488478324561609
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 872894125650159936}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce8cef36737450646b64ce4a2fa71133, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mass: 8.649447
-  ripOnRip:
-  - {fileID: 0}
-  vertical: 0
-  shape:
-    parent: {fileID: 5443140367215013138}
-    snapped: 0
-    localPosition: {x: 0.29, y: 0.02, z: -0.04}
-    scale: {x: 1.64, y: 0.5}
-    incidence: 0
-    dihedral: 0
-    sweep: 0
-    tipScale: 100
-  controlState: 0
-  controlAngle: 0
-  sinControlAngle: 0
-  maxDeflection: 30
-  minDeflection: 20
-  effectiveSpeed: 188.8889
 --- !u!64 &5591101521799108946
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -668,6 +634,31 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4311252590448342893, guid: 1b710a1f7ed477449969d8e0969b033c, type: 3}
+--- !u!114 &4323621046101425884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 872894125650159936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af134185884ac4e4ca1ac48a2f9e9e3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mass: 8.649447
+  ripOnRip: []
+  shape:
+    tr: {fileID: 5443140367215013138}
+    snapped: 0
+    localPosition: {x: 0.29, y: 0.02, z: -0.04}
+    scale: {x: 1.64, y: 0.5}
+    incidence: 0
+    dihedral: 0
+    sweep: 0
+    tipScale: 100
+  maxDeflection: 30
+  minDeflection: 20
 --- !u!1 &878802908983023808
 GameObject:
   m_ObjectHideFlags: 0
@@ -771,8 +762,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mass: 300
   ripOnRip: []
-  secondQuad:
-    tr: {fileID: 0}
   brokenModel: {fileID: 0}
 --- !u!64 &1077949120444029468
 MeshCollider:
@@ -1250,16 +1239,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   preset: {fileID: 11400000, guid: c873c7bfc6eab3845811f3009deb3350, type: 2}
-  igniting: 0
-  ignitionState: 0
-  pumped: 0
-  rps: 0
-  onInput: 0
-  throttleInput: 0
-  trueThrottle: 0
-  boosting: 0
   oil: {fileID: 5946399346139486761}
   water: {fileID: 0}
+  onInput: 0
+  pumped: 0
   inlet: {fileID: 3822044362404298386}
   thrust: 0
 --- !u!136 &5004491037383793464
@@ -1746,8 +1729,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mass: 133.45413
   ripOnRip: []
-  secondQuad:
-    tr: {fileID: 6298901340469138000}
 --- !u!64 &3859379391564472491
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2720,10 +2701,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mass: 15.748048
   ripOnRip:
-  - {fileID: 4221726294686786244}
-  vertical: 0
+  - {fileID: 804049872812005619}
   shape:
-    parent: {fileID: 4644308975494493761}
+    tr: {fileID: 4644308975494493761}
     snapped: 1
     localPosition: {x: -0.009814024, y: -0.004309669, z: 0.12103465}
     scale: {x: -1.22, y: 1.2155666}
@@ -2732,8 +2712,6 @@ MonoBehaviour:
     sweep: -15
     tipScale: 77.8
   airfoil: {fileID: 11400000, guid: d21db39aacc34024da8044b2df022160, type: 2}
-  split: 0
-  splitFraction: 0.5
   oswald: 0.5
   skin: {fileID: 0}
   skinMesh: {fileID: -8575941011604487420, guid: 1b710a1f7ed477449969d8e0969b033c,
@@ -3050,8 +3028,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mass: 300
   ripOnRip: []
-  secondQuad:
-    tr: {fileID: 0}
   brokenModel: {fileID: 0}
 --- !u!64 &1163567037395996394
 MeshCollider:
@@ -3482,9 +3458,8 @@ MonoBehaviour:
   mass: 71.00725
   ripOnRip:
   - {fileID: 0}
-  vertical: 0
   shape:
-    parent: {fileID: 3022087554701770622}
+    tr: {fileID: 3022087554701770622}
     snapped: 1
     localPosition: {x: -0.014376402, y: 0.010149702, z: 0.2002162}
     scale: {x: -2.3899999, y: 1.6651598}
@@ -3493,8 +3468,6 @@ MonoBehaviour:
     sweep: -14.799999
     tipScale: 73
   airfoil: {fileID: 11400000, guid: d21db39aacc34024da8044b2df022160, type: 2}
-  split: 1
-  splitFraction: 0.53
   oswald: 0.5
   skin: {fileID: 0}
   skinMesh: {fileID: -7997494117085388946, guid: 1b710a1f7ed477449969d8e0969b033c,
@@ -4901,8 +4874,8 @@ GameObject:
   - component: {fileID: 3985341136383222213}
   - component: {fileID: 8072446337232380902}
   - component: {fileID: 1754513647970519680}
-  - component: {fileID: 6353847082226076539}
   - component: {fileID: 1763943033103115344}
+  - component: {fileID: 8685997455971422034}
   m_Layer: 9
   m_Name: Rudder
   m_TagString: Untagged
@@ -4975,37 +4948,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &6353847082226076539
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4478710958338262288}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce8cef36737450646b64ce4a2fa71133, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mass: 13.945757
-  ripOnRip:
-  - {fileID: 0}
-  vertical: 1
-  shape:
-    parent: {fileID: 3985341136383222213}
-    snapped: 0
-    localPosition: {x: 0, y: 0, z: -0.099999994}
-    scale: {x: 2.05, y: 0.55}
-    incidence: 2.81
-    dihedral: 90
-    sweep: 0
-    tipScale: 100
-  controlState: 0
-  controlAngle: 0
-  sinControlAngle: 0
-  maxDeflection: 28
-  minDeflection: 28
-  effectiveSpeed: 166.66667
 --- !u!64 &1763943033103115344
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -5020,6 +4962,31 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -8370135216798615846, guid: 1b710a1f7ed477449969d8e0969b033c, type: 3}
+--- !u!114 &8685997455971422034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4478710958338262288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf07bb776d7cd554aa5c627fb6bf5c4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mass: 13.945757
+  ripOnRip: []
+  shape:
+    tr: {fileID: 3985341136383222213}
+    snapped: 0
+    localPosition: {x: 0, y: 0, z: -0.099999994}
+    scale: {x: 2.05, y: 0.55}
+    incidence: 2.81
+    dihedral: 90
+    sweep: 0
+    tipScale: 100
+  maxDeflection: 28
+  minDeflection: 28
 --- !u!1 &4742638339154208593
 GameObject:
   m_ObjectHideFlags: 0
@@ -5458,11 +5425,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mass: 29.64327
-  ripOnRip:
-  - {fileID: 0}
-  vertical: 0
+  ripOnRip: []
   shape:
-    parent: {fileID: 1490291899404527916}
+    tr: {fileID: 1490291899404527916}
     snapped: 0
     localPosition: {x: 0.35, y: 0, z: 0.32}
     scale: {x: 1.8199999, y: 1.48}
@@ -5470,7 +5435,6 @@ MonoBehaviour:
     dihedral: 0
     sweep: -15.299999
     tipScale: 38.4
-  airfoil: {fileID: 11400000, guid: 20399650de1387d45afe855aae231ffc, type: 2}
 --- !u!64 &1213484516663193064
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -5806,8 +5770,8 @@ GameObject:
   - component: {fileID: 7971844740117263799}
   - component: {fileID: 5589139652348377899}
   - component: {fileID: 6444790879250306428}
-  - component: {fileID: 4221726294686786244}
   - component: {fileID: 5231765111019016562}
+  - component: {fileID: 804049872812005619}
   m_Layer: 9
   m_Name: Left Aileron
   m_TagString: Untagged
@@ -5880,37 +5844,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &4221726294686786244
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5651472319358983968}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce8cef36737450646b64ce4a2fa71133, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mass: 6.1744165
-  ripOnRip:
-  - {fileID: 0}
-  vertical: 0
-  shape:
-    parent: {fileID: 7971844740117263799}
-    snapped: 0
-    localPosition: {x: -0.01, y: -0, z: -0.07}
-    scale: {x: -2.18, y: 0.29999998}
-    incidence: -4.44
-    dihedral: -6.91
-    sweep: -6.98
-    tipScale: 100
-  controlState: 0
-  controlAngle: 0
-  sinControlAngle: 0
-  maxDeflection: 14
-  minDeflection: 14
-  effectiveSpeed: 138.88889
 --- !u!64 &5231765111019016562
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -5925,6 +5858,31 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4162950505043946462, guid: 1b710a1f7ed477449969d8e0969b033c, type: 3}
+--- !u!114 &804049872812005619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5651472319358983968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dae893b9d1a6774891ec70e9cc62847, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mass: 6.1744165
+  ripOnRip: []
+  shape:
+    tr: {fileID: 7971844740117263799}
+    snapped: 0
+    localPosition: {x: -0.01, y: -0, z: -0.07}
+    scale: {x: -2.18, y: 0.29999998}
+    incidence: -4.44
+    dihedral: -6.91
+    sweep: -6.98
+    tipScale: 100
+  maxDeflection: 14
+  minDeflection: 14
 --- !u!1 &5708494592995938442
 GameObject:
   m_ObjectHideFlags: 0
@@ -6025,8 +5983,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mass: 68.32014
   ripOnRip: []
-  secondQuad:
-    tr: {fileID: 6594220407796744221}
 --- !u!64 &445589461781033763
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -6294,9 +6250,8 @@ MonoBehaviour:
   mass: 135.61868
   ripOnRip:
   - {fileID: 0}
-  vertical: 0
   shape:
-    parent: {fileID: 1314638991818118605}
+    tr: {fileID: 1314638991818118605}
     snapped: 0
     localPosition: {x: 0.04, y: -0, z: 0.36}
     scale: {x: 1.78, y: 2.6599998}
@@ -6305,8 +6260,6 @@ MonoBehaviour:
     sweep: -12.3
     tipScale: 62.6
   airfoil: {fileID: 11400000, guid: d21db39aacc34024da8044b2df022160, type: 2}
-  split: 0
-  splitFraction: 0.5
   oswald: 0.5
   skin: {fileID: 0}
   skinMesh: {fileID: 5567022234087710322, guid: 1b710a1f7ed477449969d8e0969b033c,
@@ -6371,16 +6324,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   preset: {fileID: 11400000, guid: c873c7bfc6eab3845811f3009deb3350, type: 2}
-  igniting: 0
-  ignitionState: 0
-  pumped: 0
-  rps: 0
-  onInput: 0
-  throttleInput: 0
-  trueThrottle: 0
-  boosting: 0
   oil: {fileID: 1366740874138847557}
   water: {fileID: 0}
+  onInput: 0
+  pumped: 0
   inlet: {fileID: 4028596923466234230}
   thrust: 0
 --- !u!136 &2887981212977170525
@@ -6599,11 +6546,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mass: 29.64327
-  ripOnRip:
-  - {fileID: 0}
-  vertical: 0
+  ripOnRip: []
   shape:
-    parent: {fileID: 8228777070923081170}
+    tr: {fileID: 8228777070923081170}
     snapped: 0
     localPosition: {x: -0.35, y: 0, z: 0.32}
     scale: {x: -1.8199999, y: 1.48}
@@ -6611,7 +6556,6 @@ MonoBehaviour:
     dihedral: 0
     sweep: -15.299999
     tipScale: 38.4
-  airfoil: {fileID: 11400000, guid: 20399650de1387d45afe855aae231ffc, type: 2}
 --- !u!64 &7730613852611509622
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -6960,9 +6904,8 @@ MonoBehaviour:
   mass: 3.8722112
   ripOnRip:
   - {fileID: 0}
-  vertical: 0
   shape:
-    parent: {fileID: 1512351269752524636}
+    tr: {fileID: 1512351269752524636}
     snapped: 0
     localPosition: {x: -0.02, y: 0, z: 0}
     scale: {x: 1.0799999, y: 0.44}
@@ -8143,9 +8086,8 @@ MonoBehaviour:
   mass: 3.4928858
   ripOnRip:
   - {fileID: 0}
-  vertical: 0
   shape:
-    parent: {fileID: 4260265777964510349}
+    tr: {fileID: 4260265777964510349}
     snapped: 0
     localPosition: {x: -0.049999997, y: 0.01, z: -0.01}
     scale: {x: -1.28, y: 0.35}
@@ -8371,8 +8313,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mass: 300
   ripOnRip: []
-  secondQuad:
-    tr: {fileID: 8437182662271575436}
   brokenModel: {fileID: 0}
 --- !u!64 &7744655243794191812
 MeshCollider:
@@ -8601,7 +8541,7 @@ MonoBehaviour:
   - {fileID: 5807151815599183277}
   - {fileID: 7501626145160231641}
   - {fileID: 6339268068208255781}
-  - {fileID: 5146400041933702963}
+  - {fileID: 6789617573669079739}
   - {fileID: 1727254461762023015}
   - {fileID: 2294239020642565113}
   - {fileID: 1366740874138847557}
@@ -8613,7 +8553,7 @@ MonoBehaviour:
   - {fileID: 8365611820299590523}
   - {fileID: 4149851488456922653}
   - {fileID: 9044854894741073952}
-  - {fileID: 4221726294686786244}
+  - {fileID: 804049872812005619}
   - {fileID: 4090783450219747866}
   - {fileID: 1877549607404151741}
   - {fileID: 5946399346139486761}
@@ -8625,11 +8565,11 @@ MonoBehaviour:
   - {fileID: 4288052533878176537}
   - {fileID: 3099167450786097212}
   - {fileID: 1965988162045507135}
-  - {fileID: 6353847082226076539}
+  - {fileID: 8685997455971422034}
   - {fileID: 2605869690719325640}
-  - {fileID: 5907488478324561609}
+  - {fileID: 4323621046101425884}
   - {fileID: 5746597931944142429}
-  - {fileID: 3599342900810725884}
+  - {fileID: 4217303782694629999}
   - {fileID: 3536236807265687222}
   - {fileID: 4698705209029702817}
   - {fileID: 6672970065143887657}
@@ -8662,7 +8602,7 @@ MonoBehaviour:
   - {fileID: 5807151815599183277}
   - {fileID: 7501626145160231641}
   - {fileID: 6339268068208255781}
-  - {fileID: 5146400041933702963}
+  - {fileID: 6789617573669079739}
   - {fileID: 1727254461762023015}
   - {fileID: 2294239020642565113}
   - {fileID: 1366740874138847557}
@@ -8674,7 +8614,7 @@ MonoBehaviour:
   - {fileID: 8365611820299590523}
   - {fileID: 4149851488456922653}
   - {fileID: 9044854894741073952}
-  - {fileID: 4221726294686786244}
+  - {fileID: 804049872812005619}
   - {fileID: 4090783450219747866}
   - {fileID: 1877549607404151741}
   - {fileID: 5946399346139486761}
@@ -8686,11 +8626,11 @@ MonoBehaviour:
   - {fileID: 4288052533878176537}
   - {fileID: 3099167450786097212}
   - {fileID: 1965988162045507135}
-  - {fileID: 6353847082226076539}
+  - {fileID: 8685997455971422034}
   - {fileID: 2605869690719325640}
-  - {fileID: 5907488478324561609}
+  - {fileID: 4323621046101425884}
   - {fileID: 5746597931944142429}
-  - {fileID: 3599342900810725884}
+  - {fileID: 4217303782694629999}
   airframes:
   - {fileID: 5534627747435684210}
   - {fileID: 6902494837097742799}
@@ -8699,25 +8639,25 @@ MonoBehaviour:
   - {fileID: 5807151815599183277}
   - {fileID: 7501626145160231641}
   - {fileID: 6339268068208255781}
-  - {fileID: 5146400041933702963}
+  - {fileID: 6789617573669079739}
   - {fileID: 1727254461762023015}
   - {fileID: 3793053527276971226}
   - {fileID: 1515438784657415907}
   - {fileID: 8365611820299590523}
   - {fileID: 4149851488456922653}
   - {fileID: 9044854894741073952}
-  - {fileID: 4221726294686786244}
+  - {fileID: 804049872812005619}
   - {fileID: 4090783450219747866}
   - {fileID: 3952002044860731905}
   - {fileID: 8624473108224606847}
   - {fileID: 4288052533878176537}
   - {fileID: 3099167450786097212}
   - {fileID: 1965988162045507135}
-  - {fileID: 6353847082226076539}
+  - {fileID: 8685997455971422034}
   - {fileID: 2605869690719325640}
-  - {fileID: 5907488478324561609}
+  - {fileID: 4323621046101425884}
   - {fileID: 5746597931944142429}
-  - {fileID: 3599342900810725884}
+  - {fileID: 4217303782694629999}
   crew:
   - {fileID: 2420409189541632047}
   card: {fileID: 11400000, guid: aaac750476953f04f9f57041baf67a1e, type: 2}
@@ -8750,21 +8690,17 @@ MonoBehaviour:
     symmetricalOptions:
     - {fileID: 0}
     - {fileID: 1007264371380983156}
-  materials: {fileID: 11400000, guid: dc8a038d21671cb4fad5acea1a90f559, type: 2}
-  maxG: 11
-  maxSpeed: 291.6667
-  axesSpeed:
-    pitch: 1.5
-    roll: 2.5
-    yaw: 1.5
+  maxG: 11.5
+  speedLimitKph: 1050
   convergeance: 350
   customPIDValues: 0
   pidPitch:
     pidValues: {x: 0, y: 0, z: 0}
   pidRoll:
     pidValues: {x: 0, y: 0, z: 0}
-  pidElevator:
-    pidValues: {x: 0, y: 0, z: 0}
+  stickTorqueFactor: 1
+  stallMarginAngle: 1
+  hydraulicControls: 1
   squadron:
     aircraftCard: {fileID: 0}
     team: 0
@@ -8782,11 +8718,7 @@ MonoBehaviour:
     convergeance: 0
     rocketsFuzeMeters: 0
     bombsFuzeSeconds: 0
-  squadronId: 0
   placeInSquad: 0
-  turnRadius: 400
-  minCrashDelay: 6
-  minInvertAltitude: 300
 --- !u!54 &7732750328516757725
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -8902,8 +8834,8 @@ GameObject:
   - component: {fileID: 2886723391076323989}
   - component: {fileID: 1790272449113248022}
   - component: {fileID: 8203144672454567627}
-  - component: {fileID: 5146400041933702963}
   - component: {fileID: 3232414684372947059}
+  - component: {fileID: 6789617573669079739}
   m_Layer: 9
   m_Name: Right Aileron
   m_TagString: Untagged
@@ -8976,37 +8908,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &5146400041933702963
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7780052446757082406}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce8cef36737450646b64ce4a2fa71133, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mass: 6.174409
-  ripOnRip:
-  - {fileID: 0}
-  vertical: 0
-  shape:
-    parent: {fileID: 2886723391076323989}
-    snapped: 0
-    localPosition: {x: 0.01, y: -0, z: -0.07}
-    scale: {x: 2.18, y: 0.29999998}
-    incidence: -4.44
-    dihedral: 6.91
-    sweep: -6.98
-    tipScale: 100
-  controlState: 0
-  controlAngle: 0
-  sinControlAngle: 0
-  maxDeflection: 14
-  minDeflection: 14
-  effectiveSpeed: 138.88889
 --- !u!64 &3232414684372947059
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -9021,6 +8922,31 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 8826513273793122755, guid: 1b710a1f7ed477449969d8e0969b033c, type: 3}
+--- !u!114 &6789617573669079739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7780052446757082406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dae893b9d1a6774891ec70e9cc62847, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mass: 6.174409
+  ripOnRip: []
+  shape:
+    tr: {fileID: 2886723391076323989}
+    snapped: 0
+    localPosition: {x: 0.01, y: -0, z: -0.07}
+    scale: {x: 2.18, y: 0.29999998}
+    incidence: -4.44
+    dihedral: 6.91
+    sweep: -6.98
+    tipScale: 100
+  maxDeflection: 14
+  minDeflection: 14
 --- !u!1 &7781589120181700575
 GameObject:
   m_ObjectHideFlags: 0
@@ -9121,9 +9047,8 @@ MonoBehaviour:
   mass: 3.8722112
   ripOnRip:
   - {fileID: 0}
-  vertical: 0
   shape:
-    parent: {fileID: 1865909907702898963}
+    tr: {fileID: 1865909907702898963}
     snapped: 0
     localPosition: {x: 0.02, y: 0, z: 0}
     scale: {x: -1.0799999, y: 0.44}
@@ -9531,9 +9456,8 @@ MonoBehaviour:
   mass: 3.4928858
   ripOnRip:
   - {fileID: 0}
-  vertical: 0
   shape:
-    parent: {fileID: 9128865362040448859}
+    tr: {fileID: 9128865362040448859}
     snapped: 0
     localPosition: {x: 0.049999997, y: 0.01, z: -0.01}
     scale: {x: 1.28, y: 0.35}
@@ -10238,10 +10162,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mass: 15.748048
   ripOnRip:
-  - {fileID: 5146400041933702963}
-  vertical: 0
+  - {fileID: 6789617573669079739}
   shape:
-    parent: {fileID: 4659971092114886087}
+    tr: {fileID: 4659971092114886087}
     snapped: 1
     localPosition: {x: 0.009814262, y: -0.004309684, z: 0.12103459}
     scale: {x: 1.22, y: 1.2155666}
@@ -10250,8 +10173,6 @@ MonoBehaviour:
     sweep: -15
     tipScale: 77.8
   airfoil: {fileID: 11400000, guid: d21db39aacc34024da8044b2df022160, type: 2}
-  split: 0
-  splitFraction: 0.5
   oswald: 0.5
   skin: {fileID: 0}
   skinMesh: {fileID: 3023368027167892956, guid: 1b710a1f7ed477449969d8e0969b033c,
@@ -10446,8 +10367,8 @@ GameObject:
   - component: {fileID: 4896544410398440194}
   - component: {fileID: 648998433103465512}
   - component: {fileID: 816446286990197457}
-  - component: {fileID: 3599342900810725884}
   - component: {fileID: 4467018143010105193}
+  - component: {fileID: 4217303782694629999}
   m_Layer: 9
   m_Name: Elevator
   m_TagString: Untagged
@@ -10520,37 +10441,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &3599342900810725884
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8541057803585891145}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce8cef36737450646b64ce4a2fa71133, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mass: 8.649447
-  ripOnRip:
-  - {fileID: 0}
-  vertical: 0
-  shape:
-    parent: {fileID: 4896544410398440194}
-    snapped: 0
-    localPosition: {x: -0.29, y: 0.02, z: -0.04}
-    scale: {x: -1.64, y: 0.5}
-    incidence: 0
-    dihedral: 0
-    sweep: 0
-    tipScale: 100
-  controlState: 0
-  controlAngle: 0
-  sinControlAngle: 0
-  maxDeflection: 30
-  minDeflection: 20
-  effectiveSpeed: 188.8889
 --- !u!64 &4467018143010105193
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -10565,6 +10455,31 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 477596874363202862, guid: 1b710a1f7ed477449969d8e0969b033c, type: 3}
+--- !u!114 &4217303782694629999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8541057803585891145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af134185884ac4e4ca1ac48a2f9e9e3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mass: 8.649447
+  ripOnRip: []
+  shape:
+    tr: {fileID: 4896544410398440194}
+    snapped: 0
+    localPosition: {x: -0.29, y: 0.02, z: -0.04}
+    scale: {x: -1.64, y: 0.5}
+    incidence: 0
+    dihedral: 0
+    sweep: 0
+    tipScale: 100
+  maxDeflection: 30
+  minDeflection: 20
 --- !u!1 &8546525757231623559
 GameObject:
   m_ObjectHideFlags: 0
@@ -11253,9 +11168,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mass: 71.00726
   ripOnRip: []
-  vertical: 0
   shape:
-    parent: {fileID: 3190758203134511045}
+    tr: {fileID: 3190758203134511045}
     snapped: 1
     localPosition: {x: 0.014376402, y: 0.010149702, z: 0.20021614}
     scale: {x: 2.3899999, y: 1.6651598}
@@ -11264,8 +11178,6 @@ MonoBehaviour:
     sweep: -14.799999
     tipScale: 73
   airfoil: {fileID: 11400000, guid: d21db39aacc34024da8044b2df022160, type: 2}
-  split: 1
-  splitFraction: 0.53
   oswald: 0.5
   skin: {fileID: 0}
   skinMesh: {fileID: -6219470971533197059, guid: 1b710a1f7ed477449969d8e0969b033c,
@@ -11389,9 +11301,8 @@ MonoBehaviour:
   mass: 135.61868
   ripOnRip:
   - {fileID: 0}
-  vertical: 0
   shape:
-    parent: {fileID: 4496439447973831729}
+    tr: {fileID: 4496439447973831729}
     snapped: 0
     localPosition: {x: -0.04, y: 0, z: 0.36}
     scale: {x: -1.78, y: 2.6599998}
@@ -11400,8 +11311,6 @@ MonoBehaviour:
     sweep: -12.3
     tipScale: 62.6
   airfoil: {fileID: 11400000, guid: d21db39aacc34024da8044b2df022160, type: 2}
-  split: 0
-  splitFraction: 0.5
   oswald: 0.5
   skin: {fileID: 0}
   skinMesh: {fileID: 8595475806963129774, guid: 1b710a1f7ed477449969d8e0969b033c,

@@ -1,0 +1,151 @@
+﻿using UnityEngine;
+using System.Collections.Generic;
+
+
+public class SofAircraft : SofComplex
+{
+    public AircraftCard card;
+    [SerializeField] private Station[] stations;
+
+    public Station[] Stations => stations;
+
+
+    [SerializeField] private float maxG = 8f;
+    [SerializeField] private float speedLimitKph = 700f;
+    [SerializeField] private float convergeance = 300f;
+
+    public float SpeedLimitMps => speedLimitKph * UnitsConverter.kphToMps;
+    public float MaxGForce => maxG;
+    public float Convergence => convergeance;
+
+
+    [SerializeField] private bool customPIDValues;
+    [SerializeField] public PID pidPitch;
+    [SerializeField] public PID pidRoll;
+    [SerializeField] private float stickTorqueFactor = 1f;
+    [SerializeField] private float stallMarginAngle = 1f;
+    [SerializeField] private bool hydraulicControls = false;
+
+
+    public bool CustomPIDValues => customPIDValues;
+    public float StickTorqueFactor => stickTorqueFactor;
+    public float StallMarginAngle => stallMarginAngle;
+    public bool HydraulicControls => hydraulicControls;
+
+
+
+    public Game.Squadron squadron;
+    public int placeInSquad;
+
+    public AircraftInputs inputs;
+
+    public PilotSeat mainSeat { get; private set; }
+    public BombardierSeat bombardierSeat { get; private set; }
+    public Bombsight bombSight { get; private set; }
+    public Animator animator { get; private set; }
+    public AircraftStats stats { get; private set; }
+    public HydraulicsManager hydraulics { get; private set; }
+    public FuelManager fuel { get; private set; }
+    public ArmamentManager armament { get; private set; }
+    public EnginesManager engines { get; private set; }
+    public ForcesCompiler forcesCompiler { get; private set; }
+
+    public float cruiseSpeed => stats.altitudeZeroMaxSpeed;
+    public float Difficulty => squadron.difficulty;
+    public int SquadronId => squadron.id;
+    public bool GroundedStart => squadron.airfield >= 0;
+
+
+
+
+
+    public void ResetStationsToDefault()
+    {
+        foreach (Station s in Stations) if (Stations != null && s != null) s.SelectAndDisactivate(0);
+    }
+
+    public override void SetReferences()
+    {
+        foreach (Station s in Stations) if (Stations != null && s != null) s.SelectAndDisactivate();
+
+        bombardierSeat = GetComponentInChildren<BombardierSeat>();
+        mainSeat = GetComponentInChildren<PilotSeat>();
+        bombSight = GetComponentInChildren<Bombsight>();
+        animator = GetComponent<Animator>();
+
+        base.SetReferences();
+
+        stats = new AircraftStats(this);
+    }
+    protected override void GameInitialization()
+    {
+        forcesCompiler = gameObject.AddComponent<ForcesCompiler>();
+        if (!customPIDValues) SetDefaultPIDValues();
+
+        AddEssentialComponents();
+
+        for (int i = 0; i < Stations.Length; i++) Stations[i].SelectAndDestroy(squadron.stations[i]);
+
+        base.GameInitialization();
+
+        InitializeMarkersAndGameReferences();
+
+        if (!GroundedStart) data.rb.velocity = transform.forward * stats.MaxSpeed(data.altitude.Get, 1f);
+
+        CreateManagers();
+    }
+    private void AddEssentialComponents()
+    {
+        lod = this.GetCreateComponentInChildren<ObjectLOD>();
+        if (!simpleDamage) bubble = transform.CreateChild("Object Bubble").gameObject.AddComponent<ObjectBubble>();
+    }
+    private void CreateManagers()
+    {
+        hydraulics = new HydraulicsManager(this);
+        armament = new ArmamentManager(this);
+        engines = new EnginesManager(this);
+        fuel = new FuelManager(this);
+        inputs = new AircraftInputs(this);
+    }
+    private void InitializeMarkersAndGameReferences()
+    {
+        tag = (squadron.team == Game.Team.Ally) ? "Ally" : (squadron.team == Game.Team.Axis) ? "Axis" : "Neutral";
+
+        if (squadron.team == Game.Team.Ally) GameManager.allyAircrafts.Add(this);
+        else GameManager.axisAircrafts.Add(this);
+        MarkersManager.Add(this);
+    }
+    private void OnCollisionEnter(Collision col)
+    {
+        Transform tr = col.GetContact(0).thisCollider.transform;
+        tr = tr.GetComponent<WingSkin>() ? tr.parent : tr;
+        SofAirframe collided = tr.GetComponent<SofAirframe>();
+        if (collided && col.impulse.magnitude > 10000f) collided.Rip();
+
+    }
+    void Update()
+    {
+        engines.Update();
+    }
+    private void FixedUpdate()
+    {
+        WaterPhysics();
+
+        //Call the pilot seat behaviour before inputs and force compilation
+        CrewMember mainPilot = mainSeat.seatedCrew;
+        if(mainPilot != null && !mainPilot.ripped && mainPilot.complex == complex)
+        {
+            if (mainPilot == Player.crew) mainSeat.PlayerFixed(mainPilot);
+            else mainSeat.AiFixed(mainPilot);
+        }
+
+        inputs.FixedUpdate();
+        forcesCompiler.ApplyForcesOnFixedUpdate();
+    }
+    public void SetDefaultPIDValues()
+    {
+        pidPitch = new PID(new Vector3(0.03f, 0f, 0.005f));
+        pidRoll = new PID(new Vector3(2f, 0f, 0.5f));
+    }
+}
+

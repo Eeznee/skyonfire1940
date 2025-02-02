@@ -132,8 +132,8 @@ public class SubCam
         gravity = PlayerPrefs.GetInt("camGravity" + i, 0) == 1;
         tilt = PlayerPrefs.GetFloat("camTilt" + i, 0f);
 
-        customOffset = Features.PlayerPrefsGetVector3("camOffset" + i, Player.seat.externalViewPoint);
-        customPos = Features.PlayerPrefsGetVector3("camPos" + i, SofCamera.tr.position);
+        customOffset = PlayerPrefsExtension.GetVector3("camOffset" + i, Player.seat.externalViewPoint);
+        customPos = PlayerPrefsExtension.GetVector3("camPos" + i, SofCamera.tr.position);
 
         trackTarget = LoadAircraft("targetSquad" + i, "targetWing" + i);
 
@@ -153,12 +153,12 @@ public class SubCam
         PlayerPrefs.SetInt("camGravity" + i, gravity ? 1 : 0);
         PlayerPrefs.SetFloat("camTilt" + i, tilt);
 
-        Features.PlayerPrefsSetVector3("camOffset" + i, customOffset);
-        Features.PlayerPrefsSetVector3("camPos" + i, customPos);
+        PlayerPrefsExtension.SetVector3("camOffset" + i, customOffset);
+        PlayerPrefsExtension.SetVector3("camPos" + i, customPos);
 
         if (trackTarget.aircraft)
         {
-            PlayerPrefs.SetInt("targetSquad" + i, trackTarget.aircraft.squadronId);
+            PlayerPrefs.SetInt("targetSquad" + i, trackTarget.aircraft.SquadronId);
             PlayerPrefs.SetInt("targetWing" + i, trackTarget.aircraft.placeInSquad);
         }
     }

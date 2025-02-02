@@ -66,9 +66,11 @@
 				fixed4 frag(v2f i) : SV_Target
 				{
 					float alpha = _Color.a * 0.5 + tex2D(_HighRpmTex, i.uv).a * 0.5;
-					if (_Rpm < 400) {
-						alpha = lerp(0, tex2D(_LowRpmTex, i.uv).a, _Rpm / 400);
-						alpha = sqrt(alpha);
+					if(_Rpm < 200){
+						alpha = 0;
+					}
+					else if (_Rpm < 400) {
+						alpha = lerp(0, tex2D(_LowRpmTex, i.uv).a, _Rpm / 200 - 1);
 					}
 					else if (_Rpm < 800) {
 						alpha = lerp(tex2D(_LowRpmTex, i.uv).a, tex2D(_MidRpmTex, i.uv).a,_Rpm / 400 - 1);
