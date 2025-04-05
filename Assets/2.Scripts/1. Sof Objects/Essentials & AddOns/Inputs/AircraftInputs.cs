@@ -55,17 +55,16 @@ public class AircraftInputs
 
     public void SetTargetInput(AircraftAxes input, PitchCorrectionMode mode)
     {
-        target = rawUncorrected = input;
+       target = rawUncorrected = input;
 
-        return;
         if (mode == PitchCorrectionMode.Raw) return;
-        if (aircraft.data.tas.Get < 30f) return;
-
+        
+        if (aircraft.data.tas.Get < aircraft.stats.MinTakeOffSpeedNoFlaps * 0.5f) return;
+        
         if(mode == PitchCorrectionMode.Clamped)
         {
             float maxPitch = PitchCorrection.MaxPitchAbs(aircraft, input.pitch);
             target.pitch = Mathf.Clamp(input.pitch, -maxPitch, maxPitch);
-
             return;
         }
 

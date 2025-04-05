@@ -23,9 +23,9 @@ public partial class Propeller : SofModule, IMassComponent, IAircraftForce
 
     [SerializeField] private float mass = 150f;
     [SerializeField] private float radius = 1.5f;
-    public float EmptyMass => mass;
-    public float LoadedMass => mass;
-    public float RealMass => mass;
+    public float EmptyMass => Mathf.Max(mass,25f);
+    public float LoadedMass => EmptyMass;
+    public float RealMass => EmptyMass;
     public float Radius => radius;
     public float Diameter => radius * 2f;
     public float Area => radius * radius * Mathf.PI;

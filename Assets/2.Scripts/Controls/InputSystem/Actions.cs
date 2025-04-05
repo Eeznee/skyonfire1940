@@ -1235,6 +1235,17 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""action"": ""BasicAxis"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3ccbf152-4ea0-4cdf-ac3e-7cb51263f92e"",
+                    ""path"": ""<Joystick>/stick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Joystick"",
+                    ""action"": ""BasicAxis"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },

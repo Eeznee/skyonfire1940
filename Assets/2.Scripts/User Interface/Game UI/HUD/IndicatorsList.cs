@@ -118,10 +118,10 @@ public class IndicatorsList : MonoBehaviour
         finalText += "RPM : " + rpm.ToString("0") + "\n";
 
         float bladeAngle = ((PistonEngine) aircraft.engines.Main).propeller.BladeAngle;
-        finalText += "PITCH ANGLE : " + bladeAngle.ToString("0.0") + " °\n";
+        finalText += "P-ALPHA : " + bladeAngle.ToString("0.0") + " °\n";
 
         float propEfficiency = ((PistonEngine)aircraft.engines.Main).propeller.BladeEfficiency() * 100f;
-        finalText += "PROP Eff : " + propEfficiency.ToString("0.0") + " %\n";
+        finalText += "P-EFF : " + propEfficiency.ToString("0.0") + " %\n";
 
         return finalText;
     }
