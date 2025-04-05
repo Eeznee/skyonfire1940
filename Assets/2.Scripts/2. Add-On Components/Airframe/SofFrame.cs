@@ -100,7 +100,6 @@ public abstract class SofFrame : SofModule, IDamageTick, IMassComponent
     {
         if (SofWindow.showFuselageOverlay)
         {
-
             Draw();
         }
     }

@@ -7,7 +7,7 @@ using UnityEditor.SceneManagement;
 [AddComponentMenu("Sof Components/Airframe/Bounded Airframe")]
 public class BoundedAirframe : SofAirframe
 {
-    public Bounds bounds { get; private set; }
+    protected Bounds bounds;
 
     public override float HpPerSquareMeter => ModulesHPData.frameHpPerSq;
 

@@ -29,7 +29,7 @@ public abstract class SofModule : SofComponent
         if (iIgnitable != null && iIgnitable.Ignitable) gameObject.AddComponent<IgnitableExtension>();
     }
 
-    public void DirectStructuralDamage(float integrityDamage)
+    public virtual void DirectStructuralDamage(float integrityDamage)
     {
         structureDamage = Mathf.Clamp01(structureDamage - integrityDamage);
 
@@ -48,7 +48,7 @@ public abstract class SofModule : SofComponent
     const float damageAtMaxRange = 1f;
     const float minDamageForHole = 10f;
 
-    public void ExplosionDamage(Vector3 center, float tnt)
+    public virtual void ExplosionDamage(Vector3 center, float tnt)
     {
         float squaredMaxDamageRange = Ballistics.MaxExplosionDamageRangeSqrt(tnt);
         float sqrDis = (center - transform.position).sqrMagnitude;

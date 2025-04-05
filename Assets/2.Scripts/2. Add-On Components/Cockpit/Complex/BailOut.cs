@@ -46,11 +46,6 @@ public class BailOutInteractable : CockpitInteractableEditor
         bailOut.bailOutPoint = EditorGUILayout.ObjectField("Bail Out Point", bailOut.bailOutPoint, typeof(Transform), true) as Transform;
 
 
-        if (GUI.changed)
-        {
-            EditorUtility.SetDirty(bailOut);
-            EditorSceneManager.MarkSceneDirty(bailOut.gameObject.scene);
-        }
         serializedObject.ApplyModifiedProperties();
     }
 }

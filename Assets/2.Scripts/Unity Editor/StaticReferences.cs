@@ -21,9 +21,20 @@ public class StaticReferences : ScriptableObject
         }
     }
 
+    public AircraftsList defaultAircrafts;
+
     public BulletHits fragmentsHits;
     public Mesh wheelCollisionMesh;
     public Airfoil stabilizersAirfoil;
     public PhysicMaterial wheelPhysicMaterial;
     public PhysicMaterial aircraftPhysicMaterial;
+
+    public ParticleSystem engineBoostEffect;
+    public ParticleSystem engineOverHeatEffect;
+    public ParticleSystem engineFireEffect;
+    public AudioClip[] engineDamagePops;
+
+    public GameObject defaultAlliesCrewmember;
+    public GameObject defaultAxisCrewmember;
+    public GameObject cube;
 }

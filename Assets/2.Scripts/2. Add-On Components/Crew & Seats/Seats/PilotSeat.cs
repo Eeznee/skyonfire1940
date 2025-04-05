@@ -33,7 +33,7 @@ public class PilotSeat : CrewSeat
     const float burstPerlinNoob = 0.42f;
     const float burstPerlinExpert = 0.6f;
 
-    public override int Priority => 3;
+    public override int Priority => 1024;
     public override void Initialize(SofComplex _complex)
     {
         if (!zoomedPOV) zoomedPOV = defaultPOV;
@@ -76,7 +76,7 @@ public class PilotSeat : CrewSeat
             float throttleIncrement = scrollValue * PilotSeat.throttleIncrement;
 
             bool maxedThrottleAndPositiveIncrement = currentThrottle >= 1f && throttleIncrement > 0f;
-            bool boostedAndNegativeIncrement = aircraft.engines.Throttle.WEP && throttleIncrement < 0f;
+            bool boostedAndNegativeIncrement = aircraft.engines.Throttle.Boost && throttleIncrement < 0f;
 
             if (maxedThrottleAndPositiveIncrement)
                 aircraft.engines.SetThrottleAllEngines(1.1f, true);
@@ -267,7 +267,7 @@ public class PilotSeatEditor : CrewSeatEditor
     {
         base.CameraPositions();
 
-        EditorGUILayout.PropertyField(zoomedPov, new GUIContent("Gunsight Pos"));
+        EditorGUILayout.PropertyField(zoomedPov, new GUIContent("Zoomed Head Pos"));
     }
 }
 #endif

@@ -1,134 +1,61 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
+
 
 [CreateAssetMenu(fileName = "New Airfoil", menuName = "SOF/Aircraft Modules/Airfoil")]
-public class Airfoil : ScriptableObject, IAirfoil
+public partial class Airfoil : ScriptableObject, IAirfoil
 {
-    public enum AirfoilType
-    {
-        Standard,
-        Symmetrical,
-        WithFlaps
-    }
-    public AirfoilType airfoilType = AirfoilType.Standard;
+    [SerializeField] private bool symmetric = false;
+    [SerializeField] private float zeroCl = 0f;
+    [SerializeField] private float maxCl = 1.5f;
+    [SerializeField] private float maxAlpha = 17f;
+    [SerializeField] private float minAlpha = -14f;
+    [SerializeField] private float minCd = 0.01f;
+    [SerializeField] private float cdGrowth = 1f;
 
-    public AirfoilSim airfoilSim = new AirfoilSim(0f,1f,15f,-10f,0.01f);
-    public AirfoilSim flappedAirfoilSim = new AirfoilSim(0.5f,1.5f,15f,-5f,0.1f);
+    [SerializeField] private float minCl;
 
-    public float editorFlaps = 0f;
-    public AnimationCurve clPlot;
-    public AnimationCurve cdPlot;
-    public AnimationCurve testPlot;
-    public float MinCD()
+    private AirfoilQuarterTool pos0to90;
+    private AirfoilQuarterTool pos90to180;
+    private AirfoilQuarterTool neg90to0;
+    private AirfoilQuarterTool neg180to90;
+
+    public float MaxCl => maxCl;
+    public float HighPeakAlpha => maxAlpha;
+    public float LowPeakAlpha => minAlpha;
+    public float MinCD => minCd;
+
+    public float Gradient() { return (maxCl - zeroCl) / (maxAlpha * Mathf.Deg2Rad); }
+
+    public Vector2 Coefficients(float alpha)
     {
-        return airfoilSim.minCd;
+        alpha = Mathf.Repeat(alpha + 180f, 360f) - 180f;
+        if (alpha < -90f) return neg180to90.Coefficients(alpha + 180f);
+        if (alpha < 0f) return neg90to0.Coefficients(-alpha);
+        if (alpha < 90f) return pos0to90.Coefficients(alpha);
+        else return pos90to180.Coefficients(180f - alpha);
     }
 
-    public float PeakAlpha()
-    {
-        return airfoilSim.maxAlpha;
-    }
-    public float LowAlpha()
-    {
-        return airfoilSim.minAlpha;
-    }
-    public float Gradient(float flaps)
-    {
-        if (flaps <= 0f) return airfoilSim.Gradient();
-        return Mathf.Lerp(airfoilSim.Gradient(),flappedAirfoilSim.Gradient(),flaps);
-    }
-    public float Gradient() { return Gradient(0f); }
-    public Vector2 Coefficients(float alpha, float flaps)
-    {
-        if (flaps <= 0f) return airfoilSim.Coefficients(alpha);
-        return Vector2.Lerp(airfoilSim.Coefficients(alpha), flappedAirfoilSim.Coefficients(alpha), flaps);
-    }
-    public Vector2 Coefficients(float alpha) { return Coefficients(alpha, 0f); }
-
+    const float reverseClFactor = 0.5f;
+    const float reverseMaxAlphaFactor = 0.65f;
     public void UpdateValues()
     {
-        airfoilSim.UpdateAirfoilQuarterTools();
-        flappedAirfoilSim.UpdateAirfoilQuarterTools();
-    }
-    public float Alpha(float cl)
-    {
-        return (cl - airfoilSim.zeroCl) / Gradient();
-    }
-#if UNITY_EDITOR
-    public void SendToCurve(float from,float to,float step)
-    {
-        UpdateValues();
-
-        clPlot = AnimationCurve.Constant(-from, to, 0f);
-        cdPlot = AnimationCurve.Constant(-from, to, 0f);
-        testPlot = AnimationCurve.Constant(-from, to, 0f);
-        for (float i = from; i < to; i += step)
+        if(symmetric)
         {
-            Vector2 coeffs = airfoilType == AirfoilType.WithFlaps ? Coefficients(i,editorFlaps) : Coefficients(i);
-            clPlot.AddKey(new Keyframe(i, coeffs.y));
-            cdPlot.AddKey(new Keyframe(i, coeffs.x));
-            if (coeffs.x != 0f) testPlot.AddKey(new Keyframe(i, coeffs.y / coeffs.x));
-            clPlot.SmoothTangents(clPlot.length - 1, 1f);
+            zeroCl = 0f;
+            minAlpha = -maxAlpha;
         }
 
-        for(int i = 0; i < clPlot.length; i++)
-        {
-            AnimationUtility.SetKeyLeftTangentMode(clPlot, i, AnimationUtility.TangentMode.Auto);
-            AnimationUtility.SetKeyLeftTangentMode(cdPlot, i, AnimationUtility.TangentMode.Auto);
-            AnimationUtility.SetKeyRightTangentMode(clPlot,i, AnimationUtility.TangentMode.Auto);
-            AnimationUtility.SetKeyRightTangentMode(cdPlot,i, AnimationUtility.TangentMode.Auto);
-        }
-    }
-#endif
-}
-#if UNITY_EDITOR
-[CustomEditor(typeof(Airfoil))]
-public class AirfoilEditor : Editor
-{
-    public override void OnInspectorGUI()
-    {
-        serializedObject.Update();
-        Airfoil airfoil = (Airfoil)target;
+        float slope = (maxCl - zeroCl) / maxAlpha;
+        float minCdAlpha = -zeroCl / slope;
 
-        GUI.color = GUI.backgroundColor;
+        minCl = zeroCl + minAlpha * ((maxCl - zeroCl) / maxAlpha);
+        pos0to90 = new AirfoilQuarterTool(maxCl, maxAlpha, zeroCl, minCd, cdGrowth);
+        neg90to0 = new AirfoilQuarterTool(minCl, -minAlpha, zeroCl, minCd, cdGrowth);
+        pos90to180 = new AirfoilQuarterTool(-maxCl * reverseClFactor, maxAlpha * reverseMaxAlphaFactor, zeroCl * reverseClFactor, minCd, cdGrowth);
+        neg180to90 = new AirfoilQuarterTool(-minCl * reverseClFactor, -minAlpha * reverseMaxAlphaFactor, zeroCl * reverseClFactor, minCd, cdGrowth);
 
-        EditorGUI.BeginChangeCheck();
-
-        airfoil.airfoilType = (Airfoil.AirfoilType)EditorGUILayout.EnumPopup("Type", airfoil.airfoilType);
-
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("airfoilSim"), true);
-        if (airfoil.airfoilType == Airfoil.AirfoilType.Symmetrical)
-        {
-            airfoil.airfoilSim.zeroCl = 0f;
-            airfoil.airfoilSim.minAlpha = -airfoil.airfoilSim.maxAlpha;
-        }
-
-        if (airfoil.airfoilType == Airfoil.AirfoilType.WithFlaps)
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("flappedAirfoilSim"), true);
-
-        GUILayout.Space(20f);
-        GUI.color = Color.green;
-        EditorGUILayout.HelpBox("Preview Curves", MessageType.None);
-        GUI.color = GUI.backgroundColor;
-
-        if (airfoil.airfoilType == Airfoil.AirfoilType.WithFlaps)
-            airfoil.editorFlaps = EditorGUILayout.Slider("Flaps preview", airfoil.editorFlaps, 0f, 1f);
-
-        airfoil.SendToCurve(-90f, 90f, 0.5f);
-
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("clPlot"), true);
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("cdPlot"), true);
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("testPlot"), true);
-
-        if (GUI.changed)
-        {
-            EditorUtility.SetDirty(airfoil);
-        }
-        serializedObject.ApplyModifiedProperties();
+        float gradient = (maxCl - zeroCl) / (maxAlpha * Mathf.Deg2Rad);
     }
 }
-#endif

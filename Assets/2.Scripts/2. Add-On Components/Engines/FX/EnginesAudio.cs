@@ -1,7 +1,42 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
+public class EnginesAudio : AudioComponent
+{
+    private List<EnginesGroupAudio> groups;
+
+    public override void Initialize(SofComplex _complex)
+    {
+        base.Initialize(_complex);
+
+        groups = new List<EnginesGroupAudio>();
+        Engine[] allEngines = sofObject.GetComponentsInChildren<Engine>();
+
+        for (int i = 0; i < allEngines.Length; i++)
+        {
+            Engine engine = allEngines[i];
+
+            EnginesGroupAudio group = TryToFindExistingGroup(engine);
+            if (group == null)
+            {
+                group = gameObject.AddComponent<EnginesGroupAudio>();
+                group.Initialize(engine, avm);
+                groups.Add(group);
+            }
+            group.engines.Add(engine);
+        }
+    }
+    public EnginesGroupAudio TryToFindExistingGroup(Engine engine)
+    {
+        foreach (EnginesGroupAudio group in groups)
+            if (group.preset == engine.Preset)
+                return group;
+
+        return null;
+    }
+}
 public class EnginesGroupAudio : MonoBehaviour
 {
     //References
@@ -16,109 +51,132 @@ public class EnginesGroupAudio : MonoBehaviour
     private SofAudio spatial;
     private ObjectAudio avm;
 
-    private float volume;
+    private float volumeFadeInIgnition;
     private float rps;
+    private float throttle;
     private float invertIdleRPS;
     private float invertFullRPS;
-
-    const float rpsThreshold = 2f;
+    private bool effectiveBoosting;
 
     public void Initialize(Engine firstEngine, ObjectAudio _avm)
     {
         engines = new List<Engine>();
-        engines.Add(firstEngine);
         preset = firstEngine.Preset;
         avm = _avm;
     }
     private void Start()
     {
-        invertIdleRPS = 1f / preset.idleRPS;
-        invertFullRPS = 1f / preset.fullRps;
+        invertIdleRPS = 1f / preset.IdleRadPerSec;
+        invertFullRPS = 1f / preset.NominalRadPerSec;
 
-        //Audio
-        idleCockpit = new SofAudio(avm, preset.idleAudioCockpit, SofAudioGroup.Cockpit, false);
-        fullCockpit = new SofAudio(avm, preset.fullAudioCockpit, SofAudioGroup.Cockpit, false);
-        idleExternal = new SofAudio(avm, preset.idleAudioExtSelf, SofAudioGroup.External, true);
-        fullExternal = new SofAudio(avm, preset.fullAudioExtSelf, SofAudioGroup.External, true);
-        spatial = new SofAudio(avm, preset.spatialAudio, SofAudioGroup.External, true);
+        idleCockpit = new SofAudio(avm, preset.IdleAudioCockpit, SofAudioGroup.Cockpit, false);
+        fullCockpit = new SofAudio(avm, preset.FullAudioCockpit, SofAudioGroup.Cockpit, false);
+        idleExternal = new SofAudio(avm, preset.IdleAudioExtSelf, SofAudioGroup.External, true);
+        fullExternal = new SofAudio(avm, preset.FullAudioExtSelf, SofAudioGroup.External, true);
+        spatial = new SofAudio(avm, preset.SpatialAudio, SofAudioGroup.External, true);
         fullExternal.source.minDistance = idleExternal.source.minDistance = 300f;
         spatial.source.minDistance = 600f;
 
-        foreach(Engine engine in engines)
-            engine.OnIgnition += PlayStartUpAudio;
+        foreach (Engine engine in engines)
+            engine.OnIgnition += OnEngineIgnition;
     }
-    public void PlayStartUpAudio() { avm.persistent.global.PlayOneShot(preset.startUpAudio); }
+
+    public void OnEngineIgnition(Engine engine)
+    {
+        if (engine.Class == EngineClass.JetEngine) avm.persistent.global.PlayOneShot(preset.IgnitionClip);
+
+        else StartCoroutine(IgnitionCoroutine(engine));
+    }
+
+    public IEnumerator IgnitionCoroutine(Engine engine)
+    {
+        avm.persistent.global.PlayOneShot(preset.PreIgnitionClip);
+
+        while (engine.RadPerSec < PistonEngine.preIgnitionRadPerSec)
+        {
+            yield return null;
+        }
+
+        avm.persistent.global.PlayOneShot(preset.IgnitionClip);
+    }
+
 
     void Update()
     {
         float highestRPS = 0f;
         float highestVolume = 0f;
-        foreach(Engine engine in engines)
+        float highestThrottle = 0f;
+        effectiveBoosting = false;
+        foreach (Engine engine in engines)
         {
-            highestRPS = Mathf.Max(highestRPS, engine.radiansPerSeconds);
-            highestVolume = Mathf.Max(highestVolume, Volume(engine));
+            highestRPS = Mathf.Max(highestRPS, engine.RadPerSec);
+            highestThrottle = Mathf.Max(highestThrottle, engine.Throttle);
+            highestVolume = Mathf.Max(highestVolume, VolumeFadeInIgnition(engine));
+            effectiveBoosting |= engine.BoostIsEffective;
         }
 
-        if (volume == highestVolume && Mathf.Abs(rps-highestRPS) < rpsThreshold) return;
+        //if (volume == highestVolume && Mathf.Abs(rps-highestRPS) < rpsThreshold) return;
 
         rps = highestRPS;
-        volume = Mathf.MoveTowards(volume, highestVolume, Time.deltaTime);
+        throttle = highestThrottle;
+        volumeFadeInIgnition = highestVolume;
         UpdateVolume();
         UpdatePitch();
+        UpdateBoostedMixer();
     }
-    private float Volume(Engine engine)
+    private float VolumeFadeInIgnition(Engine engine)
     {
-        if (engine.workingAndRunning) return 1f;
-        if (engine.igniting) return engine.radiansPerSeconds / preset.idleRPS;
+        if (engine.Working) return 1f;
+        if (engine.Igniting) return engine.RadPerSec / preset.IdleRadPerSec;
         return 0f;
     }
     private void UpdateVolume()
     {
-        float idleVolume = Mathf.InverseLerp(preset.fullRps, preset.idleRPS, rps) * volume;
-        float fullVolume = volume - idleVolume;
-        float spacialVolume = volume * 5f * Mathf.InverseLerp(300f * 300f, 2000f * 2000f, (transform.position - SofAudioListener.position).sqrMagnitude);
+        if(volumeFadeInIgnition < 1f) //when volume is lower than 1, it means the engine is
+        {
+            idleCockpit.source.volume = idleExternal.source.volume = volumeFadeInIgnition;
+            fullCockpit.source.volume = fullExternal.source.volume = 0f;
+            spatial.source.volume = 0f;
+        }
+        else
+        {
+            float rpsFactor = Mathf.InverseLerp(preset.IdleRadPerSec, preset.NominalRadPerSec, rps);
+            float fullVolumePortion = rpsFactor * 0.5f + throttle * 0.5f;
 
-        idleCockpit.source.volume = idleExternal.source.volume = idleVolume;
-        fullCockpit.source.volume = fullExternal.source.volume = fullVolume;
-        spatial.source.volume = spacialVolume;
+            float idleVolume = (1f - fullVolumePortion) * volumeFadeInIgnition;
+            float fullVolume = fullVolumePortion * volumeFadeInIgnition;
+
+            idleCockpit.source.volume = idleExternal.source.volume = idleVolume;
+            fullCockpit.source.volume = fullExternal.source.volume = fullVolume;
+
+            float spacialVolume = volumeFadeInIgnition * 5f * Mathf.InverseLerp(300f * 300f, 2000f * 2000f, (transform.position - SofAudioListener.position).sqrMagnitude);
+            spatial.source.volume = spacialVolume;
+        }
     }
 
     private void UpdatePitch()
     {
         if (!avm.aircraft.engines.AtLeastOneEngineOn) return;
 
-        float idlePitch = Mathf.Max(1f, rps * invertIdleRPS) * (TimeManager.paused ? 1f : Time.timeScale);
-        float fullPitch = idlePitch * preset.idleRPS * invertFullRPS;
-        fullPitch *= (1f + avm.aircraft.engines.Throttle.TrueThrottle) * 0.5f;
+        float idlePitch = rps * invertIdleRPS * (TimeManager.paused ? 1f : Time.timeScale);
+        idlePitch = Mathf.Sqrt(Mathf.Abs(idlePitch));
+        float fullPitch = rps * invertFullRPS * (TimeManager.paused ? 1f : Time.timeScale);
 
         idleCockpit.source.pitch = idleExternal.source.pitch = idlePitch;
         fullCockpit.source.pitch = fullExternal.source.pitch = fullPitch;
     }
-}
-public class EnginesAudio : AudioComponent
-{
-    private List<EnginesGroupAudio> groups;
 
-    public override void Initialize(SofComplex _complex)
+    private void UpdateBoostedMixer()
     {
-        base.Initialize(_complex);
-
-        groups = new List<EnginesGroupAudio>();
-        Engine[] allEngines = sofObject.GetComponentsInChildren<Engine>();
-        for (int i = 0; i < allEngines.Length; i++)
+        if (effectiveBoosting != UsingBoostedMixer)
         {
-            Engine engine = allEngines[i];
-            EnginePreset preset = engine.Preset;
+            AudioMixerGroup cockpitMixer = effectiveBoosting ? SofAudioListener.instance.boostedEngineCockpit : SofAudioListener.instance.cockpit;
+            AudioMixerGroup externalMixer = effectiveBoosting ? SofAudioListener.instance.boostedEngineExternal : SofAudioListener.instance.external;
 
-            bool isNewPreset = true;
-            foreach (EnginesGroupAudio group in groups)
-                if (group.preset == preset) { isNewPreset = false; group.engines.Add(engine); }
-            if (isNewPreset)
-            {
-                EnginesGroupAudio newGroup = gameObject.AddComponent<EnginesGroupAudio>();
-                newGroup.Initialize(engine, avm);
-                groups.Add(newGroup);
-            }
+            idleCockpit.source.outputAudioMixerGroup = fullCockpit.source.outputAudioMixerGroup = cockpitMixer;
+            idleExternal.source.outputAudioMixerGroup = fullExternal.source.outputAudioMixerGroup = externalMixer;
         }
     }
+
+    private bool UsingBoostedMixer => fullExternal.source.outputAudioMixerGroup == SofAudioListener.instance.boostedEngineExternal;
 }

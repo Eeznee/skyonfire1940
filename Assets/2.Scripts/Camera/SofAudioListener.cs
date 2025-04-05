@@ -8,7 +8,10 @@ public class SofAudioListener : MonoBehaviour
     public AudioMixerGroup external;
     public AudioMixerGroup cockpit;
     public AudioMixerGroup persistent;
+    public AudioMixerGroup boostedEngineCockpit;
+    public AudioMixerGroup boostedEngineExternal;
 
+    public static SofAudioListener instance;
     public static AudioListener listener;
     public static Vector3 position;
     public static Transform tr;
@@ -19,6 +22,7 @@ public class SofAudioListener : MonoBehaviour
 
     private void OnEnable()
     {
+        instance = this;
         tr = transform;
         listener = gameObject.AddComponent<AudioListener>();
         mixer = GameManager.gm.mixer;
@@ -39,6 +43,7 @@ public class SofAudioListener : MonoBehaviour
             case SofAudioGroup.External: return GameManager.gm.listener.external;
             case SofAudioGroup.Persistent: return GameManager.gm.listener.persistent;
         }
+        
         return null;
     }
     private Transform CurrentParent()
@@ -72,15 +77,17 @@ public class SofAudioListener : MonoBehaviour
         position = tr.position;
     }
 
+    const float speed = 3f;
+
     IEnumerator FadeVolumeIn()
     {
-        float volume = -80f;
-        float finalVolume;
-        mixer.GetFloat("MasterVolume", out finalVolume);
+        float volume = -40f;
+        float finalVolume = 0f;
+        //mixer.GetFloat("MasterVolume", out finalVolume);
 
         while (volume < finalVolume)
         {
-            volume = Mathf.MoveTowards(volume, finalVolume, Time.deltaTime * 80f);
+            volume = Mathf.MoveTowards(volume, finalVolume, Time.deltaTime * 80f * speed);
             mixer.SetFloat("MasterVolume", volume);
             yield return null;
         }

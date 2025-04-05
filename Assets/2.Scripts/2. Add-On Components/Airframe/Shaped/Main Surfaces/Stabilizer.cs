@@ -33,7 +33,7 @@ public class Stabilizer : MainSurface
             if (deltaPos.z < 0f) continue;
             deltaPos.z = 0f;
 
-            if (deltaPos.magnitude < p.preset.diameter) propeller = p;
+            if (deltaPos.magnitude < p.Diameter) propeller = p;
         }
     }
     public override float PropSpeedEffect()
@@ -44,7 +44,7 @@ public class Stabilizer : MainSurface
 
 
         float ias = data.ias.Get;
-        float densArea = data.density.Get * propeller.preset.Area;
+        float densArea = data.density.Get * propeller.Area;
 
         float formula = Mathf.Abs(2f * propeller.Thrust / densArea + ias * ias);
         float speedBoost = Mathf.Sqrt(formula) - ias;

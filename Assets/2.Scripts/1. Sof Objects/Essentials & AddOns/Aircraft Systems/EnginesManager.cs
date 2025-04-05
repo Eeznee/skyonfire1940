@@ -6,6 +6,8 @@ public class EnginesManager
     private SofAircraft aircraft;
 
     public Engine[] AllEngines { get; private set; }
+    public PistonEngine[] AllPistonEngines { get; private set; }
+    public JetEngine[] AllJetEngines { get; private set; }
     public Propeller[] Propellers { get; private set; }
     public bool AtLeastOneEngineOn { get; private set; }
     public CompleteThrottle Throttle { get; private set; }
@@ -13,11 +15,14 @@ public class EnginesManager
     public Engine Main => AllEngines[0];
     public EnginePreset Preset => Main.Preset;
 
+
     public EnginesManager(SofAircraft _aircraft)
     {
         aircraft = _aircraft;
 
         AllEngines = aircraft.GetComponentsInChildren<Engine>();
+        AllPistonEngines = aircraft.GetComponentsInChildren<PistonEngine>();
+        AllJetEngines = aircraft.GetComponentsInChildren<JetEngine>();
         Propellers = aircraft.GetComponentsInChildren<Propeller>();
 
         SetThrottleAllEngines(aircraft.GroundedStart ? 0f : 1f, false);
@@ -32,7 +37,7 @@ public class EnginesManager
         foreach (Engine e in AllEngines)
         {
             allEnginesDestroyed = allEnginesDestroyed && e.ripped;
-            oneEngineOn = oneEngineOn || e.workingAndRunning;
+            oneEngineOn = oneEngineOn || e.Working;
         }
         AtLeastOneEngineOn = oneEngineOn;
 
@@ -43,7 +48,7 @@ public class EnginesManager
     {
         foreach (Engine engine in AllEngines)
         {
-            engine.Set(on, instant);
+            engine.SetAutomated(on, instant);
         }
         if (Player.aircraft == aircraft) Log.Print((AllEngines.Length == 1 ? "Engine " : "Engines ") + (on ? "On" : "Off"), "engines");
     }
@@ -56,6 +61,6 @@ public class EnginesManager
     {
         if (!allowWEP) thr = Mathf.Clamp(thr, 0f, 1f);
 
-        foreach (Engine engine in AllEngines) engine.Throttle = new CompleteThrottle(thr, engine);
+        foreach (Engine engine in AllEngines) engine.SetThrottle(thr);
     }
 }

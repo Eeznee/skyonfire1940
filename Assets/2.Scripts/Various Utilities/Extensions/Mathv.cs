@@ -133,7 +133,10 @@ public static class Mathv
         Vector3 gripDir = Vector3.ProjectOnPlane(target - lever.position, axis);
         return Vector3.SignedAngle(defaultLeverUp, gripDir, axis);
     }
-
+    public static float InverseLerpUnclamped(float a, float b, float value)
+    {
+        return (value - a) / (b - a);
+    }
     public static float InverseLerpVec3(Vector3 a, Vector3 b, Vector3 value)
     {
         Vector3 AB = b - a;
@@ -159,6 +162,17 @@ public static class Mathv
         else
             return (-b + delta) / (2f * a);
     }
+    public const float cubicRoot = 1 / 3f;
+    public static float CubicRoot(float x)
+    {
+        return Mathf.Pow(Mathf.Abs(x), cubicRoot) * Mathf.Sign(x);
+    }
+
+    public static float ClampAbs(float x, float absMax)
+    {
+        absMax = Mathf.Abs(absMax);
+        return Mathf.Clamp(x, -absMax, absMax);
+    }
 }
 
 public static class M
@@ -175,5 +189,14 @@ public static class M
             result *= a;
         }
         return result;
+    }
+    public static float AbsPow(float a, int p)
+    {
+        float result = 1f;
+        for (int i = 0; i < p; i++)
+        {
+            result *= a;
+        }
+        return Mathf.Abs(Pow(a, p));
     }
 }

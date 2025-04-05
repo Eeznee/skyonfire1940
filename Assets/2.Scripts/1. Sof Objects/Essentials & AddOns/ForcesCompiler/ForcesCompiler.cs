@@ -12,10 +12,15 @@ public class ForcesCompiler : SofComponent
 #if UNITY_EDITOR
     private void LateUpdate()
     {
-        return;
         for (int i = 0; i < forcesAtPoints.Length; i++)
         {
-            Debug.DrawRay(forcesAtPoints[i].point + tr.position, forcesAtPoints[i].force * 0.001f, Color.red);
+            Vector3 force = forcesAtPoints[i].force;
+            Vector3 point = forcesAtPoints[i].point + tr.position;
+
+            Vector3 drag = Vector3.Project(force, rb.GetPointVelocity(point));
+            Vector3 other = force - drag;
+            Debug.DrawRay(point, drag * 0.01f, Color.red);
+            Debug.DrawRay(point, other * 0.001f, Color.cyan);
         }
     }
 #endif

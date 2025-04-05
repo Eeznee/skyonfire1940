@@ -6,8 +6,8 @@ public class PitchCorrection
 {
     public static float AoALimitSigned(SofAircraft aircraft, float pitchSign)
     {
-        float maximumAoA = aircraft.stats.airfoil.PeakAlpha() - aircraft.StallMarginAngle + aircraft.stats.wingsIncidence;
-        float minimumAoA = aircraft.stats.airfoil.LowAlpha() + aircraft.StallMarginAngle + aircraft.stats.wingsIncidence;
+        float maximumAoA = aircraft.stats.mainAirfoil.HighPeakAlpha - aircraft.StallMarginAngle + aircraft.stats.wingsIncidence;
+        float minimumAoA = aircraft.stats.mainAirfoil.LowPeakAlpha + aircraft.StallMarginAngle + aircraft.stats.wingsIncidence;
         return pitchSign >= 0f ? maximumAoA : minimumAoA;
     }
     public static float CorrectPitch(SofAircraft aircraft, float targetPitch, bool correctZeroAoA)

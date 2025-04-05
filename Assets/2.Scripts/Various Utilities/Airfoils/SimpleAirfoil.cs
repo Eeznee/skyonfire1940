@@ -38,22 +38,8 @@ public class SimpleAirfoil : IAirfoil
         float cl = Mathv.QuickLoopingSin(rad) * maxCl;
         return new Vector2(cd, cl);
     }
-    public Vector2 Coefficients(float alpha, float flaps)
-    {
-        return Coefficients(alpha);
-    }
-    public float PeakAlpha()
-    {
-        return 45f;
-    }
-    public float LowAlpha()
-    {
-        return -45f;
-    }
-    public float MinCD()
-    {
-        return minCd;
-    }
+    public float HighPeakAlpha => 45f;
+    public float LowPeakAlpha => -45f;
+    public float MinCD => minCd;
     public float Gradient() { return gradient; }
-    public float Gradient(float flaps) { return gradient; }
 }

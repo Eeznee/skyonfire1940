@@ -22,7 +22,7 @@ public class Wing : MainSurface
 
     public override Transform SubSurfaceParent => root.tr;
     public override float AirframeDamage => base.AirframeDamage * (skin ? skin.structureDamage : 1f);
-    public override IAirfoil Airfoil => airfoil;
+    public override IAirfoil Airfoil => airfoil ? airfoil : StaticReferences.Instance.stabilizersAirfoil;
     public float EntireWingArea
     {
         get
@@ -65,13 +65,13 @@ public class Wing : MainSurface
         parent = transform.parent ? transform.parent.GetComponent<Wing>() : null;
         base.SetReferences(_complex);
 
-        airfoil.UpdateValues();
+        airfoil?.UpdateValues();
     }
     public override void Initialize(SofComplex _complex)
     {
         base.Initialize(_complex);
         if (skinMesh) skin = WingSkin.CreateSkin(this, skinMesh);
-        if(Airfoil == null) Debug.LogError(aircraft.name + "  " + name + " does not have an airfoil assigned");
+        if(airfoil == null) Debug.LogError(aircraft.name + "  " + name + " does not have an airfoil assigned");
     }
 
     public void CopyRootValues(Wing rootWing)

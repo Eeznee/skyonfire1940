@@ -148,8 +148,7 @@ public class ObjectLOD : SofComponent
     }
     private int LODLevel()
     {
-        //TODO OnPlayerChange instead
-        //if (PlayerManager.complex == complex) return 0;
+        if (Player.complex == complex) return 0;
         int newLod;
         if (merger.fullMerged.renderer.isVisible) newLod = 1;
         else if (lod2.isVisible) newLod = 2;

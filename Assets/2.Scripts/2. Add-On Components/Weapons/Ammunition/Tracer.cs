@@ -9,7 +9,6 @@ public class TracerProperties
 
     public Color color;
 
-    public float length;
     public float width;
     public float scatter;
 }
@@ -19,15 +18,11 @@ public class Tracer : MonoBehaviour
     [SerializeField] private Projectile projectile;
     [SerializeField] private TracerProperties properties;
 
-    private float tracerOffset;
-
     public LineRenderer line;
-
-    private float spawnTime = 0f;
-    public void InitializeTracer(TracerProperties _properties)
+    public void InitializeTracer(TracerProperties _properties, Projectile _projectile)
     {
         properties = _properties;
-        projectile = GetComponent<Projectile>();
+        projectile   =_projectile;
 
         line = projectile.gameObject.AddComponent<LineRenderer>();
         line.startColor = properties.color;
@@ -40,29 +35,33 @@ public class Tracer : MonoBehaviour
         line.positionCount = 4;
         line.useWorldSpace = true;
     }
+    private float randomizedDelay;
     private void Start()
     {
-        tracerOffset = Random.Range(0.1f, 1.1f) * Time.fixedDeltaTime;
-        spawnTime = Time.fixedTime;
+        randomizedDelay = Random.value * Time.fixedDeltaTime * 0.3f;
         Update();
     }
+
     private void Update()
     {
-        if (line && Time.timeScale != 0f)
-        {
-            float offset = tracerOffset - TimeManager.fixedTimeDifference - projectile.delay * 0.85f;
-            Vector3 tailPos = projectile.Pos(Time.time - spawnTime) + projectile.tracerDir * offset * projectile.p.baseVelocity;
-            float length = properties.length * Time.timeScale + properties.width * 3f;
-            Vector3 frontPos = tailPos + projectile.tracerDir * length;
-            line.SetPosition(0, tailPos);
-            line.SetPosition(1, frontPos);
+        if (Time.timeScale == 0f) return;
 
-            Vector3 midPos = Vector3.Lerp(tailPos, frontPos, Random.value);
-            Vector3 midOffset = Random.insideUnitSphere * properties.scatter * properties.width * Time.timeScale;
-            line.SetPosition(0, tailPos);
-            line.SetPosition(1, midPos + midOffset / 2f);
-            line.SetPosition(2, midPos - midOffset / 2f);
-            line.SetPosition(3, frontPos);
-        }
+        float dt = Time.deltaTime * 0.7f;
+
+        Vector3 tail = TracerPos(randomizedDelay);
+        Vector3 head = TracerPos(randomizedDelay + dt);
+
+        Vector3 midPos = Vector3.Lerp(tail, head, Random.value);
+        Vector3 midOffset = Random.insideUnitSphere * properties.scatter * properties.width * Time.timeScale;
+
+        line.SetPosition(0, tail);
+        line.SetPosition(1, midPos + midOffset * 0.5f);
+        line.SetPosition(2, midPos - midOffset * 0.5f);
+        line.SetPosition(3, head);
+    }
+
+    public Vector3 TracerPos(float deltaTime)
+    {
+        return projectile.Pos(Time.time + deltaTime) - SofCamera.Velocity * deltaTime;
     }
 }

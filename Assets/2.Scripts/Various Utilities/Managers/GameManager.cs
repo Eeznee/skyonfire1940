@@ -22,7 +22,6 @@ public class GameManager : MonoBehaviour
     public GameObject playerCamera;
     public SofAudioListener listener;
     public GameObject vrRig;
-    public AircraftsList list;
     public MapData mapData;
     public Airfield[] airfields;
     public AudioMixer mixer;
@@ -69,7 +68,7 @@ public class GameManager : MonoBehaviour
         weather = GetComponent<Weather>();
         map = GetComponent<MapTool>();
         mapmap = FindObjectOfType<Map>();
-        list.UpdateCards();
+        StaticReferences.Instance.defaultAircrafts.UpdateCards();
 
         InputSystem.settings.SetInternalFeatureFlag("DISABLE_SHORTCUT_SUPPORT", true);
 

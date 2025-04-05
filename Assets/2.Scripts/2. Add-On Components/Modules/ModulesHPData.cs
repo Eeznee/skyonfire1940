@@ -44,4 +44,5 @@ public static class ModulesHPData
     public static ModuleArmorValues WheelArmor => new ModuleArmorValues(0.5f, 2f);
     public static ModuleArmorValues CrewmemberArmor => new ModuleArmorValues(0f, 3f);
     public static ModuleArmorValues SparArmor => new ModuleArmorValues(2f, 6f);
+    public static ModuleArmorValues NoArmor => new ModuleArmorValues(0.1f, 0.1f);
 }

@@ -102,13 +102,14 @@ public class Wheel : SofModule, IMassComponent
 
         SetAutomatedValues();
     }
+    const float brakesToWeightRatio = 1.3f;
     private void SetAutomatedValues()
     {
         if (autoValuesType == AutoValuesType.CustomWheel) return;
 
         if (autoValuesType == AutoValuesType.TailWheel) brakes = BrakeSystem.None;
 
-        maxBrakeTorque = aircraft.targetEmptyMass * radius * 2f;
+        maxBrakeTorque = aircraft.targetEmptyMass * radius * brakesToWeightRatio;
     }
     private void Update()
     {
@@ -188,6 +189,7 @@ public class Wheel : SofModule, IMassComponent
     private bool wheelIsBlocked;
 
     const float rollingResistanceTorque = 10f;
+    const float groundFrictionLoadFactor = 0.02f;
 
     private void ForwardFriction(RaycastHit hit)
     {
@@ -199,15 +201,15 @@ public class Wheel : SofModule, IMassComponent
 
         //Friction Force
         float brakeTorque = maxBrakeTorque * BrakesInput() * structureDamage;
-        float combinedBrakeForce = -(brakeTorque + rollingResistanceTorque) * radiusInvert * Mathv.SignNoZero(forwardSpeed);
-        float forwardFrictionForce = Mathf.Clamp(combinedBrakeForce, -maxForce, maxForce);
-
+        float brakeForce = -(brakeTorque + rollingResistanceTorque) * radiusInvert * Mathv.SignNoZero(forwardSpeed);
+        float frictionForce = -load * groundFrictionLoadFactor * Mathv.SignNoZero(forwardSpeed);
+        float forwardFrictionForce = Mathf.Clamp(frictionForce + brakeForce, -maxForce, maxForce) ; 
         rb.AddForceAtPosition(forward * forwardFrictionForce, hit.point);
 
         //Angular Velocity
         wheelIsBlocked = false;
 
-        float combinedWheelForce = combinedBrakeForce;
+        float combinedWheelForce = brakeForce;
 
         float absWheelForceClamp = Mathf.Abs(angularVelocity) * inertia * radiusInvert / Time.fixedDeltaTime;
         float wheelForceClampOverflow = Mathf.Max(0f, Mathf.Abs(combinedWheelForce) - absWheelForceClamp);

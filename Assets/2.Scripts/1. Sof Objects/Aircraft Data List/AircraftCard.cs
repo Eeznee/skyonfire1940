@@ -20,7 +20,7 @@ public class AircraftCard : ScriptableObject
     public PurchasableGroup purchasableGroup = PurchasableGroup.BaseGame;
     public GameObject aircraft;
     public SofAircraft sofAircraft;
-    public Game.Team team = Game.Team.Ally;
+    public Faction faction;
     public bool forwardGuns;
     public bool fighter;
     public bool bomber;
@@ -29,6 +29,8 @@ public class AircraftCard : ScriptableObject
 
     public float standardEmptyMass;
     public float standardLoadedMass;
+
+    [HideInInspector] public int id;
 
     public void UpdateAircraft(int listId)
     {
@@ -61,5 +63,4 @@ public class AircraftCard : ScriptableObject
         return false;
 #endif
     }
-    [HideInInspector] public int id;
 }

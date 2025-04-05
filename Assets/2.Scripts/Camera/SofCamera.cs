@@ -17,6 +17,8 @@ public class SofCamera : MonoBehaviour
     public static Vector3 directionInput { get; private set; }         //Aircraft and turret guns will track this direction when controlled by the player
     public static Vector3 CurrentDirection => desiredRotation * Vector3.forward;
     public static bool lookAround { get; private set; }
+    public static Vector3 Velocity { get; private set; }
+    public static Vector3 PositionDelta { get; private set; }
 
     private static Vector2 axis;
     private static Vector2 savedAxis;
@@ -55,6 +57,8 @@ public class SofCamera : MonoBehaviour
     }
     private void LateUpdate()
     {
+        Vector3 previousPos = transform.position;
+
         if (subCam.Offset() == Vector3.zero) tr.position = subCam.Position();
         if (UIManager.gameUI != GameUI.Pause)
             desiredRotation = subCam.Rotation(ref axis, desiredRotation);
@@ -63,6 +67,9 @@ public class SofCamera : MonoBehaviour
 
         if (!lookAround) directionInput = desiredRotation * Vector3.forward;
         else if (PlayerActions.pilot.Pitch.phase == InputActionPhase.Started) directionInput = Player.tr.forward;
+
+        PositionDelta = transform.position - previousPos;
+        Velocity = PositionDelta / Time.unscaledDeltaTime;
     }
     public static void StartLookAround() { lookAround = true; savedAxis = axis; }
     public static void StopLookAround() {

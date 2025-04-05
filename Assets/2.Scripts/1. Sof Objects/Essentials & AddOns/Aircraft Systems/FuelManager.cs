@@ -54,12 +54,28 @@ public class FuelManager
         currentPack = packs.Count - 1;
         Empty = false;
 
-        if (complex.aircraft)
+        float totalConsumption = 0f;
+
+        if (!complex.aircraft) return;
+
+        foreach(Engine engine in complex.aircraft.engines.AllEngines)
         {
-            EnginePreset engine = complex.aircraft.engines.Preset;
-            float c = engine.ConsumptionRate(complex.aircraft.engines.Throttle, engine.gear1.Evaluate(2000f) * 745.7f);
-            fullThrottleCons = c * complex.aircraft.engines.AllEngines.Length;
+            if (engine.Preset == null) continue;
+
+            if (engine.Class == EngineClass.JetEngine)
+            {
+                JetEngine jetEngine = engine as JetEngine;
+
+                totalConsumption += jetEngine.JetPreset.MaxThrust * jetEngine.JetPreset.FuelConsumption(1f);
+            }
+            if (engine.Class == EngineClass.PistonEngine)
+            {
+                PistonEngine pistonEngine = engine as PistonEngine;
+
+                totalConsumption += pistonEngine.PistonPreset.HighestContinuousPower * pistonEngine.PistonPreset.FuelConsumption(1f);
+            }
         }
+        fullThrottleCons = totalConsumption;
     }
 
     const float a = 1f / 3600f;

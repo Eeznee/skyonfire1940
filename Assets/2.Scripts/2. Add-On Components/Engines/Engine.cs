@@ -8,64 +8,75 @@ using UnityEditor.SceneManagement;
 using System;
 
 
+public enum EngineClass
+{
+    PistonEngine,
+    JetEngine
+}
+
 public abstract class Engine : SofModule, IMassComponent, IDamageTick, IIgnitable
 {
-
-    [SerializeField] protected EnginePreset preset;
     [SerializeField] protected LiquidTank oil;
     [SerializeField] protected LiquidTank water;
-
-    public EnginePreset Preset => preset;
     public LiquidTank OilTank => oil;
     public LiquidTank WaterTank => water;
 
-    //public input
-    public CompleteThrottle Throttle;
-    public bool onInput;
+
     public bool pumped;
 
     //Engine state
-    public bool igniting { get; private set; }
-    public float radiansPerSeconds { get; protected set; }
-    public bool workingAndRunning { get; private set; }
+    public abstract EngineClass Class { get; }
+    public abstract EnginePreset Preset { get; }
+
+    public bool OnInput { get; private set; }
+    public CompleteThrottle Throttle { get; private set; }
+    public bool Igniting { get; protected set; }
+    public float RadPerSec { get; protected set; }
+    public bool Working { get; private set; }
+    public virtual bool BoostIsEffective => false;
 
     //Essential references
-    private EngineTemp temp;
+    private EngineTemperature temp;
     private Carburetor carburetor;
     private Circuit oilCircuit;
     private Circuit waterCircuit;
 
 
-    public EngineTemp Temp => temp;
+    public EngineTemperature Temp => temp;
 
-    public float BurningChance => EnginePreset.burningChance;
+    public float BurningChance =>  0.15f;
     public float MaxStructureDamageToBurn => 0.8f;
-    public ParticleSystem BurningEffect => preset.burningEffect;
-    public float EmptyMass => preset ? preset.weight : 0f;
+    public ParticleSystem BurningEffect => StaticReferences.Instance.engineFireEffect;
+    public float EmptyMass => Preset ? Preset.Weight : 0f;
     public float LoadedMass => EmptyMass;
     public float RealMass => EmptyMass;
     public override ModuleArmorValues Armor => ModulesHPData.EngineArmor;
     public bool Ignitable => true;
-    public override float MaxHp => Preset ? Preset.MaxHP : 100f;
+    public float TrueThrottle => MinTrueThrottle + Throttle * (1f - MinTrueThrottle);
 
-
+    public abstract float MinTrueThrottle { get; }
     public abstract float ConsumptionRate { get; }
 
 
-    [HideInInspector] public Action OnIgnition;
+    [HideInInspector] public Action<Engine> OnIgnition;
 
+
+    public virtual void SetThrottle(float thr)
+    {
+        Throttle = new CompleteThrottle(thr);
+    }
     public override void Initialize(SofComplex _complex)
     {
         pumped = false;
-        igniting = false;
+        Igniting = false;
 
         base.Initialize(_complex);
 
         oilCircuit = new Circuit(transform, oil);
-        if (Preset.WaterCooled) waterCircuit = new Circuit(transform, water);
+        if (Preset.LiquidCooled) waterCircuit = new Circuit(transform, water);
 
         if (Preset.UsesCarburetor) carburetor = new Carburetor(this);
-        temp = new EngineTemp(this);
+        temp = new EngineTemperature(this);
 
         OnProjectileDamage += OnDamageOilLeakChance;
     }
@@ -73,75 +84,73 @@ public abstract class Engine : SofModule, IMassComponent, IDamageTick, IIgnitabl
     public bool Functional => HasAircraft && !ripped;
     private bool FuelAvailable => !aircraft.fuel.Empty && (carburetor == null || carburetor.carburetorFlowing);
 
-    public virtual float MinimumRps => preset.fullRps * 0.1f;
+    public virtual float MinimumRps => Preset.NominalRadPerSec * 0.1f;
     protected abstract void UpdatePowerAndRPS(float dt);
 
     protected void FixedUpdate()
     {
-        workingAndRunning = Functional && FuelAvailable && !igniting && onInput && radiansPerSeconds > MinimumRps;
+        Working = Functional && FuelAvailable && !Igniting && OnInput && RadPerSec > MinimumRps;
 
         carburetor?.Update(Time.fixedDeltaTime);
         Temp.Update(Time.fixedDeltaTime);
 
-        if(!igniting) UpdatePowerAndRPS(Time.fixedDeltaTime);
+        if(!Igniting) UpdatePowerAndRPS(Time.fixedDeltaTime);
 
-        if (workingAndRunning) aircraft.fuel.Consume(ConsumptionRate, Time.fixedDeltaTime);
+        if (Working)
+        {
+            aircraft.fuel.Consume(ConsumptionRate, Time.fixedDeltaTime);
+            OilFrictionDamage(Time.fixedDeltaTime);
+        }
     }
-    public void Set(bool on, bool instant)
+
+    const float fullFrictionDps = 0.001f;
+    private void OilFrictionDamage(float dt)
     {
-        if (!Functional || igniting || (on == onInput)) return;
-        onInput = on;
+        float frictionFactor = 1f - structureDamage * OilTank.FillRatio;
+        if (frictionFactor > 0.3f)
+            DirectStructuralDamage(frictionFactor * TrueThrottle * fullFrictionDps * dt);
+    }
+    public void SetOnInput(bool on)
+    {
+        OnInput = on;
+    }
+
+    public virtual bool SetAutomated(bool on, bool instant)
+    {
+        if (!Functional || Igniting || (on == OnInput)) return false;
+        OnInput = on;
 
         if (instant)
         {
-            radiansPerSeconds = on ? Mathf.Lerp(preset.idleRPS, preset.nominalRPS, Throttle) : 0f;
-            Temp.SetTemperature(on ? Temp.EquilibrumTemp(Throttle) : data.temperature.Get);
+            RadPerSec = on ? Mathf.Lerp(Preset.IdleRadPerSec, Preset.NominalRadPerSec, Throttle) : 0f;
+            Temp.SetTemperature(on ? Temp.EquilibrumTempMaxContinuous() : data.temperature.Get);
         }
-        else if (on) 
+        else
         {
-            pumped = true; TryIgnite(); 
+            if (on)
+            {
+                pumped = true;
+                TryIgnite();
+            }
         }
+        return true;
     }
     public void TryIgnite() 
     {
-        if (igniting) return;
+        if (Igniting) return;
         if (!pumped) return;
         if (!Functional) return;
-        if (!onInput) return;
+        if (!OnInput) return;
 
-        if (radiansPerSeconds < MinimumRps) 
+        if (RadPerSec < MinimumRps) 
             StartCoroutine(Ignition());
     }
-    public IEnumerator Ignition()
-    {
-        igniting = true;
-        float ignitionState = 0f;
+    public abstract IEnumerator Ignition();
 
-        float timeCount = 0f;
-        float randomDelay = UnityEngine.Random.Range(0f, 1.5f);
-        while (timeCount < randomDelay)
-        {
-            timeCount += Time.deltaTime;
-            yield return null;
-        }
-
-        OnIgnition?.Invoke();
-        timeCount = 0f;
-        float startRps = radiansPerSeconds;
-
-        while (timeCount < preset.ignitionTime)
-        {
-            ignitionState = timeCount / preset.ignitionTime;
-            radiansPerSeconds = Mathf.Lerp(startRps, MinimumRps * 1.5f, Mathv.SmoothStep(ignitionState, 4));
-            timeCount += Time.deltaTime;
-            yield return null;
-        }
-        igniting = false;
-    }
     public override void Rip()
     {
-        Set(false, false);
-        radiansPerSeconds /= 5f;
+        SetAutomated(false, false);
+        RadPerSec /= 5f;
         base.Rip();
     }
 
@@ -155,6 +164,6 @@ public abstract class Engine : SofModule, IMassComponent, IDamageTick, IIgnitabl
         if (structureDamage >= 1f) return;
 
         oilCircuit.Leaking(dt);
-        if (preset.WaterCooled) waterCircuit.Leaking(dt);
+        if (Preset.LiquidCooled) waterCircuit.Leaking(dt);
     }
 }

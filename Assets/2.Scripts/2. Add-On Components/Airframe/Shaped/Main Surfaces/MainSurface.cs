@@ -10,7 +10,7 @@ using UnityEditor.SceneManagement;
 
 public abstract class MainSurface : ShapedAirframe, IAircraftForce
 {
-    public override float AreaCd() { return area * Airfoil.MinCD(); }
+    public override float AreaCd() { return area * Airfoil.MinCD; }
 
     public SubsurfacesCollection<ControlSurface> controlSurfaces { get; private set; }
     public SubsurfacesCollection<Flap> flaps { get; private set; }
@@ -87,7 +87,7 @@ public abstract class MainSurface : ShapedAirframe, IAircraftForce
         //Flaps Effect
         Vector2 coeffs;
         if (HasAircraft && hasFlaps && aircraft.hydraulics.flaps.state != 0f)
-            coeffs = Airfoil.Coefficients(angleOfAttack, aircraft.hydraulics.flaps.state * flaps.TotalOverlap);
+            coeffs = Airfoil.Coefficients(angleOfAttack, flaps.MainSurface.Design, aircraft.hydraulics.flaps.state * flaps.TotalOverlap);
         else 
             coeffs = Airfoil.Coefficients(angleOfAttack);
 

@@ -53,16 +53,30 @@ public class IndicatorsList : MonoBehaviour
         {
             finalText += "THR : ";
 
-            if (aircraft.engines.Throttle.WEP)
+            bool boosting = false;
+            bool effectiveBoosting = false;
+            bool takeOffBoost = false;
+            float lowestRemainingBoost = Mathf.Infinity;
+
+            foreach(PistonEngine engine in aircraft.engines.AllPistonEngines)
             {
-                finalText += "WEP";
-            }else
-            {
-                finalText += Mathf.RoundToInt(aircraft.engines.Throttle * 100f) + "%";
+                boosting |= engine.RunMode != EngineRunMode.Continuous && engine.PistonPreset.HasBoost;
+                effectiveBoosting |= engine.BoostIsEffective;
+                takeOffBoost |= engine.RunMode == EngineRunMode.TakeOffBoost;
+                if (engine.BoostTime < lowestRemainingBoost) lowestRemainingBoost = engine.BoostTime;
             }
 
-            //TODO : add indicator of how much over throttling can be used before engine damages
+            if (boosting)
+            {
+                finalText += takeOffBoost ? "T/O " : "WEP ";
 
+                if (!effectiveBoosting) finalText += "(TOO HIGH)";
+                else if (lowestRemainingBoost <= 0f) finalText += "(DANGER)";
+                else finalText += "(" + SecondsToMinuted(lowestRemainingBoost) + ")";
+            }
+            else
+                finalText += Mathf.RoundToInt(aircraft.engines.Throttle * 100f) + "%";
+            
             finalText += "\n";
         }
 
@@ -79,26 +93,43 @@ public class IndicatorsList : MonoBehaviour
         }
         if (fuel && aircraft)
         {
-            int fuelTime = (int)aircraft.fuel.FuelTimer;
-            string minutes = (fuelTime / 60).ToString("D2");
-            string seconds = (fuelTime % 60).ToString("D2");
-            finalText += "FUE : " + minutes + ":" + seconds + "\n";
+            finalText += "FUE : " + SecondsToMinuted(aircraft.fuel.FuelTimer) + "\n";
         }
 
         if (gfr)
             finalText += "GFR : " + Mathf.CeilToInt(data.gForce * 10f) / 10f + " G\n";
         if (hdg)
             finalText += "HDG : " + Mathf.CeilToInt(data.heading.Get) + " \n";
-        if (!aircraft ||aircraft.engines.AllEngines.Length == 0) return finalText;
+
+        if (!aircraft || aircraft.engines.AllEngines.Length == 0) return finalText;
         if (temp)
-            finalText += "WTR : " + aircraft.engines.Main.Temp.waterTemperature.ToString("0.0") + " °C\n";
+            finalText += "WTR : " + aircraft.engines.Main.Temp.WaterTemperature.ToString("0.0") + " °C\n";
         if (temp)
-            finalText += "OIL : " + aircraft.engines.Main.Temp.oilTemperature.ToString("0.0") + " °C\n";
+            finalText += "OIL : " + aircraft.engines.Main.Temp.OilTemperature.ToString("0.0") + " °C\n";
+        if (temp)
+            finalText += "ENG : " + aircraft.engines.Main.Temp.Temperature.ToString("0.0") + " °C\n";
+        if (temp)
+            finalText += "DMG : " + (aircraft.engines.Main.structureDamage * 100f).ToString("0.0") + " %\n";
+
+        finalText += "\n";
 
         //TODO: Implement rpm as settings
-        float rpm = aircraft.engines.Main.radiansPerSeconds * 60f / (Mathf.PI * 2f);
-        finalText += "RPM : " + rpm.ToString("0");
+        float rpm = aircraft.engines.Main.RadPerSec * 60f / (Mathf.PI * 2f);
+        finalText += "RPM : " + rpm.ToString("0") + "\n";
+
+        float bladeAngle = ((PistonEngine) aircraft.engines.Main).propeller.BladeAngle;
+        finalText += "PITCH ANGLE : " + bladeAngle.ToString("0.0") + " °\n";
+
+        float propEfficiency = ((PistonEngine)aircraft.engines.Main).propeller.BladeEfficiency() * 100f;
+        finalText += "PROP Eff : " + propEfficiency.ToString("0.0") + " %\n";
 
         return finalText;
+    }
+    public string SecondsToMinuted(float seconds)
+    {
+        int secondsInt = Mathf.RoundToInt(seconds);
+        string minutesTxt = (secondsInt / 60).ToString("D2");
+        string secondsTxt = (secondsInt % 60).ToString("D2");
+        return minutesTxt + ":" + secondsTxt;
     }
 }

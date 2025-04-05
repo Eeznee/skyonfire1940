@@ -5,26 +5,28 @@ using UnityEngine;
 public static class Aerodynamics
 {
     //Atmospheric calculations -----------------------------------------------------------------------------------------------------------------------------------------------------------------
-    const float atmosphericLayerHeight = 12000f;
     const float temperatureLapseRate = 0.0068f;
     const float airConstant = 287f;
     const float kelvin = 273.15f;
 
     public const float seaLvlTemp = 20f;
     public const float SeaLvlPressure = 101325f;
-    public const float seaLvlDensity = SeaLvlPressure / ((20f + kelvin) * airConstant);
+    public const float seaLvlDensity = SeaLvlPressure / ((seaLvlTemp + kelvin) * airConstant);
     public const float invertSeaLvlDensity = 1f / seaLvlDensity;
 
 
     public static float GetTemperature(float alt) { return seaLvlTemp - alt * temperatureLapseRate; }
-    public static float GetPressure(float alt) { return SeaLvlPressure * Mathv.SmoothStart(1f - temperatureLapseRate / (seaLvlTemp + kelvin) * alt, 5); }
+    public static float GetPressure(float alt) { return SeaLvlPressure * M.Pow(1f - alt * temperatureLapseRate / (seaLvlTemp + kelvin), 5); }
     public static float GetAirDensity(float temp, float press) { return press / ((temp + kelvin) * airConstant); }
     public static float GetAirDensity(float alt) { return GetAirDensity(GetTemperature(alt), GetPressure(alt)); }
 
-
+    public static float GetAltitude(float pressure)
+    {
+        return (1f - Mathf.Pow(pressure / SeaLvlPressure, 0.2f)) * (seaLvlTemp + kelvin) / temperatureLapseRate;
+    }
 
     //Airfoils & Aerodynaimc forces calculations ------------------------------------------------------------------------------------------------------------------------------------------------
-    
+
     public const float liftLine = 0.75f;
     const float maxDragCoeffDamaged = 3f;
 

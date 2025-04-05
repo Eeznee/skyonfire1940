@@ -4,16 +4,25 @@ using UnityEngine;
 
 public interface IAirfoil
 {
+
     public Vector2 Coefficients(float alpha);
-    public Vector2 Coefficients(float alpha,float flaps);
+
+    public Vector2 Coefficients(float alpha,FlapsDesign flapsDesign,float flapsFactor)
+    {
+        if (flapsDesign == null) return Coefficients(alpha);
+
+        Vector2 coeffs = Coefficients(alpha + flapsDesign.AlphaShift(flapsFactor));
+        coeffs = flapsDesign.ApplyFlapEffectToCoefficients(coeffs, flapsFactor);
+
+        return coeffs;
+    }
 
     public float Gradient();
-    public float Gradient(float flaps);
 
-    public float MinCD();
+    public float MinCD { get; }
 
-    public float PeakAlpha();
+    public float HighPeakAlpha { get; }
 
-    public float LowAlpha();
+    public float LowPeakAlpha { get; }
 
 }

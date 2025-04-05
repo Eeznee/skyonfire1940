@@ -33,6 +33,9 @@ public class SofComplex : SofObject
     public List<SofAirframe> airframes = new List<SofAirframe>();
     public CrewMember[] crew;
 
+    public Action OnAttachPlayer;
+    public Action OnDetachPlayer;
+
     public override void SetReferences()
     {
         base.SetReferences();
@@ -65,6 +68,12 @@ public class SofComplex : SofObject
         SetRigidbody();
 
         InvokeRepeating("DamageTick", damageTickInterval, damageTickInterval);
+
+        if (Player.complex == this)
+        {
+            OnAttachPlayer?.Invoke();
+            Player.crew.OnAttachPlayer?.Invoke();
+        }
     }
 
     protected virtual void InitializeSofComponents()
@@ -193,5 +202,10 @@ public class SofComplex : SofObject
             rb.angularDrag = submerged ? 0.5f : 0f;
             rb.drag = submerged ? 1f : 0f;
         }
+    }
+
+    protected void OnValidate()
+    {
+        SetReferences();
     }
 }

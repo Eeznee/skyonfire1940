@@ -1,6 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+public enum FlightPhase
+{
+    Landed,
+    TakingOff,
+    InFlight
+}
 
 public class SofAircraft : SofComplex
 {
@@ -56,6 +62,11 @@ public class SofAircraft : SofComplex
     public bool GroundedStart => squadron.airfield >= 0;
 
 
+    private bool landed;
+    private float timeSinceLastLanding;
+    public bool Landed => landed;
+    public float TimeSinceLastLanding => timeSinceLastLanding;
+
 
 
 
@@ -90,7 +101,8 @@ public class SofAircraft : SofComplex
 
         InitializeMarkersAndGameReferences();
 
-        if (!GroundedStart) data.rb.velocity = transform.forward * stats.MaxSpeed(data.altitude.Get, 1f);
+        if (!GroundedStart) rb.velocity = transform.forward * stats.MaxSpeed(data.altitude.Get, 1f);
+        timeSinceLastLanding = GroundedStart ? 0f : 600f;
 
         CreateManagers();
     }
@@ -138,6 +150,10 @@ public class SofAircraft : SofComplex
             if (mainPilot == Player.crew) mainSeat.PlayerFixed(mainPilot);
             else mainSeat.AiFixed(mainPilot);
         }
+
+        landed = data.tas.Get < stats.MinTakeOffSpeedNoFlaps && data.relativeAltitude.Get < 10f;
+        if (landed) timeSinceLastLanding = 0f;
+        else timeSinceLastLanding += Time.fixedDeltaTime;
 
         inputs.FixedUpdate();
         forcesCompiler.ApplyForcesOnFixedUpdate();

@@ -50,6 +50,8 @@ public class SofAircraftEditor : SofComplexEditor
     {
         serializedObject.Update();
 
+        ErrorsCheck();
+
         SofAircraft aircraft = (SofAircraft)target;
 
         showMain = EditorGUILayout.Foldout(showMain, "Main Settings", true, EditorStyles.foldoutHeader);
@@ -105,14 +107,32 @@ public class SofAircraftEditor : SofComplexEditor
 
         base.OnInspectorGUI();
 
-        if (aircraft.crew[0] && aircraft.crew[0].seats.Count > 0 && aircraft.crew[0].seats[0].GetComponent<PilotSeat>() == null)
-        {
-            EditorGUILayout.HelpBox("First seat must be pilot", MessageType.Warning);
-        }
+
 
         serializedObject.ApplyModifiedProperties();
 
 
+    }
+
+    private void ErrorsCheck()
+    {
+        SofAircraft aircraft = (SofAircraft)target;
+
+        if(aircraft.crew == null || aircraft.crew.Length == 0)
+        {
+            EditorGUILayout.HelpBox("You must have at least one crewmember inside the aircraft", MessageType.Error);
+            return;
+        }
+        if (aircraft.crew[0].seats.Count == 0 || aircraft.crew[0].seats[0].GetComponent<PilotSeat>() == null)
+        {
+            EditorGUILayout.HelpBox("You must create a pilotseat and assign it to the first crewmember in the hierarchy", MessageType.Error);
+            return;
+        }
+        if(aircraft.GetComponentInChildren<FuselageCore>() == null)
+        {
+            EditorGUILayout.HelpBox("You must have at least one fuselage core component", MessageType.Error);
+            return;
+        }
     }
 }
 #endif

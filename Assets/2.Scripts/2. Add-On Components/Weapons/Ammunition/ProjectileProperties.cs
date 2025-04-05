@@ -11,25 +11,29 @@ using UnityEditor;
 [System.Serializable]
 public class ProjectileProperties
 {
+#if UNITY_EDITOR
+    public bool displayAsBullet = false;
+    public bool approximated;
+#endif
+
     public string name;
     public float diameter;
     public float mass;
 
+
     public float baseVelocity;
     public float basePenetration;
 
+
     public BulletHits bulletHits;
 
-    public bool ap;
+    public  bool ap;
     public bool explosive;
     public bool incendiary;
     public bool tracer;
     public ExplosiveFiller filler;
     public float fuze = 0f;
 
-    //Editor
-    public bool displayAsBullet = false;
-    public bool approximated;
 
     public float Energy => baseVelocity * baseVelocity * mass * 0.5f;
 
@@ -42,6 +46,15 @@ public class ProjectileProperties
         baseVelocity = bv;
         basePenetration = bp;
         ap = explosive = incendiary = tracer = false;
+    }
+
+    public float LifeTime => Mathf.Lerp(4f, 10f, Mathf.InverseLerp(4000f, 20000f, Energy));
+
+    public void AircraftHit(RaycastHit hit)
+    {
+        if (!bulletHits) return;
+
+        bulletHits.AircraftHit(incendiary && !explosive, hit);
     }
     public static ProjectileProperties Fragment()
     {

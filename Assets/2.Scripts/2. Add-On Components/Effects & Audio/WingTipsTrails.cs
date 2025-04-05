@@ -37,7 +37,7 @@ public class WingTipsTrails : AudioComponent
             bool emitting = Player.aircraft;
             emitting &= wing && wing.tr.root == tr.root;
             emitting &= data.ias.Get > 20f;
-            emitting &= wing.angleOfAttack * Mathf.Min(data.ias.Get * 0.02f, 1f) > wing.Airfoil.PeakAlpha() * 0.8f;
+            emitting &= wing.angleOfAttack * Mathf.Min(data.ias.Get * 0.02f, 1f) > wing.Airfoil.HighPeakAlpha * 0.8f;
 
             if (tipTrails[i] && tipTrails[i].emitting != emitting) tipTrails[i].emitting = emitting;
         }

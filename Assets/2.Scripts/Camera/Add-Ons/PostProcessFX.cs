@@ -35,11 +35,11 @@ public class PostProcessFX : MonoBehaviour
     private CrewForcesEffect body;
 
 
-    private float sickness => body ? body.Sickness() : 0f;
-    private float pain => body ? body.Pain() : 0f;
-    private bool GLoc => body ? body.Gloc() : false;
+    private float sickness => body != null ? body.Sickness() : 0f;
+    private float pain => body != null ? body.Pain() : 0f;
+    private bool GLoc => body != null ? body.Gloc() : false;
 
-    private float blackout => body ? Mathf.Clamp(body.Blood() * (1f - body.Stamina()), -1f, 1f) : 0f;
+    private float blackout => body != null ? Mathf.Clamp(body.Blood() * (1f - body.Stamina()), -1f, 1f) : 0f;
 
     void Start()
     {

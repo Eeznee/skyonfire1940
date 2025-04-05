@@ -141,19 +141,23 @@ public class Gun : SofComponent, IMassComponent
     }
     private void FireBullet(float delay)
     {
-        Quaternion rotation = cheatTime > Time.time ? cheatConvergence : convergence;
-        Quaternion rot = Ballistics.Spread(tr.rotation * rotation, gunPreset.dispersion);
         //float dispersion = gunPreset.dispersion * Mathf.Lerp(1f, gunPreset.overHeatDispersion, Mathv.SmoothStart(temperature / maxDispersionTemperature, 3));
 
-        Projectile bullet = Instantiate(bullets[ammunition.defaultBelt[currentBullet]], tr.TransformPoint(bulletPos), rot);
+        Projectile bullet = Instantiate(bullets[ammunition.defaultBelt[currentBullet]]);
+
+        Quaternion convergeanceRotation = cheatTime > Time.time ? cheatConvergence : convergence;
+        Vector3 gunDirection = convergeanceRotation * tr.forward;
+        Quaternion bulletRotation = Quaternion.LookRotation(gunDirection, tr.up);
+        bulletRotation = Ballistics.Spread(bulletRotation, gunPreset.dispersion);
+
+        bullet.transform.rotation = bulletRotation;
+        bullet.transform.position = tr.TransformPoint(bulletPos);
         bullet.gameObject.SetActive(true);
 
-        bullet.StartDamage(bullet.p.baseVelocity * bullet.transform.forward, 10f);
-
+        bullet.StartDamage(bullet.properties.baseVelocity * bullet.transform.forward, 10f);
         bullet.transform.position += rb.velocity * Time.fixedDeltaTime;
-        bullet.transform.position += bullet.transform.forward * bullet.p.baseVelocity * delay * 0.85f;
         Collider ignoreCollider = complex.bubble ? complex.bubble.bubble : null;
-        bullet.InitializeTrajectory(bullet.transform.forward * bullet.p.baseVelocity + rb.velocity, transform.forward, ignoreCollider, delay);
+        bullet.InitializeTrajectory(bullet.transform.forward * bullet.properties.baseVelocity + rb.velocity, ignoreCollider);
 
         if (fuzeTimer > 0.1f) bullet.StartFuze(fuzeTimer);
     }

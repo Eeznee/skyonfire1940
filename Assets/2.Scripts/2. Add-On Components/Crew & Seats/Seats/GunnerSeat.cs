@@ -49,7 +49,7 @@ public class GunnerSeat : CrewSeat
         {
             if (mainGun && aircraft && aircraft.crew[0] == Player.crew)
             {
-                if (Vector3.Dot(gunMount.FiringDirection, aircraft.tr.forward) < 0.999f) return 3;
+                if (Vector3.Dot(gunMount.FiringDirection, aircraft.tr.forward) < 0.999f) return 5;
                 return -1;
             }
             if (target) return 2;

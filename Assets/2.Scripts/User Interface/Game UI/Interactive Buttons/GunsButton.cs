@@ -2,7 +2,6 @@
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.Layouts;
 
-////TODO: custom icon for OnScreenButton component
 
 namespace UnityEngine.InputSystem.OnScreen
 {
@@ -23,7 +22,6 @@ namespace UnityEngine.InputSystem.OnScreen
             SendValueToControl(1.0f);
         }
 
-        ////TODO: pressure support
         /*
         /// <summary>
         /// If true, the button's value is driven from the pressure value of touch or pen input.

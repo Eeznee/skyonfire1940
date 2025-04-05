@@ -86,14 +86,10 @@ public struct ExplosiveFiller
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            // Using BeginProperty / EndProperty on the parent property means that
-            // prefab override logic works on the entire property.
             EditorGUI.BeginProperty(position, label, property);
 
-            // Draw label
             position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
 
-            // Don't make child fields be indented
             var indent = EditorGUI.indentLevel;
             EditorGUI.indentLevel = 0;
 
@@ -106,13 +102,11 @@ public struct ExplosiveFiller
             var nameRect = new Rect(position.x + position.width*4f/6f, position.y, width * 2f - 3, height);
             //EditorGUILayout.PropertyField(property.FindPropertyRelative("baseVelocity"));
 
-            // Draw fields - pass GUIContent.none to each so they are drawn without labels
             EditorGUI.LabelField(labelRect, new GUIContent("Mass kg"));
             EditorGUI.PropertyField(amountRect, property.FindPropertyRelative("mass"),GUIContent.none);
             EditorGUI.PropertyField(unitRect, property.FindPropertyRelative("explosive"), GUIContent.none);
             EditorGUI.PropertyField(nameRect, property.FindPropertyRelative("fx"), GUIContent.none);
 
-            // Set indent back to what it was
             EditorGUI.indentLevel = indent;
 
             EditorGUI.EndProperty();

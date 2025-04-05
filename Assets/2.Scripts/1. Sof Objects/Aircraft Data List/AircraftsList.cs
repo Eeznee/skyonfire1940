@@ -27,22 +27,13 @@ public class AircraftsListEditor : Editor
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
+
         AircraftsList aircraftsList = (AircraftsList)target;
-        //
-        GUI.color = GUI.backgroundColor;
 
         var property = serializedObject.FindProperty("list");
         serializedObject.Update();
         EditorGUILayout.PropertyField(property, true);
 
-        if (GUILayout.Button("Update Aircrafts"))
-            aircraftsList.UpdateCards();
-
-
-        if (GUI.changed)
-        {
-            EditorUtility.SetDirty(aircraftsList);
-        }
         serializedObject.ApplyModifiedProperties();
     }
 }

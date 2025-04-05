@@ -30,8 +30,9 @@ public class AmmunitionPreset : ScriptableObject
         Projectile bullet = new GameObject(name + " " + prop.name).AddComponent<Projectile>();
         bullet.gameObject.SetActive(false);
         if (prop.tracer)
-            bullet.gameObject.AddComponent<Tracer>().InitializeTracer(tracer);
+            bullet.gameObject.AddComponent<Tracer>().InitializeTracer(tracer, bullet);
         bullet.Setup(prop);
+
 
         bullet.transform.SetPositionAndRotation(parentGun.position, parentGun.rotation);
         bullet.transform.parent = parentGun;

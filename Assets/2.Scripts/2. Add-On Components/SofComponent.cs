@@ -140,6 +140,7 @@ public class SofComponentEditor : Editor
 
     public override void OnInspectorGUI()
     {
+        base.OnInspectorGUI();
         SofComponent component = (SofComponent)target;
         component.SetReferences();
 

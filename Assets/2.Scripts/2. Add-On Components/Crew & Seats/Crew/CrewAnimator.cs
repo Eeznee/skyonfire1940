@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]
-[RequireComponent(typeof(CrewMember))]
+[RequireComponent(typeof(Animator))]
 [AddComponentMenu("Sof Components/Crew Seats/Crew Animator")]
-public class CrewAnimator : MonoBehaviour
+public class CrewAnimator : SofComponent
 {
     public Mesh headLessModel;
     private Mesh defaultModel;
@@ -16,10 +16,9 @@ public class CrewAnimator : MonoBehaviour
     public FootRest defaultLeftFoot;
     public HandGrip restingGrip;
 
-    private Transform tr;
-    private Animator animator;
     private SkinnedMeshRenderer meshRend;
     private CrewMember crew;
+    private Animator crewAnimator;
 
     private bool firstPersonBody;
 
@@ -50,15 +49,31 @@ public class CrewAnimator : MonoBehaviour
             return restingGrip;
         }
     }
-    private void Awake()
+    public override void SetReferences(SofComplex _complex)
     {
-        GetReferences();
+        base.SetReferences(_complex);
+
+        crew = GetComponent<CrewMember>();
+        if(!crew) crew = transform.parent.GetComponent<CrewMember>();
+        if (!crew) Debug.LogError("This script must have a CrewMember script parent", this);
+        crewAnimator = GetComponent<Animator>();
+        meshRend = GetComponentInChildren<SkinnedMeshRenderer>();
+        defaultModel = meshRend?.sharedMesh;
+
+#if UNITY_EDITOR
+        gameObject.hideFlags = HideFlags.HideAndDontSave;
+#endif
+    }
+    public override void Initialize(SofComplex _complex)
+    {
+        base.Initialize(_complex);
+
+
         firstPersonBody = PlayerPrefs.GetInt("FirstPersonModel", 1) == 1;
 
         crew.OnAttachPlayer += AttachPlayer;
         crew.OnDetachPlayer += DetachPlayer;
     }
-
     void AttachPlayer()
     {
         ToggleFirstPersonModel();
@@ -71,15 +86,6 @@ public class CrewAnimator : MonoBehaviour
 
         SofCamera.OnSwitchCamEvent -= ToggleFirstPersonModel;
     }
-    private void OnValidate() { GetReferences(); }
-    private void GetReferences()
-    {
-        tr = transform;
-        crew = GetComponent<CrewMember>();
-        animator = GetComponent<Animator>();
-        meshRend = GetComponentInChildren<SkinnedMeshRenderer>();
-        defaultModel = meshRend?.sharedMesh;
-    }
     public void ToggleFirstPersonModel()
     {
         bool firstPerson = crew.IsVrPlayer || (crew.IsPlayer && SofCamera.viewMode == 1);
@@ -88,15 +94,17 @@ public class CrewAnimator : MonoBehaviour
         meshRend.enabled = !firstPerson || firstPersonBody;
         meshRend.sharedMesh = firstPerson ? headLessModel : defaultModel;
     }
+#if UNITY_EDITOR
     private void Update()
     {
-        if (!Application.isPlaying && crew && crew.complex && animator != null)
+        if (!Application.isPlaying && crew && crew.complex && crewAnimator != null)
         {
-            animator.Update(0f);
-            animator.Update(0f);
+            crewAnimator.Update(0f);
+            crewAnimator.Update(0f);
+            crew.MoveToSeatInstant();
         }
     }
-
+#endif
     private void OnAnimatorIK()
     {
         if (Seat == null) return;
@@ -107,14 +115,14 @@ public class CrewAnimator : MonoBehaviour
         SetBodyRotation();
 
         AnimateLeaning();
-        animator.SetLookAtWeight(1);
-        animator.SetLookAtPosition(headLookAtPosition);
+        crewAnimator.SetLookAtWeight(1);
+        crewAnimator.SetLookAtPosition(headLookAtPosition);
 
-        if (leftHand) leftHand.SetHandPose(animator, CurrentLeftGrip);
-        if (rightHand) rightHand.SetHandPose(animator, CurrentRightGrip);
+        if (leftHand) leftHand.SetHandPose(crewAnimator, CurrentLeftGrip);
+        if (rightHand) rightHand.SetHandPose(crewAnimator, CurrentRightGrip);
 
-        CurrentRightFoot.SetFootPose(animator, AvatarIKGoal.RightFoot);
-        CurrentLeftFoot.SetFootPose(animator, AvatarIKGoal.LeftFoot);
+        CurrentRightFoot.SetFootPose(crewAnimator, AvatarIKGoal.RightFoot);
+        CurrentLeftFoot.SetFootPose(crewAnimator, AvatarIKGoal.LeftFoot);
     }
     private void SetBodyRotation()
     {
@@ -131,7 +139,7 @@ public class CrewAnimator : MonoBehaviour
     {
         float distance = (tr.position - Seat.transform.position).magnitude;
         float leaning = Mathf.InverseLerp(maxDistanceLean, minDistanceLean, distance);
-        animator.SetFloat("Leaning", leaning);
+        crewAnimator.SetFloat("Leaning", leaning);
     }
     private Vector3 HeadLookAtPosition()
     {

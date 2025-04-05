@@ -9,12 +9,24 @@ using UnityEditor.SceneManagement;
 [AddComponentMenu("Sof Components/Aerodynamic Surfaces/Flap")]
 public class Flap : Subsurface
 {
+    [SerializeField] private FlapsDesign flapDesign;
+    [SerializeField] private float extendedRipSpeedKph = 240f;
 
-    //Settings
-    public float extendedRipSpeed = 60f;
+    const float kphToMps = 1f / 3.6f;
+    public float ExtendedRipSpeed => extendedRipSpeedKph * kphToMps;
+    public FlapsDesign Design => flapDesign;
 
-    public override float MaxSpd => Mathf.Lerp(base.MaxSpd, extendedRipSpeed, aircraft.hydraulics.flaps.state);
-    
+
+    public override float MaxSpd => Mathf.Lerp(base.MaxSpd, ExtendedRipSpeed, aircraft.hydraulics.flaps.state);
+
+
+    public override void Initialize(SofComplex _complex)
+    {
+        base.Initialize(_complex);
+
+        if (flapDesign == null) Debug.LogError("You must assign a flap design to this flap", this);
+    }
+
 #if UNITY_EDITOR
     protected override Color FillColor()
     {
@@ -23,27 +35,34 @@ public class Flap : Subsurface
 #endif
 }
 #if UNITY_EDITOR
+[CanEditMultipleObjects]
 [CustomEditor(typeof(Flap))]
 public class FlapEditor : ShapedAirframeEditor
 {
     static bool showFlap = true;
 
+    SerializedProperty flapDesign;
+    SerializedProperty extendedRipSpeedKph;
+
     protected override void OnEnable()
     {
         base.OnEnable();
+
+        flapDesign = serializedObject.FindProperty("flapDesign");
+        extendedRipSpeedKph = serializedObject.FindProperty("extendedRipSpeedKph");
     }
     public override void OnInspectorGUI()
     {
-        base.OnInspectorGUI();
-        serializedObject.Update();
         Flap flap = (Flap)target;
+        base.OnInspectorGUI();
 
         showFlap = EditorGUILayout.Foldout(showFlap, "Flap", true, EditorStyles.foldoutHeader);
         if (showFlap)
         {
             EditorGUI.indentLevel++;
 
-            flap.extendedRipSpeed = EditorGUILayout.FloatField("Extended Rip Km/h", Mathf.Round(flap.extendedRipSpeed * 36f) / 10f) / 3.6f;
+            EditorGUILayout.PropertyField(flapDesign);
+            EditorGUILayout.PropertyField(extendedRipSpeedKph, new GUIContent("Rip Speed km/h"));
 
             EditorGUI.indentLevel--;
         }

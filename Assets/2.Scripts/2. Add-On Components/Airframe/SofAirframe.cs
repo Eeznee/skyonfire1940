@@ -87,7 +87,7 @@ public abstract class SofAirframe : SofFrame, IDamageTick, IMassComponent
     protected virtual bool ShowGUI => SofWindow.showFuselageOverlay;
     private void OnDrawGizmos()
     {
-        if (ShowGUI)
+        if (ShowGUI && quad != null && quad.tr != null)
         {
             Draw();
         }

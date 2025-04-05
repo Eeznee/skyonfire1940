@@ -35,7 +35,7 @@ public class ObjectData : SofComponent
     }
 
     public Action OnValuesReset;
-    public Value<float> gsp, vsp, tas, invertTas, ias;
+    public Value<float> gsp, vsp, tas, signedTas, invertTas, ias;
     public Value<float> energy, relativeAltitude, altitude, heading;
     public Value<float> density, relativeDensity, temperature, pressure;
     public Value<float> pitchAngle, bankAngle, angleOfSlip, angleOfAttack, turnRate;
@@ -46,6 +46,7 @@ public class ObjectData : SofComponent
         gsp = new Value<float>(() => { return rb.velocity.magnitude; }, this);
         vsp = new Value<float>(() => { return rb.velocity.y; }, this);
         tas = new Value<float>(() => { return gsp.Get; }, this);
+        signedTas = new Value<float>(() => { return tas.Get * Mathf.Sign(Vector3.Dot(rb.transform.forward, rb.velocity)); }, this);
         invertTas = new Value<float>(() => { return 1f / tas.Get; }, this);
         ias = new Value<float>(() => { return tas.Get * Mathf.Sqrt(relativeDensity.Get); }, this);
 
@@ -67,7 +68,7 @@ public class ObjectData : SofComponent
         }, this);
         angleOfSlip = new Value<float>(() => { return Vector3.SignedAngle(tr.forward, Vector3.ProjectOnPlane(rb.velocity, tr.up), tr.up); }, this);
         angleOfAttack = new Value<float>(() => { return tas.Get < 2f ? 0f : Vector3.SignedAngle(tr.forward, Vector3.ProjectOnPlane(rb.velocity, tr.right), tr.right); }, this);
-        groundEffect = new Value<float>(() => { return Aerodynamics.GetGroundEffect(relativeAltitude.Get, aircraft.stats.wingSpan); }, this);
+        groundEffect = new Value<float>(() => { return aircraft ? Aerodynamics.GetGroundEffect(relativeAltitude.Get, aircraft.stats.wingSpan) : 1f; }, this);
 
         prevVelFirstValue = false;
     }

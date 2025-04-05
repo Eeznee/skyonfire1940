@@ -13,7 +13,7 @@ public class Carburetor
     public Carburetor(Engine attachedEngine)
     {
         engine = attachedEngine;
-        noEngineCarburetor = engine.Preset.fuelMixer != EnginePreset.FuelMixerType.Carburetor;
+        noEngineCarburetor = !engine.Preset.UsesCarburetor;
         carburetorFlowing = true;
     }
 

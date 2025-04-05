@@ -1,7 +1,6 @@
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.Layouts;
 using UnityEngine.UI;
-////TODO: custom icon for OnScreenButton component
 
 namespace UnityEngine.InputSystem.OnScreen
 {

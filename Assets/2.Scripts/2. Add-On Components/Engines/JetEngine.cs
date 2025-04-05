@@ -9,37 +9,69 @@ using UnityEditor.SceneManagement;
 [AddComponentMenu("Sof Components/Power Group/Jet Engine")]
 public class JetEngine : Engine, IAircraftForce
 {
+    [SerializeField] protected JetEnginePreset jetPreset;
     public Transform inlet;
-    public float thrust;
+
+    public float Thrust { get; private set; }
+
     const float torqueCoeff = 0.2f;
     const float minTorque = 60f;
     const float friction = 10f;
 
 
-    public override float MinimumRps => Preset.idleRPS * 0.8f;
-    public override float ConsumptionRate => Preset.ConsumptionRate(Throttle ,thrust);
+
+    public JetEnginePreset JetPreset => jetPreset;
+    public override EngineClass Class => EngineClass.JetEngine;
+    public override EnginePreset Preset => jetPreset;
+    public override float MinimumRps => Preset.IdleRadPerSec * 0.8f;
+    public override float ConsumptionRate => Thrust * JetPreset.FuelConsumption(Throttle);
+    public override float MaxHp => ModulesHPData.engineJet;
+    public override float MinTrueThrottle => 0.05f;
 
 
     public ForceAtPoint SimulatePointForce(FlightConditions flightConditions)
     {
-        if (igniting) return new ForceAtPoint(Vector3.zero, flightConditions.position);
+        if (Igniting) return new ForceAtPoint(Vector3.zero, flightConditions.position);
 
         Vector3 direction = flightConditions.TransformWorldDir(tr.forward);
         Vector3 point = flightConditions.TransformWorldPos(tr.position);
 
-        return new ForceAtPoint(thrust * direction, point);
+        return new ForceAtPoint(Thrust * direction, point);
     }
 
     protected override void UpdatePowerAndRPS(float dt)
     {
-        float targetRps = Mathf.Lerp(Preset.idleRPS, Preset.fullRps, Throttle);
-        float torque = workingAndRunning ? Mathf.Max(Mathf.Abs(targetRps - radiansPerSeconds) * torqueCoeff, minTorque) : friction;
-        radiansPerSeconds = Mathf.MoveTowards(radiansPerSeconds, workingAndRunning ? targetRps : 0f, torque * dt);
+        float targetRps = Mathf.Lerp(Preset.IdleRadPerSec, Preset.NominalRadPerSec, Throttle);
+        float torque = Working ? Mathf.Max(Mathf.Abs(targetRps - RadPerSec) * torqueCoeff, minTorque) : friction;
+        RadPerSec = Mathf.MoveTowards(RadPerSec, Working ? targetRps : 0f, torque * dt);
 
-        thrust = data.relativeDensity.Get * Throttle.TrueThrottle * Preset.maxThrust;
+        Thrust = data.relativeDensity.Get * TrueThrottle * jetPreset.MaxThrust * structureDamage;
     }
     private void Update()
     {
-        inlet.Rotate(Vector3.forward * (radiansPerSeconds * Mathf.Rad2Deg * Time.deltaTime));
+        inlet.Rotate(Vector3.forward * (RadPerSec * Mathf.Rad2Deg * Time.deltaTime));
+    }
+    public override IEnumerator Ignition()
+    {
+        Igniting = true;
+
+        OnIgnition?.Invoke(this);
+        float timeCount = 0f;
+        float startRps = RadPerSec;
+
+        while (timeCount < Preset.IgnitionTime)
+        {
+            float previousRadPerSec = RadPerSec;
+
+            RadPerSec = Mathf.Lerp(startRps, Preset.IdleRadPerSec, timeCount / Preset.IgnitionTime);
+            timeCount += Time.deltaTime;
+
+            float angularAcceleration = (RadPerSec - previousRadPerSec) / Time.deltaTime;
+
+
+            yield return null;
+        }
+
+        Igniting = false;
     }
 }

@@ -8,7 +8,6 @@ public class MenuManager : MonoBehaviour
     public bool vr = false;
     public SofAudioListener listener;
     public GameObject vrRig;
-    public AircraftsList list;
     public Transform mapTr;
     public MapData mapData;
     public Airfield[] airfields;
@@ -43,7 +42,7 @@ public class MenuManager : MonoBehaviour
         gm = GetComponent<GameManager>();
         weather = GetComponent<Weather>();
         map = GetComponent<MapTool>();
-        list.UpdateCards();
+        StaticReferences.Instance.defaultAircrafts.UpdateCards();
     }
     private float TimeScaleFactor()
     {

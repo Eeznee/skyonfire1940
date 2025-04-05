@@ -12,7 +12,7 @@ public class ThrottleInput : AnalogInteractable
     protected override void VRInteraction(Vector3 gripPos, Quaternion gripRot)
     {
         base.VRInteraction(gripPos, gripRot);
-        engine.Throttle = new CompleteThrottle(input, engine);
+        engine.SetThrottle(input);
     }
     private void Update()
     {

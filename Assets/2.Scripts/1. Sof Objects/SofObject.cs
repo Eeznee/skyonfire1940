@@ -35,7 +35,7 @@ public class SofObject : MonoBehaviour
         if (Application.isPlaying)
         {
             gameObject.layer = complex ? (simpleDamage ? 0 : 9) : 0;
-            rb = tr.IsChildOf(GameManager.gm.mapmap.transform) ? GameManager.gm.mapmap.rb : this.GetCreateComponent<Rigidbody>();
+            rb = tr.root == tr ? this.GetCreateComponent<Rigidbody>() : GameManager.gm.mapmap.rb;
         }
 
     }

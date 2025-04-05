@@ -4,6 +4,7 @@ using UnityEngine;
 
 public static class Ballistics
 {
+    [System.Serializable]
     public struct ProjectileChart
     {
         public float basePenetration;
@@ -17,7 +18,7 @@ public static class Ballistics
             basePenetration = _basePen;
             atBaseVelocity = _baseVel;
             diameter = _diameter;
-            fireChance = _fireChance;  
+            fireChance = _fireChance;
         }
 
         public float Pen(float sqrVelocity)
@@ -43,7 +44,7 @@ public static class Ballistics
         public Vector3 velocityLeft;
         public HitSummary summary;
 
-        public HitResult(RaycastHit _firstHit,RaycastHit _lastHit, Vector3 _velocityLeft,HitSummary _summary)
+        public HitResult(RaycastHit _firstHit, RaycastHit _lastHit, Vector3 _velocityLeft, HitSummary _summary)
         {
             firstHit = _firstHit;
             lastHit = _lastHit;
@@ -51,7 +52,7 @@ public static class Ballistics
             summary = _summary;
         }
 
-        public static HitResult NoHit(Vector3 velocity) { return new HitResult (new RaycastHit(), new RaycastHit(),velocity,HitSummary.NoHit); }
+        public static HitResult NoHit(Vector3 velocity) { return new HitResult(new RaycastHit(), new RaycastHit(), velocity, HitSummary.NoHit); }
     }
     public static Quaternion Spread(Quaternion rotation, float maxAngle)
     {
@@ -59,22 +60,18 @@ public static class Ballistics
         rotation *= Quaternion.Euler(Random.Range(-1f, 1f) * maxAngle, 0f, 0f);
         return rotation;
     }
-
+    public static float ProjectileDragCoeff(float diameter, float mass)
+    {
+        return M.Pow(diameter * 0.001f * 0.5f, 2) * Mathf.PI * 0.1f / mass;
+    }
     public static float ApproximatePenetration(float mass, float vel, float diameter)
     {
         return mass * vel * vel / (Mathf.Pow(diameter, 1.5f) * 35f);
     }
-    public static Vector3[] BallisticPath(Vector3 dir, float speed, float dragCoeff, int points, float lifetime)
+    public static Vector3 BallisticTrajectory(Vector3 dir, float speed, float dragCoeff, float time)
     {
-        float logConst = Mathf.Log(1f / speed) / dragCoeff;
-        Vector3[] worldPos = new Vector3[points + 1];
-        for (int i = 0; i <= points; i++)
-        {
-            float t = (float)i / points * lifetime;
-            worldPos[i] = Physics.gravity / 2f * t * t;
-            worldPos[i] += dir * (Mathf.Log(dragCoeff * t + 1f / speed) / dragCoeff - logConst);
-        }
-        return worldPos;
+        float ballisticDistance = Mathf.Log(dragCoeff * time * speed + 1f) / dragCoeff;
+        return ballisticDistance * dir + Physics.gravity * 0.5f * time * time;
     }
     public static RaycastHit[] RaycastAndSort(Vector3 pos, Vector3 dir, float range, int layerMask)
     {
@@ -84,7 +81,7 @@ public static class Ballistics
                 if (hits[j].distance > hits[j + 1].distance) { RaycastHit jplus1 = hits[j + 1]; hits[j + 1] = hits[j]; hits[j] = jplus1; }
         return hits;
     }
-    public static HitResult RaycastDamage(Vector3 position , Vector3 velocity, float range, ProjectileChart chart)
+    public static HitResult RaycastDamage(Vector3 position, Vector3 velocity, float range, ProjectileChart chart)
     {
         RaycastHit[] hits = RaycastAndSort(position, velocity, range, LayerMask.GetMask("SofComplex"));
         if (hits.Length == 0) return HitResult.NoHit(velocity);
@@ -100,7 +97,7 @@ public static class Ballistics
             SofModule module = hit.collider.GetComponent<SofModule>();
             if (module == null) continue;
 
-            if(firstHit.collider == null) firstHit = hit;
+            if (firstHit.collider == null) firstHit = hit;
             lastHit = hit;
             oneConfirmedHit = true;
 
@@ -116,13 +113,13 @@ public static class Ballistics
 
                 if (sqrVelocity <= 0f) return new HitResult(firstHit, lastHit, Vector3.zero, HitSummary.Stopped);
             }
-            else return new HitResult(firstHit,lastHit, velocity.normalized* Mathf.Sqrt(sqrVelocity),HitSummary.Stopped);
+            else return new HitResult(firstHit, lastHit, velocity.normalized * Mathf.Sqrt(sqrVelocity), HitSummary.Stopped);
         }
 
-        if(!oneConfirmedHit) return HitResult.NoHit(velocity);
+        if (!oneConfirmedHit) return HitResult.NoHit(velocity);
 
         velocity = velocity.normalized * Mathf.Sqrt(sqrVelocity);
-        return new HitResult(firstHit,lastHit, velocity,HitSummary.Penetration);
+        return new HitResult(firstHit, lastHit, velocity, HitSummary.Penetration);
     }
     public static float ExplosionRangeSimple(float kgTnt)
     {

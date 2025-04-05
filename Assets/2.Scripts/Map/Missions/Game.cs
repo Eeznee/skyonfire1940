@@ -55,7 +55,7 @@ public static class Game
             Squadron squadron = new Squadron();
             squadron.id = id;
             squadron.team = (Team)PlayerPrefs.GetInt(start + "Team");
-            squadron.aircraftCard = GameManager.gm.list.list[PlayerPrefs.GetInt(start + "Aircraft")];
+            squadron.aircraftCard = StaticReferences.Instance.defaultAircrafts.list[PlayerPrefs.GetInt(start + "Aircraft")];
             squadron.amount = PlayerPrefs.GetInt(start + "Amount");
             squadron.player = PlayerPrefs.GetInt(start + "Player") == 1;
 

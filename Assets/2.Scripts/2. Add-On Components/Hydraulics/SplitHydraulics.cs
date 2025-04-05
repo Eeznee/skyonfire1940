@@ -71,8 +71,8 @@ public class HydraulicsCurve
         reverse = _reverse;
 
 
-        firstPoint = new Vector2(Random.Range(0.05f, 0.4f), Random.Range(0.05f, 0.4f));
-        secondPoint = new Vector2(Random.Range(firstPoint.x + 0.1f, 0.95f), Random.Range(firstPoint.y + 0.1f, 0.95f));
+        firstPoint = new Vector2(Random.Range(0.1f, 0.4f), Random.Range(0.1f, 0.4f));
+        secondPoint = new Vector2(Random.Range(firstPoint.x + 0.1f, 0.9f), Random.Range(firstPoint.y + 0.1f, 0.9f));
     }
     public float ModifiedValue(float value)
     {

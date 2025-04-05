@@ -14,7 +14,15 @@ public class BombardierSeat : CrewSeat
 
     const float maxYawInput = 0.3f;
 
-    public override int Priority => 1;
+    public override int Priority
+    {
+        get
+        {
+            bool highPriority = Player.aircraft.squadron == aircraft.squadron;
+            highPriority &= Player.bombardierSeat != null;
+            return highPriority ? 4 : 1;
+        }
+    }
     public override Vector3 LookingDirection => -transform.root.up;
 
     public override void SetReferences(SofComplex _complex)

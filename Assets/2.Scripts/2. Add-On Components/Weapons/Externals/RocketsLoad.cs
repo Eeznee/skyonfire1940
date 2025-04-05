@@ -14,7 +14,7 @@ public class RocketsLoad : OrdnanceLoad
     public Projectile rocketRef;
     private Projectile[] rockets;
 
-    public override float SingleMass => rocketRef.p.mass;
+    public override float SingleMass => rocketRef.properties.mass;
     protected override void Clear()
     {
         base.Clear();
@@ -36,7 +36,7 @@ public class RocketsLoad : OrdnanceLoad
         {
             Vector3 pos = transform.TransformPoint(launchPositions[i]);
             rockets[i] = Instantiate(rocketRef, pos, transform.rotation, transform);
-            rockets[i].Setup(rockets[i].p);
+            rockets[i].Setup(rockets[i].properties);
             rockets[i].enabled = false;
         }
     }
@@ -49,7 +49,7 @@ public class RocketsLoad : OrdnanceLoad
         r.enabled = true;
 
         r.transform.rotation = Ballistics.Spread(transform.rotation, dispersion);
-        r.InitializeTrajectory(r.transform.forward * r.p.baseVelocity, r.transform.forward, complex.bubble.bubble,0f);
+        r.InitializeTrajectory(r.transform.forward * r.properties.baseVelocity, complex.bubble.bubble);
         r.GetComponentInChildren<ParticleSystem>().Play();
 
         complex.ShiftMass(-SingleMass);

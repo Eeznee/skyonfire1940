@@ -12,19 +12,17 @@ public class PistonEngineFX : AudioComponent
     ParticleSystem boostEffect;
     ParticleSystem overHeatEffect;
 
-    const float minPopFrequency = 2f;
-    const float popFrequencyGrowth = 0.3f;
-    float popCooldown = 0f;
-
+    private AudioClip[] pops;
 
     public override void Initialize(SofComplex _complex)
     {
         base.Initialize(_complex);
         engine = GetComponent<PistonEngine>();
         preset = engine.Preset;
-        ignitionEffect = Instantiate(preset.ignitionEffect, transform);
-        boostEffect = Instantiate(preset.boostEffect, transform);
-        overHeatEffect = Instantiate(preset.overHeatEffect, transform);
+        ignitionEffect = Instantiate(preset.IgnitionEffect, transform);
+        boostEffect = Instantiate(StaticReferences.Instance.engineBoostEffect, transform);
+        overHeatEffect = Instantiate(StaticReferences.Instance.engineOverHeatEffect, transform);
+        pops = StaticReferences.Instance.engineDamagePops;
 
         ParticleSystem.ShapeModule ignitionShape = ignitionEffect.shape;
         ParticleSystem.ShapeModule boostShape = boostEffect.shape;
@@ -32,34 +30,39 @@ public class PistonEngineFX : AudioComponent
         ignitionShape.shapeType = boostShape.shapeType = overHeatShape.shapeType = ParticleSystemShapeType.Mesh;
         ignitionShape.meshShapeType = boostShape.meshShapeType = overHeatShape.meshShapeType = ParticleSystemMeshShapeType.Triangle;
         ignitionShape.mesh = boostShape.mesh = overHeatShape.mesh = exhaustMesh;
+
+
+        engine.OnDirectDamage += OnEngineDamage;
     }
 
-    private void Pop()
+    const float popDamageThreshold = 0.001f;
+
+    private float damageTracker = 0f;
+    private float timeSinceLastPop = 0f;
+    private void OnEngineDamage(float damage)
     {
-        avm.persistent.global.PlayOneRandom(preset.enginePops, 0.4f);
+        damageTracker -= damage;
+        if(damageTracker < 0f )
+        {
+            damageTracker = popDamageThreshold * Random.Range(0.7f,1.5f);
+
+            overHeatEffect.Emit(1);
+            avm.persistent.global.PlayOneRandom(pops, 0.4f);
+        }
     }
+
     private void Update()
     {
-        float excess = engine.Temp.temperature - engine.Temp.maximumTemperature;
-        if (excess > 0f && engine.workingAndRunning)
-        {
-            if (popCooldown < 0f)
-            {
-                overHeatEffect.Emit(1);
-                Pop();
-                float frequency = minPopFrequency + popFrequencyGrowth * excess;
-                popCooldown = Random.Range(0.7f, 1.5f) / frequency;
-            }
-            else popCooldown -= Time.deltaTime;
-        }
-
-        bool playBoostEffect = engine.Throttle.WEP;
+        bool playBoostEffect = engine.BoostIsEffective;
         playBoostEffect &= complex.lod && complex.lod.LOD() <= 2;
 
         if (playBoostEffect && !boostEffect.isPlaying) boostEffect.Play();
         else if (!playBoostEffect && boostEffect.isPlaying) boostEffect.Stop();
 
-        if (engine.igniting && !ignitionEffect.isPlaying) ignitionEffect.Play();
-        else if (!engine.igniting && ignitionEffect.isPlaying) ignitionEffect.Stop();
+
+        bool playIgnitionEffect = engine.Igniting && engine.RadPerSec > PistonEngine.preIgnitionRadPerSec * 2f;
+
+        if (playIgnitionEffect && !ignitionEffect.isPlaying) ignitionEffect.Play();
+        else if (!playIgnitionEffect && ignitionEffect.isPlaying) ignitionEffect.Stop();
     }
 }

@@ -9,15 +9,17 @@ using UnityEditor.SceneManagement;
 public class FuselageCore : Fuselage, IAircraftForce
 {
     public float cd = 0.01f;
-    public List<Fuselage> linkedFuselages;
     public bool detachable = false;
+
+    private List<Fuselage> linkedFuselages;
+    private SimpleAirfoil airfoil;
 
     const float attachedMaxOffset = 1.5f;
     const float maxCl = 0.4f;
 
 
 
-    private SimpleAirfoil airfoil;
+
     public override IAirfoil Airfoil => airfoil;
     public override bool Detachable => detachable;
 

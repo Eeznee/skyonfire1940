@@ -36,9 +36,9 @@ public class RingedPintleGunMount : PintleGunMount
         Vector3 traverseAim = Vector3.ProjectOnPlane(direction, traversor.up);
         float targetAngleOffset = Vector3.SignedAngle(traversor.forward, traverseAim, traversor.up);
         targetAngleOffset = Mathf.Sign(targetAngleOffset) * Mathf.Min(ringTraverseRate * Time.deltaTime, Mathf.Abs(targetAngleOffset));
-        traverseAngle += targetAngleOffset;
+        ringTraverseAngle += targetAngleOffset;
 
-        traversor.localEulerAngles = Vector3.up * traverseAngle;
+        turretRing.localEulerAngles = Vector3.up * ringTraverseAngle;
     }
 }
 #if UNITY_EDITOR

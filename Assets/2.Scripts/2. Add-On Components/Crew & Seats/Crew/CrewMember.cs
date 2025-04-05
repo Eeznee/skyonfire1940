@@ -1,8 +1,13 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEditor.SceneManagement;
 
-[ExecuteInEditMode]
+#if UNITY_EDITOR
+using UnityEditor;
+using UnityEngine.SceneManagement;
+#endif
+
 [AddComponentMenu("Sof Components/Crew Seats/CrewMember")]
 public class CrewMember : SofModule, IMassComponent
 {
@@ -15,7 +20,7 @@ public class CrewMember : SofModule, IMassComponent
 
 
     public List<CrewSeat> seats;
-    public int seatIdTest = 0;
+
 
     private CrewSeat seat;
     public CrewSeat Seat
@@ -32,7 +37,6 @@ public class CrewMember : SofModule, IMassComponent
             return seats[id];
         }
     }
-
     public bool IsPilot
     {
         get
@@ -47,21 +51,21 @@ public class CrewMember : SofModule, IMassComponent
     public int SeatId => seats.IndexOf(Seat);
     protected bool SkipUpdate => Time.timeScale == 0f || !sofObject;
     public bool ActionsUnavailable => ripped || IsVrPlayer || (forcesEffect != null && forcesEffect.Gloc());
-
     public Vector3 HeadPosition => tr.parent.TransformPoint(localHeadPosition);
+    public Vector3 CameraPosition => tr.position;
 
-    public Vector3 CameraPosition => TargetHeadPosition();
 
     private Vector3 localHeadPosition;
 
     public CrewBailing bailOut { get; private set; }
     public CrewForcesEffect forcesEffect { get; protected set; }
 
-    public event Action OnAttachPlayer;
-    public event Action OnDetachPlayer;
+    public Action OnAttachPlayer;
+    public Action OnDetachPlayer;
 
     public Vector3 TargetHeadPosition()
     {
+        if (!Seat) return transform.position;
         if (IsVrPlayer) return SofCamera.tr.position;
 
         Vector3 headPosition = CameraInputs.zoomed && IsPlayer ? Seat.ZoomedHeadPosition : Seat.DefaultHeadPosition;
@@ -77,19 +81,34 @@ public class CrewMember : SofModule, IMassComponent
         base.Initialize(_complex);
 
         bailOut = GetComponent<CrewBailing>();
-        forcesEffect = GetComponent<CrewForcesEffect>();
+        forcesEffect = new CrewForcesEffect(this);
 
         UpdateSeatsList();
         SwitchSeat(0);
 
         localHeadPosition = tr.parent.InverseTransformPoint(Seat.DefaultHeadPosition);
+
+        CreateAndSetCapsuleCollider();
+
+        if (aircraft)
+        {
+            GameObject visualModel = aircraft.card.faction.crewMemberVisualModel;
+            bool historicalTeam = aircraft.squadron.team == aircraft.card.faction.defaultTeam;
+
+            if (!historicalTeam)
+            {
+                visualModel = aircraft.squadron.team == Game.Team.Axis ? StaticReferences.Instance.defaultAxisCrewmember : StaticReferences.Instance.defaultAlliesCrewmember;
+            }
+
+            visualModel = Instantiate(visualModel, transform.position, transform.rotation, tr);
+            visualModel.GetComponent<CrewAnimator>().SetInstanciatedComponent(complex);
+        }
     }
 
     const float headSmoothTime = 0.2f;
     Vector3 velRef = Vector3.zero;
     private void Update()
     {
-        if (!Application.isPlaying) return;
         if (ActionsUnavailable || SkipUpdate) return;
 
         if (Player.crew == this) Seat.PlayerUpdate(this);
@@ -98,15 +117,13 @@ public class CrewMember : SofModule, IMassComponent
             SwitchToPrioritySeat();
             Seat.AiUpdate(this);
         }
-    }
-    private void OnAnimatorIK()
-    {
-        Vector3 targetLocalPos = tr.parent.InverseTransformPoint(TargetHeadPosition());
-        localHeadPosition = Vector3.SmoothDamp(localHeadPosition, targetLocalPos, ref velRef, headSmoothTime);
-        tr.localPosition = localHeadPosition;
+
+        MoveToSeatSmooth();
     }
     private void FixedUpdate()
     {
+        if(aircraft) forcesEffect.UpdateForces(Time.fixedDeltaTime);
+
         if (ActionsUnavailable || SkipUpdate) return;
         if (IsPilot) return;
 
@@ -118,9 +135,6 @@ public class CrewMember : SofModule, IMassComponent
         if (aircraft && IsPilot) aircraft.destroyed = true;
         base.Rip();
     }
-
-    public void AttachPlayer() { OnAttachPlayer?.Invoke(); }
-    public void DetachPlayer() { OnDetachPlayer?.Invoke(); }
     protected void SwitchToPrioritySeat()
     {
         int newSeatId = 0;
@@ -155,4 +169,40 @@ public class CrewMember : SofModule, IMassComponent
         if (newSeatId < 0 || newSeatId >= seats.Count) return;
         ChangeSeat(seats[newSeatId]);
     }
+    public void MoveToSeatSmooth()
+    {
+        Vector3 targetLocalPos = tr.parent.InverseTransformPoint(TargetHeadPosition());
+        localHeadPosition = Vector3.SmoothDamp(localHeadPosition, targetLocalPos, ref velRef, headSmoothTime);
+        tr.localPosition = localHeadPosition;
+    }
+    public void MoveToSeatInstant()
+    {
+        localHeadPosition = tr.parent.InverseTransformPoint(TargetHeadPosition());
+        tr.localPosition = localHeadPosition;
+    }
+
+    const float capsuleHeight = 0.96f;
+    const float capsuleRadius = 0.17f;
+    const float capsuleCenter = -0.39f;
+    private void CreateAndSetCapsuleCollider()
+    {
+        CapsuleCollider collider = this.GetCreateComponent<CapsuleCollider>();
+
+        collider.isTrigger = true;
+        collider.direction = 1;
+        collider.height = capsuleHeight;
+        collider.radius = capsuleRadius;
+        collider.center = new Vector3(0f, capsuleCenter, 0f);
+    }
+
+#if UNITY_EDITOR
+    public int seatIdTest = 0;
+#endif
+
+#if UNITY_EDITOR
+    void OnValidate()
+    {
+
+    }
+#endif
 }

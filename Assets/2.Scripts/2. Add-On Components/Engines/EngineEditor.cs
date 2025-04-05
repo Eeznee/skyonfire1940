@@ -11,17 +11,14 @@ using System;
 [CustomEditor(typeof(Engine))]
 public class EngineEditor : ModuleEditor
 {
-    SerializedProperty preset;
     SerializedProperty oil;
     SerializedProperty water;
     protected override void OnEnable()
     {
         base.OnEnable();
-        preset = serializedObject.FindProperty("preset");
         oil = serializedObject.FindProperty("oil");
         water = serializedObject.FindProperty("water");
     }
-
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
@@ -29,13 +26,11 @@ public class EngineEditor : ModuleEditor
         serializedObject.Update();
 
         Engine engine = (Engine)target;
-        EditorGUILayout.PropertyField(preset);
 
         if (engine.Preset)
         {
             EditorGUILayout.PropertyField(oil, new GUIContent("Oil Tank"));
-            bool liquidCooled = engine.Preset.type == EnginePreset.Type.V || engine.Preset.type == EnginePreset.Type.Inverted;
-            if (liquidCooled) EditorGUILayout.PropertyField(water, new GUIContent("Water Tank"));
+            if (engine.Preset.LiquidCooled) EditorGUILayout.PropertyField(water, new GUIContent("Water Tank"));
         }
         else
         {
@@ -52,11 +47,23 @@ public class EngineEditor : ModuleEditor
 [CustomEditor(typeof(PistonEngine)), CanEditMultipleObjects]
 public class PistonEngineEditor : EngineEditor
 {
+    SerializedProperty pistonPreset;
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        pistonPreset = serializedObject.FindProperty("pistonPreset");
+    }
+
     public override void OnInspectorGUI()
     {
+        PistonEngine engine = (PistonEngine)target;
+
+        serializedObject.Update();
+        EditorGUILayout.PropertyField(pistonPreset);
+
         base.OnInspectorGUI();
 
-        PistonEngine engine = (PistonEngine)target;
         if (!engine.GetComponentInChildren<Propeller>())
         {
             GUI.color = Color.red;
@@ -70,19 +77,22 @@ public class PistonEngineEditor : EngineEditor
 [CustomEditor(typeof(JetEngine))]
 public class JetEngineEditor : EngineEditor
 {
+    SerializedProperty jetPreset;
     SerializedProperty inlet;
-
     protected override void OnEnable()
     {
         base.OnEnable();
         inlet = serializedObject.FindProperty("inlet");
+        jetPreset = serializedObject.FindProperty("jetPreset");
     }
     public override void OnInspectorGUI()
     {
-        base.OnInspectorGUI();
         serializedObject.Update();
 
+        EditorGUILayout.PropertyField(jetPreset);
         EditorGUILayout.PropertyField(inlet);
+
+        base.OnInspectorGUI();
 
         serializedObject.ApplyModifiedProperties();
     }

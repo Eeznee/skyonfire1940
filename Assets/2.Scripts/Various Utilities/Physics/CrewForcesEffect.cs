@@ -2,9 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(CrewMember))]
-[AddComponentMenu("Sof Components/Crew Seats/Crew Forces Effect")]
-public class CrewForcesEffect : MonoBehaviour
+public class CrewForcesEffect
 {
     const float maxStamina = 15f;
     const float sustain = 4.7f;
@@ -13,14 +11,14 @@ public class CrewForcesEffect : MonoBehaviour
     const float bloodSustain = 3f;
     const float bloodMax = 3f;
 
+    const float invertMaxStamina = 1f / maxStamina;
+    const float invertBloodMax = 1f / bloodMax;
+
     const float bufferMax = 2f;
     const float invertGlocTime = 1f/3f;
     const float gSwitchSustain = 0.2f;
     const float sicknessTrigger = 4f;
     const float painRecoveryRate = 0.07f;
-
-    private float invertMaxStamina;
-    private float invertBloodMax;
 
     private float blood = 0f;
     private float stamina = 15f;
@@ -40,18 +38,16 @@ public class CrewForcesEffect : MonoBehaviour
     public float Sickness(){ return crew.structureDamage <= 0f ? 0f : sicknessFeeling; }
     public float Pain() { return crew.structureDamage <= 0f ? 0f : pain; }
 
-
-    private void Awake()
+    public CrewForcesEffect(CrewMember _crew)
     {
-        crew = GetComponent<CrewMember>();
-        invertMaxStamina = 1f / maxStamina;
-        invertBloodMax = 1f / bloodMax;
+        crew = _crew;
 
         accelerationCompensation = Vector3.zero;
     }
-    private void Update()
+
+    public void UpdateForces(float dt)
     {
-        ApplyForces(crew.data.gForce, Time.deltaTime);
+        ApplyForces(crew.data.gForce, dt);
     }
     public void ApplyForces(float g, float dt)
     {

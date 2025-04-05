@@ -13,12 +13,15 @@ public class FuelValve : AnalogInteractable
     protected override void VRInteraction(Vector3 gripPos, Quaternion gripRot)
     {
         base.VRInteraction(gripPos, gripRot);
-        engine.onInput = input > 0.5f;
+
+        bool on = input > 0.5f;
+        if (engine.OnInput != on)
+            engine.SetOnInput(on);
     }
     private void Update()
     {
         CockpitInteractableUpdate();
-        Animate(engine ? engine.onInput : input > 0.5f);
+        Animate(engine ? engine.OnInput : input > 0.5f);
     }
 }
 #if UNITY_EDITOR

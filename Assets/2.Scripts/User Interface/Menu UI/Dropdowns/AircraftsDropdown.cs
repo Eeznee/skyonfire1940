@@ -8,13 +8,12 @@ using System;
 public class AircraftsDropdown : MonoBehaviour
 {
     private Dropdown dropdown;
-    [SerializeField] private AircraftsList list;
 
     public Action OnAircraftChange;
 
 
     private int selected;
-    public AircraftCard SelectedCard { get { return list.list[dropdown.value]; } }
+    public AircraftCard SelectedCard { get { return StaticReferences.Instance.defaultAircrafts.list[dropdown.value]; } }
     void Start()
     {
         if (dropdown) return;
@@ -29,7 +28,7 @@ public class AircraftsDropdown : MonoBehaviour
     {
         if (!dropdown) Start();
         dropdown.ClearOptions();
-        foreach (AircraftCard card in list.list)
+        foreach (AircraftCard card in StaticReferences.Instance.defaultAircrafts.list)
         {
             string name = (card.Available() ? "" : "(LOCKED) ") + card.completeName;
             Dropdown.OptionData option = new Dropdown.OptionData(name,card.icon);
@@ -40,7 +39,7 @@ public class AircraftsDropdown : MonoBehaviour
     }
     private void CheckForLocked()
     {
-        AircraftCard card = list.list[dropdown.value];
+        AircraftCard card = StaticReferences.Instance.defaultAircrafts.list[dropdown.value];
         if (!card.Available())
         {
             dropdown.value = selected;

@@ -12,6 +12,7 @@ public class AirfoilQuarterTool
     private float maxAlpha;
     private float zeroCl;
     private float minCd;
+    private float cdGrowth;
 
     private float sign;
 
@@ -23,29 +24,25 @@ public class AirfoilQuarterTool
     const float flatMaxCl = 1f;
     const float one45Ratio = 1f / 45f;
 
-    //Drag coefficient constants
-    const float cdclAtPeak = 0.02f;
-    const float stalledDrag = 0.12f;
-    const float flatPlateMaxDrag = 1.8f;
 
-    public AirfoilQuarterTool(float _maxCl, float _maxAlpha, float _zeroCl, float _minCd)
+    public AirfoilQuarterTool(float _maxCl, float _maxAlpha, float _zeroCl, float _minCd, float _cdGrowth)
     {
         maxCl = _maxCl;
         maxAlpha = _maxAlpha;
         zeroCl = _zeroCl;
         minCd = _minCd;
+        cdGrowth = _cdGrowth;
 
         linearSlope = (maxCl * ltclf - zeroCl) / maxAlpha;
         linearToPeakAlpha = (maxAlpha * (maxCl * (ltclf - 2f) + zeroCl)) / (zeroCl - maxCl * ltclf);
         peakFactor = Mathv.SmoothStart(zeroCl - maxCl * ltclf, 2) / (4 * maxAlpha * maxAlpha * maxCl * (ltclf - 1));
-        stallMinimaAlpha = maxAlpha + stallOffsetAlpha;
-        tAscentFactor = 1f / (45f - stallMinimaAlpha);
+        finalStallAlpha = maxAlpha + stallOffsetAlpha;
+        tAscentFactor = 1f / (45f - finalStallAlpha);
         sign = Mathf.Sign(maxCl);
 
-        maxAlphaInvert = 1f / maxAlpha;
-        stallDragDerivative = degree4Factor * 4f + degree3Factor * 3f + degree2Factor * 2f;
-        stallDragDerivative *= Mathf.Abs(maxCl) * cdclAtPeak / maxAlpha;
-        tAscentFactor90 = 1f / (90f - stallMinimaAlpha);
+        float cl = Cl(maxAlpha);
+        maxAlphaCd = PreStallDrag(cl);
+        stalledCd = maxAlphaCd + 0.15f;
     }
 
 
@@ -59,66 +56,70 @@ public class AirfoilQuarterTool
     private float peakFactor;
     private float Peak(float alpha)
     {
-        return maxCl - Mathv.SmoothStart(alpha - maxAlpha, 2) * peakFactor;
+        return maxCl - M.Pow(alpha - maxAlpha, 2) * peakFactor;
     }
     private float Stall(float alpha)
     {
         float t = (alpha - maxAlpha) * stallOffsetAlphaInvert;
         return Mathf.Lerp(maxCl, maxCl * stallDepth, Mathv.SmoothStep(t, 2));
     }
-    private float stallMinimaAlpha;
+    private float finalStallAlpha;
     private float tAscentFactor;
     private float PlateAscent(float alpha)
     {
-        float t = (alpha - stallMinimaAlpha) * tAscentFactor;
+        float t = (alpha - finalStallAlpha) * tAscentFactor;
         return Mathf.Lerp(maxCl * stallDepth, sign * flatMaxCl, Mathv.SmoothStep(t, 2));
     }
     private float PlateDescent(float alpha)
     {
-        return sign * (flatMaxCl - Mathv.SmoothStart(alpha * one45Ratio - 1f, 2));
+        return sign * (flatMaxCl - M.Pow(alpha * one45Ratio - 1f, 2));
     }
     public float Cl(float alpha)
     {
         if (alpha < linearToPeakAlpha) return Linear(alpha);
-        else if (alpha < maxAlpha) return Peak(alpha);
-        else if (alpha < stallMinimaAlpha) return Stall(alpha);
-        else if (alpha < 45f) return PlateAscent(alpha);
+        if (alpha < maxAlpha) return Peak(alpha);
+        if (alpha < finalStallAlpha) return Stall(alpha);
+        if (alpha < 45f) return PlateAscent(alpha);
         else return PlateDescent(alpha);
     }
+
 
     const float degree4Factor = 1.5f;
     const float degree3Factor = -1.9f;
     const float degree2Factor = 1.4f;
-    private float maxAlphaInvert;
-    private float PreStall(float alpha)
-    {
-        float x = alpha * maxAlphaInvert;
-        float polynomialTo1 = degree4Factor * Mathv.SmoothStart(x, 4) + degree3Factor * Mathv.SmoothStart(x, 3) + degree2Factor * Mathv.SmoothStart(x, 2);
-        return polynomialTo1 * Mathf.Abs(maxCl) * cdclAtPeak + minCd;
-    }
-    private float stallDragDerivative;
 
-    private float PostStall(float alpha)
+    const float flatPlateMaxDrag = 1.8f;
+    const float clToCdPreStall = 0.03f;
+
+    private float maxAlphaCd;
+    private float stalledCd;
+    private float PreStallDrag(float cl)
     {
-        float start = (alpha - maxAlpha) * stallDragDerivative + Mathf.Abs(maxCl) * cdclAtPeak + minCd;
-        float end = (alpha - stallMinimaAlpha) * (stalledDrag - Mathf.Abs(maxCl) * cdclAtPeak - minCd) * stallOffsetAlphaInvert + stalledDrag;
-        return Mathf.Lerp(start, end, (alpha - maxAlpha) * stallOffsetAlphaInvert);
+        float polynomialTo1 = degree4Factor * M.Pow(cl, 4) + degree3Factor * M.AbsPow(cl, 3) + degree2Factor * M.Pow(cl, 2);
+        return polynomialTo1 * clToCdPreStall * cdGrowth + minCd;
     }
-    private float tAscentFactor90;
+
+    private float PostStallDrag(float alpha)
+    {
+        float t = (alpha - maxAlpha) * stallOffsetAlphaInvert;
+        return Mathf.Lerp(maxAlphaCd, stalledCd, t);
+    }
 
     private float PlateLikeDrag(float alpha)
     {
-        return Mathf.Lerp(stalledDrag, flatPlateMaxDrag, Mathv.SmoothStop((alpha - stallMinimaAlpha) * tAscentFactor90, 2));
+        float t = Mathv.InverseLerpUnclamped(finalStallAlpha, 90f, alpha);
+        return Mathf.Lerp(stalledCd, flatPlateMaxDrag, Mathv.SmoothStop(t,2));
     }
 
-    public float Cd(float alpha)
+    public float Cd(float alpha, float cl)
     {
-        if (alpha < maxAlpha) return PreStall(alpha);
-        else if (alpha < stallMinimaAlpha) return PostStall(alpha);
-        else return PlateLikeDrag(alpha);
+        if (alpha < maxAlpha) return PreStallDrag(cl);
+        if (alpha < finalStallAlpha) return PostStallDrag(alpha);
+        return PlateLikeDrag(alpha);
     }
     public Vector2 Coefficients(float alpha)
     {
-        return new Vector2(Cd(alpha), Cl(alpha));
+        float cl = Cl(alpha);
+        return new Vector2(Cd(alpha,cl), cl);
     }
 }
