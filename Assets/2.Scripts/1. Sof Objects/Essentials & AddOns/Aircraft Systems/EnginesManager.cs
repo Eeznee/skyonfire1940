@@ -53,8 +53,24 @@ public class EnginesManager
         if (Player.aircraft == aircraft) Log.Print((AllEngines.Length == 1 ? "Engine " : "Engines ") + (on ? "On" : "Off"), "engines");
     }
 
+
     public void ToggleSetEngines()
     {
+        //One by one engine ignition
+        if(aircraft.data.relativeAltitude.Get < 25f)
+        {
+            for (int i = 0; i < AllEngines.Length; i++)
+            {
+                Engine engine = AllEngines[i];
+                if (engine.CanBeIgnited)
+                {
+                    engine.SetAutomated(true, false);
+                    if (Player.aircraft == aircraft) Log.Print("Engine nº" + (i + 1).ToString() + " Ignited", "engines");
+                    return;
+                }
+            }
+        }
+
         SetEngines(!AtLeastOneEngineOn, false);
     }
     public void SetThrottleAllEngines(float thr, bool allowWEP)

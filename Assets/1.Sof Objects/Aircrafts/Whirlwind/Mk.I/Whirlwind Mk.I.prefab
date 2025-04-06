@@ -203,7 +203,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 352418264172284296}
-  m_Mesh: {fileID: 4956418443731392515, guid: 7c6cd8a332bc7324eb396010459dc534, type: 3}
+  m_Mesh: {fileID: -6504212024753017550, guid: 6db27a832325f3f438c1553aba6769ed, type: 3}
 --- !u!23 &1333971327921712651
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1351,7 +1351,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1263386027103601845}
-  m_Mesh: {fileID: -7005056580041024134, guid: 7c6cd8a332bc7324eb396010459dc534, type: 3}
+  m_Mesh: {fileID: -3252714825421918849, guid: 6db27a832325f3f438c1553aba6769ed, type: 3}
 --- !u!23 &9020696141537009851
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2494,7 +2494,7 @@ MonoBehaviour:
   oil: {fileID: 3596000161804350929}
   water: {fileID: 3365418355522458461}
   pumped: 0
-  pistonPreset: {fileID: 0}
+  pistonPreset: {fileID: 11400000, guid: b21f861add4975c43949ee7ec9f479b7, type: 2}
   propeller: {fileID: 6569911922740811627}
 --- !u!64 &5283424657720998838
 MeshCollider:
@@ -3074,7 +3074,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2780042080830361789}
-  m_Mesh: {fileID: 4956418443731392515, guid: 7c6cd8a332bc7324eb396010459dc534, type: 3}
+  m_Mesh: {fileID: 7379005929444290346, guid: 6db27a832325f3f438c1553aba6769ed, type: 3}
 --- !u!23 &786567065236774983
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -4348,8 +4348,9 @@ GameObject:
   - component: {fileID: 8987505863347533002}
   - component: {fileID: 5860211136739461821}
   - component: {fileID: 5077134299133378846}
+  - component: {fileID: 7091226893935820706}
   m_Layer: 2
-  m_Name: Propeller
+  m_Name: De Havilland Two Speed Propeller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4435,11 +4436,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58b66420e085b5b45973659114fb6101, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 0
+  mass: 180
   radius: 1.5
-  pitchControl: 0
-  minPitch: 30
-  maxPitch: 30
+  invertRotation: 0
+  pitchControl: 2
+  minPitch: 9
+  maxPitch: 40
   efficiency: 0.85
 --- !u!64 &5077134299133378846
 MeshCollider:
@@ -4455,6 +4457,20 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -7005056580041024134, guid: 7c6cd8a332bc7324eb396010459dc534, type: 3}
+--- !u!114 &7091226893935820706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3958069588621388748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 535a23fdf4fdcf04b8d532f96c68e10f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  brokenProp: {fileID: 1333971327921712651}
+  blurredProp: {fileID: 9020696141537009851}
 --- !u!1 &4016547850105558608
 GameObject:
   m_ObjectHideFlags: 0
@@ -4540,7 +4556,7 @@ MonoBehaviour:
   oil: {fileID: 28555130233208659}
   water: {fileID: 5453985411178845930}
   pumped: 0
-  pistonPreset: {fileID: 0}
+  pistonPreset: {fileID: 11400000, guid: b21f861add4975c43949ee7ec9f479b7, type: 2}
   propeller: {fileID: 5860211136739461821}
 --- !u!64 &539133611455814810
 MeshCollider:
@@ -7748,7 +7764,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6267672003023681483}
-  m_Mesh: {fileID: -7005056580041024134, guid: 7c6cd8a332bc7324eb396010459dc534, type: 3}
+  m_Mesh: {fileID: -3252714825421918849, guid: 6db27a832325f3f438c1553aba6769ed, type: 3}
 --- !u!23 &2307820538872015668
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -9176,11 +9192,11 @@ MonoBehaviour:
   cogForwardDistance: 0.47
   targetEmptyMass: 3769
   EmptyMass:
-    mass: 2502.583
-    center: {x: 0.000000016767343, y: -0.1829832, z: -0.19670826}
+    mass: 3846.583
+    center: {x: -0.000000012892238, y: -0.3391713, z: 0.4605962}
   LoadedMass:
-    mass: 3157.063
-    center: {x: 0.00000005316545, y: -0.18218076, z: -0.077352196}
+    mass: 4501.0635
+    center: {x: 0.00000015255183, y: -0.31589776, z: 0.44873714}
   lod: {fileID: 0}
   bubble: {fileID: 0}
   data: {fileID: 7460263914515571603}
@@ -9595,8 +9611,9 @@ GameObject:
   - component: {fileID: 2250932888160649018}
   - component: {fileID: 6569911922740811627}
   - component: {fileID: 4614222948598420103}
+  - component: {fileID: 3583327505175526670}
   m_Layer: 2
-  m_Name: Propeller
+  m_Name: De Havilland Two Speed Propeller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9627,7 +9644,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7927137644870155308}
-  m_Mesh: {fileID: -8152421431911786618, guid: 6db27a832325f3f438c1553aba6769ed, type: 3}
+  m_Mesh: {fileID: -333223584871542854, guid: 6db27a832325f3f438c1553aba6769ed, type: 3}
 --- !u!23 &2250932888160649018
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -9682,11 +9699,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58b66420e085b5b45973659114fb6101, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 0
+  mass: 180
   radius: 1.5
-  pitchControl: 0
-  minPitch: 30
-  maxPitch: 30
+  invertRotation: 1
+  pitchControl: 2
+  minPitch: 9
+  maxPitch: 40
   efficiency: 0.85
 --- !u!64 &4614222948598420103
 MeshCollider:
@@ -9702,6 +9720,20 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -7005056580041024134, guid: 7c6cd8a332bc7324eb396010459dc534, type: 3}
+--- !u!114 &3583327505175526670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7927137644870155308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 535a23fdf4fdcf04b8d532f96c68e10f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  brokenProp: {fileID: 786567065236774983}
+  blurredProp: {fileID: 2307820538872015668}
 --- !u!1 &8042786347314034354
 GameObject:
   m_ObjectHideFlags: 0

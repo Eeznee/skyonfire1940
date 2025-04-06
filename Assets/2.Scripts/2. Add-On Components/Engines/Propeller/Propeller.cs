@@ -23,6 +23,7 @@ public partial class Propeller : SofModule, IMassComponent, IAircraftForce
 
     [SerializeField] private float mass = 150f;
     [SerializeField] private float radius = 1.5f;
+    [SerializeField] private bool invertRotation = false;
     public float EmptyMass => Mathf.Max(mass,25f);
     public float LoadedMass => EmptyMass;
     public float RealMass => EmptyMass;
@@ -74,7 +75,9 @@ public partial class Propeller : SofModule, IMassComponent, IAircraftForce
     }
     void Update()
     {
-        transform.Rotate(-Vector3.forward * Time.deltaTime * RadPerSec * 57.3f);
+        float rotation = Time.deltaTime * RadPerSec * 57.3f;
+        if(invertRotation) rotation *= -1f;
+        transform.Rotate(-Vector3.forward * rotation);
     }
     void FixedUpdate()
     {

@@ -8,7 +8,7 @@ using UnityEditor.SceneManagement;
 [AddComponentMenu("Sof Components/Power Group/Piston Engine")]
 public class PistonEngine : Engine
 {
-    [SerializeField] protected PistonEnginePreset pistonPreset;
+    [SerializeField] private PistonEnginePreset pistonPreset;
     public Propeller propeller;
 
 
@@ -106,7 +106,7 @@ public class PistonEngine : Engine
         return success;
     }
 
-    public const float preIgnitionRadPerSec = 3f;
+    public const float preIgnitionRadPerSec = 5f;
     public override IEnumerator Ignition()
     {
         Igniting = true;
@@ -120,11 +120,11 @@ public class PistonEngine : Engine
             BrakePower = 0f;
 
             float preIgnitionCount = 0f;
-            float randomDelay = Preset.PreIgnitionTime;
-            while (preIgnitionCount < randomDelay)
+            float startRadPerSec = RadPerSec;
+            while (preIgnitionCount < Preset.PreIgnitionTime)
             {
                 preIgnitionCount += Time.deltaTime;
-                RadPerSec = Mathf.MoveTowards(RadPerSec, preIgnitionRadPerSec, Time.deltaTime * 2f);
+                RadPerSec = Mathf.Lerp(startRadPerSec, preIgnitionRadPerSec, preIgnitionCount / Preset.PreIgnitionTime);
                 yield return null;
             }
         }

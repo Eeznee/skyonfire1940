@@ -33,6 +33,7 @@ public abstract class Engine : SofModule, IMassComponent, IDamageTick, IIgnitabl
     public bool Igniting { get; protected set; }
     public float RadPerSec { get; protected set; }
     public bool Working { get; private set; }
+    public bool CanBeIgnited => RadPerSec < MinimumRps && Functional && !Igniting;
     public virtual bool BoostIsEffective => false;
 
     //Essential references

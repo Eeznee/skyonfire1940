@@ -75,6 +75,7 @@ public class PropellerEditor : SofComponentEditor
 {
     SerializedProperty radius;
     SerializedProperty efficiency;
+    SerializedProperty invertRotation;
 
     SerializedProperty pitchControl;
     SerializedProperty minPitch;
@@ -85,6 +86,7 @@ public class PropellerEditor : SofComponentEditor
         base.OnEnable();
         radius = serializedObject.FindProperty("radius");
         efficiency = serializedObject.FindProperty("efficiency");
+        invertRotation = serializedObject.FindProperty("invertRotation");
 
         pitchControl = serializedObject.FindProperty("pitchControl");
         minPitch = serializedObject.FindProperty("minPitch");
@@ -110,6 +112,7 @@ public class PropellerEditor : SofComponentEditor
             EditorGUI.indentLevel++;
 
             EditorGUILayout.PropertyField(radius);
+            EditorGUILayout.PropertyField(invertRotation);
             EditorGUILayout.Slider(efficiency, 0.6f, 1f);
 
             EditorGUI.indentLevel--;

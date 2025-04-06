@@ -45,8 +45,6 @@ public class PropellerVisual : MonoBehaviour
         blurredProp.enabled = true;
         float timeScale = Time.timeScale == 0f ? 1f : Time.timeScale;
         meshRenderer.enabled = propeller.RadPerSec * timeScale < meshDiseppearAtRadPerSec && !propeller.ripped;
-
-        transform.Rotate(-Vector3.forward * Time.deltaTime * propeller.RadPerSec * 57.3f);
     }
 
     private void OnPropellerRip(SofModule module)

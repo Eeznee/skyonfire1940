@@ -60,7 +60,10 @@ public class PistonEngineEditor : EngineEditor
         PistonEngine engine = (PistonEngine)target;
 
         serializedObject.Update();
+
         EditorGUILayout.PropertyField(pistonPreset);
+
+        serializedObject.ApplyModifiedProperties();
 
         base.OnInspectorGUI();
 
