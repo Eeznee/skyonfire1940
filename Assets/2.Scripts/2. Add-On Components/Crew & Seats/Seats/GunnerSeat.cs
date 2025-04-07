@@ -26,7 +26,7 @@ public class GunnerSeat : CrewSeat
     const float burstPerlinNoob = 0.42f;
     const float burstPerlinExpert = 0.52f;
 
-    //public override Vector3 CameraUp => gunMount && !SofCamera.lookAround ? gunMount.CameraUp : base.CameraUp;
+    public override Vector3 CameraUp => gunMount && !SofCamera.lookAround ? gunMount.CameraUp : base.CameraUp;
     public override Vector3 LookingDirection => gunMount ? gunMount.FiringDirection : base.LookingDirection;
 
     public override Vector3 DefaultHeadPosition

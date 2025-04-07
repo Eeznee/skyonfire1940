@@ -74,7 +74,7 @@ public class SubCam
         Quaternion rotation;
 
         if (logic.FollowBaseDir)
-            rotation = CameraOperations.RotateRelative(ref axis, CameraInputs.CameraInput().Rotate(-tilt), logic.BaseRotation());
+            rotation = CameraOperations.RotateRelative(ref axis, logic.BaseRotation() * Vector3.forward, logic.BaseUp());
         else
             rotation = CameraOperations.RotateWorld(currentRotation, logic.BaseDirection(),logic.BaseUp());
 

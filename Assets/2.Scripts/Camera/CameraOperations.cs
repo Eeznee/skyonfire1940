@@ -15,16 +15,18 @@ public static class CameraOperations
 
         return GroundClipPos(basePos, offset);
     }
-    public static Quaternion RotateRelative(ref Vector2 axis, Vector2 inputs, Quaternion defaultRot)
+    public static Quaternion RotateRelative(ref Vector2 axis, Vector3 defaultForward, Vector3 defaultUp)
     {
+        Vector2 inputs = CameraInputs.CameraInput();
+
         float yLimit = SofCamera.subCam.logic.BasePosMode == CamPos.FirstPerson ? 84f : 180f;
  
         axis.x += Mathf.Sign(90f - Mathf.Abs(axis.y)) * inputs.x;
         axis.y = Mathf.Clamp(axis.y + inputs.y, -yLimit, yLimit);
-        Quaternion rotation = defaultRot;
-        rotation *= Quaternion.Euler(Vector3.up * axis.x);
-        rotation *= Quaternion.Euler(Vector3.right * axis.y);
-        return rotation;
+        Vector3 lookRotation = defaultForward;
+        lookRotation = Quaternion.AngleAxis(axis.x, defaultUp) * lookRotation;
+        lookRotation = Quaternion.AngleAxis(axis.y,Vector3.Cross(defaultUp,lookRotation)) * lookRotation;
+        return Quaternion.LookRotation(lookRotation, defaultUp);
     }
     public static Quaternion RotateWorld(Quaternion rotation, Vector3 defaultForward, Vector3 defaultUp)
     {
