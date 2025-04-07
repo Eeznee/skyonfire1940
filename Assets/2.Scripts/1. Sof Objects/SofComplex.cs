@@ -206,6 +206,7 @@ public class SofComplex : SofObject
 
     protected void OnValidate()
     {
+        if (Application.isPlaying) return;
         SetReferences();
     }
 }

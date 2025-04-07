@@ -7,6 +7,7 @@ public static class ComplexNumbers
     public static Vector2 Pow(Vector2 z, float p)
     {
         float angle = Vector2.Angle(Vector2.right, z) * Mathf.Deg2Rad;
+        angle *= p;
         float magnitude = Mathf.Pow(z.sqrMagnitude, p * 0.5f);
 
         return new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * magnitude;

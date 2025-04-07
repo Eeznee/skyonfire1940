@@ -95,6 +95,9 @@ public class JetEngineEditor : EngineEditor
         EditorGUILayout.PropertyField(jetPreset);
         EditorGUILayout.PropertyField(inlet);
 
+        serializedObject.ApplyModifiedProperties();
+
+
         base.OnInspectorGUI();
 
         serializedObject.ApplyModifiedProperties();

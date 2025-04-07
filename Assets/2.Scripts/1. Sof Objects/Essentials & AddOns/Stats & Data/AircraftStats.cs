@@ -188,17 +188,16 @@ public class AircraftStats
             {
                 JetEngine jetEngine = engine as JetEngine;
 
-                totalJetThrust += jetEngine.JetPreset.MaxThrust * throttle * relativeAirDensity;
+                totalJetThrust += jetEngine.JetPreset.MaxThrust;// * throttle * relativeAirDensity;
             }
             if (engine.Class == EngineClass.PistonEngine)
             {
                 PistonEngine pistonEngine = engine as PistonEngine;
 
                 float power = pistonEngine.PistonPreset.BestPower(altitude, EngineRunMode.Continuous);
-                totalPistonPower += power * pistonEngine.GetComponentInChildren<Propeller>().Efficiency;
+                totalPistonPower += power * throttle * pistonEngine.GetComponentInChildren<Propeller>().Efficiency;
             }
         }
-
         return EquilibrumSpeed(totalPistonPower, totalJetThrust, totalAreaDrag);
     }
 

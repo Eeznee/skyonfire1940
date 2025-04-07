@@ -15,6 +15,7 @@ public class AircraftInputs
     private SofAircraft aircraft;
 
     public float brake;
+    //public float differentialBrakes;
     public bool primaryFire;
     public bool secondaryFire;
 

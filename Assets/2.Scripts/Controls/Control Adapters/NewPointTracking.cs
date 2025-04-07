@@ -56,16 +56,23 @@ public static partial class NewPointTracking
     }
     private static AircraftAxes InterpolateForGrounded(AircraftAxes controlsFound, SofAircraft aircraft, Vector3 localTarget, AircraftAxes forcedAxes)
     {
+        AircraftAxes final = new AircraftAxes();
+
         float vertical = Mathf.Clamp(localTarget.y * 5f, -1f, 1f);
         float horizontal = Mathf.Clamp(localTarget.x * 5f, -1f, 1f);
 
-        float lerpFactor = aircraft.data.tas.Get / 20f;
+        if (aircraft.data.tas.Get < 0.2f)
+        {
+            final = new AircraftAxes(vertical, horizontal, -horizontal);
+            ApplyForcedAxis(ref final, forcedAxes);
+            return final;
+        }
 
-        AircraftAxes final = new AircraftAxes();
+        float lerpFactor = aircraft.data.tas.Get / 20f;
 
         final.pitch = Mathf.Lerp(vertical, controlsFound.pitch, lerpFactor);
         final.roll = Mathf.Lerp(horizontal, controlsFound.roll, lerpFactor);
-        final.yaw = Mathf.Lerp(-horizontal, controlsFound.yaw, lerpFactor);
+        final.yaw = Mathf.Lerp(0f, controlsFound.yaw, lerpFactor);
 
         ApplyForcedAxis(ref final, forcedAxes);
 
