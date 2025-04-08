@@ -22,7 +22,7 @@ public class FlightConditions
     public Vector3 Up => rotation * Vector3.up;
     public Vector3 Right => rotation * Vector3.right;
 
-    public float IAS => Mathf.Sqrt(velocity.sqrMagnitude * airDensity);
+    public float IAS => Mathf.Sqrt(velocity.sqrMagnitude * airDensity * Aerodynamics.invertSeaLvlDensity);
 
     private float massInvert;
     private Matrix4x4 tensorInvert;
@@ -111,6 +111,8 @@ public class FlightConditions
     {
         axes = complex.aircraft.inputs.SimulateControls(IAS, axes, target, dt);
     }
+
+    Vector3 previousAngularAcceleration;
     public void ApplyForces(ResultingForce force, bool applyGravity, float dt)
     {
         if (applyGravity) velocity += Physics.gravity * dt;
@@ -121,12 +123,15 @@ public class FlightConditions
         velocity += dt * massInvert * force.force;
         position += 0.5f * dt * (previousVel + velocity);
 
-
         Vector3 angularAcceleration = tensorInvert.MultiplyVector(force.torque);
         angularVelocity += angularAcceleration * dt;
 
         Vector3 averageAngularVelocity = 0.5f * (previousAngularVel + angularVelocity);
-        rotation = Quaternion.Euler(averageAngularVelocity * Mathf.Rad2Deg * dt) * rotation;
+
+        float angleInRadians = averageAngularVelocity.magnitude * dt;
+        Quaternion deltaRotation = Quaternion.AngleAxis(angleInRadians * Mathf.Rad2Deg, averageAngularVelocity);
+        rotation = deltaRotation * rotation;
+        rotation.Normalize();
     }
 
     public void ApplyForces(float dt)

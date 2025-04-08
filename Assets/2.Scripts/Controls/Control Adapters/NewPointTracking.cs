@@ -6,53 +6,59 @@ using UnityEngine.SocialPlatforms.Impl;
 public static partial class NewPointTracking
 {
     const float rollYawAlpha = 30f;
+    private const float maxMultiplierValue = 64f;
+    private const int simSteps = 3;
+    private const int iterationsSteps = 4;
+
+    private static float SimDt = Time.fixedDeltaTime * 4f;
+    private static float SimTime => simSteps * SimDt;
     public static AircraftAxes FindOptimalControls(Vector3 targetDirection, SofAircraft aircraft, AircraftAxes forcedAxes)
     {
         targetDirection.Normalize();
         float offAngle = Vector3.Angle(aircraft.rb.velocity, targetDirection);
-        float offAngleFactor = offAngle / rollYawAlpha;
-        offAngleFactor *= offAngleFactor;
-        offAngleFactor = Mathf.Clamp01(0.01f + offAngleFactor);
+        float offAngleFactor = Mathf.Clamp01(offAngle / rollYawAlpha);
 
         float maxPitch = PitchCorrection.MaxPitchAbs(aircraft, Mathf.Sign(aircraft.inputs.current.pitch));
         if (!float.IsNaN(forcedAxes.pitch)) forcedAxes.pitch = Mathf.Clamp(forcedAxes.pitch, -maxPitch, maxPitch);
 
-        AircraftAxes controlsFound = aircraft.inputs.target;
-        ApplyForcedAxis(ref controlsFound, forcedAxes);
-
-        Vector2 multipliers = new(8f, 8f);
-        Vector2 abstractControls = new(controlsFound.roll / offAngleFactor, controlsFound.pitch);
-
+        AircraftAxes controlsFound = AircraftAxes.zero;
         Vector3 previousLocalTarget = aircraft.tr.InverseTransformDirection(targetDirection);
 
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < iterationsSteps; i++)
         {
-            abstractControls.ClampUnitSquare();
-            controlsFound = GetControls(abstractControls, maxPitch, offAngleFactor, aircraft);
+            controlsFound = GetControls(aircraft.ptAbstractControls, maxPitch, offAngleFactor, aircraft);
             ApplyForcedAxis(ref controlsFound, forcedAxes);
-
             controlsFound.Clamp(maxPitch);
-            FlightConditions simConditions = FullSimulation(aircraft, controlsFound, 3, Time.fixedDeltaTime * 4f * Mathf.Sqrt(aircraft.StickTorqueFactor));
+
+            FlightConditions simConditions = FullSimulation(aircraft, controlsFound, simSteps, SimDt);
 
             Vector3 localTarget = Quaternion.Inverse(simConditions.rotation) * targetDirection;
 
             bool verticalOvershoots = Mathf.Sign(previousLocalTarget.y * localTarget.y) == -1f;
             bool horizontalOvershoots = Mathf.Sign(previousLocalTarget.x * localTarget.x) == -1f;
-            multipliers.y *= verticalOvershoots ? 0.5f : 2f;
-            multipliers.x *= horizontalOvershoots ? 0.5f : 2f;
+            aircraft.ptMultipliers.y = Mathf.Clamp(aircraft.ptMultipliers.y * (verticalOvershoots ? 0.5f : 2f), 0f, maxMultiplierValue);
+            aircraft.ptMultipliers.x = Mathf.Clamp(aircraft.ptMultipliers.x * (horizontalOvershoots ? 0.5f : 2f), 0f, maxMultiplierValue);
 
-            //OPTIMIZATION 1 : STOP IF VALUES ARE MAXED
-            bool noOvershoots = !verticalOvershoots && !horizontalOvershoots;
-            bool maxValueTried = abstractControls.ManhattanMagnitude() >= 1.99f;
-            if (noOvershoots && maxValueTried) return InterpolateForGrounded(controlsFound, aircraft, localTarget, forcedAxes);
-
-            abstractControls.y += multipliers.y * localTarget.y;
-            abstractControls.x += multipliers.x * localTarget.x;
+            aircraft.ptAbstractControls.y += aircraft.ptMultipliers.y * localTarget.y;
+            aircraft.ptAbstractControls.x += aircraft.ptMultipliers.x * localTarget.x;
+            aircraft.ptAbstractControls.ClampUnitSquare();
 
             previousLocalTarget = localTarget;
         }
 
         return InterpolateForGrounded(controlsFound, aircraft, previousLocalTarget, forcedAxes);
+    }
+    private static AircraftAxes GetControls(Vector2 abstractControls, float maxPitch, float offAngleFactor, SofAircraft aircraft)
+    {
+        AircraftAxes controls;
+        controls.pitch = abstractControls.y * maxPitch;
+        controls.yaw = -abstractControls.x * (1f - offAngleFactor);
+
+        float aggressiveRoll = abstractControls.x;
+        float levelRoll = aircraft.tr.right.y * 0.2f;
+        controls.roll = Mathf.Lerp(levelRoll, aggressiveRoll, offAngleFactor);
+
+        return controls;
     }
     private static AircraftAxes InterpolateForGrounded(AircraftAxes controlsFound, SofAircraft aircraft, Vector3 localTarget, AircraftAxes forcedAxes)
     {
@@ -84,18 +90,7 @@ public static partial class NewPointTracking
         if (!float.IsNaN(forcedAxes.roll)) applyTo.roll = forcedAxes.roll;
         if (!float.IsNaN(forcedAxes.yaw)) applyTo.yaw = forcedAxes.yaw;
     }
-    private static AircraftAxes GetControls(Vector2 abstractControls, float maxPitch, float offAngleFactor, SofAircraft aircraft)
-    {
-        AircraftAxes controls;
-        controls.pitch = abstractControls.y * maxPitch;
-        controls.yaw = -abstractControls.x * (1f - offAngleFactor);
 
-        float aggressiveRoll = abstractControls.x;
-        float levelRoll = aircraft.tr.right.y * 0.2f;
-        controls.roll = Mathf.Lerp(levelRoll, aggressiveRoll, offAngleFactor);
-
-        return controls;
-    }
     public static FlightConditions FullSimulation(SofAircraft aircraft, AircraftAxes controlsToTry, int steps, float dt)
     {
         FlightConditions flightConditions = new FlightConditions(aircraft, true);
@@ -107,5 +102,16 @@ public static partial class NewPointTracking
         }
 
         return flightConditions;
+    }
+
+    public static bool ReachableControls(SofAircraft aircraft, AircraftAxes toReach, float timeDelta)
+    {
+        AircraftAxes end = aircraft.inputs.SimulateControls(aircraft.data.ias.Get, aircraft.inputs.current, toReach, timeDelta);
+
+        if (end.pitch - toReach.pitch == 0f) return true;
+        if (end.roll - toReach.roll == 0f) return true;
+        if (end.yaw - toReach.yaw == 0f) return true;
+
+        return false;
     }
 }

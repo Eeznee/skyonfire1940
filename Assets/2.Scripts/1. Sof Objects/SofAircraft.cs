@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public enum FlightPhase
 {
@@ -68,6 +69,8 @@ public class SofAircraft : SofComplex
     public float TimeSinceLastLanding => timeSinceLastLanding;
 
 
+    [NonSerialized] public Vector2 ptAbstractControls = Vector2.zero;
+    [NonSerialized] public Vector2 ptMultipliers = Vector2.one;
 
 
     public void ResetStationsToDefault()
@@ -90,6 +93,9 @@ public class SofAircraft : SofComplex
     }
     protected override void GameInitialization()
     {
+        ptAbstractControls = Vector2.zero;
+        ptMultipliers = Vector2.one;
+
         forcesCompiler = gameObject.AddComponent<ForcesCompiler>();
         if (!customPIDValues) SetDefaultPIDValues();
 

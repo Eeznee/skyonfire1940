@@ -37,6 +37,14 @@ public struct AircraftAxes
         final.yaw += b.yaw;
         return final;
     }
+    public static AircraftAxes operator -(AircraftAxes a, AircraftAxes b)
+    {
+        AircraftAxes final = a;
+        final.pitch -= b.pitch;
+        final.roll -= b.roll;
+        final.yaw -= b.yaw;
+        return final;
+    }
     public static bool operator ==(AircraftAxes a, AircraftAxes b)
     {
         return a.pitch == b.pitch && a.roll == b.roll && a.yaw == b.yaw;
@@ -65,6 +73,8 @@ public struct AircraftAxes
         return hash;
     }
     public static AircraftAxes zero { get { return new AircraftAxes(0f, 0f, 0f); } }
+
+    public float ManhattanMagnitude => Mathf.Abs(pitch) + Mathf.Abs(roll) + Mathf.Abs(yaw);
 
     public AircraftAxes(float _pitch, float _roll, float _yaw)
     {
