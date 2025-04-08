@@ -26,7 +26,7 @@ public class Pursuit : Maneuver
             float levelingFactor = Mathf.Clamp01(1f - data.offAngle / 90f);
             AircraftAxes axes = PointTracking.TrackingInputs(target, data.aircraft, data.target.data.bankAngle.Get, levelingFactor, true);
 
-            data.aircraft.inputs.SetTargetInput(axes, PitchCorrectionMode.FullyAssisted);
+            data.aircraft.controls.SetTargetInput(axes, PitchCorrectionMode.FullyAssisted);
         }
     }
 }

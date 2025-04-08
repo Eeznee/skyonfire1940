@@ -48,7 +48,7 @@ public class Lever : MonoBehaviour
                 input = controller.hydraulics.gear.stateInput;
                 break;
             case LeverInput.Brake:
-                input = controller.inputs.brake;
+                input = controller.controls.brake;
                 break;
         }
         trueInput = Mathf.MoveTowards(trueInput, input, speed * Time.deltaTime);

@@ -18,7 +18,7 @@ public static partial class NewPointTracking
         float offAngle = Vector3.Angle(aircraft.rb.velocity, targetDirection);
         float offAngleFactor = Mathf.Clamp01(offAngle / rollYawAlpha);
 
-        float maxPitch = PitchCorrection.MaxPitchAbs(aircraft, Mathf.Sign(aircraft.inputs.current.pitch));
+        float maxPitch = PitchCorrection.MaxPitchAbs(aircraft, Mathf.Sign(aircraft.controls.current.pitch));
         if (!float.IsNaN(forcedAxes.pitch)) forcedAxes.pitch = Mathf.Clamp(forcedAxes.pitch, -maxPitch, maxPitch);
 
         AircraftAxes controlsFound = AircraftAxes.zero;
@@ -106,12 +106,22 @@ public static partial class NewPointTracking
 
     public static bool ReachableControls(SofAircraft aircraft, AircraftAxes toReach, float timeDelta)
     {
-        AircraftAxes end = aircraft.inputs.SimulateControls(aircraft.data.ias.Get, aircraft.inputs.current, toReach, timeDelta);
+        AircraftAxes end = aircraft.controls.SimulateControls(aircraft.data.ias.Get, aircraft.controls.current, toReach, timeDelta);
 
         if (end.pitch - toReach.pitch == 0f) return true;
         if (end.roll - toReach.roll == 0f) return true;
         if (end.yaw - toReach.yaw == 0f) return true;
 
         return false;
+    }
+    static float TotalTimeToReachTarget(float angleOffTarget, float rollRate, float turnRate, Vector3 flattenedTarget, Vector3 transformUp)
+    {
+        float rollAmountToFace = Vector3.Angle(transformUp, flattenedTarget);
+
+        float timeToReachTarget = 0f;
+        timeToReachTarget += rollAmountToFace / rollRate * Mathf.Clamp01(angleOffTarget / 20f);
+        timeToReachTarget += angleOffTarget / turnRate;
+
+        return timeToReachTarget;
     }
 }

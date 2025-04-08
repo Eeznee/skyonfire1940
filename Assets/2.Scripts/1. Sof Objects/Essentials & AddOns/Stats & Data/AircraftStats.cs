@@ -31,8 +31,8 @@ public class AircraftStats
         {
 #if UNITY_EDITOR
             if (!Application.isPlaying) return aircraft.transform.localRotation.eulerAngles.x;
-            return aircraft.card.aircraft.transform.localRotation.eulerAngles.x;
 #endif
+            return aircraft.card.aircraft.transform.localRotation.eulerAngles.x;
         }
     } 
     public float TurningRadius => turningRadiusCoefficent * Mass;

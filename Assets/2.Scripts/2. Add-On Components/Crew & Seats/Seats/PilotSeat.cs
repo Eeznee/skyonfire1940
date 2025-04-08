@@ -51,7 +51,7 @@ public class PilotSeat : CrewSeat
     }
     const float maxAngleInvert = 1f / 45f;
 
-    public override Vector3 ZoomedHeadPosition => Vector3.Lerp(defaultPOV.position, zoomedPOV.position, 1f - Vector3.Angle(SofCamera.tr.forward,aircraft.tr.forward) * maxAngleInvert);
+    public override Vector3 ZoomedHeadPosition => Vector3.Lerp(defaultPOV.position, zoomedPOV.position, 1f - Vector3.Angle(SofCamera.tr.forward, aircraft.tr.forward) * maxAngleInvert);
     public override Vector3 CrosshairPosition => zoomedPOV.position + aircraft.tr.forward * (aircraft ? aircraft.Convergence : 300f);
 
     const float throttleIncrement = 0.0002f;
@@ -63,9 +63,13 @@ public class PilotSeat : CrewSeat
         if (pilot.FirePrimaries.ReadValue<float>() > 0.1f) aircraft.armament.FirePrimaries();
         if (pilot.FireSecondaries.ReadValue<float>() > 0.7f) aircraft.armament.FireSecondaries();
         aircraft.hydraulics.SetFlaps(Mathf.RoundToInt(pilot.Flaps.ReadValue<float>()));
-        aircraft.inputs.brake = pilot.Brake.ReadValue<float>();
+        aircraft.controls.brake = pilot.Brake.ReadValue<float>();
+
 #if MOBILE_INPUT
-        aircraft.boost = pilot.Boost.ReadValue<float>() > 0.5f;
+        if (pilot.Boost.ReadValue<float>() > 0.5f)
+            aircraft.engines.SetThrottleAllEngines(1.1f, true);
+        else
+            aircraft.engines.SetThrottleAllEngines(pilot.Throttle.ReadValue<float>(), false);
 #else
         float scrollValue = PlayerActions.general.Scroll.ReadValue<float>();
         if (scrollValue != 0f)
@@ -113,7 +117,7 @@ public class PilotSeat : CrewSeat
 
             axes = NewPointTracking.FindOptimalControls(SofCamera.directionInput, aircraft, forcedAxes);
 
-            aircraft.inputs.SetTargetInput(axes, PitchCorrectionMode.Raw);
+            aircraft.controls.SetTargetInput(axes, PitchCorrectionMode.Raw);
         }
         else //Direct input, joystick, phone
         {
@@ -121,7 +125,7 @@ public class PilotSeat : CrewSeat
             if (PlayerPrefs.GetInt("InvertPitch", 0) == 1) axes.pitch = -axes.pitch;
             axes.roll = actions.Roll.ReadValue<float>();
             axes.yaw = -actions.Rudder.ReadValue<float>();
-            aircraft.inputs.SetTargetInput(axes, ControlsManager.pitchCorrectionMode);
+            aircraft.controls.SetTargetInput(axes, ControlsManager.pitchCorrectionMode);
         }
     }
     public override string Action
@@ -162,18 +166,18 @@ public class PilotSeat : CrewSeat
     {
         //Post Maneuver
         float limitThrottle = Mathf.InverseLerp(aircraft.SpeedLimitMps * 0.9f, aircraft.SpeedLimitMps * 0.7f, data.ias.Get);
-        float throttle = Mathf.Min(aircraft.engines.Throttle,limitThrottle);
+        float throttle = Mathf.Min(aircraft.engines.Throttle, limitThrottle);
         if (throttle >= 1f && difficulty > 0.9f) throttle = 1.1f;
         aircraft.engines.SetThrottleAllEngines(throttle, false);
 
         if (maneuver == null || !maneuver.MaxPitch())
         {
-            float pitch = aircraft.inputs.current.pitch;
+            float pitch = aircraft.controls.current.pitch;
 
             pitch = Mathf.Min(pitch, Mathf.Lerp(0.7f, 1f, difficulty));
             pitch *= crew.forcesEffect.Stamina();
 
-            aircraft.inputs.current.pitch = pitch;
+            aircraft.controls.current.pitch = pitch;
         }
     }
     private void Shooting(AI.GeometricData bfmData)
@@ -230,7 +234,7 @@ public class PilotSeat : CrewSeat
         base.AiFixed(crew);
         if (target && !aircraft.card.bomber) //DOGFIGHT TIME !
         {
-            AI.GeometricData bfmData = new (aircraft, target);
+            AI.GeometricData bfmData = new(aircraft, target);
             state = bfmData.state.ToString();
 
             Maneuver(bfmData);

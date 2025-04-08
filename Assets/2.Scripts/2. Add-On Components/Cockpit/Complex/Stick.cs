@@ -19,9 +19,9 @@ public class Stick : CockpitInteractable
         axes.pitch = Mathf.Clamp(-pitchAngle / maxPitch, -1f, 1f);
         axes.roll = Mathf.Clamp(-rollAngle / maxRoll, -1f, 1f);
         axes.yaw = -SofVrRig.instance.Stick(xrGrab).x;
-        aircraft.inputs.SetTargetInput(axes, PitchCorrectionMode.Clamped);
+        aircraft.controls.SetTargetInput(axes, PitchCorrectionMode.Clamped);
 
-        aircraft.inputs.brake = SofVrRig.instance.Stick(xrGrab).y;
+        aircraft.controls.brake = SofVrRig.instance.Stick(xrGrab).y;
 
         bool secondaryFire = SofVrRig.instance.Trigger(xrGrab) > 0.9f || SofVrRig.instance.PrimaryButton(xrGrab);
         bool primaryFire = SofVrRig.instance.Trigger(xrGrab) > 0.1f;
@@ -32,8 +32,8 @@ public class Stick : CockpitInteractable
     {
         CockpitInteractableUpdate();
         if (!aircraft) return;
-        pitch.localRotation = Quaternion.AngleAxis(-aircraft.inputs.current.pitch * maxPitch, pitchAxis);
-        roll.localRotation = Quaternion.AngleAxis(-aircraft.inputs.current.roll * maxRoll, rollAxis);
+        pitch.localRotation = Quaternion.AngleAxis(-aircraft.controls.current.pitch * maxPitch, pitchAxis);
+        roll.localRotation = Quaternion.AngleAxis(-aircraft.controls.current.roll * maxRoll, rollAxis);
     }
 }
 

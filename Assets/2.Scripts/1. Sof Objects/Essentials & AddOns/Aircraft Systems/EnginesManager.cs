@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+[System.Serializable]
 public class EnginesManager
 {
     private SofAircraft aircraft;
@@ -25,6 +27,11 @@ public class EnginesManager
         AllJetEngines = aircraft.GetComponentsInChildren<JetEngine>();
         Propellers = aircraft.GetComponentsInChildren<Propeller>();
 
+        aircraft.OnInitialize += OnInitialize;
+    }
+
+    private void OnInitialize()
+    {
         SetThrottleAllEngines(aircraft.GroundedStart ? 0f : 1f, false);
         SetEngines(!aircraft.GroundedStart, true);
     }

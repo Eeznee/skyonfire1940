@@ -29,13 +29,13 @@ public class Pedal : SofComponent
     {
         if (aircraft.lod.LOD() != 0) return;
 
-        if (currentYawInput == controller.inputs.current.yaw) return;
-        currentYawInput = controller.inputs.current.yaw;
+        if (currentYawInput == controller.controls.current.yaw) return;
+        currentYawInput = controller.controls.current.yaw;
 
         if (offset)
         {
             transform.localPosition = originalPos;
-            transform.localPosition += Vector3.forward * maxOffset * controller.inputs.current.yaw;
+            transform.localPosition += Vector3.forward * maxOffset * controller.controls.current.yaw;
         }
         if (rotation)
         {

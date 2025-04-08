@@ -24,12 +24,12 @@ public class PitchCorrection
 
         ResultingForce resultingGradient = ElevatorsGradient(fc, targetAoA);
         float gradientPitchTorque = Vector3.Dot(resultingGradient.torque, aircraft.tr.right);
-        if (gradientPitchTorque == 0f) return aircraft.inputs.current.pitch;
+        if (gradientPitchTorque == 0f) return aircraft.controls.current.pitch;
 
         //Using elevator potential force and simulated forces, find the elevator adjustment needed to maintain target aoa
         float elevatorAdjustment = pitchTorque / gradientPitchTorque;
 
-        return aircraft.inputs.current.pitch + elevatorAdjustment;
+        return aircraft.controls.current.pitch + elevatorAdjustment;
     }
 
     public static float MaxPitchAbs(SofAircraft aircraft, float pitchSign)
@@ -68,7 +68,7 @@ public class PitchCorrection
         float aoaLimit = Mathf.Abs(AoALimitSigned(aircraft, targetAoA));
         Vector3 angVelocity = aircraft.tr.right * maxTurnRate * targetAoA / aoaLimit;
 
-        FlightConditions fc = new (aircraft, simVelocity, angVelocity, aircraft.inputs.current);
+        FlightConditions fc = new (aircraft, simVelocity, angVelocity, aircraft.controls.current);
 
         return fc;
     }

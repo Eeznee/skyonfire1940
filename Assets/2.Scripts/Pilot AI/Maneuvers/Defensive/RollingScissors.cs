@@ -42,13 +42,13 @@ public class RollingScissors : ActiveManeuver
         {
             axes = PointTracking.TrackingInputs(transform.position + transform.forward * 500f, aircraft, angle, 1f, true);
             if (Mathf.Abs(aircraft.data.bankAngle.Get - angle) < 10f) axes.pitch = 1f;
-            aircraft.inputs.SetTargetInput(axes, PitchCorrectionMode.FullyAssisted);
+            aircraft.controls.SetTargetInput(axes, PitchCorrectionMode.FullyAssisted);
             if (Vector3.Dot(initialDirection, transform.forward) < 0.3f) phase++;
         }
         else if (phase == 1) //Climb Hard
         {
             axes = PointTracking.TrackingInputs(target.transform.position + Vector3.up * 500f, aircraft, 0f, 0f, true);
-            aircraft.inputs.SetTargetInput(axes, PitchCorrectionMode.FullyAssisted);
+            aircraft.controls.SetTargetInput(axes, PitchCorrectionMode.FullyAssisted);
             if (transform.forward.y > 0.8f) phase++;
         }
         else //Rolling scissors

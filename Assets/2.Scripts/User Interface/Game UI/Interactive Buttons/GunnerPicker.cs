@@ -15,7 +15,7 @@ public class GunnerPicker : DynamicUI
         if (!Player.sofObj) return;
 
         RectTransform rectTransform = GetComponent<RectTransform>();
-        int gunners = Player.sofObj.complex.crew.Length - 1;
+        int gunners = Player.complex.crew.Length - 1;
         for (int i = 0; i < gunnerButtons.Length; i++)
         {
             Vector2 anchored;

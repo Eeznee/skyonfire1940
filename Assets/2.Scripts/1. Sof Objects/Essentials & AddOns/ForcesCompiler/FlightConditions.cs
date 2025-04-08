@@ -80,7 +80,7 @@ public class FlightConditions
         velocity = complex.rb.velocity;
         angularVelocity = complex.rb.angularVelocity;
 
-        if (complex.aircraft) axes = complex.aircraft.inputs.current;
+        if (complex.aircraft) axes = complex.aircraft.controls.current;
         else axes = new AircraftAxes(0f, 0f, 0f);
 
         airDensity = complex.data.density.Get;
@@ -109,7 +109,7 @@ public class FlightConditions
     }
     public void SimulateControls(AircraftAxes target, float dt)
     {
-        axes = complex.aircraft.inputs.SimulateControls(IAS, axes, target, dt);
+        axes = complex.aircraft.controls.SimulateControls(IAS, axes, target, dt);
     }
 
     Vector3 previousAngularAcceleration;

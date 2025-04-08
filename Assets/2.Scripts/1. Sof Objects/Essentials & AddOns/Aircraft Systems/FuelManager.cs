@@ -2,14 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class FuelManager
 {   
     public List<Pack> packs;
     public float fullThrottleCons;
 
-    private int currentPack;
 
     private SofComplex complex;
+    private List<LiquidTank> fuelTanks;
+    private int currentPack;
 
     public bool Empty { get; private set; }
     public float TotalCapacity { get; private set; }
@@ -30,7 +32,7 @@ public class FuelManager
     {
         complex = _complex;
         TotalCapacity = 0f;
-        List<LiquidTank> fuelTanks = new List<LiquidTank>();
+        fuelTanks = new List<LiquidTank>();
         foreach (LiquidTank liquidTank in complex.GetComponentsInChildren<LiquidTank>())
         {
             if (liquidTank.liquid && liquidTank.liquid.type == LiquidType.Fuel)
@@ -42,6 +44,11 @@ public class FuelManager
 
         fuelTanks.Sort(SortByPosition);
 
+        complex.OnInitialize += OnInitialize;
+    }
+
+    private void OnInitialize()
+    {
         packs = new List<Pack>();
 
         while (fuelTanks.Count > 0)
@@ -58,7 +65,7 @@ public class FuelManager
 
         if (!complex.aircraft) return;
 
-        foreach(Engine engine in complex.aircraft.engines.AllEngines)
+        foreach (Engine engine in complex.aircraft.engines.AllEngines)
         {
             if (engine.Preset == null) continue;
 

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class ArmamentManager
 {
     private SofAircraft aircraft;
@@ -26,8 +27,14 @@ public class ArmamentManager
         bombs = Station.GetOrdnances<BombsLoad>(aircraft.Stations);
         torpedoes = Station.GetOrdnances<TorpedosLoad>(aircraft.Stations);
 
+        aircraft.OnInitialize += OnInitialize;
+    }
+
+    void OnInitialize()
+    {
         ConvergeGuns(aircraft.Convergence);
     }
+
     public void CheatPointGuns(Vector3 worldPoint, float cheatFactor)
     {
         foreach (Gun gun in guns)

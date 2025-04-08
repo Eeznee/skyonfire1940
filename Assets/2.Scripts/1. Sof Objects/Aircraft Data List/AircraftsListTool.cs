@@ -23,6 +23,7 @@ public class AircraftsListTool : MonoBehaviour
     {
 
     }
+}
 #if UNITY_EDITOR
     [CustomEditor(typeof(AircraftsListTool))]
 public class AircraftsListToolEditor : Editor
@@ -60,6 +61,5 @@ public class AircraftsListToolEditor : Editor
         }
         serializedObject.ApplyModifiedProperties();
     }
-}
 }
 #endif

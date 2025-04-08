@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor.ShaderGraph.Internal;
 using System;
 
 #if UNITY_EDITOR
@@ -35,7 +34,7 @@ public abstract class ControlSurface : Subsurface
     public virtual bool SymmetricalDeflections => false;
 
     public float CurrentControlAngle => ControlAngle(CurrentControl);
-    protected float CurrentControl => aircraft ?  ExtractControl(aircraft.inputs.current) : 0f;
+    protected float CurrentControl => aircraft ?  ExtractControl(aircraft.controls.current) : 0f;
     public abstract float ExtractControl(AircraftAxes axes);
     public virtual float ControlsResistance(AircraftAxes axes)
     {

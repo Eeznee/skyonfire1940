@@ -37,7 +37,7 @@ public class SteeringAxis : SofComponent
     private void PedalsSteeringFixedUpdate()
     {
         float invertAngle = Mathf.Sign(-localPos.z);
-        steerAngle = aircraft ? aircraft.inputs.current.yaw * maxSteerAngle : 0f;
+        steerAngle = aircraft ? aircraft.controls.current.yaw * maxSteerAngle : 0f;
         transform.localRotation = Quaternion.AngleAxis(steerAngle * invertAngle, axis);
     }
 

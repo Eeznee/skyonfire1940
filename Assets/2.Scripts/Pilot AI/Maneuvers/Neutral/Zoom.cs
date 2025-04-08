@@ -31,7 +31,7 @@ public class Zoom : ActiveManeuver
         AircraftAxes axes;
 
         axes = PointTracking.TrackingInputs(transform.position + targetDirection, aircraft, 0f, 1f, true);
-        aircraft.inputs.SetTargetInput(axes, PitchCorrectionMode.FullyAssisted);
+        aircraft.controls.SetTargetInput(axes, PitchCorrectionMode.FullyAssisted);
         if (aircraft.data.ias.Get < aircraft.cruiseSpeed * 0.7f ||data.distance > safeDistance) done = true;
     }
 }

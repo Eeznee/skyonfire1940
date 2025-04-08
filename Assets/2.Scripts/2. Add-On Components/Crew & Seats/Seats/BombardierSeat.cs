@@ -39,7 +39,7 @@ public class BombardierSeat : CrewSeat
     public override void PlayerFixed(CrewMember crew)
     {
         base.PlayerFixed(crew);
-        aircraft.inputs.target.yaw = -PlayerActions.bomber.Rudder.ReadValue<float>() * maxYawInput;
+        aircraft.controls.target.yaw = -PlayerActions.bomber.Rudder.ReadValue<float>() * maxYawInput;
     }
     public override void AiUpdate(CrewMember crew)
     {

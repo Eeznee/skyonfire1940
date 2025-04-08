@@ -35,6 +35,7 @@ public class SofComplex : SofObject
 
     public Action OnAttachPlayer;
     public Action OnDetachPlayer;
+    public Action OnInitialize;
 
     public override void SetReferences()
     {
@@ -74,6 +75,8 @@ public class SofComplex : SofObject
             OnAttachPlayer?.Invoke();
             Player.crew.OnAttachPlayer?.Invoke();
         }
+
+        OnInitialize?.Invoke();
     }
 
     protected virtual void InitializeSofComponents()

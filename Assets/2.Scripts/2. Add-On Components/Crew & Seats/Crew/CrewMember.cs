@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
-using UnityEditor.SceneManagement;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -21,13 +20,19 @@ public class CrewMember : SofModule, IMassComponent
 
     public List<CrewSeat> seats;
 
-
     private CrewSeat seat;
     public CrewSeat Seat
     {
+#if UNITY_EDITOR
         get { return Application.isPlaying ? seat : editorTestSeat; }
+#else
+        get { return seat; }
+#endif
         protected set { seat = value; }
     }
+#if UNITY_EDITOR
+    public int seatIdTest = 0;
+
     public CrewSeat editorTestSeat
     {
         get
@@ -37,6 +42,7 @@ public class CrewMember : SofModule, IMassComponent
             return seats[id];
         }
     }
+#endif
     public bool IsPilot
     {
         get
@@ -194,15 +200,4 @@ public class CrewMember : SofModule, IMassComponent
         collider.radius = capsuleRadius;
         collider.center = new Vector3(0f, capsuleCenter, 0f);
     }
-
-#if UNITY_EDITOR
-    public int seatIdTest = 0;
-#endif
-
-#if UNITY_EDITOR
-    void OnValidate()
-    {
-
-    }
-#endif
 }

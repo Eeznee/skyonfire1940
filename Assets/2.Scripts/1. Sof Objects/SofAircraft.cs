@@ -44,17 +44,21 @@ public class SofAircraft : SofComplex
     public Game.Squadron squadron;
     public int placeInSquad;
 
-    public AircraftInputs inputs;
+
 
     public PilotSeat mainSeat { get; private set; }
     public BombardierSeat bombardierSeat { get; private set; }
     public Bombsight bombSight { get; private set; }
     public Animator animator { get; private set; }
     public AircraftStats stats { get; private set; }
-    public HydraulicsManager hydraulics { get; private set; }
-    public FuelManager fuel { get; private set; }
-    public ArmamentManager armament { get; private set; }
-    public EnginesManager engines { get; private set; }
+
+
+    //Subsystems
+    public AircraftInputs controls;
+    public HydraulicsManager hydraulics;
+    public FuelManager fuel;
+    public ArmamentManager armament;
+    public EnginesManager engines;
     public ForcesCompiler forcesCompiler { get; private set; }
 
     public float cruiseSpeed => stats.altitudeZeroMaxSpeed;
@@ -90,6 +94,12 @@ public class SofAircraft : SofComplex
         base.SetReferences();
 
         stats = new AircraftStats(this);
+
+        hydraulics = new HydraulicsManager(this);
+        armament = new ArmamentManager(this);
+        engines = new EnginesManager(this);
+        fuel = new FuelManager(this);
+        controls = new AircraftInputs(this);
     }
     protected override void GameInitialization()
     {
@@ -109,21 +119,11 @@ public class SofAircraft : SofComplex
 
         if (!GroundedStart) rb.velocity = transform.forward * stats.MaxSpeed(data.altitude.Get, 1f);
         timeSinceLastLanding = GroundedStart ? 0f : 600f;
-
-        CreateManagers();
     }
     private void AddEssentialComponents()
     {
         lod = this.GetCreateComponentInChildren<ObjectLOD>();
         if (!simpleDamage) bubble = transform.CreateChild("Object Bubble").gameObject.AddComponent<ObjectBubble>();
-    }
-    private void CreateManagers()
-    {
-        hydraulics = new HydraulicsManager(this);
-        armament = new ArmamentManager(this);
-        engines = new EnginesManager(this);
-        fuel = new FuelManager(this);
-        inputs = new AircraftInputs(this);
     }
     private void InitializeMarkersAndGameReferences()
     {
@@ -161,7 +161,7 @@ public class SofAircraft : SofComplex
         if (landed) timeSinceLastLanding = 0f;
         else timeSinceLastLanding += Time.fixedDeltaTime;
 
-        inputs.FixedUpdate();
+        controls.FixedUpdate();
         forcesCompiler.ApplyForcesOnFixedUpdate();
     }
     public void SetDefaultPIDValues()

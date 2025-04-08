@@ -34,7 +34,7 @@ public class Disengage : ActiveManeuver
         AircraftAxes axes;
 
         axes = PointTracking.TrackingInputs(transform.position + targetDirection, aircraft, 0f, 1f, true);
-        aircraft.inputs.SetTargetInput(axes, PitchCorrectionMode.FullyAssisted);
+        aircraft.controls.SetTargetInput(axes, PitchCorrectionMode.FullyAssisted);
         if (data.distance > maxDistance || aircraft.data.ias.Get > aircraft.cruiseSpeed * maxSpeedFactor) done = true;
     }
 }

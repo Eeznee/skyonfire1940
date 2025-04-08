@@ -56,11 +56,11 @@ public class Wheel : SofModule, IMassComponent
         bool parkingBrakes = data.gsp.Get < 2f && (!aircraft.engines.AtLeastOneEngineOn || aircraft.engines.Throttle < 0.05f);
         if (parkingBrakes) return 1f;
 
-        float value = aircraft.inputs.brake;
+        float value = aircraft.controls.brake;
 
         if (brakes == BrakeSystem.Differential)
         {
-            float differentialBrakes = -Mathf.Sign(localPos.x) * aircraft.inputs.target.yaw;
+            float differentialBrakes = -Mathf.Sign(localPos.x) * aircraft.controls.target.yaw;
             value = Mathf.Max(value, differentialBrakes);
         }
 

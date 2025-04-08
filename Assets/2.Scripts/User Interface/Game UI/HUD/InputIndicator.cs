@@ -17,7 +17,7 @@ public class InputIndicator : MonoBehaviour
     }
     private Vector2 Input(bool corrected)
     {
-        AircraftAxes axis = corrected ? Player.aircraft.inputs.current : Player.aircraft.inputs.rawUncorrected;
+        AircraftAxes axis = corrected ? Player.aircraft.controls.current : Player.aircraft.controls.rawUncorrected;
         return new Vector2(axis.roll,-axis.pitch);
     }
     private void Update()
@@ -27,6 +27,6 @@ public class InputIndicator : MonoBehaviour
 
         corrected.anchoredPosition = Input(true) * width * 0.5f;
         raw.anchoredPosition = Input(false) * width * 0.5f;
-        yaw.anchoredPosition = new Vector2(-Player.aircraft.inputs.current.yaw, 0f) * width * 0.5f;
+        yaw.anchoredPosition = new Vector2(-Player.aircraft.controls.current.yaw, 0f) * width * 0.5f;
     }
 }
