@@ -23,9 +23,6 @@ public class SofShip : SofComplex
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.O)) rollVelocity += 15f;
-
-
         float springForce = -rollAngle * rollSpring;
         float damperForce = -rollVelocity * rollDamper;
 

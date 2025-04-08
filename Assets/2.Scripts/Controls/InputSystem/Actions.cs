@@ -2848,6 +2848,17 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""isOR"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Tilt"",
+            ""bindingGroup"": ""Tilt"",
+            ""devices"": [
+                {
+                    ""devicePath"": ""<Accelerometer>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
         }
     ]
 }");
@@ -3906,6 +3917,15 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         {
             if (m_SofDeviceSchemeIndex == -1) m_SofDeviceSchemeIndex = asset.FindControlSchemeIndex("SofDevice");
             return asset.controlSchemes[m_SofDeviceSchemeIndex];
+        }
+    }
+    private int m_TiltSchemeIndex = -1;
+    public InputControlScheme TiltScheme
+    {
+        get
+        {
+            if (m_TiltSchemeIndex == -1) m_TiltSchemeIndex = asset.FindControlSchemeIndex("Tilt");
+            return asset.controlSchemes[m_TiltSchemeIndex];
         }
     }
     public interface IGeneralActions

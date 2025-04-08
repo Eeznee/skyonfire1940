@@ -44,8 +44,8 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        Application.targetFrameRate = PlayerPrefs.GetInt("TargetFrameRate", 60);
-        Application.targetFrameRate = -1;
+        //Application.targetFrameRate = PlayerPrefs.GetInt("TargetFrameRate", 60);
+        Application.targetFrameRate = 120;
         QualitySettings.SetQualityLevel(PlayerPrefs.GetInt("Quality", QualitySettings.GetQualityLevel()));
         float renderScale = PlayerPrefs.GetFloat("RenderScale", 100f) / 100f;
         ((UniversalRenderPipelineAsset)QualitySettings.renderPipeline).renderScale = renderScale;

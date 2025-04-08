@@ -29,7 +29,7 @@ public class MenuManager : MonoBehaviour
 
     public void Awake()
     {
-        Application.targetFrameRate = PlayerPrefs.GetInt("TargetFrameRate",60);
+        //Application.targetFrameRate = PlayerPrefs.GetInt("TargetFrameRate",60);
         QualitySettings.SetQualityLevel(PlayerPrefs.GetInt("Quality", QualitySettings.GetQualityLevel()));
         fullElevator = PlayerPrefs.GetInt("FullElevatorControl", 0) == 1;
 

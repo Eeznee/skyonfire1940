@@ -11,7 +11,7 @@ namespace UnityEngine.InputSystem.OnScreen
 {
     public class TiltInput : OnScreenControl
     {
-        [InputControl(layout = "Vector2")] [SerializeField] private string m_ControlPath;
+        [InputControl(layout = "Vector2")][SerializeField] private string m_ControlPath;
 
         private float pitchSens = 1f;
         private float rollSens = 1f;
@@ -29,17 +29,36 @@ namespace UnityEngine.InputSystem.OnScreen
 
         private void AddInput()
         {
-            for(int i = rawInputs.Length -1; i > 0; i--)
+            for (int i = rawInputs.Length - 1; i > 0; i--)
             {
                 rawInputs[i] = rawInputs[i - 1];
             }
-            rawInputs[0] = Input.acceleration;
+            rawInputs[0] = AccelerometerInput;
         }
+        public Vector3 AccelerometerInput => Accelerometer.current == null ? Vector3.down : Accelerometer.current.acceleration.ReadValue();
         private Vector3 AverageInput()
         {
             Vector3 sum = Vector3.zero;
             foreach (Vector3 vec in rawInputs) sum += vec;
             return sum / averageAmount;
+        }
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+
+            if (Accelerometer.current != null)
+            {
+                InputSystem.EnableDevice(Accelerometer.current);
+            }
+
+        }
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            if (Accelerometer.current != null)
+            {
+                InputSystem.DisableDevice(Accelerometer.current);
+            }
         }
         private void Start()
         {
@@ -69,7 +88,7 @@ namespace UnityEngine.InputSystem.OnScreen
         private Vector2 GetTilt(float smoothing)
         {
             Vector2 tilt = Vector2.zero;
-            Vector3 input = Vector3.Lerp(Input.acceleration,AverageInput(), smoothing);
+            Vector3 input = Vector3.Lerp(AccelerometerInput, AverageInput(), smoothing);
             if (input != Vector3.zero)
             {
                 tilt.x = Mathf.Atan2(input.x, new Vector2(input.z, input.y).magnitude) * Mathf.Rad2Deg;
