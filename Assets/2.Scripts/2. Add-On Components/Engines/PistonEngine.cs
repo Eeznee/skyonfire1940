@@ -19,7 +19,7 @@ public class PistonEngine : Engine
     public float BrakePower { get; private set; }
     public float BrakeTorque { get; private set; }
 
-    public override bool BoostIsEffective => pistonPreset.BoostIsEffective(RunMode,data.altitude.Get);
+    public override bool BoostIsEffective => Working && pistonPreset.BoostIsEffective(RunMode,data.altitude.Get);
 
     public PistonEnginePreset PistonPreset => pistonPreset;
     public override EngineClass Class => EngineClass.PistonEngine;

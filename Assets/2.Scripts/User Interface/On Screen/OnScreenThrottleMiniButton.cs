@@ -23,9 +23,9 @@ namespace UnityEngine.InputSystem.OnScreen
         private void Start()
         {
             throttle = GetComponent<OnScreenThrottle>();
-           
+            throttle.OnControlValueSent += UpdateControls;
         }
-        void LateUpdate()
+        void UpdateControls()
         {
             bool auxiliaryValue = type == Type.Min ? throttle.minButtonActive : throttle.maxButtonActive;
             SendValueToControl(auxiliaryValue ? 1f : 0f);

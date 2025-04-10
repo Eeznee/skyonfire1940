@@ -31,6 +31,8 @@ namespace UnityEngine.InputSystem.OnScreen
 
         [NonSerialized] public bool dragged;
 
+        public Action OnControlValueSent;
+
         protected override string controlPathInternal
         {
             get => m_ControlPath;
@@ -39,7 +41,7 @@ namespace UnityEngine.InputSystem.OnScreen
         public void OnDrag(PointerEventData eventData)
         {
             dragged = true;
-
+            //Debug.Log(slider.value);
             UpdateSliderAndSendValue();
         }
         public void OnPointerUp(PointerEventData eventData)
@@ -50,23 +52,27 @@ namespace UnityEngine.InputSystem.OnScreen
         }
         private void UpdateSliderAndSendValue()
         {
-            minButtonActive = slider.value == slider.minValue;
-            maxButtonActive = slider.value == slider.maxValue;
-
+            minButtonActive = slider.value < (minButtonThreshold + slider.minValue) * 0.5f;
+            maxButtonActive = slider.value > (maxButtonThreshold + slider.maxValue) * 0.5f;
             if (!minButtonActive && !maxButtonActive)
             {
                 slider.value = Mathf.Clamp(slider.value, minButtonThreshold, maxButtonThreshold);
                 float valueToSend = Mathf.InverseLerp(minButtonThreshold, maxButtonThreshold, slider.value);
                 SendValueToControl(valueToSend);
             }
-            else 
+            else
+            {
+                slider.value = maxButtonActive ? slider.maxValue : slider.minValue;
                 SendValueToControl(slider.value);
+            }
+
+
+            OnControlValueSent?.Invoke();
         }
         private void Start()
         {
             dragged = false;
             slider = GetComponent<Slider>();
-            //ForceSliderValue(Player.aircraft.engines.Throttle);
         }
 
         void Update()

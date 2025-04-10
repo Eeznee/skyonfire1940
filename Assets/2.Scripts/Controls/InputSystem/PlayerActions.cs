@@ -57,6 +57,7 @@ public class PlayerActions : MonoBehaviour
         pilot.Rocket.performed += _ => Action("Rocket");
         pilot.Throttle.performed += val => SetThrottle(val.ReadValue<float>());
         pilot.Boost.performed += val => SetThrottle(1.1f);
+        pilot.Boost.canceled += val => SetThrottle(pilot.Throttle.ReadValue<float>());
         pilot.Dynamic.performed += _ => dynamic = !dynamic;
 
         bombardier.BombBay.performed += _ => Action("BombBay");

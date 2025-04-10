@@ -82,8 +82,7 @@ public class SofAudioListener : MonoBehaviour
     IEnumerator FadeVolumeIn()
     {
         float volume = -40f;
-        float finalVolume = 0f;
-        //mixer.GetFloat("MasterVolume", out finalVolume);
+        mixer.GetFloat("MasterVolume", out float finalVolume);
 
         while (volume < finalVolume)
         {

@@ -70,7 +70,7 @@ public class IndicatorsList : MonoBehaviour
             {
                 finalText += takeOffBoost ? "T/O " : "WEP ";
 
-                if (!effectiveBoosting) finalText += "(TOO HIGH)";
+                if (!effectiveBoosting && aircraft.engines.AtLeastOneEngineOn) finalText += "(NO EFFECT)";
                 else if (lowestRemainingBoost <= 0f) finalText += "(DANGER)";
                 else finalText += "(" + SecondsToMinuted(lowestRemainingBoost) + ")";
             }
