@@ -23,12 +23,12 @@ public class ButtonInteractable : AnalogInteractable
     protected override void Animate(bool animInput)
     {
         if (!spring) base.Animate(animInput);
-        else base.Animate(xrGrab && xrGrab.isSelected ? animInput : false);
+        //else base.Animate(xrGrab && xrGrab.isSelected ? animInput : false);
     }
     protected override void Animate(float animInput)
     {
         if (!spring) base.Animate(animInput);
-        else base.Animate(xrGrab && xrGrab.isSelected ? animInput : 0f);
+        //else base.Animate(xrGrab && xrGrab.isSelected ? animInput : 0f);
     }
     private void Update()
     {

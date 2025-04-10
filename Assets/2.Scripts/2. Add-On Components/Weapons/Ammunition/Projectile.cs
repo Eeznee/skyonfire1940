@@ -22,6 +22,7 @@ public class Projectile : MonoBehaviour
     private Vector3 initPos;
     private Vector3 initDir;
     private float initSpeed;
+    private float invertInitSpeed;
     private Collider ignoreCollider;
 
     public void Setup(ProjectileProperties _properties)
@@ -34,7 +35,7 @@ public class Projectile : MonoBehaviour
         dragCoeff = ProjectileDragCoeff(properties.diameter, properties.mass);
         ballisticChart = new ProjectileChart(properties.basePenetration, properties.baseVelocity, properties.diameter, properties.FireChance());
 
-        SetupCollider();
+        //SetupCollider();
     }
     public void StartFuze(float t) { detonationTime = Time.time + t * Random.Range(0.98f, 1.02f); }
 
@@ -51,7 +52,8 @@ public class Projectile : MonoBehaviour
     {
         ignoreCollider = ignore;
         initSpeed = _vel.magnitude;
-        initDir = tr.forward = _vel / initSpeed;
+        invertInitSpeed = 1f / initSpeed;
+        initDir = tr.forward = _vel * invertInitSpeed;
         initPos = tr.position - GameManager.refPos;
 
         initializedAtTime = Time.fixedTime;
@@ -61,7 +63,7 @@ public class Projectile : MonoBehaviour
 
         if (inert && fired) { inert.enabled = false; fired.enabled = true; }
 
-        box.enabled = true;
+        //box.enabled = true;
     }
     public Vector3 Pos(float t)
     {
@@ -71,11 +73,23 @@ public class Projectile : MonoBehaviour
     public Vector3 Vel(float t)
     {
         t -= initializedAtTime;
-        return initDir / (dragCoeff * t + 1f / initSpeed) + Physics.gravity * t;
+        return initDir / (dragCoeff * t + invertInitSpeed) + Physics.gravity * t;
     }
     private void FixedUpdate()
     {
-        tr.position = Pos(Time.fixedTime);
+        Vector3 nextPosition = Pos(Time.fixedTime);
+
+        int mask = LayerMask.GetMask("Bubble");
+        if (Physics.Raycast(tr.position, nextPosition - tr.position , out RaycastHit hit, initSpeed * Time.fixedDeltaTime, mask))
+        {
+            if (hit.collider != ignoreCollider)
+            {
+                CollideComplexBubble(hit.collider);
+            }
+        }
+
+        tr.position = nextPosition;
+
 
         if (tr.position.y < 0f) CollideWater();
         if (detonationTime != 0f && Time.time > detonationTime) Detonate(tr.position,null);
@@ -113,7 +127,7 @@ public class Projectile : MonoBehaviour
         bubble.EnableColliders(false);
         Vector3 relativeVelocity = Vel(Time.fixedTime);
         relativeVelocity -= obj.GetComponentInParent<Rigidbody>().velocity;
-        StartDamage(relativeVelocity,bubble.bubble.radius * 2f + box.size.z);
+        StartDamage(relativeVelocity,bubble.bubble.radius * 2f + Vel(Time.fixedTime).magnitude * Time.fixedDeltaTime);
     }
 
     public void StartDamage(Vector3 velocity, float range)

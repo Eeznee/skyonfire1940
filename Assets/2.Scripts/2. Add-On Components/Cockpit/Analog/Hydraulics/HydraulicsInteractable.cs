@@ -65,11 +65,13 @@ public class HydraulicsInteractable : AnalogInteractable
         //Twin
         if (type == HydraulicsInteractableType.Dual)
         {
+            /*
             if (opposite.xrGrab && opposite.xrGrab.isSelected)
             {
                 input = Mathf.Clamp(input, 0f, 1f - opposite.input);
                 SendToHydraulics();
             }
+            */
             base.Animate(hydraulics.state == hydraulics.stateInput ? 0f : hydraulics.stateInput);
         }
         else

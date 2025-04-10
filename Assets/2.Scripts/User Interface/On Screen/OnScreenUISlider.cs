@@ -3,6 +3,8 @@ using UnityEngine.Serialization;
 using UnityEngine.InputSystem.Layouts;
 using UnityEngine.UI;
 using UnityEngine.InputSystem.OnScreen;
+using System;
+
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -13,19 +15,13 @@ namespace UnityEngine.InputSystem.OnScreen
     [RequireComponent(typeof(Slider))]
     public class OnScreenUISlider : OnScreenControl, IPointerUpHandler, IDragHandler
     {
-        [InputControl(layout = "Axis")] [SerializeField] private string m_ControlPath;
+        [InputControl(layout = "Axis")][SerializeField] private string m_ControlPath;
 
         [HideInInspector] public Slider slider;
         [HideInInspector] public OnScreenMultiSlider multiSlider;
 
         public bool reset = true;
         public float resetValue = 0f;
-
-        public bool extremitiesButtons = false;
-        public float minButtonThreshold = 0185f;
-        public float maxButtonThreshold = 0.85f;
-        [HideInInspector] public bool minButtonActive;
-        [HideInInspector] public bool maxButtonActive;
 
         protected override string controlPathInternal
         {
@@ -40,7 +36,7 @@ namespace UnityEngine.InputSystem.OnScreen
                 return;
             }
 
-            SendCorrectedValue();
+            SendValueToControl(slider.value);
         }
         public void OnPointerUp(PointerEventData eventData)
         {
@@ -51,25 +47,9 @@ namespace UnityEngine.InputSystem.OnScreen
             }
 
             if (reset)
-                SendCorrectedValue(resetValue);
-            else
-                SendCorrectedValue();
-        }
+                slider.value = resetValue;
 
-        private void SendCorrectedValue() { SendCorrectedValue(slider.value); }
-        private void SendCorrectedValue(float value)
-        {
-            if (extremitiesButtons)
-            {
-                minButtonActive = slider.value == slider.minValue;
-                maxButtonActive = slider.value == slider.maxValue;
-                if (!minButtonActive && !maxButtonActive) slider.value = Mathf.Clamp(slider.value, minButtonThreshold, maxButtonThreshold);
-                value = Mathf.InverseLerp(minButtonThreshold, maxButtonThreshold, slider.value);
-                value = Mathf.Clamp01(value);
-            }
-            else slider.value = value;
-
-            SendValueToControl(value);
+            SendValueToControl(slider.value);
         }
 
         private void Start()
@@ -88,19 +68,12 @@ public class OnScreenUISliderEditor : Editor
     SerializedProperty reset;
     SerializedProperty resetValue;
 
-    SerializedProperty extremitiesButtons;
-    SerializedProperty minButtonThreshold;
-    SerializedProperty maxButtonThreshold;
     void OnEnable()
     {
         controlPath = serializedObject.FindProperty("m_ControlPath");
 
         reset = serializedObject.FindProperty("reset");
         resetValue = serializedObject.FindProperty("resetValue");
-
-        extremitiesButtons = serializedObject.FindProperty("extremitiesButtons");
-        minButtonThreshold = serializedObject.FindProperty("minButtonThreshold");
-        maxButtonThreshold = serializedObject.FindProperty("maxButtonThreshold");
     }
     public override void OnInspectorGUI()
     {
@@ -112,13 +85,6 @@ public class OnScreenUISliderEditor : Editor
 
         EditorGUILayout.PropertyField(reset);
         if (onScreen.reset) EditorGUILayout.PropertyField(resetValue);
-
-        EditorGUILayout.PropertyField(extremitiesButtons);
-        if (onScreen.extremitiesButtons)
-        {
-            EditorGUILayout.PropertyField(minButtonThreshold);
-            EditorGUILayout.PropertyField(maxButtonThreshold);
-        }
 
         serializedObject.ApplyModifiedProperties();
     }

@@ -1,14 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
+//using UnityEngine.XR.Interaction.Toolkit;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 public class CockpitInteractable : SofComponent
 {
-    [HideInInspector] public XRGrabInteractable xrGrab;
+    //[HideInInspector] public XRGrabInteractable xrGrab;
     public HandGrip grip;
     public Outline outline;
     public Collider[] colliders;
@@ -31,16 +31,19 @@ public class CockpitInteractable : SofComponent
         base.Initialize(_complex);
 
         colliders = grip.GetComponentsInChildren<Collider>();
-        xrGrab = null;
+        //xrGrab = null;
 
         defaultPos = transform.localPosition;
         defaultRot = transform.localRotation;
         gripDefaultPos = grip.transform.localPosition;
 
+        if (outline) outline.enabled = false;
 
-        if (GameManager.gm.vr) DisableVR();
-        else RemoveVR();
+
+        //if (GameManager.gm.vr) DisableVR();
+        //else RemoveVR();
     }
+    /*
     public virtual void EnableVR(XRGrabInteractable xrPrefab)
     {
         xrPrefab.colliders.Clear();
@@ -81,19 +84,23 @@ public class CockpitInteractable : SofComponent
         if (xrGrab) Destroy(xrGrab.gameObject);
         if (outline) Destroy(outline);
     }
+    */
     protected virtual void VRInteraction(Vector3 gripPos, Quaternion gripRot)
     {
 
     }
+    
     protected virtual void OnGrab()
     {
-        gripOffset = data.transform.InverseTransformVector(xrGrab.transform.position - grip.transform.parent.TransformPoint(gripDefaultPos));
+        //gripOffset = data.transform.InverseTransformVector(xrGrab.transform.position - grip.transform.parent.TransformPoint(gripDefaultPos));
     }
     protected virtual void OnRelease()
     {
     }
+    
     protected virtual void CockpitInteractableUpdate()
     {
+        /*
         if (!xrGrab) return;
 
         if (xrGrab.isSelected)
@@ -120,8 +127,9 @@ public class CockpitInteractable : SofComponent
                 outline.OutlineColor = outlineColor - new Color(0f, 0f, 0f, Mathf.Pow(minDis, 0.1f));
             }
         }
-
+        */
     }
+    /*
     protected virtual bool ReadySelect()
     {
         if (xrGrab.isSelected) return true;
@@ -131,6 +139,7 @@ public class CockpitInteractable : SofComponent
         hovered |= s.leftHandTarget && s.leftHandTarget.Equals(xrGrab);
         return hovered && xrGrab.isHovered;
     }
+    */
 }
 #if UNITY_EDITOR
 [CustomEditor(typeof(CockpitInteractable))]

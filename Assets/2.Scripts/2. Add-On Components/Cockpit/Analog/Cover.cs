@@ -17,7 +17,7 @@ public class Cover : AnalogInteractable
     private void Update()
     {
         CockpitInteractableUpdate();
-        if (xrGrab) Animate(covered.enabled ? 1f : 0f);
+        //if (xrGrab) Animate(covered.enabled ? 1f : 0f);
     }
 }
 #if UNITY_EDITOR

@@ -43,7 +43,7 @@ public class AircraftMarker : Marker
             txt += "Sqdr " + (targetAircraft.SquadronId + 1);
             txt += targetAircraft.placeInSquad == 0 ? " Leader" : " Wing " + targetAircraft.placeInSquad;
         }
-        else
+        else if (targetAircraft.crew[0] != null)
         {
             txt += targetAircraft.crew[0].Seat.Action;
         }

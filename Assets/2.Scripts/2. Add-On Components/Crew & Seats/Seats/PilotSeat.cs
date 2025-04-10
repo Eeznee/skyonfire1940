@@ -65,12 +65,6 @@ public class PilotSeat : CrewSeat
         aircraft.hydraulics.SetFlaps(Mathf.RoundToInt(pilot.Flaps.ReadValue<float>()));
         aircraft.controls.brake = pilot.Brake.ReadValue<float>();
 
-#if MOBILE_INPUT
-        if (pilot.Boost.ReadValue<float>() > 0.5f)
-            aircraft.engines.SetThrottleAllEngines(1.1f, true);
-        else
-            aircraft.engines.SetThrottleAllEngines(pilot.Throttle.ReadValue<float>(), false);
-#else
         float scrollValue = PlayerActions.general.Scroll.ReadValue<float>();
         if (scrollValue != 0f)
         {
@@ -92,7 +86,6 @@ public class PilotSeat : CrewSeat
             else
                 aircraft.engines.SetThrottleAllEngines(currentThrottle + throttleIncrement, false);
         }
-#endif
     }
     public override void PlayerFixed(CrewMember crew)
     {

@@ -16,8 +16,8 @@ public class GunMountVrControls : CockpitInteractable
     protected override void VRInteraction(Vector3 gripPos,Quaternion gripRot)
     {
         turret.OperateMainTracking(transform.position - gripPos + transform.TransformDirection(pistolGripOffset));
-        bool guns = SofVrRig.instance.Trigger(xrGrab) > 0.1f;
-        turret.OperateTrigger(guns, false);
+        //bool guns = SofVrRig.instance.Trigger(xrGrab) > 0.1f;
+        //turret.OperateTrigger(guns, false);
     }
 
     private void Update()

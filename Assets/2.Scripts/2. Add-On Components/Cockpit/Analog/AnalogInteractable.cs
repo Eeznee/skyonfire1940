@@ -34,7 +34,8 @@ public class AnalogInteractable : CockpitInteractable
 
     protected bool GroupSelect()
     {
-        if (!xrGrab || !group) return false;
+        //if (!xrGrab || !group) return false;
+        if (!group) return false;
         return true;
         //bool groupSelect = SofVrRig.instance.rightHandTarget == this && SofVrRig.instance.rightHand.enabled;
         //groupSelect |= SofVrRig.instance.leftHandTarget == this && SofVrRig.instance.leftHand.enabled;

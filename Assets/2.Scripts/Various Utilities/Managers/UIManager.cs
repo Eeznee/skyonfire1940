@@ -42,7 +42,6 @@ public class UIManager : MonoBehaviour
 
         dynamicUis = new List<DynamicUI>(GetComponentsInChildren<DynamicUI>(true));
         gameUI = GameUI.Game;
-        ResetInterface();
     }
     private void OnDisable()
     {

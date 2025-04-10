@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-
+using UnityEngine.InputSystem;
 public class MissionCreator : MonoBehaviour
 {
     [Header("Minimap")]
@@ -48,6 +48,45 @@ public class MissionCreator : MonoBehaviour
         minimapTr = mapData.GetComponent<RectTransform>();
     }
 
+    private void OnEnable()
+    {
+        PlayerActions.actions.UI.SecondaryClick.performed += OnSecondaryClick;
+    }
+    private void OnDisable()
+    {
+        PlayerActions.actions.UI.SecondaryClick.performed -= OnSecondaryClick;
+    }
+    private void OnSecondaryClick(InputAction.CallbackContext context)
+    {
+        if (PlayerActions.actions.UI.Point.ReadValue<Vector2>().x <= Screen.width * 2 / 3f && !squadronPositionner.gameObject.activeInHierarchy)
+        {
+            SpawnSquadronOnMousePos();
+        }
+    }
+    private void SpawnSquadronOnMousePos()
+    {
+        Vector2 mousePos = PlayerActions.actions.UI.Point.ReadValue<Vector2>();
+
+        //Calculate cursor position on map
+        float widthScaling = Screen.width / GetComponentInParent<CanvasScaler>().referenceResolution.x;
+        float heightScaling = Screen.width / GetComponentInParent<CanvasScaler>().referenceResolution.x;
+        squadPos.x = (mousePos.x - minimapTr.position.x) / minimapTr.sizeDelta.x / widthScaling + 0.5f;
+        squadPos.y = (mousePos.y - minimapTr.position.y) / minimapTr.sizeDelta.y / heightScaling + 0.5f;
+        squadPos = mapData.RealMapPosition(squadPos);
+        //Create the new squad
+        Game.Team team = ally.isOn ? Game.Team.Ally : Game.Team.Axis;
+        squad = new Game.Squadron(aircraft.SelectedCard, team, 1, lastDifficulty * 100f, false);
+        squad.startPosition.y = lastAltitude;
+        squad.startHeading = lastHeading;
+        squadrons.Add(squad);
+
+        texture.Reset(texture.SelectedName);
+
+        //Create the squadron game icon
+        SquadronOnMap icon = Instantiate(squadronIcon, mousePos, Quaternion.identity, mapData.transform);
+        icon.Create(squad);
+    }
+
     private void Update()
     {
         if (playerId == -1)
@@ -61,33 +100,6 @@ public class MissionCreator : MonoBehaviour
             player.interactable = player.isOn = false;
             startGame.interactable = true;
             playerLabel.SetActive(false);
-        }
-
-#if MOBILE_INPUT
-        if (Input.touches.Length == 0) return;
-        if (Input.touches[0].tapCount == 2 && Input.GetTouch(0).position.x <= Screen.width * 2 / 3f && !squadronPositionner.gameObject.activeInHierarchy)
-#else
-        if (Input.GetMouseButtonDown(1) && Input.mousePosition.x <= Screen.width * 2 / 3f && !squadronPositionner.gameObject.activeInHierarchy)
-#endif
-        {
-            //Calculate cursor position on map
-            float widthScaling = Screen.width / GetComponentInParent<CanvasScaler>().referenceResolution.x;
-            float heightScaling = Screen.width / GetComponentInParent<CanvasScaler>().referenceResolution.x;
-            squadPos.x = (Input.mousePosition.x - minimapTr.position.x) / minimapTr.sizeDelta.x / widthScaling + 0.5f;
-            squadPos.y = (Input.mousePosition.y - minimapTr.position.y) / minimapTr.sizeDelta.y / heightScaling + 0.5f;
-            squadPos = mapData.RealMapPosition(squadPos);
-            //Create the new squad
-            Game.Team team = ally.isOn ? Game.Team.Ally : Game.Team.Axis;
-            squad = new Game.Squadron(aircraft.SelectedCard, team, 1, lastDifficulty * 100f, false);
-            squad.startPosition.y = lastAltitude;
-            squad.startHeading = lastHeading;
-            squadrons.Add(squad);
-
-            texture.Reset(texture.SelectedName);
-
-            //Create the squadron game icon
-            SquadronOnMap icon = Instantiate(squadronIcon, Input.mousePosition, Quaternion.identity, mapData.transform);
-            icon.Create(squad);
         }
     }
 

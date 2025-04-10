@@ -37,7 +37,7 @@ public class EnginesManager
     }
     public void Update()
     {
-        Throttle = CompleteThrottle.GetThrottleValueFromMultipleEngines(AllEngines);
+        //Throttle = CompleteThrottle.GetThrottleValueFromMultipleEngines(AllEngines);
 
         bool allEnginesDestroyed = true;
         bool oneEngineOn = false;
@@ -85,5 +85,7 @@ public class EnginesManager
         if (!allowWEP) thr = Mathf.Clamp(thr, 0f, 1f);
 
         foreach (Engine engine in AllEngines) engine.SetThrottle(thr);
+
+        Throttle = new CompleteThrottle(allowWEP ? thr : Mathf.Clamp01(thr));// CompleteThrottle.GetThrottleValueFromMultipleEngines(AllEngines);
     }
 }

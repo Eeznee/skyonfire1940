@@ -5,16 +5,9 @@ using System.Collections.Generic;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Rendering;
 
-public enum Device
-{
-    PC,
-    Mobile,
-    VR
-}
 
 public class GameManager : MonoBehaviour
 {
-    public static Device device;
     public bool playableScene = true;
     public bool vr = false;
     public UIManager mobileUI;
@@ -49,12 +42,7 @@ public class GameManager : MonoBehaviour
         QualitySettings.SetQualityLevel(PlayerPrefs.GetInt("Quality", QualitySettings.GetQualityLevel()));
         float renderScale = PlayerPrefs.GetFloat("RenderScale", 100f) / 100f;
         ((UniversalRenderPipelineAsset)QualitySettings.renderPipeline).renderScale = renderScale;
-#if MOBILE_INPUT
-        device = Device.Mobile;
-#else 
-        device = Device.PC;
-#endif
-        if (vr) device = Device.VR;
+
         UnitsConverter.Initialize();
         gameObject.AddComponent<ControlsManager>();
 

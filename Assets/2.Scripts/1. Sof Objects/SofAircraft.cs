@@ -54,11 +54,11 @@ public class SofAircraft : SofComplex
 
 
     //Subsystems
-    public AircraftInputs controls;
-    public HydraulicsManager hydraulics;
-    public FuelManager fuel;
-    public ArmamentManager armament;
-    public EnginesManager engines;
+    [NonSerialized] public AircraftInputs controls;
+    [NonSerialized] public HydraulicsManager hydraulics;
+    [NonSerialized] public FuelManager fuel;
+    [NonSerialized] public ArmamentManager armament;
+    [NonSerialized] public EnginesManager engines;
     public ForcesCompiler forcesCompiler { get; private set; }
 
     public float cruiseSpeed => stats.altitudeZeroMaxSpeed;
@@ -94,12 +94,11 @@ public class SofAircraft : SofComplex
         base.SetReferences();
 
         stats = new AircraftStats(this);
-
-        hydraulics = new HydraulicsManager(this);
-        armament = new ArmamentManager(this);
-        engines = new EnginesManager(this);
-        fuel = new FuelManager(this);
-        controls = new AircraftInputs(this);
+        if (hydraulics == null) hydraulics = new HydraulicsManager(this);
+        if (armament == null) armament = new ArmamentManager(this);
+        if (engines == null) engines = new EnginesManager(this);
+        if (fuel == null) fuel = new FuelManager(this);
+        if (controls == null) controls = new AircraftInputs(this);
     }
     protected override void GameInitialization()
     {

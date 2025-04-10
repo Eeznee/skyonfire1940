@@ -31,16 +31,9 @@ public class PlayerActions : MonoBehaviour
         menu = actions.Menu;
         cam = actions.Camera;
         switcher = actions.Switcher;
-
-        //Player.OnSeatChange += UpdateActions;
-        //TimeManager.OnPauseEvent += UpdateActions;
-        //UIManager.OnUISwitchEvent += UpdateActions;
     }
     private void OnDisable()
     {
-        //Player.OnSeatChange -= UpdateActions;
-        //TimeManager.OnPauseEvent -= UpdateActions;
-        //UIManager.OnUISwitchEvent -= UpdateActions;
         actions.Disable();
     }
     public static bool dynamic = true;
@@ -63,7 +56,7 @@ public class PlayerActions : MonoBehaviour
         pilot.Bomb.performed += _ => Action("Bomb");
         pilot.Rocket.performed += _ => Action("Rocket");
         pilot.Throttle.performed += val => SetThrottle(val.ReadValue<float>());
-        //pilot.Throttle.canceled += val => SetThrottle(0f);
+        pilot.Boost.performed += val => SetThrottle(1.1f);
         pilot.Dynamic.performed += _ => dynamic = !dynamic;
 
         bombardier.BombBay.performed += _ => Action("BombBay");

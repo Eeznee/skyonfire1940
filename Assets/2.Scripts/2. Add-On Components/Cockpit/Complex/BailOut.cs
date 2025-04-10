@@ -21,7 +21,7 @@ public class BailOut : CockpitInteractable
         if (camLocal.y > 0f) Player.crew.bailOut.BailInstant();
         else SofVrRig.instance.ResetView();
     }
-
+    /*
     private void LateUpdate()
     {
         CockpitInteractableUpdate();
@@ -31,6 +31,7 @@ public class BailOut : CockpitInteractable
             if (!xrGrab.enabled) outline.OutlineColor = new Color(0f, 0f, 0f, 0f);
         }
     }
+    */
 }
 
 #if UNITY_EDITOR

@@ -10,6 +10,7 @@ public class Stick : CockpitInteractable
     public Vector3 pitchAxis = new Vector3(1f,0f,0f);
     public Vector3 rollAxis = new Vector3(0f, 0f, 1f);
 
+    /*
     protected override void VRInteraction(Vector3 gripPos, Quaternion gripRot)
     {
         float pitchAngle = Mathv.OptimalLeverRotation(pitch, gripPos, pitchAxis, pitch.parent.up);
@@ -28,6 +29,7 @@ public class Stick : CockpitInteractable
         if (primaryFire) aircraft.armament.FirePrimaries();
         if (secondaryFire) aircraft.armament.FireSecondaries();
     }
+    */
     private void Update()
     {
         CockpitInteractableUpdate();

@@ -10,9 +10,13 @@ public class PlatformSpecific : MonoBehaviour
     void Start()
     {
 #if UNITY_IOS
-        if (platform == Platform.PC || platform == Platform.Android) Destroy(gameObject);
-#elif UNITY_ANDROID
-        if (platform == Platform.PC || platform == Platform.IOS) Destroy(gameObject);
+        if (platform == Platform.Android) Destroy(gameObject);
+#elif UNITY_ANDROID              
+        if (platform == Platform.IOS) Destroy(gameObject);
+#endif
+
+#if MOBILE_INPUT
+        if (platform == Platform.PC) Destroy(gameObject);
 #else
         if (platform != Platform.PC) Destroy(gameObject);
 #endif

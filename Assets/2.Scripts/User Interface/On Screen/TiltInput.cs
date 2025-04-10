@@ -55,6 +55,7 @@ namespace UnityEngine.InputSystem.OnScreen
         protected override void OnDisable()
         {
             base.OnDisable();
+
             if (Accelerometer.current != null)
             {
                 InputSystem.DisableDevice(Accelerometer.current);

@@ -133,6 +133,10 @@ public static class Mathv
         Vector3 gripDir = Vector3.ProjectOnPlane(target - lever.position, axis);
         return Vector3.SignedAngle(defaultLeverUp, gripDir, axis);
     }
+    public static float Map(float outFrom, float outTo, float inFrom, float inOut, float t)
+    {
+        return Mathf.Lerp(outFrom, outTo, Mathf.InverseLerp(inFrom, inOut, t));
+    }
     public static float InverseLerpUnclamped(float a, float b, float value)
     {
         return (value - a) / (b - a);

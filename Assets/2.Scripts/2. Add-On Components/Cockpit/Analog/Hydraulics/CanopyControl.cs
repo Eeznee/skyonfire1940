@@ -19,7 +19,7 @@ public class CanopyControl : HydraulicsInteractable
     {
         CockpitInteractableUpdate();
         Animate(hydraulics.stateInput);
-        if (xrGrab && bailOut) bailOut.xrGrab.colliders[0].enabled = hydraulics.state > 0.7f;//bailOut.secondXrGrip.colliders[0].enabled = hydraulics.state > 0.7f;
+        //if (xrGrab && bailOut) bailOut.xrGrab.colliders[0].enabled = hydraulics.state > 0.7f;//bailOut.secondXrGrip.colliders[0].enabled = hydraulics.state > 0.7f;
     }
 }
 

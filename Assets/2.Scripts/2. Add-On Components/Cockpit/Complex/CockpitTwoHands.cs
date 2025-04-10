@@ -1,15 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
+//using UnityEngine.XR.Interaction.Toolkit;
 
 public class CockpitTwoHands : CockpitInteractable
 {
-    public XRGrabInteractable secondXrGrip;
+    //public XRGrabInteractable secondXrGrip;
     public HandGrip secondGrip;
 
     protected private Vector3 secondXrGripDefaultPos;
 
+    /*
     public override void Initialize(SofComplex _complex)
     {
         base.Initialize(_complex);
@@ -44,12 +45,11 @@ public class CockpitTwoHands : CockpitInteractable
         }
         wasSelected = selected;
     }
-
     protected override bool ReadySelect()
     {
         return xrGrab.isHovered ||secondXrGrip.isHovered;
     }
-
+        */
     private void Update()
     {
         CockpitInteractableUpdate();
