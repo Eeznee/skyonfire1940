@@ -21,14 +21,13 @@ public abstract class SofComponent : MonoBehaviour  //Objects elements are the b
     public SofAircraft aircraft { get; private set; }
     public bool HasAircraft { get; private set; }
 
-    public ObjectData data { get; private set; }
-
     public Vector3 localPos { get; private set; }
     public Quaternion localRot { get; private set; }
 
     private bool initialized = false;
 
-    
+
+    public ObjectData data => complex.data;
 
 
     public void SetReferences()
@@ -51,7 +50,6 @@ public abstract class SofComponent : MonoBehaviour  //Objects elements are the b
 
         tr = transform;
         rb = complex.rb;
-        data = complex.data;
         animator = aircraft ? aircraft.animator : null;
 
         localPos = complex.transform.InverseTransformPoint(tr.position);

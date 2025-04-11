@@ -103,7 +103,7 @@ public class ObjectBubble : SofComponent
     }
     void Update()
     {
-        if (data.relativeAltitude.Get < 15f) EnableColliders(true);
+        if (aircraft.data.relativeAltitude.Get < 15f) EnableColliders(true);
 
         if (activeColliders != CollidersGroup.None && toggledTimer < Time.deltaTime) DisableColliders();
 

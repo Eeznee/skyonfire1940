@@ -29,7 +29,7 @@ public class CrashEffect : SofComponent
         }
         if (crashed) return;
         //Method 2 : use relative altitude and vertical speed
-        float timeToCrash = data.relativeAltitude.Get / -aircraft.data.rb.velocity.y;
+        float timeToCrash = data.relativeAltitude.Get / -aircraft.rb.velocity.y;
         if (timeToCrash < Time.fixedDeltaTime * 10f && timeToCrash > 0f)
         {
             //weirdly, the estimated G is approximatively the vertical velocity

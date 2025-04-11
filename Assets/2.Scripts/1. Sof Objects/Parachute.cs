@@ -29,7 +29,7 @@ public class Parachute : SofComplex
     }
     public void TriggerParachute(SofAircraft aircraft, CrewMember _crew)
     {
-        startVelocity = aircraft.data.rb.velocity + aircraft.transform.up * 5f;
+        startVelocity = aircraft.rb.velocity + aircraft.transform.up * 5f;
         startTag = aircraft.tag;
 
         _crew.transform.parent = seat.transform.parent;
@@ -53,20 +53,31 @@ public class Parachute : SofComplex
 
         rotationSpeed = Random.Range(-2f, 2f);
         dragCoeff = Random.Range(0.9f, 1.1f) * 1600f / (terminalVelocity * terminalVelocity * Aerodynamics.seaLvlDensity * radius * radius * Mathf.PI);
-        rb.centerOfMass = Vector3.zero;
-        rb.angularDrag = 1f;
-        rb.inertiaTensor = new Vector3(100f, 400f * Random.Range(0.8f, 1.2f), 100f);
-        rb.velocity = startVelocity;
         trueRadius = 0f;
         landed = false;
         tag = startTag;
     }
-    private void FixedUpdate()
+    protected override void SetRigidbody()
     {
-        Vector3 vel = data.rb.GetPointVelocity(transform.TransformPoint(dragPoint));
+        rb = this.GetCreateComponent<Rigidbody>();
+
+        rb.centerOfMass = Vector3.zero;
+        rb.angularDrag = 1f;
+        rb.drag = 0f;
+        rb.inertiaTensor = new Vector3(100f, 400f * Random.Range(0.8f, 1.2f), 100f);
+        rb.velocity = startVelocity;
+        rb.isKinematic = false;
+        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        rb.interpolation = RigidbodyInterpolation.Extrapolate;
+    }
+    protected override void FixedUpdate()
+    {
+        base.FixedUpdate();
+
+        Vector3 vel = rb.GetPointVelocity(transform.TransformPoint(dragPoint));
         trueRadius = Mathf.MoveTowards(trueRadius, radius, Time.fixedDeltaTime * 0.5f);
         float area = trueRadius * trueRadius * Mathf.PI;
-        data.rb.AddForceAtPosition(Aerodynamics.Drag(vel, data.density.Get, area, dragCoeff, 1f),transform.TransformPoint(dragPoint));
+        rb.AddForceAtPosition(Aerodynamics.Drag(vel, data.density.Get, area, dragCoeff, 1f),transform.TransformPoint(dragPoint));
         if (data.relativeAltitude.Get < -feetGroundOffset && !landed) Land();
 
         transform.Rotate(0f, rotationSpeed * Time.fixedDeltaTime, 0f, Space.Self);
@@ -74,8 +85,8 @@ public class Parachute : SofComplex
     private void Land()
     {
         landed = true;
-        data.rb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-        data.rb.isKinematic = true;
+        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        rb.isKinematic = true;
 
         Vector3 pos = transform.position;
         pos.y = data.altitude.Get - data.relativeAltitude.Get - feetGroundOffset;

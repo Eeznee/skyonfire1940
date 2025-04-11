@@ -31,7 +31,7 @@ public class Visibility
     public float TargetVisibility(SofAircraft target, float distance)
     {
         Transform tr = seat.sofObject.transform;
-        Vector3 pastPos = target.transform.position - target.data.rb.velocity * pastDelay;
+        Vector3 pastPos = target.transform.position - target.rb.velocity * pastDelay;
         Vector3 localPos = tr.InverseTransformPoint(pastPos);
 
         //Orientation of target relative to seat affects visibility

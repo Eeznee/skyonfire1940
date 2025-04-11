@@ -124,10 +124,10 @@ public class GunnerSeat : CrewSeat
 
     public bool AiTargeting()
     {
-        AI.GunnerTargetingData targetData = new AI.GunnerTargetingData(gunMount, target.data.rb); //Compute Ballistic data
+        AI.GunnerTargetingData targetData = new AI.GunnerTargetingData(gunMount, target.rb); //Compute Ballistic data
         float t = Ballistics.InterceptionTime(gunMount.MuzzleVelocity * 0.95f, targetData.dir, targetData.relativeVel);
         Vector3 gravityLead = -Physics.gravity * t * t * 0.5f;
-        Vector3 speedLead = t * target.data.rb.velocity;
+        Vector3 speedLead = t * target.rb.velocity;
         Vector3 targetLead = speedLead + gravityLead - rb.velocity * t * 1.2f;
         targetLead *= Mathf.Lerp(-0.7f + difficulty * 1.1f, 3f - 1.35f * difficulty, Mathf.PerlinNoise(perlinRandomizer, Time.time * 0.33f));
 

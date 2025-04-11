@@ -38,7 +38,6 @@ public class PistonEngineFX : AudioComponent
     const float popDamageThreshold = 0.001f;
 
     private float damageTracker = 0f;
-    private float timeSinceLastPop = 0f;
     private void OnEngineDamage(float damage)
     {
         damageTracker -= damage;

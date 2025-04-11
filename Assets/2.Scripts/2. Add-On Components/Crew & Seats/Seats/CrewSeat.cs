@@ -75,7 +75,7 @@ public class CrewSeat : SofComponent
     public virtual Vector3 ZoomedHeadPosition => DefaultHeadPosition;
     public virtual Vector3 DefaultHeadPosition => defaultPOV ? defaultPOV.position : transform.position + aircraft.tr.up * 0.75f;
     public virtual Vector3 CameraUp => sofObject.tr.up;
-    public virtual Vector3 LookingDirection => data.tr.TransformDirection(flattenedLocalDir);
+    public virtual Vector3 LookingDirection => sofObject.tr.TransformDirection(flattenedLocalDir);
     public virtual Vector3 CrosshairPosition => defaultPOV.position + aircraft.tr.forward * (aircraft ? aircraft.Convergence : 300f);
     public float CockpitAudioRatio
     {

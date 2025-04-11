@@ -181,10 +181,10 @@ public class PilotSeat : CrewSeat
         float trueRange = Mathf.Lerp(400f, 600f, difficulty);
         if (bfmData.distance > trueRange) return;
 
-        Vector3 relativeVel = target.data.rb.velocity - rb.velocity;
+        Vector3 relativeVel = target.rb.velocity - rb.velocity;
         float t = Ballistics.InterceptionTime(aircraft.armament.primaries[0].gunPreset.ammunition.defaultMuzzleVel * 0.85f, bfmData.dir, relativeVel);
 
-        Vector3 lead = target.data.rb.velocity * t + -Physics.gravity * t * t * 0.5f;
+        Vector3 lead = target.rb.velocity * t + -Physics.gravity * t * t * 0.5f;
         lead *= Mathf.Lerp(difficulty * 0.7f, 3f - 1.7f * difficulty, Mathf.PerlinNoise(perlinRandomizer, Time.time / 3f));
 
         float gunsAngle = Vector3.Angle(bfmData.dir + lead, transform.root.forward);

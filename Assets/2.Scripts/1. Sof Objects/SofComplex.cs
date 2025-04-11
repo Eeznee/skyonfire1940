@@ -20,8 +20,9 @@ public class SofComplex : SofObject
 
     public ObjectLOD lod;
     public ObjectBubble bubble;
-    public ObjectData data;
     public ObjectAudio avm;
+
+    [NonSerialized] public ObjectData data;
 
     public event Action<SofComponent> onComponentAdded;
     public event Action<SofComponent> onComponentRootRemoved;
@@ -36,12 +37,11 @@ public class SofComplex : SofObject
     public Action OnAttachPlayer;
     public Action OnDetachPlayer;
     public Action OnInitialize;
+    public Action OnFixedUpdate;
 
     public override void SetReferences()
     {
         base.SetReferences();
-
-        data = this.GetCreateComponent<ObjectData>();
 
         SofComponent[] allComponents = GetComponentsInChildren<SofComponent>();
 
@@ -55,6 +55,8 @@ public class SofComplex : SofObject
         foreach (SofComponent component in allComponents)
             component.SetReferences(this);
 
+        data ??= new ObjectData(this);
+
         EmptyMass = new Mass(massComponents.ToArray(), MassCategory.Empty);
         LoadedMass = new Mass(massComponents.ToArray(), MassCategory.Loaded);
     }
@@ -62,11 +64,11 @@ public class SofComplex : SofObject
     {
         avm = transform.CreateChild("Audio Visual Manager").gameObject.AddComponent<ObjectAudio>();
 
-        base.GameInitialization();
-        InitializeSofComponents();
 
+        base.GameInitialization();
+
+        InitializeSofComponents();
         RecomputeRealMass();
-        SetRigidbody();
 
         InvokeRepeating("DamageTick", damageTickInterval, damageTickInterval);
 
@@ -79,6 +81,11 @@ public class SofComplex : SofObject
         OnInitialize?.Invoke();
     }
 
+    protected virtual void FixedUpdate()
+    {
+        OnFixedUpdate?.Invoke();
+    }
+
     protected virtual void InitializeSofComponents()
     {
         if (!Application.isPlaying) return;
@@ -88,15 +95,7 @@ public class SofComplex : SofObject
             component.Initialize(this);
     }
     const float damageTickInterval = 0.5f;
-    private void SetRigidbody()
-    {
-        if (rb == GameManager.gm.mapmap.rb) return;
-        rb.angularDrag = 0f;
-        rb.drag = 0f;
-        rb.isKinematic = false;
-        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
-        rb.interpolation = RigidbodyInterpolation.Extrapolate;
-    }
+
     public float GetMass() { return realMass.mass; }
     public Vector3 GetCenterOfMass() { return realMass.center; }
     public void ShiftMass(float shift) { realMass.mass += shift; UpdateRbMass(false); }

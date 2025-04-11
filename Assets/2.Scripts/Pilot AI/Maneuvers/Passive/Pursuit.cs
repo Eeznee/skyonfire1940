@@ -22,7 +22,7 @@ public class Pursuit : Maneuver
         } else
         {
             float bulletTime = data.distance / 850f;
-            Vector3 target = data.target.transform.position + data.target.data.rb.velocity * bulletTime;
+            Vector3 target = data.target.transform.position + data.target.rb.velocity * bulletTime;
             float levelingFactor = Mathf.Clamp01(1f - data.offAngle / 90f);
             AircraftAxes axes = PointTracking.TrackingInputs(target, data.aircraft, data.target.data.bankAngle.Get, levelingFactor, true);
 

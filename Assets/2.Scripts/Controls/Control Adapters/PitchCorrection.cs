@@ -14,8 +14,15 @@ public class PitchCorrection
     {
         float targetAoA = Mathf.Abs(targetPitch) * AoALimitSigned(aircraft, targetPitch);
 
-        if (correctZeroAoA)
-            CorrectZeroAoAForZeroTurnRate(ref targetAoA, aircraft, targetPitch);
+        if (correctZeroAoA && !aircraft.data.grounded.Get)
+        {
+            float correctedAoA = CorrectZeroAoAForZeroTurnRate(targetAoA, aircraft, targetPitch);
+            if(aircraft.TimeSinceLastLanding > 30f)
+                targetAoA = correctedAoA;
+            else
+                targetAoA = Mathf.Lerp(targetAoA, correctedAoA, aircraft.TimeSinceLastLanding / 30f);
+        }
+
 
         FlightConditions fc = SpecificAoAFlightConditions(aircraft, targetAoA);
 
@@ -28,8 +35,10 @@ public class PitchCorrection
 
         //Using elevator potential force and simulated forces, find the elevator adjustment needed to maintain target aoa
         float elevatorAdjustment = pitchTorque / gradientPitchTorque;
+        float correctedPitch = Mathf.Clamp(aircraft.controls.current.pitch + elevatorAdjustment, -1f, 1f);
 
-        return aircraft.controls.current.pitch + elevatorAdjustment;
+        return correctedPitch;
+
     }
 
     public static float MaxPitchAbs(SofAircraft aircraft, float pitchSign)
@@ -39,7 +48,7 @@ public class PitchCorrection
         return Mathf.Clamp01(Mathf.Abs(maxPitch));
     }
 
-    private static void CorrectZeroAoAForZeroTurnRate(ref float targetAoA, SofAircraft aircraft,  float targetPitch)
+    private static float CorrectZeroAoAForZeroTurnRate(float targetAoA, SofAircraft aircraft,  float targetPitch)
     {
         float offsetAoA = targetAoA - Mathf.Sign(targetAoA);
 
@@ -57,7 +66,7 @@ public class PitchCorrection
         float zeroAoA = Mathf.LerpUnclamped(offsetAoA, targetAoA, lerpT);
 
 
-        targetAoA = Mathf.LerpUnclamped(zeroAoA, AoALimitSigned(aircraft,targetPitch), Mathf.Abs(targetPitch));
+        return Mathf.LerpUnclamped(zeroAoA, AoALimitSigned(aircraft,targetPitch), Mathf.Abs(targetPitch));
     }
 
     private static FlightConditions SpecificAoAFlightConditions(SofAircraft aircraft, float targetAoA)

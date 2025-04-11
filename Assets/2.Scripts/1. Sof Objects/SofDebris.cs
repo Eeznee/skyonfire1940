@@ -36,8 +36,9 @@ public class SofDebris : SofComplex
     {
         return 8;
     }
-    private void FixedUpdate()
+    protected override void FixedUpdate()
     {
+        base.FixedUpdate();
         WaterPhysics();
     }
 

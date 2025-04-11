@@ -46,7 +46,9 @@ public static partial class NewPointTracking
             previousLocalTarget = localTarget;
         }
 
-        return InterpolateForGrounded(controlsFound, aircraft, previousLocalTarget, forcedAxes);
+        controlsFound = InterpolateForGrounded(controlsFound, aircraft, previousLocalTarget);
+        ApplyForcedAxis(ref controlsFound, forcedAxes);
+        return controlsFound;
     }
     private static AircraftAxes GetControls(Vector2 abstractControls, float maxPitch, float offAngleFactor, SofAircraft aircraft)
     {
@@ -60,8 +62,11 @@ public static partial class NewPointTracking
 
         return controls;
     }
-    private static AircraftAxes InterpolateForGrounded(AircraftAxes controlsFound, SofAircraft aircraft, Vector3 localTarget, AircraftAxes forcedAxes)
+    private static AircraftAxes InterpolateForGrounded(AircraftAxes controlsFound, SofAircraft aircraft, Vector3 localTarget)
     {
+        float limitSpeed = aircraft.stats.MinTakeOffSpeedNoFlaps * 0.5f;
+        if (aircraft.data.tas.Get > limitSpeed) return controlsFound;
+
         AircraftAxes final = new AircraftAxes();
 
         float vertical = Mathf.Clamp(localTarget.y * 5f, -1f, 1f);
@@ -70,17 +75,14 @@ public static partial class NewPointTracking
         if (aircraft.data.tas.Get < 0.2f)
         {
             final = new AircraftAxes(vertical, horizontal, -horizontal);
-            ApplyForcedAxis(ref final, forcedAxes);
             return final;
         }
 
-        float lerpFactor = aircraft.data.tas.Get / 20f;
+        float lerpFactor = aircraft.data.tas.Get / limitSpeed;
 
         final.pitch = Mathf.Lerp(vertical, controlsFound.pitch, lerpFactor);
         final.roll = Mathf.Lerp(horizontal, controlsFound.roll, lerpFactor);
         final.yaw = Mathf.Lerp(0f, controlsFound.yaw, lerpFactor);
-
-        ApplyForcedAxis(ref final, forcedAxes);
 
         return final;
     }

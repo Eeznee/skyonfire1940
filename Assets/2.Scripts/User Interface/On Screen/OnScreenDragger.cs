@@ -41,6 +41,7 @@ namespace UnityEngine.InputSystem.OnScreen
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(parentRectTransform, eventData.position, eventData.pressEventCamera, out Vector2 pos);
             SendValueToControl((pos - previousPos) * coefficient);
+
             previousPos = pos;
         }
 

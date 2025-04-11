@@ -50,10 +50,9 @@ public class SofAircraft : SofComplex
     public BombardierSeat bombardierSeat { get; private set; }
     public Bombsight bombSight { get; private set; }
     public Animator animator { get; private set; }
-    public AircraftStats stats { get; private set; }
-
 
     //Subsystems
+    [NonSerialized] public AircraftStats stats;
     [NonSerialized] public AircraftInputs controls;
     [NonSerialized] public HydraulicsManager hydraulics;
     [NonSerialized] public FuelManager fuel;
@@ -67,9 +66,7 @@ public class SofAircraft : SofComplex
     public bool GroundedStart => squadron.airfield >= 0;
 
 
-    private bool landed;
     private float timeSinceLastLanding;
-    public bool Landed => landed;
     public float TimeSinceLastLanding => timeSinceLastLanding;
 
 
@@ -93,12 +90,12 @@ public class SofAircraft : SofComplex
 
         base.SetReferences();
 
-        stats = new AircraftStats(this);
-        if (hydraulics == null) hydraulics = new HydraulicsManager(this);
-        if (armament == null) armament = new ArmamentManager(this);
-        if (engines == null) engines = new EnginesManager(this);
-        if (fuel == null) fuel = new FuelManager(this);
-        if (controls == null) controls = new AircraftInputs(this);
+        stats ??= new AircraftStats(this);
+        hydraulics ??= new HydraulicsManager(this);
+        armament ??= new ArmamentManager(this);
+        engines ??= new EnginesManager(this);
+        fuel ??= new FuelManager(this);
+        controls ??= new AircraftInputs(this);
     }
     protected override void GameInitialization()
     {
@@ -108,7 +105,8 @@ public class SofAircraft : SofComplex
         forcesCompiler = gameObject.AddComponent<ForcesCompiler>();
         if (!customPIDValues) SetDefaultPIDValues();
 
-        AddEssentialComponents();
+        lod = this.GetCreateComponentInChildren<ObjectLOD>();
+        if (!simpleDamage) bubble = transform.CreateChild("Object Bubble").gameObject.AddComponent<ObjectBubble>();
 
         for (int i = 0; i < Stations.Length; i++) Stations[i].SelectAndDestroy(squadron.stations[i]);
 
@@ -118,11 +116,6 @@ public class SofAircraft : SofComplex
 
         if (!GroundedStart) rb.velocity = transform.forward * stats.MaxSpeed(data.altitude.Get, 1f);
         timeSinceLastLanding = GroundedStart ? 0f : 600f;
-    }
-    private void AddEssentialComponents()
-    {
-        lod = this.GetCreateComponentInChildren<ObjectLOD>();
-        if (!simpleDamage) bubble = transform.CreateChild("Object Bubble").gameObject.AddComponent<ObjectBubble>();
     }
     private void InitializeMarkersAndGameReferences()
     {
@@ -140,24 +133,21 @@ public class SofAircraft : SofComplex
         if (collided && col.impulse.magnitude > 10000f) collided.Rip();
 
     }
-    void Update()
+    protected override void FixedUpdate()
     {
-        engines.Update();
-    }
-    private void FixedUpdate()
-    {
+        base.FixedUpdate();
+
         WaterPhysics();
 
         //Call the pilot seat behaviour before inputs and force compilation
         CrewMember mainPilot = mainSeat.seatedCrew;
-        if(mainPilot != null && !mainPilot.ripped && mainPilot.complex == complex)
+        if (mainPilot != null && !mainPilot.ripped && mainPilot.complex == complex)
         {
             if (mainPilot == Player.crew) mainSeat.PlayerFixed(mainPilot);
             else mainSeat.AiFixed(mainPilot);
         }
 
-        landed = data.tas.Get < stats.MinTakeOffSpeedNoFlaps && data.relativeAltitude.Get < 10f;
-        if (landed) timeSinceLastLanding = 0f;
+        if (data.grounded.Get) timeSinceLastLanding = 0f;
         else timeSinceLastLanding += Time.fixedDeltaTime;
 
         controls.FixedUpdate();

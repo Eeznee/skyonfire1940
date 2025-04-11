@@ -40,8 +40,8 @@ public static class TargetPicker
     }
     private static float TargetPrioPilot(SofAircraft aircraft, SofAircraft target, SofAircraft currentTarget,float bombersPrio)
     {
-        Rigidbody rb = aircraft.data.rb;
-        Rigidbody targetRb = target.data.rb;
+        Rigidbody rb = aircraft.rb;
+        Rigidbody targetRb = target.rb;
         Vector3 dir = target.tr.position - aircraft.tr.position;
         float dis = dir.magnitude;
         float closure = Vector3.Dot(targetRb.velocity - rb.velocity, dir / dis);

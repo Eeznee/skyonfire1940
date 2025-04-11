@@ -89,22 +89,23 @@ public class CameraInputs : MonoBehaviour
     {
         float f = Mathf.InverseLerp(-1f, 1f, input);
         speed = minSpeed * Mathf.Pow(2f, Mathf.Log(maxSpeed / minSpeed, 2) * f);
-        Log.Print("Camera Speed : " + speed.ToString("0") +" m/s", "CameraSpeed");
+        Log.Print("Camera Speed : " + speed.ToString("0") + " m/s", "CameraSpeed");
     }
     private static bool CameraUnlocked()
     {
-        if (ControlsManager.CurrentMode() == ControlsMode.MouseStick) return SofCamera.lookAround;
-        if (Player.role == SeatRole.Gunner && ControlsManager.CurrentMode() == ControlsMode.Direct) return SofCamera.lookAround;
-#if !MOBILE_INPUT
-        if (UIManager.gameUI != GameUI.Game) return PlayerActions.cam.Unlock.ReadValue<float>() > 0.5f && EventSystem.current.currentSelectedGameObject == null;
-#endif
-
 #if MOBILE_INPUT
 #if UNITY_EDITOR
         return PlayerActions.cam.Unlock.ReadValue<float>() > 0.5f && EventSystem.current.currentSelectedGameObject == null;
-#endif
-#endif
+#else
         return true;
+#endif
+#else
+        if (ControlsManager.CurrentMode() == ControlsMode.MouseStick) return SofCamera.lookAround;
+        if (Player.role == SeatRole.Gunner && ControlsManager.CurrentMode() == ControlsMode.Direct) return SofCamera.lookAround;
+        if (UIManager.gameUI != GameUI.Game) return PlayerActions.cam.Unlock.ReadValue<float>() > 0.5f && EventSystem.current.currentSelectedGameObject == null;
+        return true;
+#endif
+
     }
     public static float Sensitivity()
     {

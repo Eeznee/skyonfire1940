@@ -166,19 +166,10 @@
                     "name": "Throttle",
                     "type": "Value",
                     "id": "e320bf88-5306-4b52-afe8-e5acaf20e391",
-                    "expectedControlType": "Analog",
+                    "expectedControlType": "Double",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
-                },
-                {
-                    "name": "Boost",
-                    "type": "Button",
-                    "id": "e9af3a71-2add-4745-aa39-04b513b97af9",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 },
                 {
                     "name": "FirePrimaries",
@@ -505,28 +496,6 @@
                     "processors": "",
                     "groups": "SofDevice",
                     "action": "Rudder",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "d0ab259e-4339-4360-8616-b0291e7b132d",
-                    "path": "<Keyboard>/m",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Mouse & Keyboard",
-                    "action": "Boost",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "5594e81f-d543-4816-9944-babe035a3b4a",
-                    "path": "<SofDevice>/throttleBoost",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "SofDevice",
-                    "action": "Boost",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1748,7 +1717,7 @@
                     "name": "",
                     "id": "cbb2cf76-7fb6-4915-99bd-f4506c26262c",
                     "path": "<Pointer>/press",
-                    "interactions": "MultiTap",
+                    "interactions": "MultiTap(tapDelay=0.3)",
                     "processors": "",
                     "groups": "",
                     "action": "DoubleTap",
@@ -2271,7 +2240,7 @@
                     "id": "cbb87e0b-66fb-42d5-9616-0ff8e95737ef",
                     "path": "<SofDevice>/cameraRotate",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "ScaleVector2(x=0.1,y=0.1)",
                     "groups": "SofDevice",
                     "action": "Rotate",
                     "isComposite": false,

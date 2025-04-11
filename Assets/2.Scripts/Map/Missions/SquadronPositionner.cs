@@ -27,7 +27,7 @@ public class SquadronPositionner : MonoBehaviour
         difficultyInput.text = squad.assignedSquad.difficulty.ToString();
 
         gameObject.SetActive(true);
-        transform.position = Input.mousePosition;
+        transform.position = PlayerActions.actions.UI.Point.ReadValue<Vector2>();
         transform.SetAsLastSibling();
         confirm.interactable = true;
     }

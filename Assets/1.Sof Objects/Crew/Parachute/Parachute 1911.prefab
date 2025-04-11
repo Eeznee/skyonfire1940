@@ -898,7 +898,6 @@ GameObject:
   - component: {fileID: 3414645787355955904}
   - component: {fileID: 8767049772878741315}
   - component: {fileID: 158622438553547532}
-  - component: {fileID: 2655988638351436412}
   m_Layer: 9
   m_Name: Parachute 1911
   m_TagString: Untagged
@@ -943,12 +942,16 @@ MonoBehaviour:
   burning: 0
   cogForwardDistance: 0
   targetEmptyMass: 3000
+  EmptyMass:
+    mass: 1.1
+    center: {x: 0, y: -0.16100001, z: -0.39000002}
+  LoadedMass:
+    mass: 1.2682706
+    center: {x: 0, y: -0.16100001, z: -0.39000002}
   lod: {fileID: 0}
   bubble: {fileID: 0}
-  data: {fileID: 2655988638351436412}
   avm: {fileID: 0}
   components:
-  - {fileID: 2655988638351436412}
   - {fileID: 8730419314286188817}
   - {fileID: 3681374392902194194}
   - {fileID: 1911356670118488561}
@@ -994,24 +997,12 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 2
   m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!114 &2655988638351436412
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3041685066798675538}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96d07c011fedd8e4ea48fe0210875bbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_CollisionDetection: 1
 --- !u!1 &3058455607486666403
 GameObject:
   m_ObjectHideFlags: 0
@@ -2215,7 +2206,7 @@ PrefabInstance:
         type: 3}
       propertyPath: data
       value: 
-      objectReference: {fileID: 2655988638351436412}
+      objectReference: {fileID: 0}
     - target: {fileID: 2648442375309930879, guid: dc9227d1378cdfc4090009458dcf2e7b,
         type: 3}
       propertyPath: complex
@@ -2370,7 +2361,7 @@ PrefabInstance:
         type: 3}
       propertyPath: data
       value: 
-      objectReference: {fileID: 2655988638351436412}
+      objectReference: {fileID: 0}
     - target: {fileID: 8186225094426844473, guid: dc9227d1378cdfc4090009458dcf2e7b,
         type: 3}
       propertyPath: complex

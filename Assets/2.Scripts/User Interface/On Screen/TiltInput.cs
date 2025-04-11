@@ -35,34 +35,27 @@ namespace UnityEngine.InputSystem.OnScreen
             }
             rawInputs[0] = AccelerometerInput;
         }
-        public Vector3 AccelerometerInput => Accelerometer.current == null ? Vector3.down : Accelerometer.current.acceleration.ReadValue();
+        public Vector3 AccelerometerInput
+        {
+            get
+            {
+                if (GravitySensor.current == null) return Vector3.down;
+
+                Vector3 val = GravitySensor.current.gravity.ReadValue();
+
+                return val;
+            }
+        }
         private Vector3 AverageInput()
         {
             Vector3 sum = Vector3.zero;
             foreach (Vector3 vec in rawInputs) sum += vec;
             return sum / averageAmount;
         }
-        protected override void OnEnable()
-        {
-            base.OnEnable();
-
-            if (Accelerometer.current != null)
-            {
-                InputSystem.EnableDevice(Accelerometer.current);
-            }
-
-        }
-        protected override void OnDisable()
-        {
-            base.OnDisable();
-
-            if (Accelerometer.current != null)
-            {
-                InputSystem.DisableDevice(Accelerometer.current);
-            }
-        }
         private void Start()
         {
+            InputSystem.EnableDevice(GravitySensor.current);
+
             rawInputs = new Vector3[averageAmount];
 
             pitchSens = PlayerPrefs.GetFloat("PitchSensitivity", 1f);
@@ -73,6 +66,7 @@ namespace UnityEngine.InputSystem.OnScreen
 
         private void Update()
         {
+            Debug.Log(GetTilt(0f));
             AddInput();
             Vector2 tilt = GetTilt(1f - Mathf.Abs(lastPitch));
             tilt.y = Mathf.Clamp(tilt.y - pitchZeroing, -fullPitchAngle, fullPitchAngle) / fullPitchAngle;

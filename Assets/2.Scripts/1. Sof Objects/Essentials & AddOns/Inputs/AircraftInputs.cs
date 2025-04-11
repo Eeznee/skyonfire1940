@@ -58,9 +58,7 @@ public class AircraftInputs
     {
        target = rawUncorrected = input;
 
-        if (mode == PitchCorrectionMode.Raw) return;
-        
-        if (aircraft.data.tas.Get < aircraft.stats.MinTakeOffSpeedNoFlaps * 0.5f) return;
+        if (mode == PitchCorrectionMode.Raw || aircraft.data.grounded.Get) return;
         
         if(mode == PitchCorrectionMode.Clamped)
         {
@@ -68,7 +66,6 @@ public class AircraftInputs
             target.pitch = Mathf.Clamp(input.pitch, -maxPitch, maxPitch);
             return;
         }
-
         target.pitch = PitchCorrection.CorrectPitch(aircraft, input.pitch, mode == PitchCorrectionMode.FullyAssisted);
     }
     public AircraftAxes SimulateControls(float ias, AircraftAxes currentInputs, AircraftAxes targetInputs, float dt)
@@ -120,46 +117,5 @@ public class AircraftInputs
         float yawIAS = Mathf.Sqrt(pedalForce / yawResistance);
 
         return new AircraftAxes(pitchIAS, rollIAS, yawIAS);
-    }
-
-    public class SpecificAxisLink<T> where T : IControlSurface
-    {
-        public SofAircraft aircraft;
-
-        public T[] linkedControls { get; private set; }
-        public float negResistance { get; private set; }
-
-        public float controlSpeed { get; private set; }
-        public float currentInput { get; private set; }
-
-
-        public SpecificAxisLink(SofAircraft _aircraft, float _controlSpeed)
-        {
-            aircraft = _aircraft;
-            linkedControls = aircraft.GetComponentsInChildren<T>();
-            controlSpeed = _controlSpeed;
-        }
-        const float defaultPilotForce = 5000f;
-        public void FixedUpdate(float targetInput, float ias, float speed)
-        {
-            /*
-            if (Mathf.Sign(currentInput - targetInput) == Mathf.Sign(combinedAoAArea))
-                {
-                    float force = combinedAoAArea * ias * ias;
-                    float pilotMaxForce = pilotForce * aircraft.StickTorqueFactor;
-                    forceFactor = (pilotMaxForce - Mathf.Abs(force)) / pilotMaxForce;
-                }
-            if (forceFactor > 0f)
-            {
-                float realControlSpeed = controlSpeed * Mathf.Clamp01(forceFactor + 0.2f);
-                currentInput = Mathf.MoveTowards(currentInput, targetInput, Time.fixedDeltaTime * realControlSpeed);
-            }
-            else
-            {
-                float sign = Mathf.Sign(targetInput - currentInput);
-                currentInput += sign * forceFactor * controlSpeed * Time.fixedDeltaTime;
-            }
-            */
-        }
     }
 }

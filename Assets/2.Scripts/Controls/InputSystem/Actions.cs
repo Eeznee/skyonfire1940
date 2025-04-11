@@ -188,19 +188,10 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""name"": ""Throttle"",
                     ""type"": ""Value"",
                     ""id"": ""e320bf88-5306-4b52-afe8-e5acaf20e391"",
-                    ""expectedControlType"": ""Analog"",
+                    ""expectedControlType"": ""Double"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""Boost"",
-                    ""type"": ""Button"",
-                    ""id"": ""e9af3a71-2add-4745-aa39-04b513b97af9"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 },
                 {
                     ""name"": ""FirePrimaries"",
@@ -527,28 +518,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""SofDevice"",
                     ""action"": ""Rudder"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""d0ab259e-4339-4360-8616-b0291e7b132d"",
-                    ""path"": ""<Keyboard>/m"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Mouse & Keyboard"",
-                    ""action"": ""Boost"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""5594e81f-d543-4816-9944-babe035a3b4a"",
-                    ""path"": ""<SofDevice>/throttleBoost"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""SofDevice"",
-                    ""action"": ""Boost"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1770,7 +1739,7 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""cbb2cf76-7fb6-4915-99bd-f4506c26262c"",
                     ""path"": ""<Pointer>/press"",
-                    ""interactions"": ""MultiTap"",
+                    ""interactions"": ""MultiTap(tapDelay=0.3)"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""DoubleTap"",
@@ -2293,7 +2262,7 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""id"": ""cbb87e0b-66fb-42d5-9616-0ff8e95737ef"",
                     ""path"": ""<SofDevice>/cameraRotate"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""ScaleVector2(x=0.1,y=0.1)"",
                     ""groups"": ""SofDevice"",
                     ""action"": ""Rotate"",
                     ""isComposite"": false,
@@ -3411,7 +3380,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         m_Pilot_Roll = m_Pilot.FindAction("Roll", throwIfNotFound: true);
         m_Pilot_Rudder = m_Pilot.FindAction("Rudder", throwIfNotFound: true);
         m_Pilot_Throttle = m_Pilot.FindAction("Throttle", throwIfNotFound: true);
-        m_Pilot_Boost = m_Pilot.FindAction("Boost", throwIfNotFound: true);
         m_Pilot_FirePrimaries = m_Pilot.FindAction("FirePrimaries", throwIfNotFound: true);
         m_Pilot_FireSecondaries = m_Pilot.FindAction("FireSecondaries", throwIfNotFound: true);
         m_Pilot_Bomb = m_Pilot.FindAction("Bomb", throwIfNotFound: true);
@@ -3644,7 +3612,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Pilot_Roll;
     private readonly InputAction m_Pilot_Rudder;
     private readonly InputAction m_Pilot_Throttle;
-    private readonly InputAction m_Pilot_Boost;
     private readonly InputAction m_Pilot_FirePrimaries;
     private readonly InputAction m_Pilot_FireSecondaries;
     private readonly InputAction m_Pilot_Bomb;
@@ -3666,7 +3633,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         public InputAction @Roll => m_Wrapper.m_Pilot_Roll;
         public InputAction @Rudder => m_Wrapper.m_Pilot_Rudder;
         public InputAction @Throttle => m_Wrapper.m_Pilot_Throttle;
-        public InputAction @Boost => m_Wrapper.m_Pilot_Boost;
         public InputAction @FirePrimaries => m_Wrapper.m_Pilot_FirePrimaries;
         public InputAction @FireSecondaries => m_Wrapper.m_Pilot_FireSecondaries;
         public InputAction @Bomb => m_Wrapper.m_Pilot_Bomb;
@@ -3701,9 +3667,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
             @Throttle.started += instance.OnThrottle;
             @Throttle.performed += instance.OnThrottle;
             @Throttle.canceled += instance.OnThrottle;
-            @Boost.started += instance.OnBoost;
-            @Boost.performed += instance.OnBoost;
-            @Boost.canceled += instance.OnBoost;
             @FirePrimaries.started += instance.OnFirePrimaries;
             @FirePrimaries.performed += instance.OnFirePrimaries;
             @FirePrimaries.canceled += instance.OnFirePrimaries;
@@ -3759,9 +3722,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
             @Throttle.started -= instance.OnThrottle;
             @Throttle.performed -= instance.OnThrottle;
             @Throttle.canceled -= instance.OnThrottle;
-            @Boost.started -= instance.OnBoost;
-            @Boost.performed -= instance.OnBoost;
-            @Boost.canceled -= instance.OnBoost;
             @FirePrimaries.started -= instance.OnFirePrimaries;
             @FirePrimaries.performed -= instance.OnFirePrimaries;
             @FirePrimaries.canceled -= instance.OnFirePrimaries;
@@ -4608,7 +4568,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         void OnRoll(InputAction.CallbackContext context);
         void OnRudder(InputAction.CallbackContext context);
         void OnThrottle(InputAction.CallbackContext context);
-        void OnBoost(InputAction.CallbackContext context);
         void OnFirePrimaries(InputAction.CallbackContext context);
         void OnFireSecondaries(InputAction.CallbackContext context);
         void OnBomb(InputAction.CallbackContext context);

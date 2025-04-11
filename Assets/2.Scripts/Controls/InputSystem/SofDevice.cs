@@ -14,7 +14,6 @@ public struct SofDeviceState : IInputStateTypeInfo
 {
     public FourCC format => new FourCC('S', 'O', 'F', 'D');
 
-    [InputControl(name = "throttleBoost", layout = "Button", bit = 0, displayName = "Throttle Boost")]
     [InputControl(name = "primaryFire", layout = "Button", bit = 1, displayName = "Primary Fire")]
     [InputControl(name = "secondaryFire", layout = "Button", bit = 2, displayName = "Secondary Fire")]
     [InputControl(name = "resetCamera", layout = "Button", bit = 3, displayName = "Reset Camera")]
@@ -63,7 +62,6 @@ public class SofDevice : InputDevice, IInputUpdateCallbackReceiver
                 .WithInterface("Custom"));
     }
 
-    public ButtonControl throttleBoost { get; private set; }
     public ButtonControl primaryFire { get; private set; }
     public ButtonControl secondaryFire { get; private set; }
     public ButtonControl resetCamera { get; private set; }
@@ -87,7 +85,6 @@ public class SofDevice : InputDevice, IInputUpdateCallbackReceiver
     {
         base.FinishSetup();
 
-        throttleBoost = GetChildControl<ButtonControl>("throttleBoost");
         primaryFire = GetChildControl<ButtonControl>("primaryFire");
         secondaryFire = GetChildControl<ButtonControl>("secondaryFire");
         resetCamera = GetChildControl<ButtonControl>("resetCamera");

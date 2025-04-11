@@ -20,8 +20,10 @@ namespace UnityEngine.InputSystem.OnScreen
         public Type type;
 
         private OnScreenThrottle throttle;
-        private void Start()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             throttle = GetComponent<OnScreenThrottle>();
             throttle.OnControlValueSent += UpdateControls;
         }

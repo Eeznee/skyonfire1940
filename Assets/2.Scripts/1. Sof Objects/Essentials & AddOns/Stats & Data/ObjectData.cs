@@ -6,12 +6,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
-public enum AircraftWorldState
-{
-    Flying,
-    TakingOff
-}
-public class ObjectData : SofComponent
+public class ObjectData
 {
     public class Value<T>
     {
@@ -40,6 +35,7 @@ public class ObjectData : SofComponent
     public Value<float> density, relativeDensity, temperature, pressure;
     public Value<float> pitchAngle, bankAngle, angleOfSlip, angleOfAttack, turnRate;
     public Value<float> groundEffect;
+    public Value<bool> grounded;
 
     private void InitializeValues()
     {
@@ -62,7 +58,8 @@ public class ObjectData : SofComponent
 
         pitchAngle = new Value<float>(() => { return Vector3.Angle(tr.forward, Vector3.ProjectOnPlane(tr.forward, Vector3.up)) * Mathf.Sign(tr.forward.y); }, this);
         turnRate = new Value<float>(() => { return -tr.InverseTransformDirection(rb.angularVelocity).x; }, this);
-        bankAngle = new Value<float>(() => {
+        bankAngle = new Value<float>(() =>
+        {
             float angle = tr.eulerAngles.z;
             return (angle > 180f) ? angle - 360f : angle;
         }, this);
@@ -70,26 +67,45 @@ public class ObjectData : SofComponent
         angleOfAttack = new Value<float>(() => { return tas.Get < 2f ? 0f : Vector3.SignedAngle(tr.forward, Vector3.ProjectOnPlane(rb.velocity, tr.right), tr.right); }, this);
         groundEffect = new Value<float>(() => { return aircraft ? Aerodynamics.GetGroundEffect(relativeAltitude.Get, aircraft.stats.wingSpan) : 1f; }, this);
 
+        grounded = new Value<bool>(() => 
+        {
+            if (!aircraft) return true;
+
+            if (ias.Get > aircraft.stats.MinTakeOffSpeedHalfFlaps) return false;
+            return relativeAltitude.Get < 10f;
+
+        }, this);
+
         prevVelFirstValue = false;
     }
-    public override void SetReferences(SofComplex _complex)
+
+    [SerializeField] private Transform tr;
+    [SerializeField] private SofComplex complex;
+    [SerializeField] private SofAircraft aircraft;
+    [SerializeField] private Rigidbody rb;
+    public ObjectData(SofComplex _complex)
     {
-        base.SetReferences(_complex);
+        tr = _complex.transform;
+        complex = _complex;
+        aircraft = _complex.aircraft;
+        rb = _complex.rb;
+
         OnValuesReset = null;
         InitializeValues();
+
+        complex.OnFixedUpdate += FixedUpdateData;
+        complex.OnInitialize += OnInitialize;
     }
-    public override void Initialize(SofComplex _complex)
+    private void OnInitialize()
     {
-        base.Initialize(_complex);
         if (rb) prevVel = rb.velocity;
     }
-    void FixedUpdate()
+    void FixedUpdateData()
     {
         if (OnValuesReset != null) OnValuesReset();
         if (aircraft)
         {
             ComputeAcceleration();
-            ComputeWorldState();
         }
     }
     private bool prevVelFirstValue;
@@ -125,32 +141,4 @@ public class ObjectData : SofComponent
             gForceCounter = totalG = 0f;
         }
     }
-
-    public bool grounded { get; private set; }
-    protected void ComputeWorldState()
-    {
-        grounded = data.relativeAltitude.Get < 5f && data.gsp.Get < aircraft.cruiseSpeed * 0.5f;
-    }
 }
-
-#if UNITY_EDITOR
-[CustomEditor(typeof(ObjectData))]
-public class ObjectDataEditor : Editor
-{
-    public override void OnInspectorGUI()
-    {
-        serializedObject.Update();
-
-        base.OnInspectorGUI();
-
-        ObjectData data = (ObjectData)target;
-
-        if (GUI.changed)
-        {
-            EditorUtility.SetDirty(data);
-            EditorSceneManager.MarkSceneDirty(data.gameObject.scene);
-        }
-        serializedObject.ApplyModifiedProperties();
-    }
-}
-#endif

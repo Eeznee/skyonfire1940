@@ -20,8 +20,6 @@ public class AircraftStats
     public float MinTakeOffSpeedNoFlaps { get; private set; }
     public float MinTakeOffSpeedHalfFlaps { get; private set; }
 
-    private float[] maxSpeedsAt1000Intervals;
-
     private float rollRateSpeedCoefficent;
     private float turningRadiusCoefficent;
     private float negTurningRadiusCoefficent;
@@ -40,14 +38,35 @@ public class AircraftStats
     public float MaxTurnRate => 360f * aircraft.data.gsp.Get / (TurningRadius * 2f * Mathf.PI);
     public float MaxNegTurnRate => 360f * aircraft.data.gsp.Get / (NegTurningRadius * 2f * Mathf.PI);
 
-    public float Mass => aircraft.rb ? aircraft.rb.mass : aircraft.LoadedMass.mass;
+    public float Mass => aircraft.LoadedMass.mass;
 
     public AircraftStats(SofAircraft _aircraft)
     {
         aircraft = _aircraft;
 
-        GetReferences();
+        engines = aircraft.GetComponentsInChildren<Engine>();
+        MainEnginePreset = engines.Length > 0 ? engines[0].Preset : null;
+        airframes = aircraft.GetComponentsInChildren<SofAirframe>();
+        wings = aircraft.GetComponentsInChildren<Wing>();
 
+        foreach (Wing wing in wings)
+            if (!wing.parent)
+                rootWing = wing;
+        
+        ComputeStats();
+        aircraft.OnInitialize += OnInitialize;
+    }
+
+    void OnInitialize()
+    {
+        ComputeStats();
+    }
+
+    private SofAirframe[] airframes;
+    private Wing[] wings;
+    private Engine[] engines;
+    private void ComputeStats()
+    {
         ComputeWingStats();
         MinTakeOffSpeedNoFlaps = MinTakeOffSpeed(false);
         MinTakeOffSpeedHalfFlaps = MinTakeOffSpeed(true);
@@ -55,29 +74,7 @@ public class AircraftStats
         ComputeRollRate();
         ComputeTurningRadius();
 
-        maxSpeedsAt1000Intervals = new float[10];
-        for (int i = 0; i < maxSpeedsAt1000Intervals.Length; i++)
-            maxSpeedsAt1000Intervals[i] = MaxSpeed(i * 1000f, 1f);
-
         altitudeZeroMaxSpeed = MaxSpeed(0f, 1f);
-    }
-
-    private SofAirframe[] airframes;
-    private Wing[] wings;
-    private Engine[] engines;
-    private void GetReferences()
-    {
-        airframes = aircraft.GetComponentsInChildren<SofAirframe>();
-        wings = aircraft.GetComponentsInChildren<Wing>();
-
-        foreach (Wing wing in wings)
-        {
-            if (!wing.parent)
-                rootWing = wing;
-        }
-
-        engines = aircraft.GetComponentsInChildren<Engine>();
-        MainEnginePreset = engines.Length > 0 ? engines[0].Preset : null;
     }
     private void ComputeWingStats()
     {

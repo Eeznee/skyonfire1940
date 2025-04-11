@@ -30,7 +30,7 @@ public class FuselageCore : Fuselage, IAircraftForce
     public float CombinedArea()
     {
         float areas = 0f;
-        foreach (Fuselage fus in linkedFuselages) if (fus.data == data) areas += fus.area;
+        foreach (Fuselage fus in linkedFuselages) if (fus.complex == complex) areas += fus.area;
         return areas;
     }
 

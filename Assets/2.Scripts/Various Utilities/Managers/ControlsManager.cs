@@ -16,12 +16,23 @@ public class ControlsManager : MonoBehaviour
 
     public static ControlsMode CurrentMode()
     {
-#if MOBILE_INPUT
-        return ControlsMode.Direct;
-#endif
         if (UIManager.gameUI != GameUI.Game) return ControlsMode.Direct;
 
+#if MOBILE_INPUT
+        if (Player.role == SeatRole.Pilot)
+            return ControlsMode.Direct;
+        if (Player.role == SeatRole.Gunner)
+        {
+            if (!Player.gunnerSeat.gunMount) return ControlsMode.Tracking;
 
+            if (Player.gunnerSeat.gunMount.ForceJoystickControls)
+                return ControlsMode.Direct;
+
+            return ControlsMode.Tracking;
+        }
+
+        return ControlsMode.Direct;
+#else
         if (Player.role == SeatRole.Pilot)
         {
             bool cantUseTracking = SofCamera.subCam != null && SofCamera.subCam.logic.BaseDirMode != CamDir.SeatAligned;
@@ -38,6 +49,7 @@ public class ControlsManager : MonoBehaviour
             return preferredGunner;
         }
         return ControlsMode.Direct;
+#endif
     }
     private void Awake()
     {

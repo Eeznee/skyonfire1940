@@ -41,7 +41,7 @@ namespace UnityEngine.InputSystem.OnScreen
         public void OnDrag(PointerEventData eventData)
         {
             dragged = true;
-            //Debug.Log(slider.value);
+
             UpdateSliderAndSendValue();
         }
         public void OnPointerUp(PointerEventData eventData)
@@ -54,18 +54,27 @@ namespace UnityEngine.InputSystem.OnScreen
         {
             minButtonActive = slider.value < (minButtonThreshold + slider.minValue) * 0.5f;
             maxButtonActive = slider.value > (maxButtonThreshold + slider.maxValue) * 0.5f;
+
             if (!minButtonActive && !maxButtonActive)
             {
                 slider.value = Mathf.Clamp(slider.value, minButtonThreshold, maxButtonThreshold);
                 float valueToSend = Mathf.InverseLerp(minButtonThreshold, maxButtonThreshold, slider.value);
-                SendValueToControl(valueToSend);
+                SendValueToControl(valueToSend * PlayerActions.throttleBoostThrehold);
             }
             else
             {
                 slider.value = maxButtonActive ? slider.maxValue : slider.minValue;
-                SendValueToControl(slider.value);
+                if(maxButtonActive)
+                {
+                    slider.value = slider.maxValue;
+                    SendValueToControl(1f);
+                }
+                else
+                {
+                    slider.value = slider.minValue;
+                    SendValueToControl(0f);
+                }
             }
-
 
             OnControlValueSent?.Invoke();
         }
@@ -74,9 +83,9 @@ namespace UnityEngine.InputSystem.OnScreen
             dragged = false;
             slider = GetComponent<Slider>();
         }
-
         void Update()
         {
+            if (!slider) return;
             if (dragged) return;
             if (!Player.aircraft) return;
 
@@ -90,12 +99,11 @@ namespace UnityEngine.InputSystem.OnScreen
             else if (Player.aircraft.controls.brake > 0.5f)
             {
                 slider.value = 0f;
-            } 
+            }
             else
             {
                 slider.value = Mathf.Lerp(minButtonThreshold, maxButtonThreshold, throttle);
             }
-
         }
     }
 }

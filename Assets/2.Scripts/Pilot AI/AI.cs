@@ -34,7 +34,7 @@ public static class AI
 
             dir = target.transform.position - aircraft.transform.position;
             distance = dir.magnitude;
-            closure = Vector3.Dot(target.data.rb.velocity - aircraft.data.rb.velocity, dir/distance);
+            closure = Vector3.Dot(target.rb.velocity - aircraft.rb.velocity, dir/distance);
             offAngle = Vector3.Angle(dir, aircraft.transform.forward);
             crossAngle = Vector3.Angle(aircraft.transform.forward, target.transform.forward);
             aspectAngle = Vector3.Angle(dir, target.transform.forward);

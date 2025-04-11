@@ -666,7 +666,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: da2950cc216e1d143824847551717136, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 828f36689eae95a40ae6d0a99bd4993e, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -2187,7 +2187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d54531977ecb194c95e2d3aa7a5d72a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ControlPath: <Gamepad>/rightShoulder
+  m_ControlPath: <SofDevice>/zoomIn
 --- !u!1 &871785412980645454
 GameObject:
   m_ObjectHideFlags: 0
@@ -3961,6 +3961,7 @@ GameObject:
   - component: {fileID: 6672435614909518038}
   - component: {fileID: 8907717812387716842}
   - component: {fileID: 2937303622812097979}
+  - component: {fileID: 7403483959405391785}
   m_Layer: 5
   m_Name: Aim Left
   m_TagString: Untagged
@@ -4083,7 +4084,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d54531977ecb194c95e2d3aa7a5d72a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ControlPath: <Gamepad>/rightShoulder
+  m_ControlPath: <SofDevice>/zoomIn
+--- !u!114 &7403483959405391785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1264345134927306903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e7b1ae646144c044954006ea988dad5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gunnerNoJoystick: 1
 --- !u!1 &1340996745578591495
 GameObject:
   m_ObjectHideFlags: 0
@@ -5688,6 +5702,97 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Relative
+--- !u!1 &2192305322792252428
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5515339408927247494}
+  - component: {fileID: 8634837776157379415}
+  - component: {fileID: 6572578812035251207}
+  - component: {fileID: 3249229845164122559}
+  m_Layer: 5
+  m_Name: Gunner Joystick
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5515339408927247494
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2192305322792252428}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1501271369763045931}
+  m_Father: {fileID: 310463945923977525}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 150, y: 100}
+  m_SizeDelta: {x: 500, y: 500}
+  m_Pivot: {x: 0, y: 0}
+--- !u!222 &8634837776157379415
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2192305322792252428}
+  m_CullTransparentMesh: 0
+--- !u!114 &6572578812035251207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2192305322792252428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.02745098}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 48d27e2d14be28e4fa706308e53f1486, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 1
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3249229845164122559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2192305322792252428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e7b1ae646144c044954006ea988dad5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gunnerNoJoystick: 0
 --- !u!1 &2193142477626810761
 GameObject:
   m_ObjectHideFlags: 0
@@ -6144,6 +6249,7 @@ GameObject:
   - component: {fileID: 6556663746536029228}
   - component: {fileID: 3767054163429007417}
   - component: {fileID: 8888667767543412094}
+  - component: {fileID: 2671582005200104615}
   m_Layer: 5
   m_Name: Shoot Left
   m_TagString: Untagged
@@ -6267,6 +6373,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ControlPath: <Keyboard>/1
+--- !u!114 &2671582005200104615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2227356805783544052}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e7b1ae646144c044954006ea988dad5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gunnerNoJoystick: 1
 --- !u!1 &2240423267651350643
 GameObject:
   m_ObjectHideFlags: 0
@@ -6534,11 +6653,6 @@ MonoBehaviour:
   multiSlider: {fileID: 0}
   reset: 0
   resetValue: 0
-  extremitiesButtons: 0
-  minButtonThreshold: 185
-  maxButtonThreshold: 0.85
-  minButtonActive: 0
-  maxButtonActive: 0
 --- !u!1 &2312315665768988750
 GameObject:
   m_ObjectHideFlags: 0
@@ -9527,7 +9641,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   coefficient: 1
-  m_ControlPath: <Mouse>/delta
+  m_ControlPath: <SofDevice>/cameraRotate
 --- !u!114 &8315770378887552916
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10389,6 +10503,7 @@ RectTransform:
   - {fileID: 689792554249866351}
   - {fileID: 2558797591416843935}
   - {fileID: 8073019966008022392}
+  - {fileID: 5515339408927247494}
   m_Father: {fileID: 3403461045479253789}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -10899,7 +11014,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: da2950cc216e1d143824847551717136, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 828f36689eae95a40ae6d0a99bd4993e, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -13523,6 +13638,7 @@ GameObject:
   - component: {fileID: 1814060248764058992}
   - component: {fileID: 5542142007590021232}
   - component: {fileID: 2760214903421149152}
+  - component: {fileID: 3740509578780722538}
   m_Layer: 5
   m_Name: Reload Left
   m_TagString: Untagged
@@ -13646,6 +13762,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ControlPath: <Keyboard>/r
+--- !u!114 &3740509578780722538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5616715831182953970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e7b1ae646144c044954006ea988dad5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gunnerNoJoystick: 1
 --- !u!1 &5650252011507425005
 GameObject:
   m_ObjectHideFlags: 0
@@ -14537,6 +14666,118 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spec: 9
+--- !u!1 &6268295349768783156
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1501271369763045931}
+  - component: {fileID: 8060224183268510170}
+  - component: {fileID: 3306964256893770869}
+  - component: {fileID: 5449841859710754747}
+  m_Layer: 5
+  m_Name: Stick
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1501271369763045931
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6268295349768783156}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5515339408927247494}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 150, y: 150}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &8060224183268510170
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6268295349768783156}
+  m_CullTransparentMesh: 0
+--- !u!114 &3306964256893770869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6268295349768783156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.7372549}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 5485e2f56028a3c4cb54f5caa167377e, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5449841859710754747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6268295349768783156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9d677f1681015749b15c436eec6d880, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MovementRange: 200
+  m_DynamicOriginRange: 100
+  m_ControlPath: <SofDevice>/mainStick
+  m_Behaviour: 0
+  m_UseIsolatedInputActions: 0
+  m_PointerDownAction:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  m_PointerMoveAction:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
 --- !u!1 &6331945147236546859
 GameObject:
   m_ObjectHideFlags: 0
@@ -14794,11 +15035,6 @@ MonoBehaviour:
   multiSlider: {fileID: 0}
   reset: 0
   resetValue: 0
-  extremitiesButtons: 0
-  minButtonThreshold: 185
-  maxButtonThreshold: 0.85
-  minButtonActive: 0
-  maxButtonActive: 0
 --- !u!1 &6394084113901428639
 GameObject:
   m_ObjectHideFlags: 0
@@ -16257,11 +16493,6 @@ MonoBehaviour:
   multiSlider: {fileID: 0}
   reset: 0
   resetValue: 0
-  extremitiesButtons: 0
-  minButtonThreshold: 185
-  maxButtonThreshold: 0.85
-  minButtonActive: 0
-  maxButtonActive: 0
 --- !u!1 &6900653921098082036
 GameObject:
   m_ObjectHideFlags: 0
@@ -16460,7 +16691,6 @@ GameObject:
   - component: {fileID: 4171283717174982313}
   - component: {fileID: 8063253987585978311}
   - component: {fileID: 1313541386988342367}
-  - component: {fileID: 4740071287290261894}
   - component: {fileID: 4370550716308826035}
   m_Layer: 5
   m_Name: Throttle
@@ -16560,28 +16790,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ControlPath: <SofDevice>/throttle
   slider: {fileID: 0}
-  multiSlider: {fileID: 0}
-  reset: 0
-  resetValue: 0
-  extremitiesButtons: 1
   minButtonThreshold: 0.13
   maxButtonThreshold: 0.87
   minButtonActive: 0
   maxButtonActive: 0
---- !u!114 &4740071287290261894
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6982418029629225590}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72c2eac5465633649b8430c9885bb572, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ControlPath: <SofDevice>/throttleBoost
-  type: 1
 --- !u!114 &4370550716308826035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20084,11 +20296,6 @@ MonoBehaviour:
   multiSlider: {fileID: 0}
   reset: 0
   resetValue: 0
-  extremitiesButtons: 0
-  minButtonThreshold: 185
-  maxButtonThreshold: 0.85
-  minButtonActive: 0
-  maxButtonActive: 0
 --- !u!1 &8591416451827556794
 GameObject:
   m_ObjectHideFlags: 0

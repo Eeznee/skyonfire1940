@@ -16,6 +16,8 @@ public class PlayerActions : MonoBehaviour
     public static Actions.CameraActions cam;
     public static Actions.SwitcherActions switcher;
 
+    public const float throttleBoostThrehold = 0.9f;
+
     private static bool PlayerAvailable()
     {
         return Player.aircraft && !Player.crew.ActionsUnavailable;
@@ -56,8 +58,6 @@ public class PlayerActions : MonoBehaviour
         pilot.Bomb.performed += _ => Action("Bomb");
         pilot.Rocket.performed += _ => Action("Rocket");
         pilot.Throttle.performed += val => SetThrottle(val.ReadValue<float>());
-        pilot.Boost.performed += val => SetThrottle(1.1f);
-        pilot.Boost.canceled += val => SetThrottle(pilot.Throttle.ReadValue<float>());
         pilot.Dynamic.performed += _ => dynamic = !dynamic;
 
         bombardier.BombBay.performed += _ => Action("BombBay");
@@ -192,9 +192,14 @@ public class PlayerActions : MonoBehaviour
                 break;
         }
     }
-    private void SetThrottle(float thr)
+    private void SetThrottle(float throttleInput)
     {
         if (!PlayerAvailable()) return;
-        Player.aircraft.engines.SetThrottleAllEngines(thr, true);
+        float throttle = Mathf.Clamp01(throttleInput / throttleBoostThrehold);
+        if (throttleInput > 0.5f * (throttleBoostThrehold + 1f))
+        {
+            throttle = 2f;
+        }
+        Player.aircraft.engines.SetThrottleAllEngines(throttle, true);
     }
 }

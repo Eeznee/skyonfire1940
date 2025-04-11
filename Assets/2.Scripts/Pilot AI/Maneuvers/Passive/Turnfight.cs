@@ -8,7 +8,7 @@ public class Turnfight : Maneuver
     {
         Transform tr = data.aircraft.transform;
 
-        Vector3 dumbTarget = (data.target.transform.position + data.target.data.rb.velocity - tr.transform.position).normalized;
+        Vector3 dumbTarget = (data.target.transform.position + data.target.rb.velocity - tr.transform.position).normalized;
         Vector3 flatTurnTarget = Vector3.Cross(Vector3.up, new Vector3(tr.forward.x, 0f, tr.forward.z)).normalized;
 
         //Choose the right direction for the flat turn
