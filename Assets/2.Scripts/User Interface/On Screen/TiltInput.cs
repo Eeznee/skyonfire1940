@@ -66,7 +66,6 @@ namespace UnityEngine.InputSystem.OnScreen
 
         private void Update()
         {
-            Debug.Log(GetTilt(0f));
             AddInput();
             Vector2 tilt = GetTilt(1f - Mathf.Abs(lastPitch));
             tilt.y = Mathf.Clamp(tilt.y - pitchZeroing, -fullPitchAngle, fullPitchAngle) / fullPitchAngle;
