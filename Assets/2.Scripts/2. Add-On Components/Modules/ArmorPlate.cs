@@ -4,9 +4,14 @@ using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-public class ArmorPlate : SofModule
+public class ArmorPlate : SofModule, IMassComponent
 {
+    public float LoadedMass => mass;
+    public float EmptyMass => mass;
+    public float RealMass => mass;
+
     public float thickness = 6f;
+    public float mass = 0f;
     public override float MaxHp => 1000f;
 
     public override ModuleArmorValues Armor => new ModuleArmorValues(thickness,0f);

@@ -124,7 +124,6 @@ public class Wheel : SofModule, IMassComponent
         if (!aircraft) return;
         if (rb.transform != transform.root) return;
 
-
         if (data.relativeAltitude.Get > 20f)
         {
             grounded = false;

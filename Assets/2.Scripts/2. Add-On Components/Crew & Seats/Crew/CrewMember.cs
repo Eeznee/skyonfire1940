@@ -15,7 +15,7 @@ public class CrewMember : SofModule, IMassComponent
 
     public float EmptyMass => 0f;
     public float LoadedMass => RealMass;
-    public float RealMass => CrewForcesEffect.Weight();
+    public float RealMass => 90f;
 
 
     public List<CrewSeat> seats;

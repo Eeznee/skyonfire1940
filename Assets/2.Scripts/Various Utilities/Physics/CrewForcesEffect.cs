@@ -31,7 +31,6 @@ public class CrewForcesEffect
     private float pain = 0f;
     private CrewMember crew;
 
-    public static float Weight() { return 70f; }
     public float Stamina() { return stamina* invertMaxStamina; }
     public float Blood() { return blood* invertBloodMax; }
     public bool Gloc() { return gloc; }

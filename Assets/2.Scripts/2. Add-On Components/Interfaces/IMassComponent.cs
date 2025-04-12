@@ -17,6 +17,8 @@ public interface IMassComponent
         if (category == MassCategory.Loaded) return LoadedMass;
         else return EmptyMass;
     }
+
+    public string name { get; set; }
     public float LoadedMass { get; }
     public float RealMass { get; }
     public float EmptyMass { get; }

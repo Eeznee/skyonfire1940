@@ -86,7 +86,7 @@ public class AnalogInteractable : CockpitInteractable
         base.CockpitInteractableUpdate();
         if (group && GroupSelect())
         {
-            linked.VRInteraction(gripPosition, gripRotation);
+            //linked.VRInteraction(gripPosition, gripRotation);
         }
     }
     protected virtual void Animate(bool animInput)
