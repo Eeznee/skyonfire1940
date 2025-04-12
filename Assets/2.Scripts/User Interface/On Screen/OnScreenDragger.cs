@@ -25,13 +25,24 @@ namespace UnityEngine.InputSystem.OnScreen
             startPos = ((RectTransform)transform).anchoredPosition;
             parentRectTransform = transform.parent.GetComponentInParent<RectTransform>();
         }
+        private bool dragged;
+        private Vector2 pointerPosition;
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            dragged = false;
+        }
 
         public void OnPointerDown(PointerEventData eventData)
         {
             if (eventData == null)
                 throw new System.ArgumentNullException(nameof(eventData));
 
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(parentRectTransform, eventData.position, eventData.pressEventCamera, out previousPos);
+            dragged = true;
+
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(parentRectTransform, eventData.position, eventData.pressEventCamera, out pointerPosition);
+            previousPos = pointerPosition;
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -39,16 +50,23 @@ namespace UnityEngine.InputSystem.OnScreen
             if (eventData == null)
                 throw new System.ArgumentNullException(nameof(eventData));
 
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(parentRectTransform, eventData.position, eventData.pressEventCamera, out Vector2 pos);
-            SendValueToControl((pos - previousPos) * coefficient);
-
-            previousPos = pos;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(parentRectTransform, eventData.position, eventData.pressEventCamera, out pointerPosition);
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
+            dragged = false;
             ((RectTransform)transform).anchoredPosition = startPos;
             SendValueToControl(Vector2.zero);
+        }
+
+        private void Update()
+        {
+            if (dragged)
+            {
+                SendValueToControl((pointerPosition - previousPos) * coefficient);
+                previousPos = pointerPosition;
+            }
         }
 
         protected override string controlPathInternal
