@@ -19,7 +19,7 @@ public class PistonEngine : Engine
     public float BrakePower { get; private set; }
     public float BrakeTorque { get; private set; }
 
-    public override bool BoostIsEffective => Working && pistonPreset.BoostIsEffective(RunMode,data.altitude.Get);
+    public override bool BoostIsEffective => Working && pistonPreset.BoostIsEffective(RunMode, data.altitude.Get);
 
     public PistonEnginePreset PistonPreset => pistonPreset;
     public override EngineClass Class => EngineClass.PistonEngine;
@@ -100,8 +100,8 @@ public class PistonEngine : Engine
     public override bool SetAutomated(bool on, bool instant)
     {
         bool success = base.SetAutomated(on, instant);
-
-        if (instant) propeller.EngineSetInstantBladesAngle(rb.velocity.magnitude, RadPerSec);
+        if (instant && success)
+            propeller.EngineSetInstantBladesAngle(rb.velocity.magnitude, RadPerSec);
 
         return success;
     }
@@ -137,7 +137,7 @@ public class PistonEngine : Engine
         {
             float previousRadPerSec = RadPerSec;
 
-            RadPerSec = Mathf.Lerp(startRps, Preset.IdleRadPerSec, Mathv.SmoothStop(timeCount / Preset.IgnitionTime,3));
+            RadPerSec = Mathf.Lerp(startRps, Preset.IdleRadPerSec, Mathv.SmoothStop(timeCount / Preset.IgnitionTime, 3));
             timeCount += Time.deltaTime;
 
             float inertia = propeller.InertiaWithGear;

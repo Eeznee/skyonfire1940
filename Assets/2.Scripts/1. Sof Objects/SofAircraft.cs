@@ -97,33 +97,40 @@ public class SofAircraft : SofComplex
         fuel ??= new FuelManager(this);
         controls ??= new AircraftInputs(this);
     }
-    protected override void GameInitialization()
+    protected override void InitializeImportantComponents()
     {
-        ptAbstractControls = Vector2.zero;
-        ptMultipliers = Vector2.one;
+        base.InitializeImportantComponents();
 
         forcesCompiler = gameObject.AddComponent<ForcesCompiler>();
-        if (!customPIDValues) SetDefaultPIDValues();
-
         lod = this.GetCreateComponentInChildren<ObjectLOD>();
         if (!simpleDamage) bubble = transform.CreateChild("Object Bubble").gameObject.AddComponent<ObjectBubble>();
-
-        for (int i = 0; i < Stations.Length; i++) Stations[i].SelectAndDestroy(squadron.stations[i]);
-
-        base.GameInitialization();
-
-        InitializeMarkersAndGameReferences();
+    }
+    protected override void InitializePhysics()
+    {
+        base.InitializePhysics();
 
         if (!GroundedStart) rb.velocity = transform.forward * stats.MaxSpeed(data.altitude.Get, 1f);
         timeSinceLastLanding = GroundedStart ? 0f : 600f;
     }
-    private void InitializeMarkersAndGameReferences()
+    protected override void InitializeReferencesAndPlayer()
     {
+        base.InitializeReferencesAndPlayer();
+
         tag = (squadron.team == Game.Team.Ally) ? "Ally" : (squadron.team == Game.Team.Axis) ? "Axis" : "Neutral";
 
         if (squadron.team == Game.Team.Ally) GameManager.allyAircrafts.Add(this);
         else GameManager.axisAircrafts.Add(this);
         MarkersManager.Add(this);
+    }
+    protected override void GameInitialization()
+    {
+        ptAbstractControls = Vector2.zero;
+        ptMultipliers = Vector2.one;
+        if (!customPIDValues) SetDefaultPIDValues();
+
+        for (int i = 0; i < Stations.Length; i++) Stations[i].SelectAndDestroy(squadron.stations[i]);
+
+        base.GameInitialization();
     }
     private void OnCollisionEnter(Collision col)
     {

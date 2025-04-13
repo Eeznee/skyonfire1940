@@ -164,18 +164,17 @@ public class AircraftStats
         }
 
     }
-    const float dragAdjustment = 1.05f;
+    const float dragAdjustment = 1.45f;
     public float MaxSpeed(float altitude, float throttle)
     {
         if (MainEnginePreset == null) return 0f;
 
-
         float totalAreaDrag = totalAreaCd * 0.5f * Aerodynamics.GetAirDensity(altitude);
         totalAreaCd *= dragAdjustment;
-        float relativeAirDensity = Aerodynamics.GetAirDensity(altitude) * Aerodynamics.invertSeaLvlDensity;
 
         float totalJetThrust = 0f;
         float totalPistonPower = 0f;
+        float relativeAirDensity = Aerodynamics.GetAirDensity(altitude) * Aerodynamics.invertSeaLvlDensity;
 
         foreach (Engine engine in engines)
         {
@@ -185,7 +184,7 @@ public class AircraftStats
             {
                 JetEngine jetEngine = engine as JetEngine;
 
-                totalJetThrust += jetEngine.JetPreset.MaxThrust;// * throttle * relativeAirDensity;
+                totalJetThrust += jetEngine.JetPreset.MaxThrust * throttle * relativeAirDensity;
             }
             if (engine.Class == EngineClass.PistonEngine)
             {

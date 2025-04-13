@@ -12,8 +12,6 @@ public partial class Propeller : SofModule, IMassComponent, IAircraftForce
     {
         return 2;
     }
-
-
     public enum PitchControl
     {
         Fixed,
@@ -71,7 +69,7 @@ public partial class Propeller : SofModule, IMassComponent, IAircraftForce
 
         gameObject.layer = 2;
         tr.Rotate(Vector3.forward * UnityEngine.Random.value * 360f);
-        SetBladeAngle(maxPitch);
+        SetBladeAngle(minPitch);
     }
     void Update()
     {
@@ -105,8 +103,8 @@ public partial class Propeller : SofModule, IMassComponent, IAircraftForce
         return new ForceAtPoint(direction * Thrust, point);
     }
 
-    const float bladeAngleShiftSpeed = 8f;
-    const float maxShiftSpeedAtRps = 30f;
+    const float bladeAngleShiftSpeed = 4f;
+    const float maxShiftSpeedAtRps = 50f;
 
     private void TwoPitchAdjust(float dt)
     {
@@ -151,8 +149,6 @@ public partial class Propeller : SofModule, IMassComponent, IAircraftForce
         if (PitchControlMechanism == PitchControl.Fixed) BladeAngle = maxPitch;
         else BladeAngle = Mathf.Clamp(bladeAngle, minPitch, maxPitch);
     }
-
-
     public override void Rip()
     {
         base.Rip();

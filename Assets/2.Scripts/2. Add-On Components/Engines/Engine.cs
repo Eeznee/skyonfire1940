@@ -118,7 +118,7 @@ public abstract class Engine : SofModule, IMassComponent, IDamageTick, IIgnitabl
 
     public virtual bool SetAutomated(bool on, bool instant)
     {
-        if (!Functional || Igniting || (on == OnInput)) return false;
+        if (!Functional || Igniting || (on == OnInput && !instant)) return false;
         OnInput = on;
 
         if (instant)

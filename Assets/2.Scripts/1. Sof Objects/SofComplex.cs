@@ -60,23 +60,35 @@ public class SofComplex : SofObject
         EmptyMass = new Mass(massComponents.ToArray(), MassCategory.Empty);
         LoadedMass = new Mass(massComponents.ToArray(), MassCategory.Loaded);
     }
-    protected override void GameInitialization()
+    protected virtual void InitializeImportantComponents()
     {
         avm = transform.CreateChild("Audio Visual Manager").gameObject.AddComponent<ObjectAudio>();
-
-
-        base.GameInitialization();
-
-        InitializeSofComponents();
-        RecomputeRealMass();
-
         InvokeRepeating("DamageTick", damageTickInterval, damageTickInterval);
+    }
+    protected virtual void InitializePhysics()
+    {
+        RecomputeRealMass();
+    }
+    protected virtual void InitializeReferencesAndPlayer()
+    {
 
         if (Player.complex == this)
         {
             OnAttachPlayer?.Invoke();
             Player.crew.OnAttachPlayer?.Invoke();
         }
+    }
+    protected override void GameInitialization()
+    {
+        InitializeImportantComponents();
+
+        base.GameInitialization();
+
+        InitializeSofComponents();
+
+        InitializePhysics();
+
+        InitializeReferencesAndPlayer();
 
         OnInitialize?.Invoke();
     }
