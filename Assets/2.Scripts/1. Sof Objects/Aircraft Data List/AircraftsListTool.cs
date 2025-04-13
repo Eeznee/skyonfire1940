@@ -21,7 +21,6 @@ public class AircraftsListTool : MonoBehaviour
     ///WRITE YOUR CUSTOM CODE HERE
     public void CustomFunction(SofAircraft aircraft)
     {
-
     }
 }
 #if UNITY_EDITOR

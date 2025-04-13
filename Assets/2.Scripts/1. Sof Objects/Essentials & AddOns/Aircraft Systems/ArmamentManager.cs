@@ -59,11 +59,12 @@ public class ArmamentManager
             if (gun && !gun.noConvergeance && gun.controller != GunController.Gunner)
             {
                 float t = 1.1f * distance / gun.gunPreset.ammunition.defaultMuzzleVel;
-                Vector3 gravityCompensation = -t * t * Physics.gravity.y * 0.5f * tr.up;
+                Vector3 gravityCompensation = t * t * Physics.gravity.y * 0.5f * tr.up;
+                Vector3 aimPoint = point - gravityCompensation;
 
-                Quaternion pointRotation = Quaternion.LookRotation(point + gravityCompensation - gun.tr.position);
-                gun.convergence = Quaternion.Inverse(gun.tr.rotation) * pointRotation;
-            }
+                Quaternion pointRotation = Quaternion.LookRotation(aimPoint - gun.tr.position);
+                gun.convergence = pointRotation * Quaternion.Inverse(gun.tr.rotation);
+            }   
     }
     /*
     public void PointGuns(Vector3 position, float factor)

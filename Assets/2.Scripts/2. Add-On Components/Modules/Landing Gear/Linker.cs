@@ -45,7 +45,9 @@ public class Linker : MonoBehaviour
     }
     public void Update()
     {
+#if UNITY_EDITOR
         if (!Application.isPlaying) PrecomputeValues();
+#endif
 
         if (link1.tr && link2.tr && link1.tr.root == link2.tr.root)
             MatchLinks();
