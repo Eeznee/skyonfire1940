@@ -75,7 +75,7 @@ public partial class Propeller : SofModule, IMassComponent, IAircraftForce
     public float AdvanceRatio() { return AdvanceRatio(RadPerSec, data.signedTas.Get); }
     public float AdvanceRatio(float radPerSec, float signedTas)
     {
-        if (radPerSec == 0f) return 1000f;
+        if (radPerSec == 0f) return 0f;
 
         return signedTas / (radPerSec * radius);
     }

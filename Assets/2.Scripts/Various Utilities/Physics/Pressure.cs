@@ -32,6 +32,49 @@ public struct Pressure
     [SerializeField] private float psiDelta;
     [SerializeField] private float mmHg;
 
+    public string UnitString
+    {
+        get
+        {
+            switch (unitUsed)
+            {
+                case PressureUnit.kPa: return "kPa";
+                case PressureUnit.bar: return "ata";
+                case PressureUnit.Hg: return "Hg";
+                case PressureUnit.mmHg: return "mmHg";
+                case PressureUnit.psiDelta: return "+psi";
+                case PressureUnit.psi: return "psi";
+                default: return "pa";
+            }
+        }
+    }
+    public float ConvertPAUsingUnit(float pa)
+    {
+        switch (unitUsed)
+        {
+            case PressureUnit.kPa: return pa * 0.001f;
+            case PressureUnit.bar: return pa /  Aerodynamics.SeaLvlPressure;
+            case PressureUnit.Hg: return pa * paToHg;
+            case PressureUnit.mmHg: return pa * paToMmHg;
+            case PressureUnit.psiDelta: return (pa - Aerodynamics.SeaLvlPressure) * paToPsi;
+            case PressureUnit.psi: return pa * paToPsi;
+            default: return pa;
+        }
+    }
+    public string CompleteValueWithUnit(float pressure)
+    {
+        switch (unitUsed)
+        {
+            case PressureUnit.kPa: return pressure.ToString("0.0") + " kPa";
+            case PressureUnit.bar: return pressure.ToString("0.00") + " ata";
+            case PressureUnit.Hg: return pressure.ToString("0.0") + " inHg";
+            case PressureUnit.mmHg: return pressure.ToString("0") + " mmHg";
+            case PressureUnit.psiDelta: return "+" + pressure.ToString("0.00") + " psi";
+            case PressureUnit.psi: return pressure.ToString("0.00") + "psi";
+            default: return pressure.ToString("0") + " pa";
+        }
+    }
+
     public float PressurePa
     {
         get

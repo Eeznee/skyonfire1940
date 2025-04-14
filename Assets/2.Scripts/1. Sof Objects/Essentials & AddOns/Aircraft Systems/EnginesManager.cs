@@ -34,8 +34,10 @@ public class EnginesManager
     {
         SetThrottleAllEngines(aircraft.GroundedStart ? 0f : 1f, false);
         SetEngines(!aircraft.GroundedStart, true);
+
+        aircraft.OnFixedUpdate += OnFixedUpdate;
     }
-    public void Update()
+    public void OnFixedUpdate()
     {
         //Throttle = CompleteThrottle.GetThrottleValueFromMultipleEngines(AllEngines);
 

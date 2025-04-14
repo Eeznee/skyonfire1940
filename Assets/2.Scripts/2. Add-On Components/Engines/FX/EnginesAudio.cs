@@ -161,7 +161,6 @@ public class EnginesGroupAudio : MonoBehaviour
         float idlePitch = rps * invertIdleRPS * (TimeManager.paused ? 1f : Time.timeScale);
         idlePitch = Mathf.Sqrt(Mathf.Abs(idlePitch));
         float fullPitch = rps * invertFullRPS * (TimeManager.paused ? 1f : Time.timeScale);
-
         idleCockpit.source.pitch = idleExternal.source.pitch = idlePitch;
         fullCockpit.source.pitch = fullExternal.source.pitch = fullPitch;
     }

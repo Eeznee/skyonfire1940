@@ -44,6 +44,10 @@ public class PistonEngine : Engine
     {
         return (rps <= 0f) ? 0f : power / rps;
     }
+    public string ManifoldPressureInAppropriateUnit()
+    {
+        return pistonPreset.ManifoldPressureString(SuperchargerSetting,RunMode, RadPerSec, data.altitude.Get);
+    }
     public override void Initialize(SofComplex _complex)
     {
         base.Initialize(_complex);

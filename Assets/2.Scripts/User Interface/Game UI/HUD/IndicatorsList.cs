@@ -106,25 +106,6 @@ public class IndicatorsList : MonoBehaviour
             finalText += "WTR : " + aircraft.engines.Main.Temp.WaterTemperature.ToString("0.0") + " °C\n";
         if (temp)
             finalText += "OIL : " + aircraft.engines.Main.Temp.OilTemperature.ToString("0.0") + " °C\n";
-        if (temp)
-            finalText += "ENG : " + aircraft.engines.Main.Temp.Temperature.ToString("0.0") + " °C\n";
-        if (temp)
-            finalText += "DMG : " + (aircraft.engines.Main.structureDamage * 100f).ToString("0.0") + " %\n";
-
-        finalText += "\n";
-
-        //TODO: Implement rpm as settings
-        float rpm = aircraft.engines.Main.RadPerSec * 60f / (Mathf.PI * 2f);
-        finalText += "RPM : " + rpm.ToString("0") + "\n";
-
-        if(aircraft.engines.Main.Class == EngineClass.PistonEngine)
-        {
-            float bladeAngle = ((PistonEngine)aircraft.engines.Main).propeller.BladeAngle;
-            finalText += "P-ALPHA : " + bladeAngle.ToString("0.0") + " °\n";
-
-            float propEfficiency = ((PistonEngine)aircraft.engines.Main).propeller.BladeEfficiency() * 100f;
-            finalText += "P-EFF : " + propEfficiency.ToString("0.0") + " %\n";
-        }
 
         return finalText;
     }

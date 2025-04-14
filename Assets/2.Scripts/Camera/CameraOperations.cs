@@ -20,13 +20,14 @@ public static class CameraOperations
         Vector2 inputs = CameraInputs.CameraInput();
 
         float yLimit = SofCamera.subCam.logic.BasePosMode == CamPos.FirstPerson ? 84f : 180f;
- 
+
         axis.x += Mathf.Sign(90f - Mathf.Abs(axis.y)) * inputs.x;
         axis.y = Mathf.Clamp(axis.y + inputs.y, -yLimit, yLimit);
-        Vector3 lookRotation = defaultForward;
-        lookRotation = Quaternion.AngleAxis(axis.x, defaultUp) * lookRotation;
-        lookRotation = Quaternion.AngleAxis(axis.y,Vector3.Cross(defaultUp,lookRotation)) * lookRotation;
-        return Quaternion.LookRotation(lookRotation, defaultUp);
+        Quaternion baseRotation = Quaternion.LookRotation(defaultForward, defaultUp);
+        Quaternion rot = Quaternion.AngleAxis(axis.x, defaultUp) * baseRotation;
+        rot = Quaternion.AngleAxis(axis.y, rot * Vector3.right) * rot;
+
+        return rot;
     }
     public static Quaternion RotateWorld(Quaternion rotation, Vector3 defaultForward, Vector3 defaultUp)
     {

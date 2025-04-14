@@ -57,7 +57,7 @@ public class ObjectData
         pressure = new Value<float>(() => { return Aerodynamics.GetPressure(altitude.Get); }, this);
 
         pitchAngle = new Value<float>(() => { return Vector3.Angle(tr.forward, Vector3.ProjectOnPlane(tr.forward, Vector3.up)) * Mathf.Sign(tr.forward.y); }, this);
-        turnRate = new Value<float>(() => { return -tr.InverseTransformDirection(rb.angularVelocity).x; }, this);
+        turnRate = new Value<float>(() => { return -tr.InverseTransformDirection(rb.angularVelocity).x * Mathf.Rad2Deg; }, this);
         bankAngle = new Value<float>(() =>
         {
             float angle = tr.eulerAngles.z;

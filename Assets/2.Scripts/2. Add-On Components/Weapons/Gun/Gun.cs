@@ -64,7 +64,6 @@ public class Gun : SofComponent, IMassComponent
     public CycleEvent OnSlamChamberEvent;
     public float temperature;
 
-    public int clips;
     private int currentBullet = 0;
     private float fuzeTimer = 0f;
     public bool reloading = false;
@@ -74,6 +73,14 @@ public class Gun : SofComponent, IMassComponent
     //const float maxDispersionTemperature = 550f;
 
     public float RealMass => EmptyMass;
+    public float RealMassIncludingMagazine
+    {
+        get
+        {
+            if (magazine) return EmptyMass + magazine.RealMass;
+            else return EmptyMass;
+        }
+    }
     public float LoadedMass
     {
         get
@@ -146,18 +153,18 @@ public class Gun : SofComponent, IMassComponent
         Projectile bullet = Instantiate(bullets[ammunition.defaultBelt[currentBullet]]);
 
         Quaternion convergeanceRotation = cheatTime > Time.time ? cheatConvergence : convergence;
-        Vector3 gunDirection = convergeanceRotation * tr.forward;
-        Quaternion bulletRotation = Quaternion.LookRotation(gunDirection, tr.up);
+        Quaternion bulletRotation = tr.rotation * convergeanceRotation;
         bulletRotation = Ballistics.Spread(bulletRotation, gunPreset.dispersion);
+        Vector3 bulletDirection = bulletRotation * Vector3.forward;
 
         bullet.transform.rotation = bulletRotation;
         bullet.transform.position = tr.TransformPoint(bulletPos);
         bullet.gameObject.SetActive(true);
 
-        bullet.StartDamage(bullet.properties.baseVelocity * bullet.transform.forward, 10f);
+        bullet.StartDamage(bullet.properties.baseVelocity * bulletDirection, 10f);
         bullet.transform.position += rb.velocity * Time.fixedDeltaTime;
         Collider ignoreCollider = complex.bubble ? complex.bubble.bubble : null;
-        bullet.InitializeTrajectory(bullet.transform.forward * bullet.properties.baseVelocity + rb.velocity, ignoreCollider);
+        bullet.InitializeTrajectory(bulletDirection * bullet.properties.baseVelocity + rb.velocity, ignoreCollider);
 
         if (fuzeTimer > 0.1f) bullet.StartFuze(fuzeTimer);
     }

@@ -15,6 +15,8 @@ public class ArmamentManager
     public Gun[] secondaries;
     public Gun[] guns;
 
+    public MagazineStorage[] magazineStorages;
+
     public ArmamentManager(SofAircraft _aircraft)
     {
         aircraft = _aircraft;
@@ -22,6 +24,8 @@ public class ArmamentManager
         guns = aircraft.GetComponentsInChildren<Gun>();
         primaries = Gun.FilterByController(GunController.PilotPrimary, guns);
         secondaries = Gun.FilterByController(GunController.PilotSecondary, guns);
+
+        magazineStorages = aircraft.GetComponentsInChildren<MagazineStorage>();
 
         rockets = Station.GetOrdnances<RocketsLoad>(aircraft.Stations);
         bombs = Station.GetOrdnances<BombsLoad>(aircraft.Stations);
@@ -59,11 +63,10 @@ public class ArmamentManager
             if (gun && !gun.noConvergeance && gun.controller != GunController.Gunner)
             {
                 float t = 1.1f * distance / gun.gunPreset.ammunition.defaultMuzzleVel;
-                Vector3 gravityCompensation = t * t * Physics.gravity.y * 0.5f * tr.up;
-                Vector3 aimPoint = point - gravityCompensation;
-
-                Quaternion pointRotation = Quaternion.LookRotation(aimPoint - gun.tr.position);
-                gun.convergence = pointRotation * Quaternion.Inverse(gun.tr.rotation);
+                Vector3 gravityCompensation = t * t * -Physics.gravity.y * 0.5f * tr.up;
+                Vector3 aimPoint = point + gravityCompensation;
+                Quaternion pointRotation = Quaternion.LookRotation(aimPoint - gun.tr.position, tr.up);
+                gun.convergence = Quaternion.Inverse(gun.tr.rotation) * pointRotation;
             }   
     }
     /*
@@ -108,4 +111,35 @@ public class ArmamentManager
     {
         OrdnanceLoad.LaunchOptimal(torpedoes, 0f);
     }
+
+    public float OrdnanceMass(OrdnanceLoad[] loads)
+    {
+        float total = 0f;
+        foreach (OrdnanceLoad load in loads)
+        {
+            total += load.RealMass - load.EmptyMass;
+        }
+        return total;
+    }
+    public float TotalAmmoMass
+    {
+        get
+        {
+            float total = 0f;
+
+            foreach (Gun gun in guns)
+            {
+                total += gun.RealMassIncludingMagazine - gun.EmptyMass;
+            }
+            foreach(MagazineStorage magStorage in magazineStorages)
+            {
+                total += magStorage.RealMass - magStorage.EmptyMass;
+            }
+
+            return total;
+        }
+    }
+
+    public float TotalOrdnanceMass => OrdnanceMass(bombs) + OrdnanceMass(rockets) + OrdnanceMass(torpedoes);
+    public float TotalExpendablesMunitionsMass => TotalAmmoMass + TotalOrdnanceMass;
 }

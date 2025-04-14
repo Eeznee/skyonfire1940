@@ -109,12 +109,34 @@ public partial class PistonEnginePreset : EnginePreset
     public int LastPowerSetting => powerSettings.Length - 1;
 
 
-
     public float ManifoldPressureLimit(EngineRunMode runMode)
     {
         if (runMode == EngineRunMode.Boost && HasCombatBoost) return CombatBoostMP;
         if (runMode == EngineRunMode.TakeOffBoost && HasTakeOffBoost) return TakeOffBoostMP;
         return ContinuousMP;
+    }
+    public float ManifoldPressure(int settingsId, EngineRunMode runMode, float radPerSec, float altitude)
+    {
+        float pressureLimit = ManifoldPressureLimit(runMode);
+        float ambientPressure = Aerodynamics.GetPressure(altitude);
+        float compressingRatio = CompressingRatio(settingsId, radPerSec);
+
+        if (VariableGearAvailable)
+        {
+            float minCompressingRatio = CompressingRatio(0, radPerSec);
+            float maxCompressingRatio = CompressingRatio(1, radPerSec);
+
+            compressingRatio = pressureLimit / Aerodynamics.GetPressure(altitude);
+            compressingRatio = Mathf.Clamp(compressingRatio, minCompressingRatio, maxCompressingRatio);
+        }
+
+        float manifoldPressure = ambientPressure * compressingRatio;
+        return Mathf.Min(manifoldPressure, pressureLimit);
+    }
+    public string ManifoldPressureString(int settingsId, EngineRunMode runMode, float radPerSec, float altitude)
+    {
+        float pressure = continuousMP.ConvertPAUsingUnit(ManifoldPressure(settingsId, runMode, radPerSec, altitude));
+        return continuousMP.CompleteValueWithUnit(pressure);
     }
     public float CompressingRatio(int settingId, float radPerSec)
     {
@@ -160,9 +182,6 @@ public partial class PistonEnginePreset : EnginePreset
 
         return Mathf.Lerp(IdleRadPerSec, fullThrottleRadPerSec, throttle);
     }
-
-
-    //Power computation
     public float Power(int settingId, EngineRunMode engineRunMode, float altitude, float radPerSec)
     {
         if (powerSettings.Length == 0) return 0f;
@@ -227,7 +246,8 @@ public partial class PistonEnginePreset : EnginePreset
 
     public int BestSuperchargerSetting(float throttle, float altitude, EngineRunMode engineRunMode)
     {
-        if (powerSettings.Length == 1 || VariableGearAvailable) return 0;
+        if (powerSettings.Length == 1) return 0;
+        if (VariableGearAvailable) return 0;
 
         int bestPowerAtGear = 0;
         float bestPower = 0f;

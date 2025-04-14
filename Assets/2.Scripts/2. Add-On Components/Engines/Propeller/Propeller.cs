@@ -98,7 +98,7 @@ public partial class Propeller : SofModule, IMassComponent, IAircraftForce
         Vector3 direction = flightConditions.TransformWorldDir(tr.root.forward);
         Vector3 point = flightConditions.TransformWorldPos(tr.position);
 
-        if (engine.Igniting) direction = Quaternion.AngleAxis(-30f, aircraft.tr.up) * direction;
+        if (engine.Igniting) direction = Quaternion.AngleAxis(invertRotation ? 60f : -60f, aircraft.tr.up) * direction;
 
         return new ForceAtPoint(direction * Thrust, point);
     }
