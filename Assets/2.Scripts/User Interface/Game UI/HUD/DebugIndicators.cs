@@ -32,7 +32,8 @@ public class DebugIndicators : MonoBehaviour
         finalText += "BANK   : " + aircraft.data.bankAngle.Get.ToString("0.0") + " °\n";
         finalText += "PITCH  : " + aircraft.data.pitchAngle.Get.ToString("0.0") + " °\n";
         finalText += "ALPHA  : " + aircraft.data.angleOfAttack.Get.ToString("0.0") + " °\n";
-        finalText += "TURN  : " + aircraft.data.turnRate.Get.ToString("0.0") + " °/s\n";
+        finalText += "TURN   : " + aircraft.data.turnRate.Get.ToString("0.0") + " °/s\n";
+        finalText += "ROLL   : " + aircraft.data.rollRate.Get.ToString("0.0") + " °/s\n";
 
         finalText += "\n";
 

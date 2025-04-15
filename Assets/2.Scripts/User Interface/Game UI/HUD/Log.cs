@@ -18,15 +18,15 @@ public class Log : MonoBehaviour
         {
             content = _content;
             type = _type;
-            spawnTime = Time.time;
+            spawnTime = Time.unscaledTime;
         }
         public float Fade()
         {
-            return Mathf.InverseLerp(messageTime, 0f, Time.time - spawnTime);
+            return Mathf.InverseLerp(messageTime, 0f, Time.unscaledTime - spawnTime);
         }
         public bool Expired()
         {
-            return spawnTime + messageTime < Time.time;
+            return spawnTime + messageTime < Time.unscaledTime;
         }
     }
     public bool newToBottom;

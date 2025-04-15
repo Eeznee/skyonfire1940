@@ -72,12 +72,11 @@ public class PlayerActions : MonoBehaviour
         general.SwitchSeat.performed += _ => Player.CycleSeats();
 
         menu.Cancel.performed += _ => Escape();
-        menu.Screenshot.performed += _ => GameManager.ScreenShot();
+        menu.Screenshot.performed += _ => GameManager.gm.ScreenShot();
         menu.Pause.performed += _ => TimeManager.SetPause(!TimeManager.paused);
         menu.CamEditor.performed += _ => UIManager.SwitchGameUI(UIManager.gameUI == GameUI.CamEditor ? GameUI.Game : GameUI.CamEditor);
         menu.Photo.performed += _ => PhotoMode();
 
-        menu.TimeScale.performed += t => TimeManager.SetSlowMo(Mathf.InverseLerp(1f, -1f, t.ReadValue<float>()));
         camera.Custom1.performed += _ => SofCamera.SwitchViewMode(-1);
         camera.Custom2.performed += _ => SofCamera.SwitchViewMode(-2);
         camera.Custom3.performed += _ => SofCamera.SwitchViewMode(-3);
@@ -88,7 +87,6 @@ public class PlayerActions : MonoBehaviour
         camera.FreeView.canceled += val => SofCamera.StopLookAround();
         camera.Reset.performed += _ => SofCamera.ResetRotation();
         camera.ToggleViewMode.performed += _ => SofCamera.SwitchViewMode(SofCamera.viewMode == 0 ? 1 : 0);
-
 
         switcher.Pilot.performed += _ => Player.SetCrew(0);
         switcher.Crew1.performed += _ => Player.SetCrew(1);

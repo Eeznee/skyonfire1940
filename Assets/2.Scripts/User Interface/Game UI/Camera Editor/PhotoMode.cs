@@ -3,24 +3,37 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using System.Diagnostics;
 public class PhotoMode : MonoBehaviour
 {
-    public InputField tilt;
+    public Slider tilt;
 
-    private float speed;
-    public float minSpeed = 1f;
-    public float maxSpeed = 100f;
-    private Vector3 speeds = Vector3.zero;
-    private Vector3 worldPos = Vector3.zero;
-
+    private SubCam photoCam => SofCamera.GetSubCam(2);
 
     private void OnEnable()
     {
-        worldPos = GameManager.gm.mapmap.transform.InverseTransformPoint(SofCamera.tr.position);
+        tilt.value = photoCam.tilt;
+        tilt.onValueChanged.AddListener(OnSubcamSettingsChanged);
+    }
+    private void OnDisable()
+    {
+        tilt.onValueChanged.RemoveListener(OnSubcamSettingsChanged);
     }
 
-    public void ResetPositions()
+    public void ResetPosition()
     {
-        worldPos = GameManager.gm.mapmap.transform.InverseTransformPoint(Player.sofObj.transform.position);
+        photoCam.Reset();
+    }
+
+    public void OnSubcamSettingsChanged<T>(T fillerVariable) { SendProperties();  }
+    private void SendProperties()
+    {
+        photoCam.tilt = tilt.value;
+        photoCam.SaveSettings();
+    }
+
+    public void OpenScreenshotsLocation()
+    {
+        Application.OpenURL(Application.persistentDataPath + "/Screenshots/");
     }
 }

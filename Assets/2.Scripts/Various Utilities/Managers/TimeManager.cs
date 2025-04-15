@@ -30,16 +30,20 @@ public class TimeManager : MonoBehaviour
     public static void SetSlowMo(float factor)
     {
         float oldTimeScale = timeScale;
-        factor = Mathf.Max(0f, factor);
-        timeScale = Mathf.Pow(0.5f, factor * 5f);
+        timeScale = Mathf.Pow(2f, -Mathf.Clamp01(factor) * 5f);
+
         if (oldTimeScale == timeScale) return;
 
         string txt = timeScale < 0.1f ? "1/" + (1f / timeScale).ToString("0") : timeScale.ToString("0.00");
         Log.Print("Slow Mo : " + txt, "TimeScale");
     }
+    public static float GetSlowMoFactor()
+    {
+        return -Mathf.Log(timeScale, 2f) * 0.2f;
+    }
     private void Update()
     {
-        float input = -PlayerActions.menu.TimeScaleRelative.ReadValue<float>();
+        float input = -PlayerActions.cam.TimeScaleRelative.ReadValue<float>();
         input *= Time.unscaledDeltaTime * 0.25f;
         SetSlowMo(TimeScaleFactor() + input);
 

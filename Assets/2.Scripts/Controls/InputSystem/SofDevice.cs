@@ -19,6 +19,7 @@ public struct SofDeviceState : IInputStateTypeInfo
     [InputControl(name = "resetCamera", layout = "Button", bit = 3, displayName = "Reset Camera")]
     [InputControl(name = "zoomIn", layout = "Button", bit = 4, displayName = "Zoom In")]
     [InputControl(name = "cancelPause", layout = "Button", bit = 5, displayName = "Cancel Pause")]
+    [InputControl(name = "screenshot", layout = "Button", bit = 6, displayName = "Screenshot")]
     public uint buttons;
 
 
@@ -26,14 +27,9 @@ public struct SofDeviceState : IInputStateTypeInfo
     [InputControl(layout = "Axis", displayName = "Second Rudder")] public short secondRudder;
     [InputControl(layout = "Axis", displayName = "Throttle")] public short throttle;
 
-    [InputControl(layout = "Axis", displayName = "Zoom")] public short zoom;
-    [InputControl(layout = "Axis", displayName = "Time Scale")] public short timeScale;
-    [InputControl(layout = "Axis", displayName = "Camera Speed")] public short cameraSpeed;
-    [InputControl(layout = "Axis", displayName = "Camera Vertical Movement")] public short cameraVertical;
-
-
     [InputControl(layout = "Stick", displayName = "Main Stick")] public Vector2 mainStick;
     [InputControl(layout = "Stick", displayName = "Camera Horizontal Movement")] public Vector2 moveCamera;
+    [InputControl(layout = "Axis", displayName = "Camera Vertical Movement")] public short cameraVertical;
 
     [InputControl(layout = "Vector2", displayName = "Rotate Camera")] public Vector2 cameraRotate;
 
@@ -67,17 +63,15 @@ public class SofDevice : InputDevice, IInputUpdateCallbackReceiver
     public ButtonControl resetCamera { get; private set; }
     public ButtonControl zoomIn { get; private set; }
     public ButtonControl cancelPause { get; private set; }
+    public ButtonControl screenshot { get; private set; }
 
     public AxisControl rudder { get; private set; }
     public AxisControl secondRudder { get; private set; }
     public AxisControl throttle { get; private set; }
-    public AxisControl zoom { get; private set; }
-    public AxisControl timeScale { get; private set; }
-    public AxisControl cameraSpeed { get; private set; }
-    public AxisControl cameraVertical { get; private set; }
 
     public StickControl mainStick { get; private set; }
     public StickControl moveCamera { get; private set; }
+    public AxisControl cameraVertical { get; private set; }
 
     public Vector2Control cameraRotate { get; private set; }
 
@@ -90,17 +84,15 @@ public class SofDevice : InputDevice, IInputUpdateCallbackReceiver
         resetCamera = GetChildControl<ButtonControl>("resetCamera");
         zoomIn = GetChildControl<ButtonControl>("zoomIn");
         cancelPause = GetChildControl<ButtonControl>("cancelPause");
+        screenshot = GetChildControl<ButtonControl>("screenshot");
 
         rudder = GetChildControl<AxisControl>("rudder");
         secondRudder = GetChildControl<AxisControl>("secondRudder");
         throttle = GetChildControl<AxisControl>("throttle");
-        zoom = GetChildControl<AxisControl>("zoom");
-        timeScale = GetChildControl<AxisControl>("timeScale");
-        cameraSpeed = GetChildControl<AxisControl>("cameraSpeed");
-        cameraVertical = GetChildControl<AxisControl>("cameraVertical");
 
         mainStick = GetChildControl<StickControl>("mainStick");
         moveCamera = GetChildControl<StickControl>("moveCamera");
+        cameraVertical = GetChildControl<AxisControl>("cameraVertical");
 
         cameraRotate = GetChildControl<Vector2Control>("cameraRotate");
     }

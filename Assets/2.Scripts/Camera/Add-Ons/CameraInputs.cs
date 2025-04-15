@@ -7,30 +7,33 @@ using UnityEngine.EventSystems;
 [RequireComponent(typeof(Camera))]
 public class CameraInputs : MonoBehaviour
 {
-    [SerializeField] private float fieldOfView = 60f;
-    [SerializeField] private float zoomedFieldOfView = 25f;
-    [SerializeField] private float minSpeed = 3f;
-    [SerializeField] private float maxSpeed = 300f;
+    public static CameraInputs instance { get; private set; }
 
     private Camera cam;
-    public static CameraInputs instance { get; private set; }
+
 
     public static float fov = 60f;
     public static bool zoomed;
+    public const float fieldOfView = 60f;
+    public const float zoomedFieldOfView = 25f;
+    public const float minFov = 1f;
+    public const float maxFov = 90f;
+    public const float zoomSmoothTime = 0.1f;
+
+    public static float speed;
+    public const float minSpeed = 1f;
+    public const float maxSpeed = 300f;
+
+
     public static Plane[] frustrumPlanes;
 
-    const float zoomSmoothTime = 0.1f;
-    const float minFov = 1f;
-    const float maxFov = 90f;
 
     private static float sensitivity = 1f;
     private static float sensGunner = 1f;
     private static bool inverted;
     public static float touchSensitivity = 1f;
 
-    public static float speed;
-
-    public static float MaxSpeed { get { return instance.maxSpeed; } }
+    public static float MaxSpeed { get { return maxSpeed; } }
 
     private void Start()
     {
@@ -41,40 +44,16 @@ public class CameraInputs : MonoBehaviour
         fov = fieldOfView;
         zoomed = false;
         PlayerActions.cam.Aim.performed += _ => Zoom();
-        PlayerActions.cam.Zoom.performed += zoomAxis => SetFov(Mathf.InverseLerp(-1f, 1f, zoomAxis.ReadValue<float>()));
-        PlayerActions.cam.Speed.performed += t => ChangeSpeed(t.ReadValue<float>());
 
         touchSensitivity = PlayerPrefs.GetFloat("TouchSensitivity", 1f);
         sensitivity = PlayerPrefs.GetFloat("Sensitivity", sensitivity);
         sensGunner = PlayerPrefs.GetFloat("GunnerSensitivity", sensGunner);
         inverted = PlayerPrefs.GetInt("InvertTouch", 0) == 1;
 
-        ChangeSpeed(0f);
+        SetCamSpeed(0.5f);
+        Zoom(false);
     }
-    private void ProgressiveZoom()
-    {
-        float input = PlayerActions.cam.ZoomRelativeAxis.ReadValue<float>();
-        float zoomRelativeInput = input * Time.unscaledDeltaTime * 0.2f;
-        float fovFactor = 1f - Mathf.Log(fov / minFov, 2) / Mathf.Log(maxFov / minFov, 2);
-        SetFov(zoomRelativeInput + fovFactor);
-    }
-    public void Zoom(bool zoomedIn)
-    {
-        //Log.Print(zoomedIn ? "Camera Zoomed In" : "Camera Zoomed Out", "Camera Zoom");
-        zoomed = zoomedIn;
-        fov = zoomed ? zoomedFieldOfView : fieldOfView;
-    }
-    public void Zoom()
-    {
-        Zoom(!zoomed);
-    }
-    public void SetFov(float factor)
-    {
-        factor = Mathf.Max(0f, factor);
-        fov = minFov * Mathf.Pow(2f, Mathf.Log(maxFov / minFov, 2) * (1f - factor));
-        zoomed = fov <= 0.5f * (zoomedFieldOfView + fieldOfView);
-    }
-    private float zoomVelocity = 0f;
+
     private void Update()
     {
         ProgressiveZoom();
@@ -85,17 +64,25 @@ public class CameraInputs : MonoBehaviour
 
         frustrumPlanes = GeometryUtility.CalculateFrustumPlanes(cam);
     }
-    private void ChangeSpeed(float input)
+
+
+    public static void SetCamSpeed(float factor)
     {
-        float f = Mathf.InverseLerp(-1f, 1f, input);
-        speed = minSpeed * Mathf.Pow(2f, Mathf.Log(maxSpeed / minSpeed, 2) * f);
+        speed = minSpeed * Mathf.Pow(maxSpeed / minSpeed, factor);
         Log.Print("Camera Speed : " + speed.ToString("0") + " m/s", "CameraSpeed");
     }
+    public static float GetCamSpeedFactor()
+    {
+        return Mathf.Log(speed/minSpeed, maxSpeed / minSpeed);
+    }
+
+
     private static bool CameraUnlocked()
     {
 #if MOBILE_INPUT
 #if UNITY_EDITOR
-        return PlayerActions.cam.Unlock.ReadValue<float>() > 0.5f && EventSystem.current.currentSelectedGameObject == null;
+        bool evenSystemNoneSelected = EventSystem.current == null || EventSystem.current.currentSelectedGameObject == null;
+        return PlayerActions.cam.Unlock.ReadValue<float>() > 0.5f && evenSystemNoneSelected;
 #else
         return true;
 #endif
@@ -109,7 +96,7 @@ public class CameraInputs : MonoBehaviour
     }
     public static float Sensitivity()
     {
-        float sens = SofCamera.cam.fieldOfView / instance.fieldOfView;
+        float sens = SofCamera.cam.fieldOfView / fieldOfView;
         sens *= Player.role == SeatRole.Gunner ? sensGunner : sensitivity;
         return sens;
     }
@@ -119,5 +106,40 @@ public class CameraInputs : MonoBehaviour
         Vector2 cameraInput = Sensitivity() * PlayerActions.cam.Rotate.ReadValue<Vector2>();
         if (inverted) cameraInput = -cameraInput;
         return cameraInput;
+    }
+
+
+
+
+
+
+    //Zoom Logic
+
+    private float zoomVelocity = 0f;
+    public void ProgressiveZoom()
+    {
+        float input = PlayerActions.cam.ZoomRelativeAxis.ReadValue<float>();
+        float zoomRelativeInput = input * Time.unscaledDeltaTime * 0.2f;
+        float fovFactor = 1f - Mathf.Log(fov / minFov, 2) / Mathf.Log(maxFov / minFov, 2);
+        SetFov(zoomRelativeInput + fovFactor);
+    }
+    public static void Zoom(bool zoomedIn)
+    {
+        zoomed = zoomedIn;
+        fov = zoomed ? zoomedFieldOfView : fieldOfView;
+    }
+    public static void Zoom()
+    {
+        Zoom(!zoomed);
+    }
+    public static void SetFov(float factor)
+    {
+        factor = Mathf.Clamp01(factor);
+        fov = minFov * Mathf.Pow(maxFov / minFov, 1f - factor);
+        zoomed = fov <= 0.5f * (zoomedFieldOfView + fieldOfView);
+    }
+    public static float GetZoomFactor()
+    {
+        return 1f - Mathf.Log(fov / minFov, maxFov / minFov);
     }
 }

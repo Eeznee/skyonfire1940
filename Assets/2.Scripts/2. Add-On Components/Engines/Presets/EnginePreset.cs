@@ -59,8 +59,7 @@ public abstract class EnginePreset : ScriptableObject
     public AudioClip FullAudioExtSelf => fullAudioExtSelf;
     public AudioClip SpatialAudio => spatialAudio;
 
-    public float WaterTempFull => 110f;
-    public float OilTempFull => 90f;
+
 
 
     public abstract float FuelConsumption(float throttle);

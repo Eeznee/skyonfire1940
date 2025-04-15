@@ -33,7 +33,7 @@ public class ObjectData
     public Value<float> gsp, vsp, tas, signedTas, invertTas, ias;
     public Value<float> energy, relativeAltitude, altitude, heading;
     public Value<float> density, relativeDensity, temperature, pressure;
-    public Value<float> pitchAngle, bankAngle, angleOfSlip, angleOfAttack, turnRate;
+    public Value<float> pitchAngle, bankAngle, angleOfSlip, angleOfAttack, turnRate, rollRate;
     public Value<float> groundEffect;
     public Value<bool> grounded;
 
@@ -58,6 +58,7 @@ public class ObjectData
 
         pitchAngle = new Value<float>(() => { return Vector3.Angle(tr.forward, Vector3.ProjectOnPlane(tr.forward, Vector3.up)) * Mathf.Sign(tr.forward.y); }, this);
         turnRate = new Value<float>(() => { return -tr.InverseTransformDirection(rb.angularVelocity).x * Mathf.Rad2Deg; }, this);
+        rollRate = new Value<float>(() => { return -tr.InverseTransformDirection(rb.angularVelocity).z * Mathf.Rad2Deg; }, this);
         bankAngle = new Value<float>(() =>
         {
             float angle = tr.eulerAngles.z;

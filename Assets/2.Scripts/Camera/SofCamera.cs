@@ -91,6 +91,7 @@ public class SofCamera : MonoBehaviour
     public static void ResetCamera() { SwitchViewMode(viewMode); }
     public static void SwitchViewMode(int vm)
     {
+        if (UIManager.gameUI == GameUI.PhotoMode) vm = 2;
         if (Player.role == SeatRole.Bombardier) vm = 3;
         else if (vm == 3) vm = previousViewMode == 1 ? 1 : 0;
 

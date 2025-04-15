@@ -54,20 +54,22 @@ public class TextureTool : MonoBehaviour
 	public static void Pick(string subfolder, TexturesDropdown dropdown)
 	{
 		Texture2D texture = null;
-		NativeGallery.Permission permission = NativeGallery.GetImageFromGallery((path) =>
-		{
-			if (path != null)
-			{
-				texture = NativeGallery.LoadImageAtPath(path, 4096, false);
-				if (texture == null)
-					return;
-				texture.name = NameFromPath(path);
-				Save(texture, subfolder);
-				dropdown.Reset(texture.name);
-				// If a procedural texture is not destroyed manually, 
-				// it will only be freed after a scene change
-				//Destroy(texture, 5f);
-			}
-		});
-	}
+
+        NativeGallery.GetImageFromGallery((path) =>
+        {
+            if (path != null)
+            {
+                texture = NativeGallery.LoadImageAtPath(path, 4096, false);
+                if (texture == null)
+                    return;
+                texture.name = NameFromPath(path);
+                Save(texture, subfolder);
+                dropdown.Reset(texture.name);
+                // If a procedural texture is not destroyed manually, 
+                // it will only be freed after a scene change
+                //Destroy(texture, 5f);
+            }
+        });
+
+    }
 }

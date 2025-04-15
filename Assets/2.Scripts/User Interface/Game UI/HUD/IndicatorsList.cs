@@ -103,9 +103,22 @@ public class IndicatorsList : MonoBehaviour
 
         if (!aircraft || aircraft.engines.AllEngines.Length == 0) return finalText;
         if (temp)
-            finalText += "WTR : " + aircraft.engines.Main.Temp.WaterTemperature.ToString("0.0") + " °C\n";
-        if (temp)
-            finalText += "OIL : " + aircraft.engines.Main.Temp.OilTemperature.ToString("0.0") + " °C\n";
+        {
+            if (aircraft.engines.Main.Preset.LiquidCooled)
+            {
+                float waterTemp = aircraft.engines.Main.Temp.WaterTemperature;
+                finalText += "WTR : " + waterTemp.ToString("0.0") + " °C";
+                if (waterTemp > EngineTemperature.waterTempFull)
+                    finalText += " (DANGER)";
+                finalText += "\n";
+            }
+            float oilTemp = aircraft.engines.Main.Temp.OilTemperature;
+            finalText += "OIL : " + oilTemp.ToString("0.0") + " °C";
+            if (oilTemp > EngineTemperature.oilTempFull)
+                finalText += " (DANGER)";
+            finalText += "\n";
+        }
+
 
         return finalText;
     }

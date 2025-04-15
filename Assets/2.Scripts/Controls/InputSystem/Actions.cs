@@ -1557,24 +1557,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""TimeScale"",
-                    ""type"": ""Value"",
-                    ""id"": ""10aa46e4-a6f2-42ad-9715-6347e2aea003"",
-                    ""expectedControlType"": ""Axis"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""TimeScaleRelative"",
-                    ""type"": ""Value"",
-                    ""id"": ""eb5f8d7a-45a2-48a1-bf4a-a8594c7110cc"",
-                    ""expectedControlType"": ""Axis"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
                     ""name"": ""Screenshot"",
                     ""type"": ""Button"",
                     ""id"": ""6d919cb8-5c41-41cc-bc41-6a5921a7819d"",
@@ -1670,39 +1652,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""1D Axis"",
-                    ""id"": ""eda69b8e-c5f2-440f-a595-7d49759b99a1"",
-                    ""path"": ""1DAxis"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""TimeScaleRelative"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""negative"",
-                    ""id"": ""ab199503-e810-4b77-8bac-ed746a49ecbe"",
-                    ""path"": ""<Keyboard>/numpadDivide"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""TimeScaleRelative"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""positive"",
-                    ""id"": ""0602bd3d-f6f2-4a77-b627-9b1a31cce08d"",
-                    ""path"": ""<Keyboard>/numpadMultiply"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""TimeScaleRelative"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
                     ""name"": """",
                     ""id"": ""27e0e2ad-e9ed-4c22-b0b2-553193328ee4"",
                     ""path"": ""<Keyboard>/p"",
@@ -1726,12 +1675,12 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""4a56ac04-9904-4951-9e90-03726fd4f1c7"",
-                    ""path"": ""<SofDevice>/timeScale"",
+                    ""id"": ""2f503944-8462-43c2-9489-bf2c17943bbc"",
+                    ""path"": ""<SofDevice>/screenshot"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""SofDevice"",
-                    ""action"": ""TimeScale"",
+                    ""action"": ""Screenshot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1780,33 +1729,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Aim"",
-                    ""type"": ""Button"",
-                    ""id"": ""0ca7759f-9c70-4b0c-8b0a-2fac5be8fd54"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Zoom"",
-                    ""type"": ""Value"",
-                    ""id"": ""1dce8645-4293-4790-860c-fa3101cf6b35"",
-                    ""expectedControlType"": ""Axis"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""ZoomRelativeAxis"",
-                    ""type"": ""Value"",
-                    ""id"": ""29d47ef6-522e-4db7-96b6-214363e6c49f"",
-                    ""expectedControlType"": ""Axis"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
                 },
                 {
                     ""name"": ""Unlock"",
@@ -1863,6 +1785,24 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
+                    ""name"": ""ZoomRelativeAxis"",
+                    ""type"": ""Value"",
+                    ""id"": ""29d47ef6-522e-4db7-96b6-214363e6c49f"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Aim"",
+                    ""type"": ""Button"",
+                    ""id"": ""0ca7759f-9c70-4b0c-8b0a-2fac5be8fd54"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""ToggleViewMode"",
                     ""type"": ""Button"",
                     ""id"": ""d0603e2b-4ff2-49f0-856e-554d61880718"",
@@ -1870,6 +1810,15 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TimeScaleRelative"",
+                    ""type"": ""Value"",
+                    ""id"": ""87cb87ae-e06b-445b-9182-68d7a1b1395c"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 },
                 {
                     ""name"": ""Custom1"",
@@ -2302,6 +2251,39 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
+                    ""name"": """",
+                    ""id"": ""ee26a249-46cc-477a-a92b-0bfa00ef29f0"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse & Keyboard"",
+                    ""action"": ""FreeView"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8ef27520-583c-4730-b476-4c5c7272650d"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse & Keyboard"",
+                    ""action"": ""Unlock"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0b54f7e9-0179-4f02-b600-2da88b283cc7"",
+                    ""path"": ""<SofDevice>/cameraSpeed"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""SofDevice"",
+                    ""action"": ""Speed"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
                     ""name"": ""1D Axis"",
                     ""id"": ""2166c434-b97d-4992-9403-98e4f8a7fb61"",
                     ""path"": ""1DAxis"",
@@ -2368,48 +2350,37 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""ee26a249-46cc-477a-a92b-0bfa00ef29f0"",
-                    ""path"": ""<Keyboard>/c"",
+                    ""name"": ""1D Axis"",
+                    ""id"": ""d0543a96-b2b3-4961-b947-d762099d48cd"",
+                    ""path"": ""1DAxis"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Mouse & Keyboard"",
-                    ""action"": ""FreeView"",
-                    ""isComposite"": false,
+                    ""groups"": """",
+                    ""action"": ""TimeScaleRelative"",
+                    ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""8ef27520-583c-4730-b476-4c5c7272650d"",
-                    ""path"": ""<Mouse>/leftButton"",
+                    ""name"": ""negative"",
+                    ""id"": ""e058126f-0afc-4113-b2b3-e0eae4e734de"",
+                    ""path"": ""<Keyboard>/numpadDivide"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Mouse & Keyboard"",
-                    ""action"": ""Unlock"",
+                    ""groups"": """",
+                    ""action"": ""TimeScaleRelative"",
                     ""isComposite"": false,
-                    ""isPartOfComposite"": false
+                    ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""b3e97fef-9d4b-454e-b6c9-99bb005f9547"",
-                    ""path"": ""<SofDevice>/zoom"",
+                    ""name"": ""positive"",
+                    ""id"": ""84128710-0b8f-4b81-ad80-d06ac2967e26"",
+                    ""path"": ""<Keyboard>/numpadMultiply"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""SofDevice"",
-                    ""action"": ""Zoom"",
+                    ""groups"": """",
+                    ""action"": ""TimeScaleRelative"",
                     ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""0b54f7e9-0179-4f02-b600-2da88b283cc7"",
-                    ""path"": ""<SofDevice>/cameraSpeed"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""SofDevice"",
-                    ""action"": ""Speed"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -3094,30 +3065,8 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""up"",
-                    ""id"": ""1ea7d0bd-4fd2-46a6-9a42-5913eb0ec418"",
-                    ""path"": ""<Keyboard>/w"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Navigate"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""up"",
                     ""id"": ""262294d9-ea97-4208-b797-7a1bebd90859"",
                     ""path"": ""<Keyboard>/upArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Navigate"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""down"",
-                    ""id"": ""4d3c1f35-7426-4ca0-a35b-d8fcbe6d896f"",
-                    ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -3138,30 +3087,8 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""left"",
-                    ""id"": ""ee7039e0-2468-4246-824a-219d9b0714de"",
-                    ""path"": ""<Keyboard>/a"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Navigate"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""left"",
                     ""id"": ""4883e1f2-bde9-421f-a348-a32465acec7a"",
                     ""path"": ""<Keyboard>/leftArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Navigate"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""right"",
-                    ""id"": ""11e36eb9-a37d-4a9b-8eff-0f3504f936ee"",
-                    ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -3415,8 +3342,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         m_Menu_CamEditor = m_Menu.FindAction("CamEditor", throwIfNotFound: true);
         m_Menu_Photo = m_Menu.FindAction("Photo", throwIfNotFound: true);
         m_Menu_Pause = m_Menu.FindAction("Pause", throwIfNotFound: true);
-        m_Menu_TimeScale = m_Menu.FindAction("TimeScale", throwIfNotFound: true);
-        m_Menu_TimeScaleRelative = m_Menu.FindAction("TimeScaleRelative", throwIfNotFound: true);
         m_Menu_Screenshot = m_Menu.FindAction("Screenshot", throwIfNotFound: true);
         m_Menu_DoubleTap = m_Menu.FindAction("DoubleTap", throwIfNotFound: true);
         m_Menu_Cursor = m_Menu.FindAction("Cursor", throwIfNotFound: true);
@@ -3424,16 +3349,16 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         m_Camera = asset.FindActionMap("Camera", throwIfNotFound: true);
         m_Camera_Rotate = m_Camera.FindAction("Rotate", throwIfNotFound: true);
         m_Camera_Reset = m_Camera.FindAction("Reset", throwIfNotFound: true);
-        m_Camera_Aim = m_Camera.FindAction("Aim", throwIfNotFound: true);
-        m_Camera_Zoom = m_Camera.FindAction("Zoom", throwIfNotFound: true);
-        m_Camera_ZoomRelativeAxis = m_Camera.FindAction("ZoomRelativeAxis", throwIfNotFound: true);
         m_Camera_Unlock = m_Camera.FindAction("Unlock", throwIfNotFound: true);
         m_Camera_FreeView = m_Camera.FindAction("FreeView", throwIfNotFound: true);
         m_Camera_MoveHorizontal = m_Camera.FindAction("MoveHorizontal", throwIfNotFound: true);
         m_Camera_MoveVertical = m_Camera.FindAction("MoveVertical", throwIfNotFound: true);
         m_Camera_Speed = m_Camera.FindAction("Speed", throwIfNotFound: true);
         m_Camera_MaxSpeed = m_Camera.FindAction("MaxSpeed", throwIfNotFound: true);
+        m_Camera_ZoomRelativeAxis = m_Camera.FindAction("ZoomRelativeAxis", throwIfNotFound: true);
+        m_Camera_Aim = m_Camera.FindAction("Aim", throwIfNotFound: true);
         m_Camera_ToggleViewMode = m_Camera.FindAction("ToggleViewMode", throwIfNotFound: true);
+        m_Camera_TimeScaleRelative = m_Camera.FindAction("TimeScaleRelative", throwIfNotFound: true);
         m_Camera_Custom1 = m_Camera.FindAction("Custom1", throwIfNotFound: true);
         m_Camera_Custom2 = m_Camera.FindAction("Custom2", throwIfNotFound: true);
         m_Camera_Custom3 = m_Camera.FindAction("Custom3", throwIfNotFound: true);
@@ -3951,8 +3876,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Menu_CamEditor;
     private readonly InputAction m_Menu_Photo;
     private readonly InputAction m_Menu_Pause;
-    private readonly InputAction m_Menu_TimeScale;
-    private readonly InputAction m_Menu_TimeScaleRelative;
     private readonly InputAction m_Menu_Screenshot;
     private readonly InputAction m_Menu_DoubleTap;
     private readonly InputAction m_Menu_Cursor;
@@ -3965,8 +3888,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         public InputAction @CamEditor => m_Wrapper.m_Menu_CamEditor;
         public InputAction @Photo => m_Wrapper.m_Menu_Photo;
         public InputAction @Pause => m_Wrapper.m_Menu_Pause;
-        public InputAction @TimeScale => m_Wrapper.m_Menu_TimeScale;
-        public InputAction @TimeScaleRelative => m_Wrapper.m_Menu_TimeScaleRelative;
         public InputAction @Screenshot => m_Wrapper.m_Menu_Screenshot;
         public InputAction @DoubleTap => m_Wrapper.m_Menu_DoubleTap;
         public InputAction @Cursor => m_Wrapper.m_Menu_Cursor;
@@ -3994,12 +3915,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
             @Pause.started += instance.OnPause;
             @Pause.performed += instance.OnPause;
             @Pause.canceled += instance.OnPause;
-            @TimeScale.started += instance.OnTimeScale;
-            @TimeScale.performed += instance.OnTimeScale;
-            @TimeScale.canceled += instance.OnTimeScale;
-            @TimeScaleRelative.started += instance.OnTimeScaleRelative;
-            @TimeScaleRelative.performed += instance.OnTimeScaleRelative;
-            @TimeScaleRelative.canceled += instance.OnTimeScaleRelative;
             @Screenshot.started += instance.OnScreenshot;
             @Screenshot.performed += instance.OnScreenshot;
             @Screenshot.canceled += instance.OnScreenshot;
@@ -4028,12 +3943,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
             @Pause.started -= instance.OnPause;
             @Pause.performed -= instance.OnPause;
             @Pause.canceled -= instance.OnPause;
-            @TimeScale.started -= instance.OnTimeScale;
-            @TimeScale.performed -= instance.OnTimeScale;
-            @TimeScale.canceled -= instance.OnTimeScale;
-            @TimeScaleRelative.started -= instance.OnTimeScaleRelative;
-            @TimeScaleRelative.performed -= instance.OnTimeScaleRelative;
-            @TimeScaleRelative.canceled -= instance.OnTimeScaleRelative;
             @Screenshot.started -= instance.OnScreenshot;
             @Screenshot.performed -= instance.OnScreenshot;
             @Screenshot.canceled -= instance.OnScreenshot;
@@ -4066,16 +3975,16 @@ public partial class @Actions: IInputActionCollection2, IDisposable
     private List<ICameraActions> m_CameraActionsCallbackInterfaces = new List<ICameraActions>();
     private readonly InputAction m_Camera_Rotate;
     private readonly InputAction m_Camera_Reset;
-    private readonly InputAction m_Camera_Aim;
-    private readonly InputAction m_Camera_Zoom;
-    private readonly InputAction m_Camera_ZoomRelativeAxis;
     private readonly InputAction m_Camera_Unlock;
     private readonly InputAction m_Camera_FreeView;
     private readonly InputAction m_Camera_MoveHorizontal;
     private readonly InputAction m_Camera_MoveVertical;
     private readonly InputAction m_Camera_Speed;
     private readonly InputAction m_Camera_MaxSpeed;
+    private readonly InputAction m_Camera_ZoomRelativeAxis;
+    private readonly InputAction m_Camera_Aim;
     private readonly InputAction m_Camera_ToggleViewMode;
+    private readonly InputAction m_Camera_TimeScaleRelative;
     private readonly InputAction m_Camera_Custom1;
     private readonly InputAction m_Camera_Custom2;
     private readonly InputAction m_Camera_Custom3;
@@ -4088,16 +3997,16 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         public CameraActions(@Actions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Rotate => m_Wrapper.m_Camera_Rotate;
         public InputAction @Reset => m_Wrapper.m_Camera_Reset;
-        public InputAction @Aim => m_Wrapper.m_Camera_Aim;
-        public InputAction @Zoom => m_Wrapper.m_Camera_Zoom;
-        public InputAction @ZoomRelativeAxis => m_Wrapper.m_Camera_ZoomRelativeAxis;
         public InputAction @Unlock => m_Wrapper.m_Camera_Unlock;
         public InputAction @FreeView => m_Wrapper.m_Camera_FreeView;
         public InputAction @MoveHorizontal => m_Wrapper.m_Camera_MoveHorizontal;
         public InputAction @MoveVertical => m_Wrapper.m_Camera_MoveVertical;
         public InputAction @Speed => m_Wrapper.m_Camera_Speed;
         public InputAction @MaxSpeed => m_Wrapper.m_Camera_MaxSpeed;
+        public InputAction @ZoomRelativeAxis => m_Wrapper.m_Camera_ZoomRelativeAxis;
+        public InputAction @Aim => m_Wrapper.m_Camera_Aim;
         public InputAction @ToggleViewMode => m_Wrapper.m_Camera_ToggleViewMode;
+        public InputAction @TimeScaleRelative => m_Wrapper.m_Camera_TimeScaleRelative;
         public InputAction @Custom1 => m_Wrapper.m_Camera_Custom1;
         public InputAction @Custom2 => m_Wrapper.m_Camera_Custom2;
         public InputAction @Custom3 => m_Wrapper.m_Camera_Custom3;
@@ -4119,15 +4028,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
             @Reset.started += instance.OnReset;
             @Reset.performed += instance.OnReset;
             @Reset.canceled += instance.OnReset;
-            @Aim.started += instance.OnAim;
-            @Aim.performed += instance.OnAim;
-            @Aim.canceled += instance.OnAim;
-            @Zoom.started += instance.OnZoom;
-            @Zoom.performed += instance.OnZoom;
-            @Zoom.canceled += instance.OnZoom;
-            @ZoomRelativeAxis.started += instance.OnZoomRelativeAxis;
-            @ZoomRelativeAxis.performed += instance.OnZoomRelativeAxis;
-            @ZoomRelativeAxis.canceled += instance.OnZoomRelativeAxis;
             @Unlock.started += instance.OnUnlock;
             @Unlock.performed += instance.OnUnlock;
             @Unlock.canceled += instance.OnUnlock;
@@ -4146,9 +4046,18 @@ public partial class @Actions: IInputActionCollection2, IDisposable
             @MaxSpeed.started += instance.OnMaxSpeed;
             @MaxSpeed.performed += instance.OnMaxSpeed;
             @MaxSpeed.canceled += instance.OnMaxSpeed;
+            @ZoomRelativeAxis.started += instance.OnZoomRelativeAxis;
+            @ZoomRelativeAxis.performed += instance.OnZoomRelativeAxis;
+            @ZoomRelativeAxis.canceled += instance.OnZoomRelativeAxis;
+            @Aim.started += instance.OnAim;
+            @Aim.performed += instance.OnAim;
+            @Aim.canceled += instance.OnAim;
             @ToggleViewMode.started += instance.OnToggleViewMode;
             @ToggleViewMode.performed += instance.OnToggleViewMode;
             @ToggleViewMode.canceled += instance.OnToggleViewMode;
+            @TimeScaleRelative.started += instance.OnTimeScaleRelative;
+            @TimeScaleRelative.performed += instance.OnTimeScaleRelative;
+            @TimeScaleRelative.canceled += instance.OnTimeScaleRelative;
             @Custom1.started += instance.OnCustom1;
             @Custom1.performed += instance.OnCustom1;
             @Custom1.canceled += instance.OnCustom1;
@@ -4177,15 +4086,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
             @Reset.started -= instance.OnReset;
             @Reset.performed -= instance.OnReset;
             @Reset.canceled -= instance.OnReset;
-            @Aim.started -= instance.OnAim;
-            @Aim.performed -= instance.OnAim;
-            @Aim.canceled -= instance.OnAim;
-            @Zoom.started -= instance.OnZoom;
-            @Zoom.performed -= instance.OnZoom;
-            @Zoom.canceled -= instance.OnZoom;
-            @ZoomRelativeAxis.started -= instance.OnZoomRelativeAxis;
-            @ZoomRelativeAxis.performed -= instance.OnZoomRelativeAxis;
-            @ZoomRelativeAxis.canceled -= instance.OnZoomRelativeAxis;
             @Unlock.started -= instance.OnUnlock;
             @Unlock.performed -= instance.OnUnlock;
             @Unlock.canceled -= instance.OnUnlock;
@@ -4204,9 +4104,18 @@ public partial class @Actions: IInputActionCollection2, IDisposable
             @MaxSpeed.started -= instance.OnMaxSpeed;
             @MaxSpeed.performed -= instance.OnMaxSpeed;
             @MaxSpeed.canceled -= instance.OnMaxSpeed;
+            @ZoomRelativeAxis.started -= instance.OnZoomRelativeAxis;
+            @ZoomRelativeAxis.performed -= instance.OnZoomRelativeAxis;
+            @ZoomRelativeAxis.canceled -= instance.OnZoomRelativeAxis;
+            @Aim.started -= instance.OnAim;
+            @Aim.performed -= instance.OnAim;
+            @Aim.canceled -= instance.OnAim;
             @ToggleViewMode.started -= instance.OnToggleViewMode;
             @ToggleViewMode.performed -= instance.OnToggleViewMode;
             @ToggleViewMode.canceled -= instance.OnToggleViewMode;
+            @TimeScaleRelative.started -= instance.OnTimeScaleRelative;
+            @TimeScaleRelative.performed -= instance.OnTimeScaleRelative;
+            @TimeScaleRelative.canceled -= instance.OnTimeScaleRelative;
             @Custom1.started -= instance.OnCustom1;
             @Custom1.performed -= instance.OnCustom1;
             @Custom1.canceled -= instance.OnCustom1;
@@ -4606,8 +4515,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         void OnCamEditor(InputAction.CallbackContext context);
         void OnPhoto(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
-        void OnTimeScale(InputAction.CallbackContext context);
-        void OnTimeScaleRelative(InputAction.CallbackContext context);
         void OnScreenshot(InputAction.CallbackContext context);
         void OnDoubleTap(InputAction.CallbackContext context);
         void OnCursor(InputAction.CallbackContext context);
@@ -4616,16 +4523,16 @@ public partial class @Actions: IInputActionCollection2, IDisposable
     {
         void OnRotate(InputAction.CallbackContext context);
         void OnReset(InputAction.CallbackContext context);
-        void OnAim(InputAction.CallbackContext context);
-        void OnZoom(InputAction.CallbackContext context);
-        void OnZoomRelativeAxis(InputAction.CallbackContext context);
         void OnUnlock(InputAction.CallbackContext context);
         void OnFreeView(InputAction.CallbackContext context);
         void OnMoveHorizontal(InputAction.CallbackContext context);
         void OnMoveVertical(InputAction.CallbackContext context);
         void OnSpeed(InputAction.CallbackContext context);
         void OnMaxSpeed(InputAction.CallbackContext context);
+        void OnZoomRelativeAxis(InputAction.CallbackContext context);
+        void OnAim(InputAction.CallbackContext context);
         void OnToggleViewMode(InputAction.CallbackContext context);
+        void OnTimeScaleRelative(InputAction.CallbackContext context);
         void OnCustom1(InputAction.CallbackContext context);
         void OnCustom2(InputAction.CallbackContext context);
         void OnCustom3(InputAction.CallbackContext context);

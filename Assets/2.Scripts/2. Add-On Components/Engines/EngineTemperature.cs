@@ -22,9 +22,11 @@ public class EngineTemperature
     public const float damageEngineTemp = 370f;
     public const float destructionEngineTemp = 430f;
     public const float finsMaxSafeTemp = 200f;
+    public const float waterTempFull  = 110f;
+    public const float oilTempFull = 90f;
 
     public float CoolingDeviceTemp => preset.LiquidCooled ? WaterTemperature : RadialCylinderFinsTemp;
-    public float CoolingDevicePeakTemp => preset.LiquidCooled ? preset.WaterTempFull : finsMaxSafeTemp;
+    public float CoolingDevicePeakTemp => preset.LiquidCooled ? waterTempFull : finsMaxSafeTemp;
 
     public float WaterTemperature
     {
@@ -110,8 +112,8 @@ public class EngineTemperature
 
         CoolingCoefficient = heatingSpeed / (temperatureDelta * peakTempDensity);
 
-        WaterToEngineTempRatio = Mathf.InverseLerp(airTemperature, fullEngineTemp, engine.Preset.WaterTempFull);
-        OilToEngineTempRatio = Mathf.InverseLerp(airTemperature, fullEngineTemp, engine.Preset.OilTempFull);
+        WaterToEngineTempRatio = Mathf.InverseLerp(airTemperature, fullEngineTemp, waterTempFull);
+        OilToEngineTempRatio = Mathf.InverseLerp(airTemperature, fullEngineTemp, oilTempFull);
         CylinderFinsToEngineTempRatio = Mathf.InverseLerp(airTemperature, fullEngineTemp, finsMaxSafeTemp);
     }
 

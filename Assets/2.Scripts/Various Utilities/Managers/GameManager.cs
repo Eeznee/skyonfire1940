@@ -3,8 +3,10 @@ using UnityEngine.InputSystem;
 using UnityEngine.Audio;
 using System.Collections.Generic;
 using UnityEngine.Rendering.Universal;
+using System.Collections;
 using UnityEngine.Rendering;
-
+using System.IO;
+using UnityEngine.Android;
 
 public class GameManager : MonoBehaviour
 {
@@ -129,11 +131,36 @@ public class GameManager : MonoBehaviour
         return aircraft;
     }
     
-    public static void ScreenShot()
+    public void ScreenShot()
+    {
+        StartCoroutine(ScreenshotCoroutine());
+    }
+
+    public IEnumerator ScreenshotCoroutine()
     {
         int screenshots = PlayerPrefs.GetInt("Screenshots", 0);
-        ScreenCapture.CaptureScreenshot("Capture" + screenshots + ".png", 2);
+        string fileName = "Capture" + screenshots + ".png";
         screenshots++;
         PlayerPrefs.SetInt("Screenshots", screenshots);
+
+        HideUI.instance.Toggle(true, true);
+
+        yield return new WaitForSecondsRealtime(0.1f);
+
+        AudioSource.PlayClipAtPoint(StaticReferences.Instance.cameraShutterClip , SofAudioListener.position, 1f);
+#if UNITY_EDITOR
+        Directory.CreateDirectory(Application.persistentDataPath + "/Screenshots/");
+        ScreenCapture.CaptureScreenshot(Application.persistentDataPath + "/Screenshots/" + fileName, 2);
+#elif UNITY_IOS || UNITY_ANDROID
+        Texture2D textureScreenshot = ScreenCapture.CaptureScreenshotAsTexture(1);
+        NativeGallery.SaveImageToGallery(textureScreenshot.EncodeToPNG(), "SkyOnFire", fileName);
+#else
+        Directory.CreateDirectory(Application.persistentDataPath + "/Screenshots/");
+        ScreenCapture.CaptureScreenshot(Application.persistentDataPath + "/Screenshots/"  + fileName, 2);
+#endif
+
+        yield return new WaitForSecondsRealtime(0.1f);
+
+        HideUI.instance.Toggle(false, true);
     }
 }

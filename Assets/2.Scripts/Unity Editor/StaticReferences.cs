@@ -29,6 +29,8 @@ public class StaticReferences : ScriptableObject
     public PhysicMaterial wheelPhysicMaterial;
     public PhysicMaterial aircraftPhysicMaterial;
 
+    public AudioClip cameraShutterClip;
+
     public ParticleSystem engineBoostEffect;
     public ParticleSystem engineOverHeatEffect;
     public ParticleSystem engineFireEffect;

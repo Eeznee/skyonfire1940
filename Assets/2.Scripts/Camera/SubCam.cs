@@ -78,7 +78,7 @@ public class SubCam
         else
             rotation = CameraOperations.RotateWorld(currentRotation, logic.BaseDirection(),logic.BaseUp());
 
-        rotation *= Quaternion.AngleAxis(tilt, Vector3.forward);
+        rotation *= Quaternion.AngleAxis(-tilt, Vector3.forward);
         return rotation;
     }
     private SofAircraft LoadAircraft(string squadTag, string wingTag)
@@ -156,7 +156,7 @@ public class SubCam
         PlayerPrefsExtension.SetVector3("camOffset" + i, customOffset);
         PlayerPrefsExtension.SetVector3("camPos" + i, customPos);
 
-        if (trackTarget.aircraft)
+        if (trackTarget && trackTarget.aircraft)
         {
             PlayerPrefs.SetInt("targetSquad" + i, trackTarget.aircraft.SquadronId);
             PlayerPrefs.SetInt("targetWing" + i, trackTarget.aircraft.placeInSquad);

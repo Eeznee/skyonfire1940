@@ -25,10 +25,15 @@ public class FreeCam : CameraLogic
 {
     public override string Name => "World Free";
     public override CamPos BasePosMode { get { return CamPos.World; } }
-    public override CamDir BaseDirMode { get { return CamDir.World; } }
+    public override CamDir BaseDirMode { get { return CamDir.FlyBy; } }
     public override CamUp UpMode { get { return CamUp.World; } }
     public override bool FollowBaseDir { get { return false; } }
     public override CamAdjustment Adjustment { get { return CamAdjustment.Position; } }
+
+    public override Vector3 DefaultStartingPos()
+    {
+        return Player.complex.tr.position;
+    }
 }
 public class BombSightCam : CameraLogic
 {
