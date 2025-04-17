@@ -150,8 +150,10 @@ public class SofComplex : SofObject
     {
         base.Explosion(center, tnt);
         if (!bubble) return;
-        float sqrDis = (center - transform.position).sqrMagnitude;
-        if (tnt * 500f < sqrDis - 100f) return;   //no calculations if too far
+        float explosionMaxSqrtDistance = tnt * 500f * 2f + 400f;
+        float currentSqrtDistance = (center - transform.position).sqrMagnitude;
+        
+        if (explosionMaxSqrtDistance < currentSqrtDistance) return;   //no calculations if too far
         foreach (SofModule m in modules.ToArray()) if (m) m.ExplosionDamage(center, tnt);
     }
     public void AddInstantiatedComponent(SofComponent component)
