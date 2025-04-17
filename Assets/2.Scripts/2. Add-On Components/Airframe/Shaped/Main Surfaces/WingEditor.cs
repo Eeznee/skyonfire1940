@@ -52,8 +52,6 @@ public class WingEditor : MainSurfaceEditor
 
         wing.root.RecursiveSnap();
 
-        serializedObject.ApplyModifiedProperties();
-
         if (ShowAirfoilFoldout())
         {
             showAirfoil = EditorGUILayout.Foldout(showAirfoil, "Airfoil", true, EditorStyles.foldoutHeader);
@@ -65,6 +63,7 @@ public class WingEditor : MainSurfaceEditor
             }
         }
 
+        serializedObject.ApplyModifiedProperties();
         base.OnInspectorGUI();
     }
 }

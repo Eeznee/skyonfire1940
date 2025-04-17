@@ -62,7 +62,7 @@ public struct ExplosiveFiller
         float penetration = Ballistics.ApproximatePenetration(individualMass, fragmentsVelocity, diameter);
         int bubbleLayerMask = LayerMask.GetMask("Bubble");
 
-        Ballistics.ProjectileChart chart = new Ballistics.ProjectileChart(penetration, fragmentsVelocity, diameter, 0f);
+        Ballistics.ProjectileChart chart = new Ballistics.ProjectileChart(individualMass, penetration, fragmentsVelocity, diameter, 0f);
         for (int i = 0; i < fragments; i++)
         {
             Vector3 vel = Random.onUnitSphere * fragmentsVelocity;

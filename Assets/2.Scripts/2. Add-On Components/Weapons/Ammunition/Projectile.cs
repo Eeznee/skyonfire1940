@@ -33,7 +33,7 @@ public class Projectile : MonoBehaviour
         gameObject.layer = 12;
 
         dragCoeff = ProjectileDragCoeff(properties.diameter, properties.mass);
-        ballisticChart = new ProjectileChart(properties.basePenetration, properties.baseVelocity, properties.diameter, properties.FireChance());
+        ballisticChart = new ProjectileChart(properties.mass, properties.basePenetration, properties.baseVelocity, properties.diameter, properties.FireChance());
 
         //SetupCollider();
     }
@@ -79,12 +79,21 @@ public class Projectile : MonoBehaviour
     {
         Vector3 nextPosition = Pos(Time.fixedTime);
 
-        int mask = LayerMask.GetMask("Bubble");
+        bool nearGround = tr.position.y < 500f;
+
+        int mask = nearGround ? LayerMask.GetMask("Bubble", "Default","Terrain") : LayerMask.GetMask("Bubble");
         if (Physics.Raycast(tr.position, nextPosition - tr.position , out RaycastHit hit, initSpeed * Time.fixedDeltaTime, mask))
         {
-            if (hit.collider != ignoreCollider)
+            if (hit.collider != ignoreCollider) 
             {
-                CollideComplexBubble(hit.collider);
+                if (hit.collider.gameObject.layer == 10)
+                {
+                    CollideComplexBubble(hit.collider);
+                }
+                else
+                {
+                    CollideTerrain(hit.collider);
+                }
             }
         }
 

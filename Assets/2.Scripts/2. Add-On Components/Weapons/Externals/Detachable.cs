@@ -4,7 +4,6 @@ using UnityEngine;
 
 public abstract class Detachable : SofComponent
 {
-
     public float mass;
     public Mesh droppedMesh;
 
@@ -24,17 +23,13 @@ public abstract class Detachable : SofComponent
     {
         base.Initialize(_complex);
         dropped = false;
-        if(GetComponent<Collider>()) GetComponent<Collider>().enabled = true;
+        SetCollider(true);
     }
     public virtual void Drop()
     {
         if (dropped) return;
 
         OnDrop();
-
-    }
-    private void OnTriggerExit(Collider other)
-    {
 
     }
     protected virtual void OnDrop()
@@ -53,6 +48,8 @@ public abstract class Detachable : SofComponent
 
         StartCoroutine(DropSequence());
 
+        SetCollider(false);
+
         if (droppedMesh) GetComponent<MeshFilter>().sharedMesh = droppedMesh;
     }
     protected virtual IEnumerator DropSequence()
@@ -62,7 +59,7 @@ public abstract class Detachable : SofComponent
         float timeSinceDrop = 0f;
         float heightPrediction = GameManager.map.RelativeHeight(tr.position) + rb.velocity.y * Time.deltaTime;
 
-        while (heightPrediction > 3f || Mathf.Abs(inAirVelocity.y) < 1f && heightPrediction < 3f)
+        while (heightPrediction > 0f)
         {
             inAirVelocity = startVelocity + Physics.gravity * timeSinceDrop;
             transform.position += inAirVelocity * Time.deltaTime;
@@ -78,16 +75,18 @@ public abstract class Detachable : SofComponent
         OnGroundContact(timeSinceDrop);
     }
 
-    protected virtual void OnGroundContact(float timeSinceDrop) 
+    protected virtual void OnGroundContact(float timeSinceDrop)
     {
-
+        Root();
     }
-
     protected void Root()
     {
         Vector3 pos = transform.position;
         pos.y = GameManager.map.HeightAtPoint(pos);
         transform.position = pos;
-        GetComponent<Collider>().enabled = false;
+    }
+    protected void SetCollider(bool enabled)
+    {
+        if (GetComponent<Collider>()) GetComponent<Collider>().enabled = enabled;
     }
 }

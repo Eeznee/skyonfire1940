@@ -33,7 +33,7 @@ public class PistonEngine : Engine
         {
             if (Throttle.Boost)
             {
-                bool takeOffBoostAvailable = aircraft.TimeSinceLastLanding < pistonPreset.TakeOffBoostMaxTime;
+                bool takeOffBoostAvailable = aircraft && aircraft.TimeSinceLastLanding < pistonPreset.TakeOffBoostMaxTime;
                 if (pistonPreset.HasTakeOffBoost && takeOffBoostAvailable) return EngineRunMode.TakeOffBoost;
                 if (pistonPreset.HasCombatBoost) return EngineRunMode.Boost;
             }
@@ -56,7 +56,7 @@ public class PistonEngine : Engine
         BoostTime = pistonPreset.HasCombatBoost ? pistonPreset.CombatBoostMaxTime : pistonPreset.TakeOffBoostMaxTime;
     }
 
-    const float engineFriction = 400f;
+    const float engineFriction = 250f;
     const float engineFrictionBroken = 5000f;
     public float Friction(bool on, bool ripped)
     {

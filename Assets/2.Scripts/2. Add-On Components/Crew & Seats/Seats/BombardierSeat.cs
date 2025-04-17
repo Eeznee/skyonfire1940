@@ -18,7 +18,7 @@ public class BombardierSeat : CrewSeat
     {
         get
         {
-            bool highPriority = Player.aircraft.squadron == aircraft.squadron;
+            bool highPriority = Player.Squadron == aircraft.squadron;
             highPriority &= Player.bombardierSeat != null;
             return highPriority ? 4 : 1;
         }

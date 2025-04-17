@@ -98,6 +98,7 @@ public class ArmamentManager
 
     public void FirePrimaries() { foreach (Gun g in primaries) if (g.aircraft == aircraft && (g.gunPreset.name != "MP40" || aircraft.hydraulics.bombBay.state > 0.8f)) g.Trigger(); }
     public void FireSecondaries() { foreach (Gun g in secondaries) if (g.aircraft == aircraft) g.Trigger(); }
+    
     public void DropBomb()
     {
         OrdnanceLoad.LaunchOptimal(bombs, 5f);
@@ -109,6 +110,7 @@ public class ArmamentManager
     }
     public void DropTorpedo()
     {
+        if (aircraft.data.grounded.Get) return;
         OrdnanceLoad.LaunchOptimal(torpedoes, 0f);
     }
 

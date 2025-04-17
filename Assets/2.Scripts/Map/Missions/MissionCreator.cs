@@ -58,10 +58,12 @@ public class MissionCreator : MonoBehaviour
     }
     private void OnSecondaryClick(InputAction.CallbackContext context)
     {
-        if (PlayerActions.actions.UI.Point.ReadValue<Vector2>().x <= Screen.width * 2 / 3f && !squadronPositionner.gameObject.activeInHierarchy)
-        {
-            SpawnSquadronOnMousePos();
-        }
+        if (PlayerActions.actions.UI.Point.ReadValue<Vector2>().x > Screen.width * 2 / 3f) return;
+        if (squadronPositionner.gameObject.activeInHierarchy) return;
+        if (mods.gameObject.activeInHierarchy) return;
+        if (squadronPositionner.gameObject.activeInHierarchy) return;
+        
+        SpawnSquadronOnMousePos();
     }
     private void SpawnSquadronOnMousePos()
     {
@@ -73,6 +75,14 @@ public class MissionCreator : MonoBehaviour
         squadPos.x = (mousePos.x - minimapTr.position.x) / minimapTr.sizeDelta.x / widthScaling + 0.5f;
         squadPos.y = (mousePos.y - minimapTr.position.y) / minimapTr.sizeDelta.y / heightScaling + 0.5f;
         squadPos = mapData.RealMapPosition(squadPos);
+
+
+        foreach(Game.Squadron squadron in squadrons)
+        {
+            Vector2 pos = new Vector2(squadron.startPosition.x, squadron.startPosition.z);
+            if ((pos - squadPos).magnitude < 15f) return;
+        }
+
         //Create the new squad
         Game.Team team = ally.isOn ? Game.Team.Ally : Game.Team.Axis;
         squad = new Game.Squadron(aircraft.SelectedCard, team, 1, lastDifficulty * 100f, false);

@@ -18,8 +18,16 @@ public abstract class SofModule : SofComponent
     public event Action<float> OnDirectDamage;
     public event Action<SofModule> OnRip;
     public event Action OnRepair;
-    
 
+    protected virtual Collider MainCollider => colliderGetComponent;
+    private Collider colliderGetComponent;
+
+    public override void SetReferences(SofComplex _complex)
+    {
+        base.SetReferences(_complex);
+
+        colliderGetComponent = GetComponent<Collider>();
+    }
     public override void Initialize(SofComplex _complex)
     {
         base.Initialize(_complex);
@@ -44,19 +52,17 @@ public abstract class SofModule : SofComponent
         OnProjectileDamage?.Invoke(hpDamage, caliber, fireCoeff);
     }
 
-    const float holeCoeff = 2f;
-    const float damageAtMaxRange = 1f;
-    const float minDamageForHole = 10f;
-
-    public virtual void ExplosionDamage(Vector3 center, float tnt)
+    const float holeCoeff = 5f;
+    public virtual void ExplosionDamage(Vector3 explosionOrigin, float tnt)
     {
-        float squaredMaxDamageRange = Ballistics.MaxExplosionDamageRangeSqrt(tnt);
-        float sqrDis = (center - transform.position).sqrMagnitude;
-        if (sqrDis < squaredMaxDamageRange)
+        Vector3 point = MainCollider ? MainCollider.ClosestPoint(explosionOrigin) : transform.position;
+
+        float sqrDis = (explosionOrigin - point).sqrMagnitude;
+        sqrDis = Mathf.Max(sqrDis, 2f);
+        if (tnt * 500f > sqrDis)
         {
-            float dmg = damageAtMaxRange * squaredMaxDamageRange / sqrDis * UnityEngine.Random.Range(0.5f, 2f);
-            float hole = 0f;
-            if(dmg > minDamageForHole) hole = dmg * holeCoeff;
+            float dmg = 500f * tnt / sqrDis * UnityEngine.Random.Range(0.7f, 1.5f);
+            float hole = dmg * holeCoeff;
             ProjectileDamage(dmg, hole, 0f);
         }
     }

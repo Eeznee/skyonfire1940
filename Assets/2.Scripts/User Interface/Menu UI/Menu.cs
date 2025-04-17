@@ -5,10 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class Menu : MonoBehaviour
 {
-    public PPSlider[] ppSliders;
-    public PPToggle[] ppToggles;
-    public AudioSlider[] audioSliders;
-	//load a scene
 	public void LoadScene (string scene)
 	{
 		SceneManager.LoadScene (scene);
@@ -29,13 +25,15 @@ public class Menu : MonoBehaviour
 	{
 		Screen.sleepTimeout = SleepTimeout.NeverSleep;
 
-        //Load every player prefs values
-        foreach(PPSlider pps in ppSliders)
+        foreach(PPSlider pps in GetComponentsInChildren<PPSlider>())
         {
             pps.Start();
         }
-        //Load every player prefs values
-        foreach (AudioSlider audioSlider in audioSliders)
+        foreach (PPToggle ppt in GetComponentsInChildren<PPToggle>())
+        {
+            ppt.Start();
+        }
+        foreach (AudioSlider audioSlider in GetComponentsInChildren<AudioSlider>())
         {
             audioSlider.Start();
         }

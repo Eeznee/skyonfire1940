@@ -76,6 +76,7 @@ public abstract class SofFrame : SofModule, IDamageTick, IMassComponent
         {
             float displacementMultiplier = Mathf.Clamp(-center.y, 0f, 0.5f);
             float force = displacementMultiplier * RealMass * 10f * floatLevel;
+            if(rb.velocity.y > 1f) force /= rb.velocity.y;
             if (!aircraft) force /= 7f;
             rb.AddForceAtPosition(Vector3.up * force, center);
             floatLevel = Mathf.Max(floatLevel - Time.fixedDeltaTime / 12f, 1f);

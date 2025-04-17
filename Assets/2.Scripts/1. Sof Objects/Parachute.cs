@@ -23,6 +23,11 @@ public class Parachute : SofComplex
     private Vector3 startVelocity;
     private string startTag;
 
+    public override void SetReferences()
+    {
+        base.SetReferences();
+        
+    }
     private void Start()
     {
         //Do not delete, or initialize will be called twice
@@ -36,6 +41,8 @@ public class Parachute : SofComplex
 
         GameInitialization();
 
+        rb.velocity = startVelocity;
+
         _crew.seats = new List<CrewSeat>(new CrewSeat[] { seat });
         _crew.SwitchSeat(0);
 
@@ -46,6 +53,8 @@ public class Parachute : SofComplex
             Player.Set(this);
         }
         aircraft.RemoveComponentRoot(_crew);
+
+
     }
     protected override void GameInitialization()
     {
@@ -57,6 +66,10 @@ public class Parachute : SofComplex
         landed = false;
         tag = startTag;
     }
+    public override void ResetInertiaTensor()
+    {
+        rb.inertiaTensor = new Vector3(100f, 400f * Random.Range(0.8f, 1.2f), 100f);
+    }
     protected override void SetRigidbody()
     {
         rb = this.GetCreateComponent<Rigidbody>();
@@ -64,8 +77,6 @@ public class Parachute : SofComplex
         rb.centerOfMass = Vector3.zero;
         rb.angularDrag = 1f;
         rb.drag = 0f;
-        rb.inertiaTensor = new Vector3(100f, 400f * Random.Range(0.8f, 1.2f), 100f);
-        rb.velocity = startVelocity;
         rb.isKinematic = false;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
         rb.interpolation = RigidbodyInterpolation.Extrapolate;

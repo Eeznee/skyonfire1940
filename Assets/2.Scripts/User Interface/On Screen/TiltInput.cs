@@ -13,8 +13,7 @@ namespace UnityEngine.InputSystem.OnScreen
     {
         [InputControl(layout = "Vector2")][SerializeField] private string m_ControlPath;
 
-        private float pitchSens = 1f;
-        private float rollSens = 1f;
+        private float tiltSensitivity = 1f;
 
         private float fullPitchAngle;
         private float fullRollAngle;
@@ -39,11 +38,10 @@ namespace UnityEngine.InputSystem.OnScreen
         {
             get
             {
-                if (GravitySensor.current == null) return Vector3.down;
+                if (GravitySensor.current != null) return GravitySensor.current.gravity.ReadValue();
+                if (Accelerometer.current != null) return Accelerometer.current.acceleration.ReadValue();
 
-                Vector3 val = GravitySensor.current.gravity.ReadValue();
-
-                return val;
+                return Vector3.down;
             }
         }
         private Vector3 AverageInput()
@@ -54,14 +52,14 @@ namespace UnityEngine.InputSystem.OnScreen
         }
         private void Start()
         {
-            InputSystem.EnableDevice(GravitySensor.current);
+            if(GravitySensor.current != null) InputSystem.EnableDevice(GravitySensor.current);
+            if(GravitySensor.current == null && Accelerometer.current != null) InputSystem.EnableDevice(Accelerometer.current);
 
             rawInputs = new Vector3[averageAmount];
 
-            pitchSens = PlayerPrefs.GetFloat("PitchSensitivity", 1f);
-            rollSens = PlayerPrefs.GetFloat("RollSensitivity", 1f);
-            fullPitchAngle = pitchTiltAngle / pitchSens;
-            fullRollAngle = rollTiltAngle / rollSens;
+            tiltSensitivity = PlayerPrefs.GetFloat("TiltSensitivity", 1f);
+            fullPitchAngle = pitchTiltAngle / tiltSensitivity;
+            fullRollAngle = rollTiltAngle / tiltSensitivity;
         }
 
         private void Update()

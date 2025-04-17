@@ -54,7 +54,7 @@ public class ControlsManager : MonoBehaviour
     private void Awake()
     {
         pitchCorrectionMode = (PitchCorrectionMode)PlayerPrefs.GetInt("PitchCorrectionMode", 3);
-        preferredPilot = (ControlsMode)PlayerPrefs.GetInt("ControlsMode", 2);
+        preferredPilot = (ControlsMode)PlayerPrefs.GetInt("ControlsMode", 1);
         preferredGunner = (ControlsMode)PlayerPrefs.GetInt("ControlsMode", 2);
     }
 }

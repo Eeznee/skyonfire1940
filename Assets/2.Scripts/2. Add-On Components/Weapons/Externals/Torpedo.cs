@@ -30,8 +30,6 @@ public class Torpedo : Detachable
 
     protected override void OnGroundContact(float timeSinceDropped)
     {
-        base.OnGroundContact(timeSinceDropped);
-
         if (GameManager.map.HeightAtPoint(tr.position) > 0f)
         {
             Root();
@@ -54,7 +52,7 @@ public class Torpedo : Detachable
             return;
         }
 
-        GetComponent<Collider>().enabled = true;
+        SetCollider(true);
 
         Vector3 forward = transform.forward;
         forward.y = 0f;

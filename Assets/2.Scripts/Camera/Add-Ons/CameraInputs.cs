@@ -88,11 +88,11 @@ public class CameraInputs : MonoBehaviour
 #endif
 #else
         if (ControlsManager.CurrentMode() == ControlsMode.MouseStick) return SofCamera.lookAround;
-        if (Player.role == SeatRole.Gunner && ControlsManager.CurrentMode() == ControlsMode.Direct) return SofCamera.lookAround;
         if (UIManager.gameUI != GameUI.Game) return PlayerActions.cam.Unlock.ReadValue<float>() > 0.5f && EventSystem.current.currentSelectedGameObject == null;
+        if (Player.role == SeatRole.Gunner && ControlsManager.CurrentMode() == ControlsMode.Direct) return SofCamera.lookAround;
+        
         return true;
 #endif
-
     }
     public static float Sensitivity()
     {
@@ -103,6 +103,7 @@ public class CameraInputs : MonoBehaviour
     public static Vector2 CameraInput()
     {
         if (!CameraUnlocked()) return Vector2.zero;
+
         Vector2 cameraInput = Sensitivity() * PlayerActions.cam.Rotate.ReadValue<Vector2>();
         if (inverted) cameraInput = -cameraInput;
         return cameraInput;

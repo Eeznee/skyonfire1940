@@ -155,6 +155,7 @@ public class GunnerSeat : CrewSeat
     }
     public void GetTarget()
     {
+        if (!gunMount) return;
         spotted = visibility.Spot();
         target = TargetPicker.PickTargetGunner(gunMount, spotted, target);
         targetTr = target ? target.transform : null;

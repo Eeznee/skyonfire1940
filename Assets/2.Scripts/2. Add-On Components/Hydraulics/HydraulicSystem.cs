@@ -59,7 +59,15 @@ public class HydraulicSystem : SofComponent
     {
         disabled = true;
         if (essentialParts.Length == 0) disabled = false;
-        foreach (SofModule p in essentialParts) if (p && p.data == data && !p.ripped) disabled = false;
+        foreach (SofModule p in essentialParts)
+        {
+            if (p == null)
+            {
+                continue;
+            }
+            if (p.complex == complex && !p.ripped) disabled = false;
+        }
+
     }
     public virtual void SetDirection(int speed)
     {

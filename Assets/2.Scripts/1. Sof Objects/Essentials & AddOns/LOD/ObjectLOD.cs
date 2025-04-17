@@ -78,9 +78,9 @@ public class ObjectLOD : SofComponent
             }
     }
 
-    const float lod0Limit = 0.5f;
-    const float lod1Limit = 0.15f;
-    const float lod2Limit = 0.05f;
+    const float lod0Limit = 0.1f;
+    const float lod1Limit = 0.05f;
+    const float lod2Limit = 0.01f;
     const float lod3Limit = 0f;
     public void ResetLODGroup()
     {

@@ -83,7 +83,7 @@ public class CrewForcesEffect
         accelerationOffset += (crew.sofObject.tr.up - Vector3.up) * 4f;
         accelerationCompensation = Vector3.MoveTowards(accelerationCompensation, accelerationOffset, dt * 2f);
         accelerationCompensation = Vector3.ClampMagnitude(accelerationCompensation, accelerationOffset.magnitude);
-        headPositionOffset = (accelerationOffset - accelerationCompensation) / 50f;
+        headPositionOffset = (accelerationOffset - accelerationCompensation) * 0.01f;
     }
 
     public Vector3 headPositionOffset { get; private set; }

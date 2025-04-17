@@ -27,7 +27,7 @@ public class Pedal : SofComponent
 
     private void Update()
     {
-        if (aircraft.lod.LOD() != 0) return;
+        if (!aircraft || aircraft.lod.LOD() != 0) return;
 
         if (currentYawInput == controller.controls.current.yaw) return;
         currentYawInput = controller.controls.current.yaw;

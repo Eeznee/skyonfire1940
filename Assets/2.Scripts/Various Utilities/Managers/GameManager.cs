@@ -147,7 +147,7 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(0.1f);
 
-        AudioSource.PlayClipAtPoint(StaticReferences.Instance.cameraShutterClip , SofAudioListener.position, 1f);
+        SofAudioListener.localSource.PlayOneShot(StaticReferences.Instance.cameraShutterClip);
 #if UNITY_EDITOR
         Directory.CreateDirectory(Application.persistentDataPath + "/Screenshots/");
         ScreenCapture.CaptureScreenshot(Application.persistentDataPath + "/Screenshots/" + fileName, 2);

@@ -125,7 +125,7 @@ public class SofComplex : SofObject
         UpdateRbMass(true);
         ResetInertiaTensor();
     }
-    public void ResetInertiaTensor()
+    public virtual void ResetInertiaTensor()
     {
         if (aircraft != null)
         {
@@ -133,7 +133,8 @@ public class SofComplex : SofObject
             inertiaTensor *= 1.1f;
             rb.inertiaTensor = inertiaTensor;
         }
-        else rb.ResetInertiaTensor();
+        else
+            rb.ResetInertiaTensor();
     }
     public void Repair()
     {
@@ -150,7 +151,7 @@ public class SofComplex : SofObject
         base.Explosion(center, tnt);
         if (!bubble) return;
         float sqrDis = (center - transform.position).sqrMagnitude;
-        if (tnt * 2000f < sqrDis) return;   //no calculations if too far
+        if (tnt * 500f < sqrDis - 100f) return;   //no calculations if too far
         foreach (SofModule m in modules.ToArray()) if (m) m.ExplosionDamage(center, tnt);
     }
     public void AddInstantiatedComponent(SofComponent component)
@@ -193,15 +194,9 @@ public class SofComplex : SofObject
             if (airframe) airframes.Remove(airframe);
             IDamageTick damageTicker = component as IDamageTick;
             if (damageTicker != null) damageTickers.Remove(damageTicker);
-
-            IMassComponent imass = component.GetComponent<IMassComponent>();
-            if (imass != null)
-            {
-                ShiftMass(-new Mass(imass, MassCategory.Real));
-                if (realMass.mass <= 0f) Debug.LogError(name + ": Mass below zero", gameObject);
-            }
-
         }
+        RecomputeRealMass();
+
         onComponentRootRemoved?.Invoke(rootComponent);
     }
     private bool submerged = false;

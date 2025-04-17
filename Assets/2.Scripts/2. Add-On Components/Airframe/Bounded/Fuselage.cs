@@ -23,7 +23,6 @@ public class Fuselage : BoundedAirframe
     {
         ForceAtPoint secondQuadForce = base.SimulatedForceOnQuad(secondQuad, flightConditions);
         ForceAtPoint firstQuadForce = base.SimulatedForceOnQuad(quad, flightConditions);
-
         return new ForceAtPoint(firstQuadForce.force + secondQuadForce.force, quad.centerAero.Pos(flightConditions));
     }
 

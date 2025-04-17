@@ -7,28 +7,45 @@ public static class Ballistics
     [System.Serializable]
     public struct ProjectileChart
     {
+        public float mass;
         public float basePenetration;
         public float atBaseVelocity;
 
         public float diameter;
         public float fireChance;
 
-        public ProjectileChart(float _basePen, float _baseVel, float _diameter, float _fireChance)
+        public ProjectileChart(float _mass, float _basePen, float _baseVel, float _diameter, float _fireChance)
         {
+            mass = _mass;
             basePenetration = _basePen;
             atBaseVelocity = _baseVel;
             diameter = _diameter;
             fireChance = _fireChance;
         }
-
+        public float KineticEnergy(float sqrVelocity)
+        {
+            return mass * sqrVelocity * 0.5f;
+        }
+        public float KineticEnergy(Vector3 velocity)
+        {
+            return KineticEnergy(velocity.sqrMagnitude);
+        }
+        const float energyToDamage = 0.0006f;
+        public float KineticDamage(float sqrVelocity)
+        {
+            return KineticEnergy(sqrVelocity) * energyToDamage;
+        }
+        public float KineticDamage(Vector3 velocity)
+        {
+            return KineticDamage(velocity.sqrMagnitude);
+        }
         public float Pen(float sqrVelocity)
         {
             return basePenetration * sqrVelocity / (atBaseVelocity * atBaseVelocity);
         }
-
         public float Pen(Vector3 velocity)
         {
-            return basePenetration * velocity.sqrMagnitude / (atBaseVelocity * atBaseVelocity);
+            return Pen(velocity.sqrMagnitude);
         }
     }
     public enum HitSummary
@@ -87,6 +104,7 @@ public static class Ballistics
         if (hits.Length == 0) return HitResult.NoHit(velocity);
 
         float sqrVelocity = velocity.sqrMagnitude;
+        float initialSqrVelocity = sqrVelocity;
 
         bool oneConfirmedHit = false;
         RaycastHit firstHit = new RaycastHit();
@@ -105,9 +123,11 @@ public static class Ballistics
 
             float alpha = Vector3.Angle(-hit.normal, velocity);
             float armor = Random.Range(0.8f, 1.2f) * module.Armor.surfaceArmor / Mathf.Cos(alpha * Mathf.Deg2Rad);
+
+
             if (penetrationPower > armor)//If penetration occurs
             {
-                module.ProjectileDamage(chart.diameter * chart.diameter / 30f, chart.diameter, chart.fireChance);
+                module.ProjectileDamage(chart.KineticDamage(initialSqrVelocity), chart.diameter, chart.fireChance);
                 armor += Random.Range(0.8f, 1.2f) * module.Armor.fullPenArmor;
                 sqrVelocity *= 1f - armor / penetrationPower;
 
@@ -129,7 +149,7 @@ public static class Ballistics
     {
         return Mathf.Sqrt(kgTnt) * 2f;
     }
-    const float explosionRangeFactor = 8f;
+    const float explosionRangeFactor = 30f;
     public static float MaxExplosionDamageRange(float kgTnt)
     {
         return Mathf.Sqrt(kgTnt) * explosionRangeFactor;

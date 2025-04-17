@@ -58,16 +58,16 @@ public class CrewAnimator : SofComponent
         if (!crew) Debug.LogError("This script must have a CrewMember script parent", this);
         crewAnimator = GetComponent<Animator>();
         meshRend = GetComponentInChildren<SkinnedMeshRenderer>();
-        defaultModel = meshRend?.sharedMesh;
 
 #if UNITY_EDITOR
-        gameObject.hideFlags = HideFlags.HideAndDontSave;
+        //gameObject.hideFlags = HideFlags.HideAndDontSave;
 #endif
     }
     public override void Initialize(SofComplex _complex)
     {
         base.Initialize(_complex);
 
+        if(defaultModel == null) defaultModel = meshRend?.sharedMesh;
 
         firstPersonBody = PlayerPrefs.GetInt("FirstPersonModel", 1) == 1;
 
@@ -88,9 +88,12 @@ public class CrewAnimator : SofComponent
     }
     public void ToggleFirstPersonModel()
     {
+        if (!meshRend) return;
+
         bool firstPerson = crew.IsVrPlayer || (crew.IsPlayer && SofCamera.viewMode == 1);
 
-        if (!meshRend) return;
+        //Debug.Log(firstPerson);
+
         meshRend.enabled = !firstPerson || firstPersonBody;
         meshRend.sharedMesh = firstPerson ? headLessModel : defaultModel;
     }

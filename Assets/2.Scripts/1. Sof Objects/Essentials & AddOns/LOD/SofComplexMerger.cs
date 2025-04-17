@@ -123,14 +123,14 @@ public class SofComplexMerger
             if (!filtRend.IsMergeable(commonMaterial))
                 unMergedFiltRends.Add(filtRend);
             else
-            {   
+            {
                 if (filtRend.IsMobile(hydraulics, mobileFiltersExceptions))
                     mobileFiltRends.Add(filtRend);
                 else
                     fixedMerged.filtRends.Add(filtRend);
             }
         }
-        fullMerged.filtRends.AddRange(mobileFiltRends);
+        //fullMerged.filtRends.AddRange(mobileFiltRends);
         fullMerged.filtRends.AddRange(fixedMerged.filtRends);
     }
 }

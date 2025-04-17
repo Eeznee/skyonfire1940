@@ -53,6 +53,8 @@ public abstract class SofAirframe : SofFrame, IDamageTick, IMassComponent
     }
     protected ForceAtPoint SimulatedForceOnQuad(SurfaceQuad specificQuad, FlightConditions flightConditions)
     {
+        if (quad.centerAero.WorldPos.y <= 0f) return new ForceAtPoint(Vector3.zero, Vector3.zero);
+
         Vector3 centerAero = specificQuad.centerAero.Pos(flightConditions);
         Vector3 aeroDir = specificQuad.aeroDir.Dir(flightConditions);
 
@@ -78,7 +80,6 @@ public abstract class SofAirframe : SofFrame, IDamageTick, IMassComponent
     }
     public ForceAtPoint CurrentForces()
     {
-        if (quad.centerAero.WorldPos.y <= 0f) return new ForceAtPoint(Vector3.zero, Vector3.zero);
         return SimulatePointForce(new FlightConditions(complex, false));
     }
 

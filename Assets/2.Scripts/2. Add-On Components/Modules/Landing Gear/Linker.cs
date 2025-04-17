@@ -22,8 +22,8 @@ public class Linker : MonoBehaviour
         {
             tr.localRotation = Quaternion.identity;
             Vector3 fromC2ToIntersection = intersection - tr.position;
-            float angle = Vector3.SignedAngle(fromC2ToIntersection, tr.TransformDirection(jointPivot), normal);
-            tr.Rotate(normal, -angle, Space.World);
+            float angle = Vector3.SignedAngle(fromC2ToIntersection, tr.parent.TransformDirection(jointPivot), normal);
+            tr.rotation = Quaternion.AngleAxis(-angle, normal) * tr.parent.rotation;
         }
     }
     public bool showIntersectionCircles = false;

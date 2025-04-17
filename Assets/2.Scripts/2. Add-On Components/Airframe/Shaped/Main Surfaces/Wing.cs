@@ -23,6 +23,8 @@ public class Wing : MainSurface
     public override Transform SubSurfaceParent => root.tr;
     public override float AirframeDamage => base.AirframeDamage * (skin ? skin.structureDamage : 1f);
     public override IAirfoil Airfoil => airfoil ? airfoil : StaticReferences.Instance.stabilizersAirfoil;
+
+    protected override Collider MainCollider => skin ? skin.skinCollider : base.MainCollider;
     public float EntireWingArea
     {
         get

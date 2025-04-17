@@ -14,9 +14,16 @@ public struct Mass
     }
     public Mass(IMassComponent part, MassCategory category)
     {
+        mass = 0f;
+        center = Vector3.zero;
+
+        if (part == null) return;
+        SofComponent component = part as SofComponent;
+        if (component == null) return;
+
         float partMass = part.Mass(category);
         mass = partMass;
-        SofComponent component = part as SofComponent;
+
         center = component.sofObject.transform.InverseTransformPoint(component.transform.position);
     }
     public Mass(IMassComponent[] massComponents, MassCategory category)
@@ -39,7 +46,10 @@ public struct Mass
         Vector3 inertiaMoment = Vector3.zero;
         foreach (IMassComponent massComponent in massComponents)
         {
-            Transform tr = (massComponent as SofComponent).transform;
+            SofComponent sofComponent = massComponent as SofComponent;
+            if (sofComponent == null) continue;
+
+            Transform tr = sofComponent.transform;
             Vector3 localPos = tr.root.InverseTransformPoint(tr.position);
             float x = new Vector2(localPos.y, localPos.z).sqrMagnitude;
             float y = new Vector2(localPos.x, localPos.z).sqrMagnitude;

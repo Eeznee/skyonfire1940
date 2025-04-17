@@ -38,6 +38,7 @@ public class HydraulicsDragAndRip : SofComponent, IAircraftForce
     }
     public ForceAtPoint SimulatePointForce(FlightConditions flightConditions)
     {
+        if (complex.tr.position.y < 0f) return new ForceAtPoint(Vector3.zero, Vector3.zero);
         float cd = hydraulics.state * (hydraulics.disabled ? dragPartsRipped : maxDrag);
         if (cd > 0f)
         {

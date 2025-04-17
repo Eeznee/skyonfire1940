@@ -27,7 +27,6 @@ public class ObjectBubble : SofComponent
 
     private void AddCollidersArray(Collider[] collidersToAdd)
     {
-        colliders = solidColliders = new List<Collider>();
         foreach (Collider col in collidersToAdd)
         {
             if (col.gameObject.layer == 9)
@@ -42,7 +41,8 @@ public class ObjectBubble : SofComponent
     {
         base.Initialize(_complex);
 
-        colliders = solidColliders = new List<Collider>();
+        colliders = new List<Collider>();
+        solidColliders = new List<Collider>();
         AddCollidersArray(transform.root.GetComponentsInChildren<Collider>());
 
         bubble = gameObject.AddComponent<SphereCollider>();
@@ -58,7 +58,14 @@ public class ObjectBubble : SofComponent
             col.sharedMaterial = StaticReferences.Instance.aircraftPhysicMaterial;
         }
 
-        DisableColliders();
+        foreach (Collider col in colliders)
+        {
+            if (col)
+            {
+                col.enabled = true;
+            }
+        }
+        //DisableColliders();
     }
     private void OnTriggerStay(Collider other)
     {
@@ -80,17 +87,26 @@ public class ObjectBubble : SofComponent
     }
     public void EnableColliders(bool solidOnly)
     {
+        return;
         toggledTimer = timerThreshold;
 
         if ((solidOnly && activeColliders == CollidersGroup.Solid) || activeColliders == CollidersGroup.All) return;
 
         activeColliders = solidOnly ? CollidersGroup.Solid : CollidersGroup.All;
 
-        foreach (Collider col in solidOnly ? solidColliders : colliders)
-            if (col) col.enabled = true;
+        foreach (Collider col in (solidOnly ? solidColliders : colliders))
+        {
+
+            if (col)
+            {
+                col.enabled = true;
+            }
+        }
+
     }
     public void DisableColliders()
     {
+        return;
         foreach (Collider col in colliders)
         {
             if (col)
@@ -103,8 +119,8 @@ public class ObjectBubble : SofComponent
     }
     void Update()
     {
+        return;
         if (aircraft.data.relativeAltitude.Get < 15f) EnableColliders(true);
-
         if (activeColliders != CollidersGroup.None && toggledTimer < Time.deltaTime) DisableColliders();
 
         toggledTimer -= Time.deltaTime;

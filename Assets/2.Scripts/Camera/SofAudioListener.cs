@@ -15,6 +15,7 @@ public class SofAudioListener : MonoBehaviour
     public static AudioListener listener;
     public static Vector3 position;
     public static Transform tr;
+    public static AudioSource localSource;
     AudioMixer mixer;
     float cockpitRatio = 1f;
 
@@ -27,6 +28,9 @@ public class SofAudioListener : MonoBehaviour
         listener = gameObject.AddComponent<AudioListener>();
         mixer = GameManager.gm.mixer;
         StartCoroutine(FadeVolumeIn());
+
+        localSource = gameObject.AddComponent<AudioSource>();
+        localSource.spatialBlend = 0f;
 
         AudioListener.volume = 1f;
         TimeManager.OnPauseEvent += OnPause;

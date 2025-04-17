@@ -18,14 +18,11 @@ public class Bomb : Detachable
 
         safetyActive = Mathf.Abs(rb.velocity.magnitude) < 15f;
     }
-
     protected override void OnGroundContact(float timeSinceDrop)
     {
         base.OnGroundContact(timeSinceDrop);
 
-        if (rb.velocity.y < -10f && GameManager.map.HeightAtPoint(tr.position) > 5f) Root();    //Stuck in the ground
-
-        if (timeSinceDrop < SecurityTimer || safetyActive)                                      //Safety Triggered, bomb will not explode
+        if (timeSinceDrop < SecurityTimer || safetyActive)
         {
             Destroy(transform.root.gameObject, 20f);
             return;
@@ -36,7 +33,7 @@ public class Bomb : Detachable
 
     protected IEnumerator Detonate()
     {
-        yield return new WaitForSeconds(0f);
+        yield return new WaitForSeconds(delayFuse);
         filler.Detonate(transform.position, mass, null);
         Destroy(transform.root.gameObject);
     }

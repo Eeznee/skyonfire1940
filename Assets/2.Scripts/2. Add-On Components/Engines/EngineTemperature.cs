@@ -93,7 +93,7 @@ public class EngineTemperature
             JetEnginePreset jetPreset = jetEngine.JetPreset;
 
             peakTempAltitude = 0f;
-            heatingSpeed = HeatingSpeed(jetPreset.MaxThrust);
+            heatingSpeed = HeatingSpeed(jetPreset.MaxThrust * 200f);
         }
         else
         {
@@ -129,7 +129,7 @@ public class EngineTemperature
         float airTemperature = Aerodynamics.GetTemperature(altitude);
 
         if (jet)
-            return (airTemperature - coolingDeviceTemp) * CoolingCoefficientDamageIncluded;
+            return (airTemperature - coolingDeviceTemp) * CoolingCoefficientDamageIncluded * airDensity;
         else
             return (airTemperature - coolingDeviceTemp) * CoolingCoefficientDamageIncluded * airDensity;
     }
@@ -141,18 +141,17 @@ public class EngineTemperature
         float ambientDensity = Aerodynamics.GetAirDensity(altitude);
 
 
-        if (jet) return heatingSpeed / CoolingCoefficientDamageIncluded + ambientTemp;
-        else return heatingSpeed / (CoolingCoefficientDamageIncluded * ambientDensity) + ambientTemp;
+        return heatingSpeed / (CoolingCoefficientDamageIncluded * ambientDensity) + ambientTemp;
     }
     public float EquilibrumTempMaxContinuous()
     {
         float altitude = engine.data.altitude.Get;
-        if (jet) return EquilibrumTemp(jetEngine.JetPreset.MaxThrust, altitude);
+        if (jet) return EquilibrumTemp(jetEngine.JetPreset.MaxThrust * 200f * Aerodynamics.GetAirDensity(altitude) / Aerodynamics.seaLvlDensity, altitude);
         else return EquilibrumTemp(pistonEngine.PistonPreset.BestPower(altitude, EngineRunMode.Continuous), altitude);
     }
     public void Update(float dt)
     {
-        Temperature += HeatingSpeed(jet ? jetEngine.Thrust : pistonEngine.BrakePower) * dt;
+        Temperature += HeatingSpeed(jet ? jetEngine.Thrust * 200f : pistonEngine.BrakePower) * dt;
         Temperature += CoolingSpeed(Temperature, engine.data.altitude.Get) * dt;
 
         if (Temperature > damageEngineTemp && engine.Working)

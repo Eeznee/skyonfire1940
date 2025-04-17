@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
     public static SofObject sofObj;
     public static SofComplex complex;
     public static SofAircraft aircraft;
+    public static Game.Squadron Squadron => aircraft ? aircraft.squadron : null;
 
     private static int squad = 0;
     private static int wing = 0;
@@ -94,7 +95,7 @@ public class Player : MonoBehaviour
 
         bool differentComplex = newComplex != complex;
         bool differentCrew = crew != newCrew;
-        bool differentSeat = differentCrew || crew.SeatId != newSeatId;
+        bool differentSeat = differentComplex || differentCrew || crew.SeatId != newSeatId;
 
         if (!differentSeat) return;
 

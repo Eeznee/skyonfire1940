@@ -134,7 +134,7 @@ public partial class Propeller : SofModule, IMassComponent, IAircraftForce
         float bladeCoeff = TorqueBladeCoefficient(bladeAngle, optimalBladeForGivenAdvanceRatio);
         float cd = DragCoefficient * bladeCoeff;
 
-        return -BladeSpeedSquared(radPerSec, data.tas.Get) * cd * radius / engine.PistonPreset.PropellerReductionGear;
+        return -Mathf.Sign(radPerSec) * BladeSpeedSquared(radPerSec, data.tas.Get) * cd * radius / engine.PistonPreset.PropellerReductionGear;
     }
     private float TorqueBladeCoefficient(float currentAlpha, float optimalAlpha)
     {
