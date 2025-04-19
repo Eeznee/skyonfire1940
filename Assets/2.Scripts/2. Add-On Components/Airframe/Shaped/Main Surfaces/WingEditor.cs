@@ -12,22 +12,26 @@ public class WingEditor : MainSurfaceEditor
 {
     SerializedProperty airfoil;
     SerializedProperty oswald;
+    SerializedProperty sparSettings;
     SerializedProperty skinMesh;
 
 
 
+
     static bool showAirfoil = true;
+    static bool showColliders = true;
 
     protected override void OnEnable()
     {
         base.OnEnable();
         airfoil = serializedObject.FindProperty("airfoil");
         oswald = serializedObject.FindProperty("oswald");
+        sparSettings = serializedObject.FindProperty("sparSettings");
         skinMesh = serializedObject.FindProperty("skinMesh");
+
     }
     protected override void BasicFoldout()
     {
-        EditorGUILayout.PropertyField(skinMesh, new GUIContent("Skin Collider"));
         base.BasicFoldout();
         Wing wing = (Wing)target;
         EditorGUILayout.LabelField("Full Wing Area", wing.EntireWingArea.ToString("0.00") + " m2");
@@ -36,12 +40,18 @@ public class WingEditor : MainSurfaceEditor
     {
         EditorGUILayout.PropertyField(airfoil);
         EditorGUILayout.Slider(oswald, 0.3f, 1f);
+
     }
-    protected bool ShowAirfoilFoldout()
+    protected bool IsRootWing()
     {
         Wing wing = (Wing)target;
 
         return !wing.parent;
+    }
+    protected void ColliderFoldout()
+    {
+        if(IsRootWing()) EditorGUILayout.PropertyField(sparSettings);
+        EditorGUILayout.PropertyField(skinMesh, new GUIContent("Skin Collider"));
     }
 
     public override void OnInspectorGUI()
@@ -52,7 +62,7 @@ public class WingEditor : MainSurfaceEditor
 
         wing.root.RecursiveSnap();
 
-        if (ShowAirfoilFoldout())
+        if (IsRootWing())
         {
             showAirfoil = EditorGUILayout.Foldout(showAirfoil, "Airfoil", true, EditorStyles.foldoutHeader);
             if (showAirfoil)
@@ -61,6 +71,14 @@ public class WingEditor : MainSurfaceEditor
                 AirfoilFoldout();
                 EditorGUI.indentLevel--;
             }
+        }
+
+        showColliders = EditorGUILayout.Foldout(showColliders, "Colliders", true, EditorStyles.foldoutHeader);
+        if (showColliders)
+        {
+            EditorGUI.indentLevel++;
+            ColliderFoldout();
+            EditorGUI.indentLevel--;
         }
 
         serializedObject.ApplyModifiedProperties();

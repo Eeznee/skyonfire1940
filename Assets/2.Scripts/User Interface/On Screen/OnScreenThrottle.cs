@@ -96,6 +96,11 @@ namespace UnityEngine.InputSystem.OnScreen
                 slider.value = slider.maxValue;
                 UpdateSliderAndSendValue();
             }
+            else if (Player.aircraft.controls.brake > 0.5f && slider.value == slider.minValue)
+            {
+                slider.value = slider.minValue;
+                UpdateSliderAndSendValue();
+            }
             else
             {
                 slider.value = Mathf.Lerp(minButtonThreshold, maxButtonThreshold, throttle);

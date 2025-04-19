@@ -56,9 +56,9 @@ public struct Shape
         tipLiftPos += sweepAngleOffset;
 
         Vector3 forward = LocalForward * scale.y;
-        Vector3 lt = tipLiftPos + (forward * (1f - Aerodynamics.liftLine) * tipScale / 100f);
+        Vector3 lt = tipLiftPos + (forward * (1f - Aerodynamics.liftLine) * tipScale * 0.01f);
         Vector3 lb = rootLiftPos + (forward * (1f - Aerodynamics.liftLine));
-        Vector3 tt = tipLiftPos - (forward * Aerodynamics.liftLine * tipScale / 100f);
+        Vector3 tt = tipLiftPos - (forward * Aerodynamics.liftLine * tipScale * 0.01f);
         Vector3 tb = rootLiftPos - (forward * Aerodynamics.liftLine);
 
         return new SurfaceQuad(shapedAirframe, lt, lb, tt, tb);

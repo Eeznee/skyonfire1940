@@ -30,7 +30,7 @@ public static class Ballistics
         {
             return KineticEnergy(velocity.sqrMagnitude);
         }
-        const float energyToDamage = 0.0006f;
+        const float energyToDamage = 0.001f;
         public float KineticDamage(float sqrVelocity)
         {
             return KineticEnergy(sqrVelocity) * energyToDamage;

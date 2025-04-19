@@ -15,7 +15,9 @@ public class SofWindow : EditorWindow
 
     public static bool showFuselageOverlay;
     public static bool showWingsOverlay;
+    public static bool showWingsSpars;
     public static bool showCrewMembers;
+
 
     private void OnGUI()
     {
@@ -23,6 +25,7 @@ public class SofWindow : EditorWindow
 
         showFuselageOverlay = EditorGUILayout.Toggle("Fuselage Overlay",showFuselageOverlay);
         showWingsOverlay = EditorGUILayout.Toggle("Wings Overlay", showWingsOverlay);
+        showWingsSpars = EditorGUILayout.Toggle("Wings Spars", showWingsSpars);
         showCrewMembers = EditorGUILayout.Toggle("Show Crew Members", showCrewMembers);
 
         if (EditorGUI.EndChangeCheck())
@@ -35,12 +38,14 @@ public class SofWindow : EditorWindow
     {
         showFuselageOverlay = EditorPrefs.GetBool("FuselageOverlay", true);
         showWingsOverlay = EditorPrefs.GetBool("WingsOverlay", true);
+        showWingsSpars = EditorPrefs.GetBool("WingsSpars", true);
         showCrewMembers = EditorPrefs.GetBool("ShowCrewMembers", true);
     }
     private void SaveEditorPrefs()
     {
         EditorPrefs.SetBool("FuselageOverlay", showFuselageOverlay);
         EditorPrefs.SetBool("WingsOverlay", showWingsOverlay);
+        EditorPrefs.SetBool("WingsSpars", showWingsSpars);
         EditorPrefs.SetBool("ShowCrewMembers", showCrewMembers);
     }
     private void OnDisable()

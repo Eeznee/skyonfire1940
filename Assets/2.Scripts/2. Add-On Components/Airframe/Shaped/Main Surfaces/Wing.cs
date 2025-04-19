@@ -15,6 +15,7 @@ public class Wing : MainSurface
     public float oswald = 0.75f;
     public WingSkin skin;
     public Mesh skinMesh;
+    public SparSettings[] sparSettings = new SparSettings[] { new SparSettings() };
 
     public Wing parent { get; private set; }
     public Wing child { get; private set; }
@@ -81,6 +82,7 @@ public class Wing : MainSurface
         root = rootWing;
         airfoil = root.airfoil;
         oswald = root.oswald;
+        sparSettings = root.sparSettings;
     }
     public override void UpdateAerofoil()
     {
@@ -94,6 +96,18 @@ public class Wing : MainSurface
         base.UpdateAerofoil();
     }
 #if UNITY_EDITOR
+    protected override void OnDrawGizmos()
+    {
+        base.OnDrawGizmos();
+
+        if (SofWindow.showWingsSpars)
+        {
+            foreach (SparSettings spar in sparSettings)
+            {
+                spar.DrawGizmos(this);
+            }
+        }
+    }
     public override void Draw()
     {
         quad.Draw(Vector4.zero, bordersColor, true);
