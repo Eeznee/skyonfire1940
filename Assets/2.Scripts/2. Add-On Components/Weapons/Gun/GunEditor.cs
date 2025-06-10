@@ -13,6 +13,7 @@ public class GunEditor : SofComponentEditor
 
     SerializedProperty ejectCasings;
     SerializedProperty ejectionPos;
+    SerializedProperty ejectionVector;
     SerializedProperty muzzlePos;
     SerializedProperty separateBulletPos;
     SerializedProperty bulletPos;
@@ -31,6 +32,7 @@ public class GunEditor : SofComponentEditor
 
         ejectCasings = serializedObject.FindProperty("ejectCasings");
         ejectionPos = serializedObject.FindProperty("ejectionPos");
+        ejectionVector = serializedObject.FindProperty("ejectionVector");
         muzzlePos = serializedObject.FindProperty("muzzlePos");
         separateBulletPos = serializedObject.FindProperty("separateBulletPos");
         bulletPos = serializedObject.FindProperty("bulletPos");
@@ -107,7 +109,8 @@ public class GunEditor : SofComponentEditor
             if (gun.ejectCasings)
             {
                 EditorGUI.indentLevel++;
-                EditorGUILayout.PropertyField(ejectionPos, new GUIContent("Ejected Casings Pos"));
+                EditorGUILayout.PropertyField(ejectionPos, new GUIContent("Casings Pos"));
+                EditorGUILayout.PropertyField(ejectionVector, new GUIContent("Casings Velocity"));
                 EditorGUI.indentLevel--;
             }
 

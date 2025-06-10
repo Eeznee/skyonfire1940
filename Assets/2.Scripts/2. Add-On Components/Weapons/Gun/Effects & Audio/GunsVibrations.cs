@@ -7,7 +7,7 @@ public class GunsVibrations : AudioComponent
     private Gun[] guns;
     private float[] gunsPower;
     const float factor = 0.04f;
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
 

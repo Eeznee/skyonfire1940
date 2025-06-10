@@ -31,7 +31,7 @@ public class BombsLoad : OrdnanceLoad
         {
             Vector3 pos = transform.TransformPoint(launchPositions[i]);
             bombs[i] = Instantiate(bombRef, pos, transform.rotation, transform);
-            bombs[i].SetInstanciatedComponent(complex);
+            bombs[i].SetInstanciatedComponent(sofModular);
         }
     }
 

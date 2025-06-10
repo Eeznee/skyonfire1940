@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class AutoMassExtension
 {
-    public static void ComputeAutoMass(this SofComplex complex, Mass targetEmptyMass)
+    public static void ComputeAutoMass(this SofModular complex, Mass targetEmptyMass)
     {
         IMassComponent[] massComponents = complex.GetComponentsInChildren<IMassComponent>();
         SofAirframe[] airframes = complex.GetComponentsInChildren<SofAirframe>();

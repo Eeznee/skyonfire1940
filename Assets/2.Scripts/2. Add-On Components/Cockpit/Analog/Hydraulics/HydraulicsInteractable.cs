@@ -16,7 +16,7 @@ public class HydraulicsInteractable : AnalogInteractable
     public HydraulicsInteractableType type = HydraulicsInteractableType.State;
     public AnalogInteractable opposite;
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
         if (type == HydraulicsInteractableType.Dual)

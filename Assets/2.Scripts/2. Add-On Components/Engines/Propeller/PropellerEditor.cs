@@ -176,8 +176,6 @@ public class PropellerEditor : SofComponentEditor
         }
         serializedObject.ApplyModifiedProperties();
     }
-
-
     void ShowGraph(Propeller propeller)
     {
         Color transparent = Color.white;
@@ -192,6 +190,7 @@ public class PropellerEditor : SofComponentEditor
             GUIChartEditorOptions.ShowGrid(50f, 0.1f, lightGray, Color.white, true),
             GUIChartEditorOptions.ChartBounds(0f, 800f, -1.2f, 1.2f),
             GUIChartEditorOptions.SetOrigin(ChartOrigins.BottomLeft));
+
 
 
         GUIChartEditor.PushLineChart(propeller.efficiencyPlot, Color.red);

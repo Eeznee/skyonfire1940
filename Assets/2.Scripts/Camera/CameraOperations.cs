@@ -54,9 +54,9 @@ public static class CameraOperations
     {
         Vector3 finalPos = basePos + SofCamera.tr.forward * offset.z + SofCamera.tr.up * offset.y;
 
-        if (GameManager.map.RelativeHeight(finalPos) < offset.magnitude + 50f) //Ground clipping
+        if (GameManager.mapTool.RelativeHeight(finalPos) < offset.magnitude + 50f) //Ground clipping
         {
-            LayerMask mask = LayerMask.GetMask("Terrain", "Default", "Water");
+            LayerMask mask = LayerMask.GetMask("Terrain", "Water");
             Vector3 direction = finalPos - basePos;
             float distance = direction.magnitude;
             direction /= distance;

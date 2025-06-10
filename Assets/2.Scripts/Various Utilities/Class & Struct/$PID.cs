@@ -29,10 +29,12 @@ public class PID
             integral = Mathf.Clamp(integral, -limit, limit);
         }
         //D
-        float deriv = (error - lastError) / timeFrame;
-        //deriv *= Mathf.Lerp(Mathf.Abs(deriv)/derivPouet, 1f, Mathf.Abs(deriv)/derivPouet);
-        lastError = error;
-        sum += deriv * pidValues.z;
+        if(pidValues.z > 0f)
+        {
+            float deriv = (error - lastError) / timeFrame;
+            lastError = error;
+            sum += deriv * pidValues.z;
+        }
 
         return sum;
     }

@@ -13,7 +13,7 @@ public class BoltHandle : CockpitInteractable
 
 
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
 
@@ -42,7 +42,7 @@ public class BoltHandle : CockpitInteractable
     private void PlayClip(AudioClip clip)
     {
         if (clip && sofObject == Player.sofObj && (Player.crew.transform.position - transform.position).sqrMagnitude < 4f)
-            complex.avm.persistent.local.PlayOneShot(clip, 1f);
+            sofModular.avm.persistent.local.PlayOneShot(clip, 1f);
     }
 
     IEnumerator AnimatedPull()

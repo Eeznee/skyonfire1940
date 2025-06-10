@@ -29,9 +29,9 @@ public class CrewBailing : MonoBehaviour
     private void AutoBail()
     {
         if (tryingToBail) return;
-        bool aircraftDestroyed = aircraft && (aircraft.burning || aircraft.destroyed);
-        bool notInPlayerAircraft = Player.aircraft != aircraft;
-        if (aircraftDestroyed && notInPlayerAircraft) StartBailing(Random.Range(1f, 3f));
+        if (Player.aircraft == aircraft && Player.controllingPlayer) return;
+
+        if (aircraft && (aircraft.burning || aircraft.destroyed)) StartBailing(Random.Range(1f, 3f));
     }
     private bool CanBail()
     {

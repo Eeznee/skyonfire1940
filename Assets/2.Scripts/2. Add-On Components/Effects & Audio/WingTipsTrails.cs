@@ -9,7 +9,7 @@ public class WingTipsTrails : AudioComponent
     private TrailRenderer[] tipTrails;
     private List<Wing> wingTips;
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
         wingTips = new List<Wing>();
@@ -23,9 +23,11 @@ public class WingTipsTrails : AudioComponent
             tipTrails[i] = Instantiate(trailReference, tipPos, wing.tr.rotation, wing.tr);
             tipTrails[i].emitting = false;
         }
+
+        aircraft.OnUpdateLOD1 += UpdateWingTipsTrails;
     }
 
-    private void Update()
+    private void UpdateWingTipsTrails()
     {
         for (int i = 0; i < wingTips.Count; i++)
         {

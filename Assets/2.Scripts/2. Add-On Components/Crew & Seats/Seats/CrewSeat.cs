@@ -24,7 +24,7 @@ public struct SeatId
         crewId = 0;
         seatId = 0;
 
-        SofComplex complex = seat.complex;
+        SofModular complex = seat.sofModular;
         for (int i = 0; i < complex.crew.Length; i++)
             for (int j = 0; j < complex.crew[i].seats.Count; j++)
                 if (complex.crew[i] && complex.crew[i].seats[j] == seat)
@@ -41,7 +41,7 @@ public class CrewSeat : SofComponent
     public Vector3 goProViewPoint = new Vector3(1f, 0f, 0f);
 
     public Transform defaultPOV;
-
+    public bool shipGunnerProtectedFromStun = false;
 
     public HandGrip rightHandGrip = null;
     public HandGrip leftHandGrip = null;
@@ -76,7 +76,7 @@ public class CrewSeat : SofComponent
     public virtual Vector3 DefaultHeadPosition => defaultPOV ? defaultPOV.position : transform.position + aircraft.tr.up * 0.75f;
     public virtual Vector3 CameraUp => sofObject.tr.up;
     public virtual Vector3 LookingDirection => sofObject.tr.TransformDirection(flattenedLocalDir);
-    public virtual Vector3 CrosshairPosition => defaultPOV.position + aircraft.tr.forward * (aircraft ? aircraft.Convergence : 300f);
+    public virtual Vector3 CrosshairPosition => defaultPOV.position + sofObject.tr.forward * (aircraft ? aircraft.Convergence : 1000f);
     public float CockpitAudioRatio
     {
         get
@@ -86,7 +86,7 @@ public class CrewSeat : SofComponent
             return Mathf.Lerp(audioRatio, closedRatio, Mathv.SmoothStart(1f - canopy.state, 5));
         }
     }
-    public override void SetReferences(SofComplex _complex)
+    public override void SetReferences(SofModular _complex)
     {
         base.SetReferences(_complex);
 
@@ -102,7 +102,7 @@ public class CrewSeat : SofComponent
         flattenedLocalDir.y = 0f;
         flattenedLocalDir.Normalize();
     }
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
 
@@ -145,7 +145,7 @@ public class CrewSeat : SofComponent
         foreach (Gun gun in reloadableGuns)
         {
             if (!gun.CanBeReloaded()) continue;
-            if (gun.complex != complex) continue;
+            if (gun.sofModular != sofModular) continue;
             if (onlyEmptyGuns && gun.magazine.ammo > 0) continue;
 
             StartCoroutine(Reload(gun));

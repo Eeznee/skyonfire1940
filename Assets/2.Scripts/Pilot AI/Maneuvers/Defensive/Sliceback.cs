@@ -9,7 +9,7 @@ public class Sliceback : ActiveManeuver
     private Vector3 downDirection;
     private Vector3 initialDirectionNormalized;
 
-    const float altitudeSafety = 200f;
+    const float altitudeSafety = 400f;
     const float minBank = 135f;
     public override void Initialize(AI.GeometricData data)
     {
@@ -38,7 +38,7 @@ public class Sliceback : ActiveManeuver
     {
         float closureFactor = Mathf.InverseLerp(15f, -30f, data.closure);
         float disFactor = Mathf.InverseLerp(-200f, 500f, data.distance);
-        float minAltitudeLoss = Mathf.Cos(minBank * Mathf.Deg2Rad) * data.aircraft.stats.TurningRadius * 2f;
+        float minAltitudeLoss = data.aircraft.stats.TurningRadius * 2f;
         float altitudeFactor = data.aircraft.data.relativeAltitude.Get + minAltitudeLoss > altitudeSafety ? 1f : 0f;
         return closureFactor * disFactor * altitudeFactor;
     }

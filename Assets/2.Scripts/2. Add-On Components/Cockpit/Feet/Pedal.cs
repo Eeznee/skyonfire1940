@@ -14,28 +14,26 @@ public class Pedal : SofComponent
     Vector3 originalPos;
     Quaternion originalRot;
 
-    SofAircraft controller;
-
     private float currentYawInput;
 
-    private void Start()
+    public override void Initialize(SofModular _complex)
     {
-        controller = GetComponentInParent<SofAircraft>();
+        base.Initialize(_complex);
         originalPos = transform.localPosition;
         originalRot = transform.localRotation;
+
+        aircraft.OnUpdateLOD0 += UpdatePedals;
     }
 
-    private void Update()
+    private void UpdatePedals()
     {
-        if (!aircraft || aircraft.lod.LOD() != 0) return;
-
-        if (currentYawInput == controller.controls.current.yaw) return;
-        currentYawInput = controller.controls.current.yaw;
+        if (currentYawInput == aircraft.controls.current.yaw) return;
+        currentYawInput = aircraft.controls.current.yaw;
 
         if (offset)
         {
             transform.localPosition = originalPos;
-            transform.localPosition += Vector3.forward * maxOffset * controller.controls.current.yaw;
+            transform.localPosition += Vector3.forward * maxOffset * aircraft.controls.current.yaw;
         }
         if (rotation)
         {

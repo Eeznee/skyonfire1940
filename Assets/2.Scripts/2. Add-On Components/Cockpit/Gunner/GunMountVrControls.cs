@@ -7,7 +7,7 @@ public class GunMountVrControls : CockpitInteractable
     public GunMount turret;
     private Vector3 pistolGripOffset;
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
         pistolGripOffset = gripDefaultPos;

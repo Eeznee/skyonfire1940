@@ -20,7 +20,7 @@ public class SteeringAxis : SofComponent
     private float steerAngle = 0f;
     private Wheel wheel;
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
         wheel = GetComponentInChildren<Wheel>();

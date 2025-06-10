@@ -19,8 +19,12 @@ public class AmmunitionPreset : ScriptableObject
     public int[] defaultBelt = new int[3] { 0, 1, 2 };
 
     const float cartridgeMassCoeff = 0.000008f;
+    public const float deleteAtVelocityRatio = 0.4f;
 
-    public float FullMass { get { return caliber * caliber * caseLength * cartridgeMassCoeff; } }
+    public float FullMass => caliber * caliber * caseLength * cartridgeMassCoeff;
+    public float LifeTime => Mathf.Min(10f, Ballistics.TimeRequiredToReachSpeed(defaultMuzzleVel, defaultMuzzleVel * deleteAtVelocityRatio, DragCoeff));
+    public float DragCoeff => Ballistics.ProjectileDragCoeff(caliber, mass);
+    public float MaxRange => Ballistics.BallisticDistance(defaultMuzzleVel, DragCoeff, LifeTime);
 
     public Projectile CreateProjectile(int i, Transform parentGun)
     {

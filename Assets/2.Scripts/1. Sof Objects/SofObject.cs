@@ -14,10 +14,12 @@ public class SofObject : MonoBehaviour
     public Transform tr { get; private set; }
     public Rigidbody rb { get; protected set; }
 
+    public SofModular modular { get; private set; }
     public SofComplex complex { get; private set; }
     public SofAircraft aircraft { get; private set; }
     public SofDebris debris { get; private set; }
-    public SofSimple simpleDamage { get; private set; }
+    public SimpleDamageModel simpleDamage { get; private set; }
+    public SofDamageModel damageModel { get; protected set; }
 
     public bool warOnly;
 
@@ -27,16 +29,18 @@ public class SofObject : MonoBehaviour
     public virtual void SetReferences()
     {
         tr = transform;
-        simpleDamage = GetComponent<SofSimple>();
+        simpleDamage = GetComponent<SimpleDamageModel>();
+        modular = GetComponent<SofModular>();
         complex = GetComponent<SofComplex>();
         debris = GetComponent<SofDebris>();
         aircraft = GetComponent<SofAircraft>();
+        damageModel = GetComponent<SofDamageModel>();
 
         SetRigidbody();
 
         if (Application.isPlaying)
         {
-            gameObject.layer = complex ? (simpleDamage ? 0 : 9) : 0;
+            gameObject.layer = modular ? (simpleDamage ? 0 : 9) : 0;
         }
     }
     protected virtual void SetRigidbody()
@@ -73,24 +77,24 @@ public class SofObject : MonoBehaviour
         if (warOnly && !GameManager.war) Destroy(gameObject);
         GameInitialization();
     }
-    public virtual void Explosion(Vector3 center, float tnt)
-    {
-        if (simpleDamage) simpleDamage.Explosion(center, tnt);
-    }
 }
 
 #if UNITY_EDITOR
 [CustomEditor(typeof(SofObject))]
 public class SofObjectEditor : Editor
 {
+    SerializedProperty warOnly;
+    protected virtual void OnEnable()
+    {
+        warOnly = serializedObject.FindProperty("warOnly");
+    }
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
 
         SofObject sofObj = (SofObject)target;
 
-
-        if (!sofObj.aircraft) sofObj.warOnly = EditorGUILayout.Toggle("War Only", sofObj.warOnly);
+        if (!sofObj.aircraft) EditorGUILayout.PropertyField(warOnly);
 
         serializedObject.ApplyModifiedProperties();
     }

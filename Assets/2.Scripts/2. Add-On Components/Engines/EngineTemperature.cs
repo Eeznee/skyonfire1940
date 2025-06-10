@@ -102,7 +102,8 @@ public class EngineTemperature
             SuperchargerPowerSettings highestSetting = pistonPreset.PowerSetting(pistonPreset.LastPowerSetting);
             peakTempAltitude = pistonPreset.OptimumAltitude(pistonPreset.LastPowerSetting, EngineRunMode.Boost);
 
-            float powerForPeakTemp = pistonPreset.Power(pistonPreset.LastPowerSetting, EngineRunMode.Boost, peakTempAltitude, pistonPreset.CombatBoostRadPerSec);
+            float radSec =  pistonPreset.TargetRadPerSec(1f, EngineRunMode.Boost, 0, peakTempAltitude);
+            float powerForPeakTemp = pistonPreset.Power(pistonPreset.LastPowerSetting, EngineRunMode.Boost, peakTempAltitude, radSec);
             heatingSpeed = HeatingSpeed(powerForPeakTemp);
         }
 
@@ -139,7 +140,6 @@ public class EngineTemperature
         float heatingSpeed = HeatingSpeed(powerOrThrust);
         float ambientTemp = Aerodynamics.GetTemperature(altitude);
         float ambientDensity = Aerodynamics.GetAirDensity(altitude);
-
 
         return heatingSpeed / (CoolingCoefficientDamageIncluded * ambientDensity) + ambientTemp;
     }

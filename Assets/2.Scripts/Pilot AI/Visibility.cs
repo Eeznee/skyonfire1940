@@ -56,7 +56,7 @@ public class Visibility
         float minDistance = seat.target == target ? minSpottingDistance * 2.5f : minSpottingDistance;
         float spottingDistance = Mathf.Lerp(minDistance, maxSpottingDistance, visibility * spottingStrength);
         spottingDistance *= wingSpanMultiplier;
-        return spottingDistance;
+        return  spottingDistance;
     }
     public List<SofAircraft> Spot()
     {

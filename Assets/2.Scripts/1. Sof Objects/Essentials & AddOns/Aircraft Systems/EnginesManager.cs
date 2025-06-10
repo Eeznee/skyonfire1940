@@ -88,6 +88,6 @@ public class EnginesManager
 
         foreach (Engine engine in AllEngines) engine.SetThrottle(thr);
 
-        Throttle = new CompleteThrottle(allowWEP ? thr : Mathf.Clamp01(thr));// CompleteThrottle.GetThrottleValueFromMultipleEngines(AllEngines);
+        Throttle = new CompleteThrottle(allowWEP ? thr : Mathf.Clamp01(thr));
     }
 }

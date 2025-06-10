@@ -34,7 +34,7 @@ public class AircraftCard : ScriptableObject
 
     public void UpdateAircraft(int listId)
     {
-        id =listId;
+        id = listId;
         if (!sofAircraft) sofAircraft = aircraft.GetComponent<SofAircraft>();
 
         sofAircraft.card = this;

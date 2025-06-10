@@ -53,7 +53,7 @@ public class RealTimeGrass : MonoBehaviour
     private void AnimateRaising(GrassChunk chunk,float dis)
     {
         Vector3 pos = chunk.transform.position;
-        pos.y = GameManager.map.HeightAtPoint(pos);
+        pos.y = GameManager.mapTool.HeightAtPoint(pos);
         float factor = Mathf.InverseLerp(fullGrassDistance, maxCompDistanceSpawn, dis);
         chunk.transform.position = pos - Vector3.up * groundedDepth * factor;
     }
@@ -66,7 +66,7 @@ public class RealTimeGrass : MonoBehaviour
             else return;
         }
         Vector3 camPos = SofCamera.tr.position;
-        camPos.y = GameManager.map.HeightAtPoint(camPos);
+        camPos.y = GameManager.mapTool.HeightAtPoint(camPos);
 
         int closestX = boardSize;
         int closestY = boardSize;

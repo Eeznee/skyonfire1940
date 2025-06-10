@@ -13,11 +13,13 @@ public class RingedPintleGunMount : PintleGunMount
 
 
     protected float ringTraverseAngle;
+    protected float defaultRingTraverse;
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
         ringTraverseAngle = turretRing.localRotation.eulerAngles.y;
+        defaultRingTraverse = ringTraverseAngle;
     }
 
     public override float MinimumElevation(float traverseAngle)
@@ -37,6 +39,12 @@ public class RingedPintleGunMount : PintleGunMount
         float targetAngleOffset = Vector3.SignedAngle(traversor.forward, traverseAim, traversor.up);
         targetAngleOffset = Mathf.Sign(targetAngleOffset) * Mathf.Min(ringTraverseRate * Time.deltaTime, Mathf.Abs(targetAngleOffset));
         ringTraverseAngle += targetAngleOffset;
+
+        turretRing.localEulerAngles = Vector3.up * ringTraverseAngle;
+    }
+    public override void OperateSpecialResetDefault()
+    {
+        ringTraverseAngle = Mathf.MoveTowards(ringTraverseAngle, defaultRingTraverse, ringTraverseRate * Time.deltaTime);
 
         turretRing.localEulerAngles = Vector3.up * ringTraverseAngle;
     }

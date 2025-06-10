@@ -27,7 +27,7 @@ public class CrewEditor : ModuleEditor
         serializedObject.Update();
 
         CrewMember crew = (CrewMember)target;
-        if (!crew.complex) return;
+        if (!crew.sofModular) return;
 
         if(crew.seats == null) crew.seats = new List<CrewSeat>();
         if (crew.seats.Count == 0) EditorGUILayout.HelpBox("You must assign a seat to this crewmember", MessageType.Warning);
@@ -50,7 +50,8 @@ public class CrewEditor : ModuleEditor
             if (crew.GetComponentInChildren<CrewAnimator>() != null) GUI.enabled = false;
             if(GUILayout.Button("Show crewmember model"))
             {
-                GameObject crewVisualPrefab = crew.aircraft.card.faction.crewMemberVisualModel;
+                
+                GameObject crewVisualPrefab = crew.aircraft ? crew.aircraft.card.faction.crewMemberVisualModel : StaticReferences.Instance.defaultAlliesCrewmember;
                 GameObject crewVisual = Instantiate(crewVisualPrefab, crew.transform);
                 if (crewVisual)
                 {

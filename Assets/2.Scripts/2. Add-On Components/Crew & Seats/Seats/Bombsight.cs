@@ -32,7 +32,7 @@ public class Bombsight : SofComponent
 
 
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
 
@@ -59,7 +59,7 @@ public class Bombsight : SofComponent
         {
             float distanceForward = (targetAltitude - data.altitude.Get) / tr.forward.y;
             Vector3 point = tr.position + tr.forward * distanceForward;
-            targetAltitude = GameManager.map.HeightAtPoint(point);
+            targetAltitude = GameManager.mapTool.HeightAtPoint(point);
         }
     }
     public void CopyLeaderBombsight(Bombsight leadSight)

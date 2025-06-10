@@ -25,7 +25,7 @@ public abstract class MainSurface : ShapedAirframe, IAircraftForce
 
     public virtual Transform SubSurfaceParent => tr;
 
-    public override void SetReferences(SofComplex _complex)
+    public override void SetReferences(SofModular _complex)
     {
         base.SetReferences(_complex);
 
@@ -39,12 +39,12 @@ public abstract class MainSurface : ShapedAirframe, IAircraftForce
 
         if (hasControlSurface) controlSqrt = Mathf.Sqrt(controlSurfaces.MainSurface.quad.midChord / quad.midChord);
     }
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
 
-        complex.onComponentAdded += ReloadControlSurfacesCollections;
-        complex.onComponentRootRemoved += ReloadControlSurfacesCollections;
+        sofModular.onComponentAdded += ReloadControlSurfacesCollections;
+        sofModular.onComponentRootRemoved += ReloadControlSurfacesCollections;
 
         if(isAWing) inducedDragCoefficient = 1f / (Mathv.Square(aircraft.stats.wingSpan) * Mathf.PI * thisWing.oswald);
     }
@@ -97,7 +97,7 @@ public abstract class MainSurface : ShapedAirframe, IAircraftForce
 
         //Ground Effect
         if (data.relativeAltitude.Get < 50f)
-            coeffs.x *= complex.data.groundEffect.Get;
+            coeffs.x *= sofModular.data.groundEffect.Get;
         return coeffs;
     }
 

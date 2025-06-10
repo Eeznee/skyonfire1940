@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FlightConditions
 {
-    public  SofComplex complex { get; private set; }
+    public  SofModular complex { get; private set; }
 
     public Vector3 position;// { get; private set; }
     public Quaternion rotation;// { get; private set; }
@@ -70,7 +70,7 @@ public class FlightConditions
 
         tensorInvert = inertiaTensorLocal.inverse;
     }
-    public FlightConditions(SofComplex _complex, bool _fictionalConditions)
+    public FlightConditions(SofModular _complex, bool _fictionalConditions)
     {
         complex = _complex;
 
@@ -89,7 +89,7 @@ public class FlightConditions
 
         InitializeMass();
     }
-    public FlightConditions(SofComplex _complex, Vector3 _velocity, Vector3 _angularVelocity, AircraftAxes _axes)//, AircraftAxes _axes)
+    public FlightConditions(SofModular _complex, Vector3 _velocity, Vector3 _angularVelocity, AircraftAxes _axes)//, AircraftAxes _axes)
     {
         complex = _complex;
 

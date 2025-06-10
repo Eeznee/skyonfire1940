@@ -13,7 +13,7 @@ public abstract class Subsurface : ShapedAirframe
     public MainSurface Parent => parentSurface;
 
 
-    public override void SetReferences(SofComplex _complex)
+    public override void SetReferences(SofModular _complex)
     {
         parentSurface = transform.parent.GetComponentInParent<MainSurface>(true);
         if(parentSurface && airfoil == null) airfoil = parentSurface.Airfoil;

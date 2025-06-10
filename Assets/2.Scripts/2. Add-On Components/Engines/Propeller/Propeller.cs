@@ -54,13 +54,15 @@ public partial class Propeller : SofModule, IMassComponent, IAircraftForce
     public float TwoPitchTrigger { get; private set; }
     public bool TwoPitchMode { get; private set; }
 
-    public override void SetReferences(SofComplex _complex)
+    public override void SetReferences(SofModular _complex)
     {
+        if(aircraft) aircraft.OnUpdateLOD1 -= UpdatePropellerRotation;
+
         base.SetReferences(_complex);
 
         engine = GetComponentInParent<PistonEngine>();
     }
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
 
@@ -70,8 +72,10 @@ public partial class Propeller : SofModule, IMassComponent, IAircraftForce
         gameObject.layer = 2;
         tr.Rotate(Vector3.forward * UnityEngine.Random.value * 360f);
         SetBladeAngle(minPitch);
+
+        aircraft.OnUpdateLOD1 += UpdatePropellerRotation;
     }
-    void Update()
+    void UpdatePropellerRotation()
     {
         float rotation = Time.deltaTime * RadPerSec * 57.3f;
         if(invertRotation) rotation *= -1f;
@@ -155,7 +159,7 @@ public partial class Propeller : SofModule, IMassComponent, IAircraftForce
 
         engine.Rip();
 
-        if (complex.lod) complex.lod.UpdateMergedModel();
+        if (sofModular.lod) sofModular.lod.UpdateMergedModel();
     }
     public override void DirectStructuralDamage(float integrityDamage)
     {
@@ -170,5 +174,24 @@ public partial class Propeller : SofModule, IMassComponent, IAircraftForce
         //Propellers cannot take damage from explosions or bullets
     }
 
-    private void OnTriggerEnter(Collider other) { Rip(); }
+
+    const float requiredMassToRip = 150f;
+
+    private void OnTriggerEnter(Collider other)
+    {
+        SofModular complex = other.GetComponentInParent<SofModular>();
+        if (complex != null)
+        {
+            if(complex.rb.mass > requiredMassToRip)
+            {
+                Rip();
+            }
+
+        }
+        else
+        {
+            Rip();
+        }
+
+    }
 }

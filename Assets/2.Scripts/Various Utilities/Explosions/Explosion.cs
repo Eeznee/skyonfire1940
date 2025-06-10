@@ -8,14 +8,16 @@ using UnityEditor;
 [System.Serializable]
 public struct ExplosiveFiller
 {
-	public float mass;
-	public Explosive explosive;
-	public ExplosionFX fx;
+    public float mass;
+    public Explosive explosive;
+    public ExplosionFX fx;
 
 
-    const int fragmentsAmountRef = 30;
+    public float TntEquivalent => explosive.tntMultiplier * mass;
+
+    const int fragmentsAmountRef = 40;
     const float fragmentsMassRef = 0.115f;
-    const float totalAreaRef = 4500f;
+    const float totalAreaRef = 4000f;
     const float fragmentsVelocity = 1000f;
     const float fragmentsRangeRef = 30f;
 
@@ -31,26 +33,24 @@ public struct ExplosiveFiller
     const float maxAbsoluteRange = 1000f;
     private float FragmentRange(float individualMass)
     {
-        float individualMassRef =  fragmentsMassRef / fragmentsAmountRef;
+        float individualMassRef = fragmentsMassRef / fragmentsAmountRef;
         float range = Mathf.Pow(individualMass / individualMassRef, 5f / 8f) * fragmentsRangeRef;
-        return Mathf.Min(range,maxAbsoluteRange);
+        return Mathf.Min(range, maxAbsoluteRange);
     }
     public void Detonate(Vector3 pos, float totalMass, Transform tr)
     {
-        ExplosionFX instance = Object.Instantiate(fx, pos, Quaternion.identity,tr);
-        instance.Explode(mass * explosive.tntMultiplier);
+        ExplosionFX instance = Object.Instantiate(fx, pos, Quaternion.identity, tr);
+        instance.Explode(TntEquivalent);
 
         bool water = pos.y < 2f;
-        BlastDamage(pos, water);
+        BlastDamage(pos);
         if (water) return;
-        ProjectFragments(pos,totalMass);
+        ProjectFragments(pos, totalMass);
     }
-    private void BlastDamage(Vector3 pos, bool water)
+    private void BlastDamage(Vector3 pos)
     {
-        float tntEquivalent = mass * explosive.tntMultiplier;
-        if (water) tntEquivalent *= 0.25f;
         foreach (SofObject obj in GameManager.sofObjects.ToArray())
-            if (obj) obj.Explosion(pos, tntEquivalent);
+            if (obj && obj.damageModel) obj.damageModel.Explosion(pos, TntEquivalent);
     }
     private void ProjectFragments(Vector3 pos, float totalMass)
     {
@@ -60,22 +60,38 @@ public struct ExplosiveFiller
         float diameter = FragmentDiameter(fragments, fragmentsMass);
         float range = FragmentRange(individualMass);
         float penetration = Ballistics.ApproximatePenetration(individualMass, fragmentsVelocity, diameter);
-        int bubbleLayerMask = LayerMask.GetMask("Bubble");
+        int mask = LayerMask.GetMask("SofComplex", "Default","Terrain");
 
-        Ballistics.ProjectileChart chart = new Ballistics.ProjectileChart(individualMass, penetration, fragmentsVelocity, diameter, 0f);
+        int maxHitFx = fragments / 4;
+        int hitFXcount = 0;
+
+        ProjectileChart chart = new ProjectileChart(individualMass, penetration, fragmentsVelocity, diameter, 0f);
         for (int i = 0; i < fragments; i++)
         {
             Vector3 vel = Random.onUnitSphere * fragmentsVelocity;
-            RaycastHit hit;
-            if (Physics.Raycast(pos, vel, out hit, range, bubbleLayerMask))
-            {
-                ObjectBubble bubble = hit.collider.GetComponent<ObjectBubble>();
-                if (!bubble) continue;
-                bubble.EnableColliders(false);
-                Ballistics.HitResult result = Ballistics.RaycastDamage(hit.point, vel, bubble.bubble.radius * 2f, chart);
+            Vector3 raycastPos = pos - vel.normalized * 0.5f;
 
-                if(result.summary != Ballistics.HitSummary.NoHit)
-                    StaticReferences.Instance.fragmentsHits.AircraftHit(false, result.firstHit);
+            if (Physics.Raycast(raycastPos, vel, out RaycastHit hit, range, mask))
+            {
+                SofDamageModel damageModel = hit.collider.GetComponentInParent<SofDamageModel>();
+                if (!damageModel) continue;
+                HitResult result = damageModel.ProjectileRaycast(hit.point, vel, chart);
+
+                if (result.summary != HitSummary.NoHit && hitFXcount < maxHitFx)
+                {
+                    hitFXcount++;
+                    fx.fragmentHits.AircraftHit(false, result.firstHit);
+                    continue;
+                }
+            }
+
+            Vector3 finalPos = raycastPos + vel.normalized * range;
+
+            if (finalPos.y < 0f && hitFXcount < maxHitFx)
+            {
+                hitFXcount++;
+                Vector3 fxPos = Vector3.Lerp(raycastPos, finalPos, Mathf.InverseLerp(raycastPos.y, finalPos.y, 0f));
+                if(fx.fragmentHits.waterHit != null) fx.fragmentHits.CreateHit("Water", fxPos, Quaternion.identity, null);
             }
         }
     }
@@ -98,12 +114,12 @@ public struct ExplosiveFiller
             float height = position.height;
             var labelRect = new Rect(position.x, position.y, width - 3, height);
             var amountRect = new Rect(position.x + position.width * 1f / 6f, position.y, width - 3, height);
-            var unitRect = new Rect(position.x + position.width*2f/6f, position.y, width * 2f - 3, height);
-            var nameRect = new Rect(position.x + position.width*4f/6f, position.y, width * 2f - 3, height);
+            var unitRect = new Rect(position.x + position.width * 2f / 6f, position.y, width * 2f - 3, height);
+            var nameRect = new Rect(position.x + position.width * 4f / 6f, position.y, width * 2f - 3, height);
             //EditorGUILayout.PropertyField(property.FindPropertyRelative("baseVelocity"));
 
             EditorGUI.LabelField(labelRect, new GUIContent("Mass kg"));
-            EditorGUI.PropertyField(amountRect, property.FindPropertyRelative("mass"),GUIContent.none);
+            EditorGUI.PropertyField(amountRect, property.FindPropertyRelative("mass"), GUIContent.none);
             EditorGUI.PropertyField(unitRect, property.FindPropertyRelative("explosive"), GUIContent.none);
             EditorGUI.PropertyField(nameRect, property.FindPropertyRelative("fx"), GUIContent.none);
 
@@ -115,25 +131,27 @@ public struct ExplosiveFiller
 #endif
 }
 
-public class Explosion : MonoBehaviour {
+public class Explosion : MonoBehaviour
+{
 
-	[Header("Customizable Options")]
-	public float despawnTime = 10.0f;
+    [Header("Customizable Options")]
+    public float despawnTime = 10.0f;
 
-	[Header("Audio")]
-	public AudioClip[] explosionSounds;
-	public AudioSource audioSource;
+    [Header("Audio")]
+    public AudioClip[] explosionSounds;
+    public AudioSource audioSource;
 
 
-	static float lastExplosion;
+    static float lastExplosion;
 
-	private void Start () {
-		Destroy(gameObject, despawnTime);
+    private void Start()
+    {
+        Destroy(gameObject, despawnTime);
 
-		if (Time.time - lastExplosion < 0.02f) return;
-		audioSource.clip = explosionSounds[Random.Range(0, explosionSounds.Length)];
-		audioSource.PlayDelayed((transform.position - Camera.main.transform.position).magnitude / (343f * Time.timeScale));
-		audioSource.outputAudioMixerGroup = GameManager.gm.listener.persistent;
-		lastExplosion = Time.time;
-	}
+        if (Time.time - lastExplosion < 0.02f) return;
+        audioSource.clip = explosionSounds[Random.Range(0, explosionSounds.Length)];
+        audioSource.PlayDelayed((transform.position - Camera.main.transform.position).magnitude / (343f * Time.timeScale));
+        audioSource.outputAudioMixerGroup = GameManager.gm.listener.persistent;
+        lastExplosion = Time.time;
+    }
 }

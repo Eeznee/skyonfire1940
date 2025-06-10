@@ -20,7 +20,7 @@ public class Flap : Subsurface
     public override float MaxSpd => Mathf.Lerp(base.MaxSpd, ExtendedRipSpeed, aircraft.hydraulics.flaps.state);
 
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
 

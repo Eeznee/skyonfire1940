@@ -1,75 +1,79 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+public enum HitSummary
+{
+    NoHit,
+    Penetration,
+    RicochetChance,
+    Stopped
+}
+public struct HitResult
+{
+    public RaycastHit firstHit;
+    public RaycastHit lastHit;
+    public Vector3 velocityLeft;
+    public HitSummary summary;
 
+    public HitResult(RaycastHit _firstHit, RaycastHit _lastHit, Vector3 _velocityLeft, HitSummary _summary)
+    {
+        firstHit = _firstHit;
+        lastHit = _lastHit;
+        velocityLeft = _velocityLeft;
+        summary = _summary;
+    }
+
+    public static HitResult NoHit(Vector3 velocity) { return new HitResult(new RaycastHit(), new RaycastHit(), velocity, HitSummary.NoHit); }
+}
+[System.Serializable]
+public struct ProjectileChart
+{
+    public float mass;
+    public float basePenetration;
+    public float atBaseVelocity;
+
+    public float diameter;
+    public float fireChance;
+
+    public ProjectileChart(float _mass, float _basePen, float _baseVel, float _diameter, float _fireChance)
+    {
+        mass = _mass;
+        basePenetration = _basePen;
+        atBaseVelocity = _baseVel;
+        diameter = _diameter;
+        fireChance = _fireChance;
+    }
+    public float KineticEnergy(float sqrVelocity)
+    {
+        return mass * sqrVelocity * 0.5f;
+    }
+    public float KineticEnergy(Vector3 velocity)
+    {
+        return KineticEnergy(velocity.sqrMagnitude);
+    }
+    public float KineticDamage(float sqrVelocity)
+    {
+        return KineticEnergy(sqrVelocity) * Ballistics.kineticEnergyToDamage * diameter;
+    }
+    public float KineticDamage(Vector3 velocity)
+    {
+        return KineticDamage(velocity.sqrMagnitude);
+    }
+    public float Pen(float sqrVelocity)
+    {
+        return basePenetration * sqrVelocity / (atBaseVelocity * atBaseVelocity);
+    }
+    public float Pen(Vector3 velocity)
+    {
+        return Pen(velocity.sqrMagnitude);
+    }
+}
 public static class Ballistics
 {
-    [System.Serializable]
-    public struct ProjectileChart
+    public const float kineticEnergyToDamage = 0.00009f;
+    public static Vector3 Spread(Vector3 velocity, float maxAngle)
     {
-        public float mass;
-        public float basePenetration;
-        public float atBaseVelocity;
-
-        public float diameter;
-        public float fireChance;
-
-        public ProjectileChart(float _mass, float _basePen, float _baseVel, float _diameter, float _fireChance)
-        {
-            mass = _mass;
-            basePenetration = _basePen;
-            atBaseVelocity = _baseVel;
-            diameter = _diameter;
-            fireChance = _fireChance;
-        }
-        public float KineticEnergy(float sqrVelocity)
-        {
-            return mass * sqrVelocity * 0.5f;
-        }
-        public float KineticEnergy(Vector3 velocity)
-        {
-            return KineticEnergy(velocity.sqrMagnitude);
-        }
-        const float energyToDamage = 0.001f;
-        public float KineticDamage(float sqrVelocity)
-        {
-            return KineticEnergy(sqrVelocity) * energyToDamage;
-        }
-        public float KineticDamage(Vector3 velocity)
-        {
-            return KineticDamage(velocity.sqrMagnitude);
-        }
-        public float Pen(float sqrVelocity)
-        {
-            return basePenetration * sqrVelocity / (atBaseVelocity * atBaseVelocity);
-        }
-        public float Pen(Vector3 velocity)
-        {
-            return Pen(velocity.sqrMagnitude);
-        }
-    }
-    public enum HitSummary
-    {
-        NoHit,
-        Penetration,
-        Stopped
-    }
-    public struct HitResult
-    {
-        public RaycastHit firstHit;
-        public RaycastHit lastHit;
-        public Vector3 velocityLeft;
-        public HitSummary summary;
-
-        public HitResult(RaycastHit _firstHit, RaycastHit _lastHit, Vector3 _velocityLeft, HitSummary _summary)
-        {
-            firstHit = _firstHit;
-            lastHit = _lastHit;
-            velocityLeft = _velocityLeft;
-            summary = _summary;
-        }
-
-        public static HitResult NoHit(Vector3 velocity) { return new HitResult(new RaycastHit(), new RaycastHit(), velocity, HitSummary.NoHit); }
+        return Quaternion.AngleAxis(maxAngle, Random.onUnitSphere) * velocity;
     }
     public static Quaternion Spread(Quaternion rotation, float maxAngle)
     {
@@ -87,8 +91,31 @@ public static class Ballistics
     }
     public static Vector3 BallisticTrajectory(Vector3 dir, float speed, float dragCoeff, float time)
     {
-        float ballisticDistance = Mathf.Log(dragCoeff * time * speed + 1f) / dragCoeff;
-        return ballisticDistance * dir + Physics.gravity * 0.5f * time * time;
+        return BallisticDistance(speed,dragCoeff,time) * dir + 0.5f * time * time * Physics.gravity;
+    }
+    public static float BallisticDistance(float speed, float dragCoeff, float time)
+    {
+        return Mathf.Log(dragCoeff * time * speed + 1f) / dragCoeff;
+    }
+    public static Vector3 BallisticVelocity(Vector3 dir, float speed, float dragCoeff, float time)
+    {
+        Vector3 velocity = speed / (speed * dragCoeff * time + 1f) * dir;
+        velocity.y += -9.81f * time;
+        return velocity;
+    }
+    public static float TimeRequiredToReachSpeed(float initialSpeed, float targetSpeed, float dragCoeff)
+    {
+        return (initialSpeed - targetSpeed) / (targetSpeed * initialSpeed * dragCoeff);
+    }
+    public static float TimeRequiredToReachDistance(float distance,float speed, float dragCoeff)
+    {
+        float timeRequired = (Mathf.Exp(distance * dragCoeff) - 1f) / (speed * dragCoeff);
+        return timeRequired;
+    }
+    public static float AverageProjectileVelocity(float distance, float speed, float dragCoeff)
+    {
+        float timeRequired = TimeRequiredToReachDistance(distance, speed, dragCoeff);
+        return distance / timeRequired;
     }
     public static RaycastHit[] RaycastAndSort(Vector3 pos, Vector3 dir, float range, int layerMask)
     {
@@ -97,49 +124,6 @@ public static class Ballistics
             for (int j = 0; j < hits.Length - i - 1; j++)
                 if (hits[j].distance > hits[j + 1].distance) { RaycastHit jplus1 = hits[j + 1]; hits[j + 1] = hits[j]; hits[j] = jplus1; }
         return hits;
-    }
-    public static HitResult RaycastDamage(Vector3 position, Vector3 velocity, float range, ProjectileChart chart)
-    {
-        RaycastHit[] hits = RaycastAndSort(position, velocity, range, LayerMask.GetMask("SofComplex"));
-        if (hits.Length == 0) return HitResult.NoHit(velocity);
-
-        float sqrVelocity = velocity.sqrMagnitude;
-        float initialSqrVelocity = sqrVelocity;
-
-        bool oneConfirmedHit = false;
-        RaycastHit firstHit = new RaycastHit();
-        RaycastHit lastHit = new RaycastHit();
-
-        foreach (RaycastHit hit in hits)
-        {
-            SofModule module = hit.collider.GetComponent<SofModule>();
-            if (module == null) continue;
-
-            if (firstHit.collider == null) firstHit = hit;
-            lastHit = hit;
-            oneConfirmedHit = true;
-
-            float penetrationPower = chart.Pen(sqrVelocity);
-
-            float alpha = Vector3.Angle(-hit.normal, velocity);
-            float armor = Random.Range(0.8f, 1.2f) * module.Armor.surfaceArmor / Mathf.Cos(alpha * Mathf.Deg2Rad);
-
-
-            if (penetrationPower > armor)//If penetration occurs
-            {
-                module.ProjectileDamage(chart.KineticDamage(initialSqrVelocity), chart.diameter, chart.fireChance);
-                armor += Random.Range(0.8f, 1.2f) * module.Armor.fullPenArmor;
-                sqrVelocity *= 1f - armor / penetrationPower;
-
-                if (sqrVelocity <= 0f) return new HitResult(firstHit, lastHit, Vector3.zero, HitSummary.Stopped);
-            }
-            else return new HitResult(firstHit, lastHit, velocity.normalized * Mathf.Sqrt(sqrVelocity), HitSummary.Stopped);
-        }
-
-        if (!oneConfirmedHit) return HitResult.NoHit(velocity);
-
-        velocity = velocity.normalized * Mathf.Sqrt(sqrVelocity);
-        return new HitResult(firstHit, lastHit, velocity, HitSummary.Penetration);
     }
     public static float ExplosionRangeSimple(float kgTnt)
     {
@@ -195,5 +179,21 @@ public static class Ballistics
             return 0f;
         else //determinant = 0; one intercept path, pretty much never happens
             return Mathf.Max(-b / (2f * a), 0f); //don't shoot back in time
+    }
+
+    public static float PerfectTimeToTarget(SofComponent shooter,SofObject target, float muzzleVelocity, float bulletDragCoeff)
+    {
+        Vector3 relativeVel = target.rb.velocity - shooter.rb.velocity;
+        Vector3 targetDir = target.tr.position - shooter.tr.position;
+
+        float averageProjectileVelocity = AverageProjectileVelocity(targetDir.magnitude, muzzleVelocity, bulletDragCoeff);
+        return Ballistics.InterceptionTime(averageProjectileVelocity, targetDir, relativeVel);
+    }
+    public static Vector3 PerfectLead(GunMount gunMount, SofAircraft target)
+    {
+        float t = Ballistics.PerfectTimeToTarget(gunMount, target, gunMount.Ammunition.defaultMuzzleVel, gunMount.Ammunition.DragCoeff);
+        Vector3 gravityLead = 0.5f * t * t * -Physics.gravity;
+        Vector3 speedLead = t * target.rb.velocity;
+        return speedLead + gravityLead - gunMount.rb.velocity * t;
     }
 }

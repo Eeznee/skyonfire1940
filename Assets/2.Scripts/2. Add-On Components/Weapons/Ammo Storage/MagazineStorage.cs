@@ -9,11 +9,11 @@ using UnityEditor.SceneManagement;
 [AddComponentMenu("Sof Components/Weapons/Guns/Magazine Storage")]
 public class MagazineStorage : SofComponent, IMassComponent
 {
-    public float RealMass => magRef.FullyLoadedMass * magsLeft;
-    public float LoadedMass => magRef.FullyLoadedMass * MagsCount;
+    public float RealMass => magRef ? magRef.FullyLoadedMass * magsLeft : 0f;
+    public float LoadedMass => magRef ? magRef.FullyLoadedMass * MagsCount : 0f;
     public float EmptyMass => 0f;
 
-    public int MagsCount => Mathf.Min(positions.Length, localRotations.Length);
+    public int MagsCount => (positions != null && localRotations != null) ? Mathf.Min(positions.Length, localRotations.Length) : 0;
 
     public Magazine magRef;
 
@@ -22,7 +22,7 @@ public class MagazineStorage : SofComponent, IMassComponent
 
     [HideInInspector] public int magsLeft;
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         magsLeft = MagsCount;
         base.Initialize(_complex);
@@ -51,7 +51,7 @@ public class MagazineStorage : SofComponent, IMassComponent
         {
             if (magsLeft <= 0) return null;
             Magazine mag = Instantiate(magRef, transform.root);
-            mag.SetInstanciatedComponent(complex);
+            mag.SetInstanciatedComponent(sofModular);
             magsLeft--;
             return mag;
         }

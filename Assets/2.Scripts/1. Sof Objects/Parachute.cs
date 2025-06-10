@@ -109,7 +109,7 @@ public class Parachute : SofComplex
 }
 #if UNITY_EDITOR
 [CustomEditor(typeof(Parachute))]
-public class ParachuteEditor : SofComplexEditor
+public class ParachuteEditor : SofModularEditor
 {
     public override void OnInspectorGUI()
     {

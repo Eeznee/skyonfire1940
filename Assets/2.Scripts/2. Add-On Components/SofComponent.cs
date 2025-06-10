@@ -17,7 +17,8 @@ public abstract class SofComponent : MonoBehaviour  //Objects elements are the b
     public Animator animator { get; protected set; }
 
     public SofObject sofObject { get; private set; }
-    public SofComplex complex { get; private set; }
+    public SofModular sofModular { get; private set; }
+    public SofComplex sofComplex { get; private set; }
     public SofAircraft aircraft { get; private set; }
     public bool HasAircraft { get; private set; }
 
@@ -27,42 +28,43 @@ public abstract class SofComponent : MonoBehaviour  //Objects elements are the b
     private bool initialized = false;
 
 
-    public ObjectData data => complex.data;
+    public ObjectData data => sofModular.data;
 
 
     public void SetReferences()
     {
         if (Application.isEditor)
         {
-            complex = transform.root.GetComponent<SofComplex>();
-            if (complex) complex.SetReferences();
+            sofModular = transform.root.GetComponent<SofModular>();
+            if (sofModular) sofModular.SetReferences();
         }
-        if (complex == null) return;
-        SetReferences(complex);
+        if (sofModular == null) return;
+        SetReferences(sofModular);
     }
-    public virtual void SetReferences(SofComplex _complex)
+    public virtual void SetReferences(SofModular _modular)
     {
-        if (_complex == null) Debug.LogError("This Component is not attached to a SofComplex", this);
-        sofObject = _complex;
-        complex = _complex;
+        if (_modular == null) Debug.LogError("This Component is not attached to a SofComplex", this);
+        sofObject = _modular;
+        sofModular = _modular;
+        sofComplex = sofObject.complex;
         aircraft = sofObject.aircraft;
         HasAircraft = aircraft != null;
 
         tr = transform;
-        rb = complex.rb;
+        rb = sofModular.rb;
         animator = aircraft ? aircraft.animator : null;
 
-        localPos = complex.transform.InverseTransformPoint(tr.position);
-        localRot = Quaternion.Inverse(complex.transform.rotation) * tr.rotation;
+        localPos = sofModular.transform.InverseTransformPoint(tr.position);
+        localRot = Quaternion.Inverse(sofModular.transform.rotation) * tr.rotation;
     }
-    public virtual void Initialize(SofComplex _complex)
+    public virtual void Initialize(SofModular _complex)
     {
         if (Application.isEditor && !Application.isPlaying) Debug.LogError("Initialize should never be called in editor");
         initialized = true;
         gameObject.layer = DefaultLayer();
         Rearm();
     }
-    public void SetInstanciatedComponent(SofComplex _complex)
+    public void SetInstanciatedComponent(SofModular _complex)
     {
         _complex.AddInstantiatedComponent(this);
 
@@ -71,7 +73,7 @@ public abstract class SofComponent : MonoBehaviour  //Objects elements are the b
     }
     public void DetachAndCreateDebris()
     {
-        SofComplex oldComplex = complex;
+        SofModular oldComplex = sofModular;
 
         Transform debrisTr = new GameObject(name + " debris").transform;
         debrisTr.SetPositionAndRotation(tr.position,tr.rotation);
@@ -91,7 +93,7 @@ public abstract class SofComponent : MonoBehaviour  //Objects elements are the b
 }
 public static class SofComponentExtension
 {
-    public static T AddSofComponent<T>(this GameObject mono, SofComplex complex) where T : SofComponent
+    public static T AddSofComponent<T>(this GameObject mono, SofModular complex) where T : SofComponent
     {
         T sofComponent = mono.gameObject.AddComponent<T>();
         if (!mono.gameObject.transform.IsChildOf(complex.transform))

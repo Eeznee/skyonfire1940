@@ -19,7 +19,7 @@ public class Station
 
     public Transform Current()
     {
-        return options[picked];
+        return options.Length == 0 ? null : options[picked];
     }
     public string OptionName()
     {
@@ -61,7 +61,7 @@ public class Station
     }
     private void SetupPickedOption()
     {
-        Transform option = options[picked];
+        Transform option = options.Length == 0 ? null : options[picked];
         if (option == null) return;
 
         option.gameObject.SetActive(true);

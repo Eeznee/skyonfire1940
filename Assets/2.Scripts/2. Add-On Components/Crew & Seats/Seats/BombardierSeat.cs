@@ -13,6 +13,7 @@ public class BombardierSeat : CrewSeat
     private Bombsight bombsight;
 
     const float maxYawInput = 0.3f;
+    public float forcedYawInput = 0f;
 
     public override int Priority
     {
@@ -25,7 +26,7 @@ public class BombardierSeat : CrewSeat
     }
     public override Vector3 LookingDirection => -transform.root.up;
 
-    public override void SetReferences(SofComplex _complex)
+    public override void SetReferences(SofModular _complex)
     {
         base.SetReferences(_complex);
         bombsight = aircraft.bombSight;
@@ -39,7 +40,7 @@ public class BombardierSeat : CrewSeat
     public override void PlayerFixed(CrewMember crew)
     {
         base.PlayerFixed(crew);
-        aircraft.controls.target.yaw = -PlayerActions.bomber.Rudder.ReadValue<float>() * maxYawInput;
+        forcedYawInput = -PlayerActions.bomber.Rudder.ReadValue<float>() * maxYawInput;
     }
     public override void AiUpdate(CrewMember crew)
     {

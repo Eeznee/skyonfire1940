@@ -33,7 +33,7 @@ public abstract class SofFrame : SofModule, IDamageTick, IMassComponent
 
     public virtual float AirframeDamage => Mathv.SmoothStop(structureDamage, 2);
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
         vital = (this.GetComponentInActualChildren<Wing>() || this.GetComponentInActualChildren<Stabilizer>());

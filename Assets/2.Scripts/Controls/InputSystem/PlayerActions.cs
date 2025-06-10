@@ -58,7 +58,6 @@ public class PlayerActions : MonoBehaviour
         pilot.Bomb.performed += _ => Action("Bomb");
         pilot.Rocket.performed += _ => Action("Rocket");
         pilot.Throttle.performed += val => SetThrottle(val.ReadValue<float>());
-        pilot.Dynamic.performed += _ => dynamic = !dynamic;
 
         bombardier.BombBay.performed += _ => Action("BombBay");
         bombardier.Bomb.performed += _ => Action("Bomb");
@@ -86,6 +85,7 @@ public class PlayerActions : MonoBehaviour
         camera.FreeView.performed += val => SofCamera.StartLookAround();
         camera.FreeView.canceled += val => SofCamera.StopLookAround();
         camera.Reset.performed += _ => SofCamera.ResetRotation();
+        camera.Dynamic.performed += _ => dynamic = !dynamic;
         camera.ToggleViewMode.performed += _ => SofCamera.SwitchViewMode(SofCamera.viewMode == 0 ? 1 : 0);
 
         switcher.Pilot.performed += _ => Player.SetCrew(0);
@@ -123,7 +123,7 @@ public class PlayerActions : MonoBehaviour
     //Does not work with events (when 2 events are called at once it creates an error for some reason). Forced to use update
     private void UpdateActions()
     {
-        bool gameActions = !TimeManager.paused && UIManager.gameUI == GameUI.Game;
+        bool gameActions = !TimeManager.paused && UIManager.gameUI == GameUI.Game && Player.controllingPlayer;
         SeatRole si = Player.role;
 
         if (gameActions != actions.General.enabled)
@@ -140,6 +140,17 @@ public class PlayerActions : MonoBehaviour
         bool bomberActions = gameActions && si == SeatRole.Bombardier;
         if (bomberActions != actions.Bombardier.enabled)
             if (bomberActions) actions.Bombardier.Enable(); else actions.Bombardier.Disable();
+
+        bool inTheGame = GameManager.gm.playableScene;
+
+        if(inTheGame != actions.Switcher.enabled)
+            if (pilotActions) actions.Switcher.Enable(); else actions.Switcher.Disable();
+
+        if (inTheGame != actions.Camera.enabled)
+            if (pilotActions) actions.Camera.Enable(); else actions.Camera.Disable();
+
+        if (inTheGame != actions.Menu.enabled)
+            if (pilotActions) actions.Menu.Enable(); else actions.Menu.Disable();
     }
     public static void Action(string action)
     {

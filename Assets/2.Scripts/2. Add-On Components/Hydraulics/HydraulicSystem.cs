@@ -27,33 +27,36 @@ public class HydraulicSystem : SofComponent
         if (control != HydraulicControl.Type.Custom) animParameter = control.StringParameter();
         SetInstant(0f);
         animator.Update(100f);
-        foreach (Linker linker in transform.root.GetComponentsInChildren<Linker>())
+        foreach (MechanicalLink linker in transform.root.GetComponentsInChildren<MechanicalLink>())
         {
-            linker.PrecomputeValues(); 
-            linker.Update();
+            linker.PrecomputeValues();
+            linker.MechanicalAnimation();
         }
     }
 
     public bool IsAnimated(Transform transformToCheck)
     {
-        foreach (SofModule module in essentialParts)
-            if (module && transformToCheck.IsChildOf(module.tr)) return true;
+        for (int i = 0; i < essentialParts.Length; i++)
+        {
+            if (essentialParts[i] && transformToCheck.IsChildOf(essentialParts[i].tr)) return true;
+        }
+
         return false;
     }
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
 
         if (control.IsAlwaysBinary()) binary = true;
         if (!control.HasCustomDefaultState()) defaultState = control.DefaultState();
 
-        sofAudio = new SofAudio(complex.avm, clip, SofAudioGroup.Persistent, false);
+        sofAudio = new SofAudio(sofModular.avm, clip, SofAudioGroup.Persistent, false);
         sofAudio.source.pitch = pitch;
 
         if (control == HydraulicControl.Type.LandingGear) SetInstant(aircraft.GroundedStart);
         else SetInstant(defaultState);
 
-        complex.onComponentRootRemoved += CheckIfDisabled;
+        sofModular.onComponentRootRemoved += CheckIfDisabled;
     }
     public void CheckIfDisabled(SofComponent root)
     {
@@ -65,7 +68,7 @@ public class HydraulicSystem : SofComponent
             {
                 continue;
             }
-            if (p.complex == complex && !p.ripped) disabled = false;
+            if (p.sofModular == sofModular && !p.ripped) disabled = false;
         }
 
     }
@@ -92,6 +95,9 @@ public class HydraulicSystem : SofComponent
         AnimateUpdate();
         AudioUpdate();
     }
+
+    private float lastStateUpdatedLOD = 0f;
+    const float updateLODthreshold = 0.05f;
     protected virtual void AnimateUpdate()
     {
         animating = (state != stateInput) && !disabled;
@@ -99,7 +105,15 @@ public class HydraulicSystem : SofComponent
 
         float travel = Time.deltaTime / (stateInput > state ? loweringTime : retractingTime);
         state = Mathf.MoveTowards(state, stateInput, travel);
-        if (control == HydraulicControl.Type.LandingGear) complex.RecomputeRealMass();
+        if (control == HydraulicControl.Type.LandingGear && aircraft)
+        {
+            aircraft.RecomputeRealMass();
+        }
+        if (aircraft && Mathf.Abs(lastStateUpdatedLOD - state) > updateLODthreshold || state == stateInput)
+        {
+            aircraft.lod.UpdateMergedModel();
+            lastStateUpdatedLOD = state;
+        }
         ApplyStateAnimator();
     }
     private float oneFrameStatePrevious;
@@ -120,7 +134,6 @@ public class HydraulicSystem : SofComponent
     {
         animator.SetFloat(animParameter, state);
     }
-
     public virtual string GetLog(string hydraulicsName, string deploying, string retracting, string damaged)
     {
         if (disabled) return hydraulicsName + " " + damaged;
@@ -144,6 +157,7 @@ public class HydraulicSystem : SofComponent
     protected void AudioUpdate()
     {
         if (!sofAudio.Enabled()) return;
+
         bool play = animating && !(extendOnly && stateInput < state);
         if (play != sofAudio.source.isPlaying)
         {

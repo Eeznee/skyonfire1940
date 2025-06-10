@@ -51,7 +51,7 @@ public class IgnitableExtension : MonoBehaviour
     {
         if (!burning) return;
 
-        SofModule[] modules = module.complex.modules.ToArray();
+        SofModule[] modules = module.sofModular.modules.ToArray();
 
         foreach (SofModule moduleToBurn in modules)
         {

@@ -32,7 +32,7 @@ public class FreeCam : CameraLogic
 
     public override Vector3 DefaultStartingPos()
     {
-        return Player.complex.tr.position;
+        return Player.modular.tr.position;
     }
 }
 public class BombSightCam : CameraLogic

@@ -23,6 +23,7 @@ public abstract class ShapedAirframe : SofAirframe
         Vertical = shape.vertical;
         base.UpdateAerofoil();
     }
+
     protected readonly Color aileronColor = new Color(0f, 0.2f, 1f, 0.05f);
     protected readonly Color rudderColor = new Color(0f, 1f, 0f, 0.05f);
     protected readonly Color elevatorColor = new Color(1f, 0f, 0f, 0.05f);

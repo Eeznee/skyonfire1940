@@ -66,7 +66,7 @@ public abstract class Engine : SofModule, IMassComponent, IDamageTick, IIgnitabl
     {
         Throttle = new CompleteThrottle(thr);
     }
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         pumped = false;
         Igniting = false;

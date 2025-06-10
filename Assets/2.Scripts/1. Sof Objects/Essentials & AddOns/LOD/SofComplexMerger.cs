@@ -9,7 +9,6 @@ public class SofComplexMerger
     {
         public List<FilterRenderer> filtRends;
         public MeshRenderer renderer;
-        private int lastCombineLength;
         public MergedObject(SofComponent parent, Material commonMaterial, string name)
         {
             filtRends = new List<FilterRenderer>();
@@ -17,15 +16,11 @@ public class SofComplexMerger
             renderer.material = commonMaterial;
             renderer.gameObject.AddComponent<MeshFilter>();
             renderer.gameObject.layer = 9;
-            parent.complex.lod.renderers.Add(renderer);
-            lastCombineLength = 0;
+            parent.sofModular.lod.renderers.Add(renderer);
         }
 
-        public void CombineAndMerge()
+        public void UpdateCombinedMesh()
         {
-            if (lastCombineLength == filtRends.Count) return;
-            
-
             CombineInstance[] combine = new CombineInstance[filtRends.Count];
 
             for (int i = 0; i < combine.Length; i++)
@@ -43,8 +38,6 @@ public class SofComplexMerger
             MeshFilter mergeFilter = renderer.GetComponent<MeshFilter>();
             if (mergeFilter.sharedMesh == null) mergeFilter.sharedMesh = new Mesh();
             mergeFilter.sharedMesh.CombineMeshes(combine);
-
-            lastCombineLength = filtRends.Count;
         }
     }
     public MergedObject fixedMerged;
@@ -58,8 +51,7 @@ public class SofComplexMerger
         List<FilterRenderer> relevantFiltRends = GetRelevantRenderers(combineParent);
         SplitRenderers(combineParent, relevantFiltRends, mobileFiltersExceptions);
 
-        fixedMerged.CombineAndMerge();
-        fullMerged.CombineAndMerge();
+        UpdateMergedModels();
 
         foreach (FilterRenderer filter in fixedMerged.filtRends)
             filter.rend.enabled = false;
@@ -76,13 +68,12 @@ public class SofComplexMerger
             fixedMerged.filtRends.Remove(filtRend);
             renderer.enabled = true;
         }
-        fixedMerged.CombineAndMerge();
-        fullMerged.CombineAndMerge();
+        UpdateMergedModels();
     }
-    public void UpdateMergedModel()
+    public void UpdateMergedModels()
     {
-        fixedMerged.CombineAndMerge();
-        fullMerged.CombineAndMerge();
+        fixedMerged.UpdateCombinedMesh();
+        fullMerged.UpdateCombinedMesh();
     }
 
     private bool IsRelevant(Renderer renderer, Transform combineParent, LODGroup[] lodGroups)
@@ -102,7 +93,7 @@ public class SofComplexMerger
         List<FilterRenderer> relevantFiltRends = new List<FilterRenderer>();
         LODGroup[] lodGroups = combineParent.sofObject.GetComponentsInChildren<LODGroup>();
 
-        foreach (Renderer rend in combineParent.complex.lod.renderers)
+        foreach (Renderer rend in combineParent.sofModular.lod.renderers)
             if (IsRelevant(rend, combineParent.tr, lodGroups))
                 relevantFiltRends.Add(new FilterRenderer(rend));
 
@@ -130,7 +121,7 @@ public class SofComplexMerger
                     fixedMerged.filtRends.Add(filtRend);
             }
         }
-        //fullMerged.filtRends.AddRange(mobileFiltRends);
+        fullMerged.filtRends.AddRange(mobileFiltRends);
         fullMerged.filtRends.AddRange(fixedMerged.filtRends);
     }
 }

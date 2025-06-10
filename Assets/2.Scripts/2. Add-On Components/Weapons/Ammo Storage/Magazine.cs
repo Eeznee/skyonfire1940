@@ -19,14 +19,32 @@ public class Magazine : AmmoContainer
     private MeshFilter filter;
 
     public MagazineAmmoMarker[] markers;
+    public bool rotatesWhenFired = false;
+    public float rotatesWhenFiredAngle = 15f;
     private int currentMarker;
     private bool useMarkers;
 
-    public override void SetReferences(SofComplex _complex)
+    public override void SetReferences(SofModular _complex)
     {
         base.SetReferences(_complex);
         filter = GetComponent<MeshFilter>();
         useMarkers = markers.Length > 1 && filter;
+    }
+    public override void InsertThisMagazine(Gun gun)
+    {
+        if (rotatesWhenFired)
+        {
+            gun.OnEjectEvent += RotateMagazine;
+        }
+        base.InsertThisMagazine(gun);
+    }
+    public override void UnloadThisMagazine()
+    {
+        if (attachedGun && rotatesWhenFired)
+        {
+            attachedGun.OnEjectEvent -= RotateMagazine;
+        }
+        base.UnloadThisMagazine();
     }
     public override void Rearm()
     {
@@ -46,7 +64,28 @@ public class Magazine : AmmoContainer
 
         if (useMarkers && ammo < markers[currentMarker].minAmmo)
             ShowMarker(currentMarker - 1);
+
         return true;
+    }
+
+    void RotateMagazine()
+    {
+        StartCoroutine(RotateMagazineWhenFired());
+    }
+    const float rotateTime = 0.035f;
+    IEnumerator RotateMagazineWhenFired()
+    {
+        float portion = 0f;
+        while (portion < 1f)
+        {
+            float newPortion = Mathf.Clamp01(portion + Time.deltaTime / rotateTime);
+            float delta = newPortion - portion;
+            portion = newPortion;
+
+            transform.Rotate(Vector3.up * rotatesWhenFiredAngle * delta);
+            yield return null;
+        }
+        yield return null;
     }
     public Vector3 MagTravelPos(Vector3 startPos, Vector3 endPos, float animTime)
     {

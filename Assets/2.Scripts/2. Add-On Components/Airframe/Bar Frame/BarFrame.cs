@@ -8,7 +8,7 @@ using UnityEditor.SceneManagement;
 
 public class BarFrame : SofFrame
 {
-    public virtual float HpPerMeter => 45f;
+    public virtual float HpPerMeter => 45f * 4f;
     public override float MaxHp => HpPerMeter * length + minHp;
 
     const float minHp = 15f;
@@ -20,7 +20,7 @@ public class BarFrame : SofFrame
     {
         return length * kgPerMeter;
     }
-    public override void SetReferences(SofComplex _complex)
+    public override void SetReferences(SofModular _complex)
     {
         base.SetReferences(_complex);
 

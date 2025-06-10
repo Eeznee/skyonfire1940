@@ -13,13 +13,14 @@ public class SofAudioListener : MonoBehaviour
 
     public static SofAudioListener instance;
     public static AudioListener listener;
-    public static Vector3 position;
+
+    public static Vector3 Position => tr.position;
     public static Transform tr;
     public static AudioSource localSource;
     AudioMixer mixer;
     float cockpitRatio = 1f;
 
-    public static bool AttachedToSofObject(SofObject sofObj) { return tr && sofObj.tr.root == tr.root; }
+    public static bool AttachedToSofObject(SofObject sofObj) { return tr && tr.IsChildOf(sofObj.tr); }
 
     private void OnEnable()
     {
@@ -53,8 +54,7 @@ public class SofAudioListener : MonoBehaviour
     private Transform CurrentParent()
     {
         if (SofCamera.subCam.logic.BasePosMode == CamPos.World) return SofCamera.tr;
-        if (!SofCamera.subCam.targetsPlayer) return SofCamera.subCam.Target().tr;
-        return Player.crew.tr;
+        return SofCamera.subCam.Target().transform;
     }
     private void OnPause()
     {
@@ -76,9 +76,8 @@ public class SofAudioListener : MonoBehaviour
         {
             tr.parent = CurrentParent();
             tr.localPosition = Vector3.zero;
-            tr.localRotation = Quaternion.identity;
         }
-        position = tr.position;
+        tr.rotation = SofCamera.tr.rotation;
     }
 
     const float speed = 3f;

@@ -15,18 +15,32 @@ public class Pursuit : Maneuver
             if (turn.ended) turn = null;
             return;
         }
-        
-        if (!data.target.card.fighter && (data.distance < 70f || data.Collision(2.5f))){
-            float bank = Random.Range(70f, 110f) * Mathf.Sign(Random.value - 0.5f);
-            turn = new TurnData(aircraft, bank, turnTime, 1f);
-        } else
-        {
-            float bulletTime = data.distance / 850f;
-            Vector3 target = data.target.transform.position + data.target.rb.velocity * bulletTime;
-            float levelingFactor = Mathf.Clamp01(1f - data.offAngle / 90f);
-            AircraftAxes axes = PointTracking.TrackingInputs(target, data.aircraft, data.target.data.bankAngle.Get, levelingFactor, true);
 
-            data.aircraft.controls.SetTargetInput(axes, PitchCorrectionMode.FullyAssisted);
+        if (!data.target.card.fighter && (data.distance < 70f || data.Collision(2.5f)))
+        {
+            DisengageFromBomberBeforeCollision(data);
+            return;
         }
+
+
+
+        float bulletTime = data.distance / 850f;
+        bulletTime += Mathf.PerlinNoise(Time.time * 0.2f, data.aircraft.mainSeat.aiRandomizedPerlin * 2f) * 2f - 1f;
+        Vector3 target = data.target.transform.position + data.target.rb.velocity * bulletTime;
+
+
+        float levelingFactor = Mathf.InverseLerp(30f,0f,data.offAngle);
+        float targetBank = data.target.data.bankAngle.Get;
+        targetBank += 60f * (Mathf.PerlinNoise(Time.time * 0.1f, data.aircraft.mainSeat.aiRandomizedPerlin) * 2f - 1f);
+
+        AircraftAxes axes = PointTracking.TrackingInputs(target, data.aircraft,targetBank, levelingFactor, true);
+
+        data.aircraft.controls.SetTargetInput(axes, PitchCorrectionMode.FullyAssisted);
+    }
+
+    public void DisengageFromBomberBeforeCollision(AI.GeometricData data)
+    {
+        float bank = Random.Range(70f, 110f) * Mathf.Sign(Random.value - 0.5f);
+        turn = new TurnData(aircraft, bank, turnTime, 1f);
     }
 }

@@ -3,20 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Propeller))]
-public class PropellerVisual : MonoBehaviour
+public class PropellerVisual : SofComponent
 {
     public MeshRenderer brokenProp;
     public MeshRenderer blurredProp;
 
-
+    public override int DefaultLayer()
+    {
+        return 2;
+    }
     private Propeller propeller;
     private MeshRenderer meshRenderer;
     private MaterialPropertyBlock blurredBlock;
 
-    private void Start()
+    public override void SetReferences(SofModular _modular)
     {
+        if (aircraft) aircraft.OnUpdateLOD1 -= UpdatePropellerVisual;
+        base.SetReferences(_modular);
+
         propeller = GetComponent<Propeller>();
         meshRenderer = GetComponent<MeshRenderer>();
+    }
+    public override void Initialize(SofModular _complex)
+    {
+        base.Initialize(_complex);
 
         if (!blurredProp || !brokenProp) return;
         blurredBlock = new MaterialPropertyBlock();
@@ -26,13 +36,14 @@ public class PropellerVisual : MonoBehaviour
         transform.Rotate(Vector3.forward * Random.value * 360f);
 
         propeller.OnRip += OnPropellerRip;
+        aircraft.OnUpdateLOD1 += UpdatePropellerVisual;
     }
 
     const float INVERT90 = 1f / 90F;
     const float meshDiseppearAtRadPerSec = 40f;
-    public void Update()
+    public void UpdatePropellerVisual()
     {
-        if (!meshRenderer || !blurredProp || !propeller.aircraft) return;
+        if (!meshRenderer || !blurredProp) return;
 
         Vector3 cameraDir = transform.position - SofCamera.tr.position;
         float angle = 1f - Mathf.Abs(Vector3.Angle(cameraDir, transform.root.forward) * INVERT90 - 1f);

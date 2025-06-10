@@ -22,13 +22,13 @@ public abstract class SofModule : SofComponent
     protected virtual Collider MainCollider => colliderGetComponent;
     private Collider colliderGetComponent;
 
-    public override void SetReferences(SofComplex _complex)
+    public override void SetReferences(SofModular _complex)
     {
         base.SetReferences(_complex);
 
         colliderGetComponent = GetComponent<Collider>();
     }
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
         structureDamage = 1f;
@@ -52,16 +52,17 @@ public abstract class SofModule : SofComponent
         OnProjectileDamage?.Invoke(hpDamage, caliber, fireCoeff);
     }
 
-    const float holeCoeff = 5f;
+    const float tntDamageCoeff = 300f;
+    const float holeCoeff = 8f;
     public virtual void ExplosionDamage(Vector3 explosionOrigin, float tnt)
     {
         Vector3 point = MainCollider ? MainCollider.ClosestPoint(explosionOrigin) : transform.position;
 
         float sqrDis = (explosionOrigin - point).sqrMagnitude;
         sqrDis = Mathf.Max(sqrDis, 2f);
-        if (tnt * 500f > sqrDis)
+        if (tnt * tntDamageCoeff > sqrDis)
         {
-            float dmg = 500f * tnt / sqrDis * UnityEngine.Random.Range(0.7f, 1.5f);
+            float dmg = tntDamageCoeff * tnt / sqrDis * UnityEngine.Random.Range(0.7f, 1.5f);
             float hole = dmg * holeCoeff;
             ProjectileDamage(dmg, hole, 0f);
         }

@@ -25,9 +25,10 @@ public class GameManager : MonoBehaviour
     public static GameManager gm { get; private set; }
     public static UIManager ui { get; private set; }
     public static Weather weather { get; private set; }
-    public static MapTool map { get; private set; }
-    public Map mapmap { get; private set; }
+    public static MapTool mapTool { get; private set; }
+    public Map map { get; private set; }
 
+    public static List<SofModular> crewedModulars = new List<SofModular>(0);
     public static List<SofAircraft[]> squadrons = new List<SofAircraft[]>(0);
     public static List<SofObject> sofObjects = new List<SofObject>(0);
     public static List<SofAircraft> axisAircrafts = new List<SofAircraft>(0);
@@ -56,8 +57,8 @@ public class GameManager : MonoBehaviour
 
         gm = GetComponent<GameManager>();
         weather = GetComponent<Weather>();
-        map = GetComponent<MapTool>();
-        mapmap = FindObjectOfType<Map>();
+        mapTool = GetComponent<MapTool>();
+        map = FindObjectOfType<Map>();
         StaticReferences.Instance.defaultAircrafts.UpdateCards();
 
         InputSystem.settings.SetInternalFeatureFlag("DISABLE_SHORTCUT_SUPPORT", true);
@@ -67,8 +68,18 @@ public class GameManager : MonoBehaviour
         axisAircrafts = new List<SofAircraft>(0);
         allyAircrafts = new List<SofAircraft>(0);
 
+        crewedModulars = new List<SofModular>(0);
+        SofModular[] allModulars = map.GetComponentsInChildren<SofModular>(true);
+        foreach(SofModular modular in allModulars)
+        {
+            if (modular.crew.Length > 0) crewedModulars.Add(modular);
+        }
+
+
         if (playableScene)
+        {
             CreateGameEnvironment();
+        }
     }
     private void CreateGameEnvironment()
     {
@@ -115,13 +126,15 @@ public class GameManager : MonoBehaviour
         {
             Transform tr = gm.airfields[squad.airfield].GetNextSpawn();
             Vector3 pos = tr.position;
-            pos.y = map.HeightAtPoint(pos);
+            pos.y = mapTool.HeightAtPoint(pos);
             pos += plane.transform.localPosition;
             plane = Instantiate(plane, pos, tr.rotation * plane.transform.localRotation);
         }
         else                      //Airspawn
         {
-            plane = Instantiate(plane, squad.startPosition, Quaternion.Euler(0f, -squad.startHeading, 0f));
+            Vector3 startPosition = squad.startPosition;
+            startPosition.y = Mathf.Max(startPosition.y, 250f);
+            plane = Instantiate(plane, startPosition, Quaternion.Euler(0f, -squad.startHeading, 0f));
             plane.transform.Translate(squad.aircraftCard.formation.aircraftPositions[wing], Space.Self);
         }
 
@@ -153,7 +166,7 @@ public class GameManager : MonoBehaviour
         ScreenCapture.CaptureScreenshot(Application.persistentDataPath + "/Screenshots/" + fileName, 2);
 #elif UNITY_IOS || UNITY_ANDROID
         Texture2D textureScreenshot = ScreenCapture.CaptureScreenshotAsTexture(1);
-        NativeGallery.SaveImageToGallery(textureScreenshot.EncodeToPNG(), "SkyOnFire", fileName);
+        NativeGallery.SaveImageToGallery(textureScreenshot.EncodeToJPG(), "SkyOnFire", fileName);
 #else
         Directory.CreateDirectory(Application.persistentDataPath + "/Screenshots/");
         ScreenCapture.CaptureScreenshot(Application.persistentDataPath + "/Screenshots/"  + fileName, 2);

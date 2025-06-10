@@ -34,8 +34,16 @@ public class Stick : CockpitInteractable
     {
         CockpitInteractableUpdate();
         if (!aircraft) return;
-        pitch.localRotation = Quaternion.AngleAxis(-aircraft.controls.current.pitch * maxPitch, pitchAxis);
-        roll.localRotation = Quaternion.AngleAxis(-aircraft.controls.current.roll * maxRoll, rollAxis);
+
+        if(pitch != roll)
+        {
+            pitch.localRotation = Quaternion.AngleAxis(-aircraft.controls.current.pitch * maxPitch, pitchAxis);
+            roll.localRotation = Quaternion.AngleAxis(-aircraft.controls.current.roll * maxRoll, rollAxis);
+        }
+        else
+        {
+            pitch.localRotation = Quaternion.AngleAxis(-aircraft.controls.current.roll * maxRoll, rollAxis) * Quaternion.AngleAxis(-aircraft.controls.current.pitch * maxPitch, pitchAxis);
+        }
     }
 }
 

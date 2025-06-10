@@ -12,6 +12,7 @@ public class ForcesCompiler : SofComponent
 #if UNITY_EDITOR
     private void LateUpdate()
     {
+        return;
         for (int i = 0; i < forcesAtPoints.Length; i++)
         {
             Vector3 force = forcesAtPoints[i].force;
@@ -25,14 +26,14 @@ public class ForcesCompiler : SofComponent
     }
 #endif
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
 
         ReloadForceComponents();
 
-        complex.onComponentAdded += OnComponentAdded;
-        complex.onComponentRootRemoved += OnComponentRemoved;
+        sofModular.onComponentAdded += OnComponentAdded;
+        sofModular.onComponentRootRemoved += OnComponentRemoved;
     }
     public void OnComponentAdded(SofComponent component)
     {

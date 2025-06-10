@@ -14,7 +14,7 @@ public class Siren : AudioComponent
     public float maxPitch = 1.2f;
     public float maxVolume = 1f;
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
         siren = new SofAudio(avm, sirenClip, SofAudioGroup.Persistent, true);

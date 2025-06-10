@@ -23,7 +23,7 @@ public class CrashEffect : SofComponent
 
         //Two methods to check for crash (both are not reliable 100%)
         //Method 1 : use acceleration value
-        if (data.acceleration.sqrMagnitude > mult * Mathv.SmoothStart(minGThreshold * -Physics.gravity.y, 2) && data.relativeAltitude.Get < 30f)
+        if (data.acceleration.sqrMagnitude > mult * M.Pow(minGThreshold * -Physics.gravity.y, 2) && data.relativeAltitude.Get < 30f)
         {
             Crash(data.acceleration.magnitude / (-Physics.gravity.y * mult));
         }

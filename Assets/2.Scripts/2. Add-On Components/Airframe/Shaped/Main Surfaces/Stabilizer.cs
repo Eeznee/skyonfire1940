@@ -15,12 +15,12 @@ public class Stabilizer : MainSurface
 
     public override IAirfoil Airfoil => globalStabilizerAirfoil;
 
-    public override void SetReferences(SofComplex _complex)
+    public override void SetReferences(SofModular _complex)
     {
         globalStabilizerAirfoil = StaticReferences.Instance.stabilizersAirfoil;
         base.SetReferences(_complex);
     }
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
 

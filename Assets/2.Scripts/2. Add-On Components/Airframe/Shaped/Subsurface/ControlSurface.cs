@@ -52,22 +52,24 @@ public abstract class ControlSurface : Subsurface
     {
         return (controlStateSign >= 0f) ? MaxDeflection : MinDeflection;
     }
-
-    public override void Initialize(SofComplex _complex)
+    public override void SetReferences(SofModular _complex)
+    {
+        if(aircraft) aircraft.OnUpdateLOD0 -= UpdateControlSurfaceAngle;
+        base.SetReferences(_complex);
+    }
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
 
         if (SymmetricalDeflections) minDeflection = maxDeflection;
         minDeflection = Mathf.Abs(minDeflection);
         localRotateAxis = quad.controlSurfaceAxis.LocalDir * Left;
+        aircraft.OnUpdateLOD0 += UpdateControlSurfaceAngle;
     }
-    private void Update()
+    private void UpdateControlSurfaceAngle()
     {
-        if (!aircraft) return;
-
         transform.localRotation = Quaternion.AngleAxis(CurrentControlAngle, localRotateAxis);
     }
-
     public Vector3 Gradient(FlightConditions conditions, bool positiveControlState)
     {
         float maxAngle = positiveControlState ? MaxDeflection : MinDeflection;

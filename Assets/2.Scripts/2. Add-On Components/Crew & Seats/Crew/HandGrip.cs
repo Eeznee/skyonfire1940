@@ -12,14 +12,12 @@ public class HandGrip : MonoBehaviour
     public Vector3 rightEulerOffset;
     public Vector3 leftPosOffset;
     public Vector3 leftEulerOffset;
-    public Vector3 rightHintPos;
-    public Vector3 leftHintPos;
 
     public bool fixedRotation = false;
-    [HideInInspector]public float grip;
-    [HideInInspector] public float trigger;
-    [HideInInspector] public float thumbDown;
-    [HideInInspector] public float thumbIn;
+    public float grip;
+    public float trigger;
+    public float thumbDown;
+    public float thumbIn;
 
     public void SetGrip(float gr)
     {
@@ -42,34 +40,78 @@ public class HandGrip : MonoBehaviour
 [CustomEditor(typeof(HandGrip))]
 public class HandGripEditor : Editor
 {
+    SerializedProperty rightPosOffset;
+    SerializedProperty rightEulerOffset;
+    SerializedProperty leftPosOffset;
+    SerializedProperty leftEulerOffset;
+
+    SerializedProperty fixedRotation;
+    SerializedProperty grip;
+    SerializedProperty trigger;
+    SerializedProperty thumbDown;
+    SerializedProperty thumbIn;
+    protected void OnEnable()
+    {
+        rightPosOffset = serializedObject.FindProperty("rightPosOffset");
+        rightEulerOffset = serializedObject.FindProperty("rightEulerOffset");
+        leftPosOffset = serializedObject.FindProperty("leftPosOffset");
+        leftEulerOffset = serializedObject.FindProperty("leftEulerOffset");
+
+        fixedRotation = serializedObject.FindProperty("fixedRotation");
+
+        grip = serializedObject.FindProperty("grip");
+        trigger = serializedObject.FindProperty("trigger");
+        thumbDown = serializedObject.FindProperty("thumbDown");
+        thumbIn = serializedObject.FindProperty("thumbIn");
+    }
     public override void OnInspectorGUI()
     {
-        base.OnInspectorGUI();
         serializedObject.Update();
 
-        HandGrip grip = (HandGrip)target;
-        GUI.color = GUI.backgroundColor;
 
-        grip.grip = EditorGUILayout.Slider("Grip", grip.grip, 0f, 1f);
-        grip.trigger = EditorGUILayout.Slider("Trigger", grip.trigger, 0f, 1f);
-        grip.thumbDown = EditorGUILayout.Slider("Thumb Down", grip.thumbDown, 0f, 1f);
-        grip.thumbIn = EditorGUILayout.Slider("Thumb In",grip.thumbIn, 0f, 1f);
+        HandGrip handGrip = (HandGrip)target;
+
+        EditorGUILayout.PropertyField(rightPosOffset);
+        EditorGUILayout.PropertyField(rightEulerOffset);
+        if (GUILayout.Button("Apply Symmetry From Right To Left Grip"))
+        {
+            Undo.RecordObject(handGrip, "Apply Symmetry From Left To Right Grip");
+
+            handGrip.leftPosOffset = handGrip.rightPosOffset;
+            handGrip.leftPosOffset.x *= -1f;
+            handGrip.leftEulerOffset = -handGrip.rightEulerOffset;
+            handGrip.leftEulerOffset.x *= -1f;
+
+            EditorUtility.SetDirty(handGrip);
+        }
 
         GUILayout.Space(30f);
-        if (GUILayout.Button("Apply Symmetry From Right"))
+
+        EditorGUILayout.PropertyField(leftPosOffset);
+        EditorGUILayout.PropertyField(leftEulerOffset);
+        if (GUILayout.Button("Apply Symmetry From Left To Right Grip"))
         {
-            grip.leftPosOffset = grip.rightPosOffset;
-            grip.leftPosOffset.x *= -1f;
-            grip.leftEulerOffset = -grip.rightEulerOffset;
-            grip.leftEulerOffset.x *= -1f;
+            Undo.RecordObject(handGrip, "Apply Symmetry From Left To Right Grip");
+
+            handGrip.rightPosOffset = handGrip.leftPosOffset;
+            handGrip.rightPosOffset.x *= -1f;
+            handGrip.rightEulerOffset = -handGrip.leftEulerOffset;
+            handGrip.rightEulerOffset.x *= -1f;
+
+            EditorUtility.SetDirty(handGrip);
         }
-        if (GUILayout.Button("Apply Symmetry From Left"))
-        {
-            grip.rightPosOffset = grip.leftPosOffset;
-            grip.rightPosOffset.x *= -1f;
-            grip.rightEulerOffset = -grip.leftEulerOffset;
-            grip.rightEulerOffset.x *= -1f;
-        }
+
+        GUILayout.Space(30f);
+
+        EditorGUILayout.PropertyField(fixedRotation);
+
+        GUILayout.Space(30f);
+
+        EditorGUILayout.Slider(grip, 0f, 1f);
+        EditorGUILayout.Slider(trigger, 0f, 1f);
+        EditorGUILayout.Slider(thumbDown, 0f, 1f);
+        EditorGUILayout.Slider(thumbIn, 0f, 1f);
+
         serializedObject.ApplyModifiedProperties();
     }
 }

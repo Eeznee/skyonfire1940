@@ -30,6 +30,7 @@ public class Gun : SofComponent, IMassComponent
     public bool separateBulletPos;
     public bool ejectCasings;
     public Vector3 ejectionPos;
+    public Vector3 ejectionVector = Vector3.zero;
     public Vector3 muzzlePos;
     public Vector3 bulletPos;
 
@@ -65,7 +66,7 @@ public class Gun : SofComponent, IMassComponent
     public float temperature;
 
     private int currentBullet = 0;
-    private float fuzeTimer = 0f;
+    private float fuzeDistance = 0f;
     public bool reloading = false;
 
     const float critTemperature = 450f;
@@ -97,12 +98,12 @@ public class Gun : SofComponent, IMassComponent
         base.Rearm();
         mechanism.ResetMechanism();
     }
-    public void SetFuze(float _fuzeTimer)
+    public void SetFuze(float _fuzeDistance)
     {
-        if (ammunition.caliber < 35f) fuzeTimer = 0f;
-        else fuzeTimer = _fuzeTimer;
+        if (ammunition.caliber < 35f) fuzeDistance = 0f;
+        else fuzeDistance = _fuzeDistance;
     }
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         trigger = this.GetCreateComponent<GunTrigger>();
         mechanism = this.GetCreateComponent<GunMechanism>();
@@ -125,6 +126,7 @@ public class Gun : SofComponent, IMassComponent
         cheatTime = 0f;
 
         if (!magazine) magazine = AmmoContainer.CreateAmmoBelt(this, clipAmmo);
+        else magazine.InsertThisMagazine(this);
 
         OnFireEvent += FireBullet;
         OnFireEvent += RecoilAndHeatup;
@@ -161,12 +163,10 @@ public class Gun : SofComponent, IMassComponent
         bullet.transform.position = tr.TransformPoint(bulletPos);
         bullet.gameObject.SetActive(true);
 
-        bullet.StartDamage(bullet.properties.baseVelocity * bulletDirection, 10f);
-        bullet.transform.position += rb.velocity * Time.fixedDeltaTime;
-        Collider ignoreCollider = complex.bubble ? complex.bubble.bubble : null;
-        bullet.InitializeTrajectory(bulletDirection * bullet.properties.baseVelocity + rb.velocity, ignoreCollider);
+        Vector3 velocity = bulletDirection * bullet.properties.baseVelocity + rb.velocity;
 
-        if (fuzeTimer > 0.1f) bullet.StartFuze(fuzeTimer);
+        bullet.InitializeTrajectory(velocity, sofModular.damageModel);
+        if (fuzeDistance > 0.1f) bullet.SetFuzeBasedOnDistance(fuzeDistance);
     }
     private void RecoilAndHeatup(float delay)
     {
@@ -179,12 +179,13 @@ public class Gun : SofComponent, IMassComponent
         if (gunPreset.ammunition.caliber != ammoContainer.gunPreset.ammunition.caliber) return;
 
         magazine = ammoContainer;
-        magazine.Load(this);
+        magazine.InsertThisMagazine(this);
     }
     public void RemoveMagazine()
     {
-        magazine.attachedGun = null;
-        magazine.transform.parent = transform.root;
+        if (magazine == null) return;
+
+        magazine.UnloadThisMagazine();
         magazine = null;
     }
     public static int AmmunitionCount(Gun[] guns)

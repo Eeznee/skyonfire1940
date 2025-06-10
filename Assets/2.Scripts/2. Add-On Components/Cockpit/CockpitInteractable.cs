@@ -26,7 +26,7 @@ public class CockpitInteractable : SofComponent
     {
         return grip;
     }
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
 

@@ -17,13 +17,14 @@ public class SubCam
     public Vector3 customPos;
     public Vector3 customOffset;
 
-    public SofComplex trackTarget;
+    public SofModular trackTarget;
 
     public string logName { get; private set; }
 
-    public SofObject Target()
+    public SofModular Target()
     {
-        return TargetCrew().sofObject;
+        if (targetsPlayer) return Player.modular;
+        return trackTarget;
     }
     public CrewMember TargetCrew()
     {

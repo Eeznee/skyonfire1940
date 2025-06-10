@@ -44,7 +44,7 @@ public class LiquidTank : SofModule, IDamageTick, IMassComponent, IIgnitable
         ShiftFluidMass(capacity - fluidMass);
         circuit.Leaking(Time.deltaTime);
     }
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         if (!liquid) Debug.LogError("This Liquid Tank does not have any liquids assigned", this);
         if(liquid.type != LiquidType.Fuel)
@@ -72,7 +72,7 @@ public class LiquidTank : SofModule, IDamageTick, IMassComponent, IIgnitable
     const float massLostThreshold = 1f;
     public void ShiftFluidMass(float addedMass)
     {
-        if (!complex) return;
+        if (!sofModular) return;
 
         float initialMass = fluidMass;
         fluidMass = Mathf.Clamp(fluidMass + addedMass, 0f, capacity);
@@ -80,7 +80,7 @@ public class LiquidTank : SofModule, IDamageTick, IMassComponent, IIgnitable
         massShift += fluidMass - initialMass;
         if (Mathf.Abs(massShift) > massLostThreshold)
         {
-            complex.ShiftMass(new Mass(massShift, localPos));
+            if(sofComplex) sofComplex.ShiftMass(new Mass(massShift, localPos));
             massShift = 0f;
         }
     }

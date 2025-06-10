@@ -24,7 +24,7 @@ public class MarkersManager : MonoBehaviour
     public static void Add(SofObject sofObj)
     {
         Marker marker;
-        if(sofObj.aircraft != null)
+        if (sofObj.aircraft != null)
         {
             marker = Instantiate(instance.aircraftMarkerPrefab, instance.transform);
         }
@@ -47,24 +47,27 @@ public class MarkersManager : MonoBehaviour
     {
         markers.Sort((a, b) => a.SqrDistance.CompareTo(b.SqrDistance));
     }
+
+    int currentMarkerToUpdate = 0;
+
     private void SetMarkersOpacity()
     {
-        for (int i = 0; i < markers.Count; i++)
+        int i = currentMarkerToUpdate;
+        currentMarkerToUpdate = (currentMarkerToUpdate + 1) % markers.Count;
+
+        if (!markers[i].ShouldBeVisible()) return;
+
+        Marker marker = markers[i];
+
+        marker.reticleOverlapOpacity = 1f;
+        marker.textOverlapOpacity = 1f;
+
+        for (int j = 0; j < markers.Count; j++)
         {
-            if (!markers[i].ShouldBeVisible()) continue;
+            if (j == i) continue;
+            if (!markers[j].ShouldBeVisible()) continue;
 
-            Marker marker = markers[i];
-
-            marker.reticleOverlapOpacity = 1f;
-            marker.textOverlapOpacity = 1f;
-
-            for (int j = 0; j < markers.Count; j++)
-            {
-                if (j == i) continue;
-                if (!markers[j].ShouldBeVisible()) continue;
-
-                CheckOverlapAndMultiplyOpacity(marker, markers[j]);
-            }
+            CheckOverlapAndMultiplyOpacity(marker, markers[j]);
         }
     }
     private void CheckOverlapAndMultiplyOpacity(Marker marker, Marker otherMarker)

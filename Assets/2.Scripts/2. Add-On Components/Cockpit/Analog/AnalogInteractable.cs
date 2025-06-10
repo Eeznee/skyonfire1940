@@ -46,7 +46,7 @@ public class AnalogInteractable : CockpitInteractable
         if (GroupSelect()) return groupGrip;
         return base.CurrentGrip();
     }
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
         animSpeed = (mode == Mode.Push ? pushOn.magnitude : Mathf.Abs(angleOn)) / Mathf.Max(0.001f, animationTime);

@@ -48,7 +48,7 @@ public class ObjectData
 
         energy = new Value<float>(() => { return altitude.Get * -Physics.gravity.y + gsp.Get * gsp.Get * 0.5f; }, this);
         altitude = new Value<float>(() => { return tr.position.y; }, this);
-        relativeAltitude = new Value<float>(() => { return Mathf.Max(altitude.Get - GameManager.map.HeightAtPoint(tr.position), 0.5f); }, this);
+        relativeAltitude = new Value<float>(() => { return Mathf.Max(altitude.Get - GameManager.mapTool.HeightAtPoint(tr.position), 0.5f); }, this);
         heading = new Value<float>(() => { return tr.eulerAngles.y; }, this);
 
         density = new Value<float>(() => { return Aerodynamics.GetAirDensity(temperature.Get, pressure.Get); }, this);
@@ -81,10 +81,10 @@ public class ObjectData
     }
 
     [SerializeField] private Transform tr;
-    [SerializeField] private SofComplex complex;
+    [SerializeField] private SofModular complex;
     [SerializeField] private SofAircraft aircraft;
     [SerializeField] private Rigidbody rb;
-    public ObjectData(SofComplex _complex)
+    public ObjectData(SofModular _complex)
     {
         tr = _complex.transform;
         complex = _complex;

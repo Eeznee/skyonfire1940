@@ -25,7 +25,7 @@ public class GrassChunk : MonoBehaviour
         density = _density;
         spaceBetween = 1f / density;
         Vector3 pos = transform.position;
-        pos.y = GameManager.map.HeightAtPoint(pos);
+        pos.y = GameManager.mapTool.HeightAtPoint(pos);
         transform.position = pos;
 
         amount = Mathf.CeilToInt(size / spaceBetween);
@@ -48,7 +48,7 @@ public class GrassChunk : MonoBehaviour
     {
         gameObject.SetActive(true);
         Vector3 pos = transform.position;
-        pos.y = GameManager.map.HeightAtPoint(pos);
+        pos.y = GameManager.mapTool.HeightAtPoint(pos);
         if (pos.y < 10f) {
             gameObject.SetActive(false);
             return;
@@ -69,7 +69,7 @@ public class GrassChunk : MonoBehaviour
                     grassPos += pos;
                     grassPos.x += Random.Range(-spaceBetween, spaceBetween);
                     grassPos.z += Random.Range(-spaceBetween, spaceBetween);
-                    grassPos.y = GameManager.map.HeightAtPoint(grassPos);
+                    grassPos.y = GameManager.mapTool.HeightAtPoint(grassPos);
                     if (grassPos.y < 1f) grassPos.y = -15f;
                     allGrass[x * amount * 3 + z * 3 + s].transform.position = grassPos;
 

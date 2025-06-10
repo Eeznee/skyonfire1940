@@ -19,7 +19,6 @@ public class AmmoContainer : SofComponent, IMassComponent
     public float RealMass => gunPreset.ammunition.FullMass * ammo;
     public float EmptyMass => 0f;
     public float LoadedMass => gunPreset.ammunition.FullMass * capacity;
-
     public float FullyLoadedMass => gunPreset.ammunition.FullMass * capacity + EmptyMass;
 
     public override void Rearm()
@@ -27,17 +26,23 @@ public class AmmoContainer : SofComponent, IMassComponent
         base.Rearm();
         ammo = capacity;
     }
-    public AmmoContainer Load(Gun gun)
+    public virtual void InsertThisMagazine(Gun gun)
     {
-        if (gunPreset.ammunition.caliber != gun.gunPreset.ammunition.caliber) return null;
+        if (gunPreset.ammunition.caliber != gun.gunPreset.ammunition.caliber) return;
         attachedGun = gun;
         transform.parent = gun.magazineAttachPoint;
         transform.position = gun.magazineAttachPoint.position;
         transform.rotation = gun.magazineAttachPoint.rotation;
-        return this;
+    }
+    public virtual void UnloadThisMagazine()
+    {
+        if (attachedGun == null) return;
+
+        transform.parent = transform.parent.parent;
+        attachedGun = null;
     }
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         ammo = capacity;
         base.Initialize(_complex);
@@ -47,12 +52,12 @@ public class AmmoContainer : SofComponent, IMassComponent
     {
         if (ammo <= 0) return false;
         ammo--;
-        complex.ShiftMass(-gunPreset.ammunition.FullMass);
+        if (sofComplex) sofComplex.ShiftMass(-gunPreset.ammunition.FullMass);
         return true;
     }
     public static AmmoContainer CreateAmmoBelt(Gun gun, int capacity)
     {
-        AmmoContainer belt = new GameObject(gun.name + " Ammo Belt").AddSofComponent<AmmoContainer>(gun.complex);
+        AmmoContainer belt = new GameObject(gun.name + " Ammo Belt").AddSofComponent<AmmoContainer>(gun.sofModular);
         belt.capacity = belt.ammo = capacity;
         belt.gunPreset = gun.gunPreset;
         gun.LoadMagazine(belt);

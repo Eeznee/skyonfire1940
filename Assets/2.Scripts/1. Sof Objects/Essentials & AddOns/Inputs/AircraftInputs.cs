@@ -23,14 +23,14 @@ public class AircraftInputs
     public AircraftAxes target;
     public AircraftAxes current;
 
-    private AircraftAxes axesSpeed;
+    public AircraftAxes axesSpeed;
 
     private IPitchControlled[] elevators;
     private IRollControlled[] ailerons;
     private IYawControlled[] rudders;
 
     const float defaultPitchSpeed = 5f;
-    const float defaultRollSpeed = 8f;
+    const float defaultRollSpeed = 6f;
     const float defaultYawSpeed = 6f;
 
     const float pilotForceStick = 8000f;
@@ -72,6 +72,7 @@ public class AircraftInputs
     {
         AircraftAxes leverage = MaximumInputs(ias, currentInputs);
         targetInputs.Clamp(leverage);
+        if (Player.aircraft == aircraft && Player.role == SeatRole.Bombardier) targetInputs.yaw = aircraft.bombardierSeat.forcedYawInput;
 
         return AircraftAxes.MoveTowards(currentInputs, targetInputs, leverage * axesSpeed, dt);
     }
@@ -96,26 +97,5 @@ public class AircraftInputs
         maximumInputs.Clamp();
 
         return maximumInputs;
-    }
-    public AircraftAxes MaximumSpeeds()
-    {
-        float pitchResistance = 0f;
-        float rollResistance = 0f;
-        float yawResistance = 0f;
-
-        AircraftAxes test = new AircraftAxes(0.1f, 0.1f, 0.1f);
-
-        foreach (IPitchControlled surface in elevators) if (surface != null) pitchResistance += surface.ControlsResistance(test);
-        foreach (IRollControlled surface in ailerons) if (surface != null) rollResistance += surface.ControlsResistance(test);
-        foreach (IYawControlled surface in rudders) if (surface != null) yawResistance += surface.ControlsResistance(test);
-
-        float stickForce = pilotForceStick * aircraft.StickTorqueFactor;
-        float pedalForce = pilotForcePedals * aircraft.StickTorqueFactor;
-
-        float pitchIAS = Mathf.Sqrt(stickForce / pitchResistance);
-        float rollIAS = Mathf.Sqrt(stickForce / rollResistance);
-        float yawIAS = Mathf.Sqrt(pedalForce / yawResistance);
-
-        return new AircraftAxes(pitchIAS, rollIAS, yawIAS);
     }
 }

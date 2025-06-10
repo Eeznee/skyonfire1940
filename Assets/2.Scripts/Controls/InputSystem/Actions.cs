@@ -221,15 +221,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Dynamic"",
-                    ""type"": ""Button"",
-                    ""id"": ""fc8d983b-0c4d-4cfd-a44d-ce79f39aab48"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Brake"",
                     ""type"": ""Button"",
                     ""id"": ""cb449e99-91f7-4dde-83a9-2d9a9b3c5ed0"",
@@ -936,17 +927,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""Brake"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""3c76b8b5-5347-4a9a-b5f0-f5597f3cb165"",
-                    ""path"": ""<Keyboard>/x"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Mouse & Keyboard"",
-                    ""action"": ""Dynamic"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1873,6 +1853,15 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Dynamic"",
+                    ""type"": ""Button"",
+                    ""id"": ""473bc0e8-e066-434e-963b-475c2615c2ce"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -2381,6 +2370,17 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""action"": ""TimeScaleRelative"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4b20ac6b-84ee-47e8-ae06-04dfafb2a7a9"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse & Keyboard"",
+                    ""action"": ""Dynamic"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -3310,7 +3310,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         m_Pilot_FirePrimaries = m_Pilot.FindAction("FirePrimaries", throwIfNotFound: true);
         m_Pilot_FireSecondaries = m_Pilot.FindAction("FireSecondaries", throwIfNotFound: true);
         m_Pilot_Bomb = m_Pilot.FindAction("Bomb", throwIfNotFound: true);
-        m_Pilot_Dynamic = m_Pilot.FindAction("Dynamic", throwIfNotFound: true);
         m_Pilot_Brake = m_Pilot.FindAction("Brake", throwIfNotFound: true);
         m_Pilot_LockBrake = m_Pilot.FindAction("LockBrake", throwIfNotFound: true);
         m_Pilot_EngineToggle = m_Pilot.FindAction("EngineToggle", throwIfNotFound: true);
@@ -3365,6 +3364,7 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         m_Camera_Custom4 = m_Camera.FindAction("Custom4", throwIfNotFound: true);
         m_Camera_Custom5 = m_Camera.FindAction("Custom5", throwIfNotFound: true);
         m_Camera_Custom6 = m_Camera.FindAction("Custom6", throwIfNotFound: true);
+        m_Camera_Dynamic = m_Camera.FindAction("Dynamic", throwIfNotFound: true);
         // Switcher
         m_Switcher = asset.FindActionMap("Switcher", throwIfNotFound: true);
         m_Switcher_Pilot = m_Switcher.FindAction("Pilot", throwIfNotFound: true);
@@ -3540,7 +3540,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Pilot_FirePrimaries;
     private readonly InputAction m_Pilot_FireSecondaries;
     private readonly InputAction m_Pilot_Bomb;
-    private readonly InputAction m_Pilot_Dynamic;
     private readonly InputAction m_Pilot_Brake;
     private readonly InputAction m_Pilot_LockBrake;
     private readonly InputAction m_Pilot_EngineToggle;
@@ -3561,7 +3560,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         public InputAction @FirePrimaries => m_Wrapper.m_Pilot_FirePrimaries;
         public InputAction @FireSecondaries => m_Wrapper.m_Pilot_FireSecondaries;
         public InputAction @Bomb => m_Wrapper.m_Pilot_Bomb;
-        public InputAction @Dynamic => m_Wrapper.m_Pilot_Dynamic;
         public InputAction @Brake => m_Wrapper.m_Pilot_Brake;
         public InputAction @LockBrake => m_Wrapper.m_Pilot_LockBrake;
         public InputAction @EngineToggle => m_Wrapper.m_Pilot_EngineToggle;
@@ -3601,9 +3599,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
             @Bomb.started += instance.OnBomb;
             @Bomb.performed += instance.OnBomb;
             @Bomb.canceled += instance.OnBomb;
-            @Dynamic.started += instance.OnDynamic;
-            @Dynamic.performed += instance.OnDynamic;
-            @Dynamic.canceled += instance.OnDynamic;
             @Brake.started += instance.OnBrake;
             @Brake.performed += instance.OnBrake;
             @Brake.canceled += instance.OnBrake;
@@ -3656,9 +3651,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
             @Bomb.started -= instance.OnBomb;
             @Bomb.performed -= instance.OnBomb;
             @Bomb.canceled -= instance.OnBomb;
-            @Dynamic.started -= instance.OnDynamic;
-            @Dynamic.performed -= instance.OnDynamic;
-            @Dynamic.canceled -= instance.OnDynamic;
             @Brake.started -= instance.OnBrake;
             @Brake.performed -= instance.OnBrake;
             @Brake.canceled -= instance.OnBrake;
@@ -3991,6 +3983,7 @@ public partial class @Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Camera_Custom4;
     private readonly InputAction m_Camera_Custom5;
     private readonly InputAction m_Camera_Custom6;
+    private readonly InputAction m_Camera_Dynamic;
     public struct CameraActions
     {
         private @Actions m_Wrapper;
@@ -4013,6 +4006,7 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         public InputAction @Custom4 => m_Wrapper.m_Camera_Custom4;
         public InputAction @Custom5 => m_Wrapper.m_Camera_Custom5;
         public InputAction @Custom6 => m_Wrapper.m_Camera_Custom6;
+        public InputAction @Dynamic => m_Wrapper.m_Camera_Dynamic;
         public InputActionMap Get() { return m_Wrapper.m_Camera; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -4076,6 +4070,9 @@ public partial class @Actions: IInputActionCollection2, IDisposable
             @Custom6.started += instance.OnCustom6;
             @Custom6.performed += instance.OnCustom6;
             @Custom6.canceled += instance.OnCustom6;
+            @Dynamic.started += instance.OnDynamic;
+            @Dynamic.performed += instance.OnDynamic;
+            @Dynamic.canceled += instance.OnDynamic;
         }
 
         private void UnregisterCallbacks(ICameraActions instance)
@@ -4134,6 +4131,9 @@ public partial class @Actions: IInputActionCollection2, IDisposable
             @Custom6.started -= instance.OnCustom6;
             @Custom6.performed -= instance.OnCustom6;
             @Custom6.canceled -= instance.OnCustom6;
+            @Dynamic.started -= instance.OnDynamic;
+            @Dynamic.performed -= instance.OnDynamic;
+            @Dynamic.canceled -= instance.OnDynamic;
         }
 
         public void RemoveCallbacks(ICameraActions instance)
@@ -4480,7 +4480,6 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         void OnFirePrimaries(InputAction.CallbackContext context);
         void OnFireSecondaries(InputAction.CallbackContext context);
         void OnBomb(InputAction.CallbackContext context);
-        void OnDynamic(InputAction.CallbackContext context);
         void OnBrake(InputAction.CallbackContext context);
         void OnLockBrake(InputAction.CallbackContext context);
         void OnEngineToggle(InputAction.CallbackContext context);
@@ -4539,6 +4538,7 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         void OnCustom4(InputAction.CallbackContext context);
         void OnCustom5(InputAction.CallbackContext context);
         void OnCustom6(InputAction.CallbackContext context);
+        void OnDynamic(InputAction.CallbackContext context);
     }
     public interface ISwitcherActions
     {

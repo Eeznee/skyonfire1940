@@ -11,7 +11,7 @@ public class WheelEffects : SofComponent
 
 
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
 
@@ -39,11 +39,11 @@ public class WheelEffects : SofComponent
     }
     private void Update()
     {
-        if (complex.data.relativeAltitude.Get > 15f) return;
+        if (sofModular.data.relativeAltitude.Get > 15f) return;
 
         for (int i = 0; i < wheels.Length; i++)
         {
-            if (wheels[i] == null || wheels[i].complex != complex) continue;
+            if (wheels[i] == null || wheels[i].sofModular != sofModular) continue;
 
             WheelEffect(wheels[i], effects[i]);
         }
@@ -51,7 +51,7 @@ public class WheelEffects : SofComponent
     void WheelEffect(Wheel wheel, ParticleSystem frictionFx)
     {
 
-        bool playFrictionFX = wheel.grounded && complex.lod.LOD() <= 1;
+        bool playFrictionFX = wheel.grounded && sofModular.lod.LOD() <= 1;
 
         bool slipping = Mathf.Abs(wheel.sideSpeed) > 2f;
         bool braking = wheel.BrakesInput() > 0.1f && wheel.brakes != Wheel.BrakeSystem.None;

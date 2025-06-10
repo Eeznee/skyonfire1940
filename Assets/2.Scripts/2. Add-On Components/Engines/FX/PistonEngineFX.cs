@@ -14,7 +14,7 @@ public class PistonEngineFX : AudioComponent
 
     private AudioClip[] pops;
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
         engine = GetComponent<PistonEngine>();
@@ -53,7 +53,7 @@ public class PistonEngineFX : AudioComponent
     private void Update()
     {
         bool playBoostEffect = engine.BoostIsEffective;
-        playBoostEffect &= complex.lod && complex.lod.LOD() <= 2;
+        playBoostEffect &= sofModular.lod && sofModular.lod.LOD() <= 2;
 
         if (playBoostEffect && !boostEffect.isPlaying) boostEffect.Play();
         else if (!playBoostEffect && boostEffect.isPlaying) boostEffect.Stop();

@@ -13,7 +13,12 @@ public class Projectile : MonoBehaviour
     [HideInInspector][SerializeField] private Transform tr;
     [HideInInspector][SerializeField] private BoxCollider box;
     [HideInInspector][SerializeField] private float dragCoeff;
+    [HideInInspector][SerializeField] private float lifeTime;
     [HideInInspector][SerializeField] private ProjectileChart ballisticChart;
+
+    [HideInInspector][SerializeField] private int layerMask;
+    [HideInInspector][SerializeField] private int nearGroundMask;
+    [HideInInspector][SerializeField] private Collider[] overlapColliders;
 
     private float initializedAtTime;
     private float despawnTime;
@@ -23,88 +28,60 @@ public class Projectile : MonoBehaviour
     private Vector3 initDir;
     private float initSpeed;
     private float invertInitSpeed;
-    private Collider ignoreCollider;
+    private SofDamageModel ignoreDamageModel;
+
+    private bool isDestroyed = false;
+
 
     public void Setup(ProjectileProperties _properties)
     {
+        isDestroyed = false;
+
         tr = transform;
         properties = _properties;
         if (properties.bulletHits) properties.filler.fx = properties.bulletHits.explosion;
         gameObject.layer = 12;
 
-        dragCoeff = ProjectileDragCoeff(properties.diameter, properties.mass);
+        lifeTime = properties.LifeTime;
+        dragCoeff = properties.DragCoeff;
         ballisticChart = new ProjectileChart(properties.mass, properties.basePenetration, properties.baseVelocity, properties.diameter, properties.FireChance());
 
-        //SetupCollider();
+        layerMask = LayerMask.GetMask("Bubble");
+        nearGroundMask = LayerMask.GetMask("Bubble", "Default", "Terrain");
+        overlapColliders = new Collider[1];
     }
-    public void StartFuze(float t) { detonationTime = Time.time + t * Random.Range(0.98f, 1.02f); }
+    public void InitializeTrajectory(Vector3 _vel, SofDamageModel shooter)
+    {
+        ResetTrajectory(_vel, shooter);
 
-    private void SetupCollider()
-    {
-        box = this.GetCreateComponent<BoxCollider>();
-        box.isTrigger = true;
-        float size = Time.fixedUnscaledDeltaTime * (properties.baseVelocity + 300f);
-        box.size = new Vector3(0.1f, 0.1f, size);
-        box.center = new Vector3(0f, 0f, size / 2f);
-        box.enabled = false;
+        if(shooter) SofDamageModelHit(tr.position, _vel, shooter);
+
+        tr.position = Pos(Time.fixedTime);
+
+        despawnTime = Time.time + lifeTime;
+        if (properties.fuze > 0f) SetFuze(properties.fuze);
+        if (inert && fired) { inert.enabled = false; fired.enabled = true; }
     }
-    public void InitializeTrajectory(Vector3 _vel, Collider ignore)
+    public void ResetTrajectory(Vector3 _vel, SofDamageModel ignore)
     {
-        ignoreCollider = ignore;
+        initializedAtTime = Time.fixedTime;
+
+        ignoreDamageModel = ignore;
         initSpeed = _vel.magnitude;
         invertInitSpeed = 1f / initSpeed;
         initDir = tr.forward = _vel * invertInitSpeed;
         initPos = tr.position - GameManager.refPos;
-
-        initializedAtTime = Time.fixedTime;
-
-        despawnTime = Time.time + properties.LifeTime;
-        if (properties.fuze > 0f) StartFuze(properties.fuze);
-
-        if (inert && fired) { inert.enabled = false; fired.enabled = true; }
-
-        //box.enabled = true;
     }
     public Vector3 Pos(float t)
     {
-        t -= initializedAtTime;
+        t = t + Time.fixedDeltaTime - initializedAtTime;
         return GameManager.refPos + initPos + BallisticTrajectory(initDir, initSpeed, dragCoeff, t);
     }
     public Vector3 Vel(float t)
     {
-        t -= initializedAtTime;
+        t = t + Time.fixedDeltaTime - initializedAtTime;
         return initDir / (dragCoeff * t + invertInitSpeed) + Physics.gravity * t;
     }
-    private void FixedUpdate()
-    {
-        Vector3 nextPosition = Pos(Time.fixedTime);
-
-        bool nearGround = tr.position.y < 500f;
-
-        int mask = nearGround ? LayerMask.GetMask("Bubble", "Default","Terrain") : LayerMask.GetMask("Bubble");
-        if (Physics.Raycast(tr.position, nextPosition - tr.position , out RaycastHit hit, initSpeed * Time.fixedDeltaTime, mask))
-        {
-            if (hit.collider != ignoreCollider) 
-            {
-                if (hit.collider.gameObject.layer == 10)
-                {
-                    CollideComplexBubble(hit.collider);
-                }
-                else
-                {
-                    CollideTerrain(hit.collider);
-                }
-            }
-        }
-
-        tr.position = nextPosition;
-
-
-        if (tr.position.y < 0f) CollideWater();
-        if (detonationTime != 0f && Time.time > detonationTime) Detonate(tr.position,null);
-        if (Time.time > despawnTime) { Destroy(gameObject); return; }
-    }
-
     const float noRicochetAlpha = 50f;
     const float ricochetAlpha = 80f;
 
@@ -118,84 +95,127 @@ public class Projectile : MonoBehaviour
         {
             tr.forward = Vector3.Reflect(tr.forward, hit.normal);
             tr.rotation = Spread(tr.rotation, 7f);
-            InitializeTrajectory(tr.forward * speed * 0.4f * Mathf.Sin(alpha * Mathf.Deg2Rad),ignoreCollider);
+            ResetTrajectory(tr.forward * speed * 0.4f * Mathf.Sin(alpha * Mathf.Deg2Rad), ignoreDamageModel);
         }
         else Destroy(gameObject);
     }
-    void OnTriggerEnter(Collider obj)
-    {
-        if (obj.gameObject.layer != 10)  //fixed objects have been hit
-            CollideTerrain(obj);
-        else if (obj != ignoreCollider)
-            CollideComplexBubble(obj);
-    }
-    private void CollideComplexBubble(Collider obj)
-    {
-        ObjectBubble bubble = obj.GetComponent<ObjectBubble>();
-        if (!bubble) return;
-        bubble.EnableColliders(false);
-        Vector3 relativeVelocity = Vel(Time.fixedTime);
-        relativeVelocity -= obj.GetComponentInParent<Rigidbody>().velocity;
-        StartDamage(relativeVelocity,bubble.bubble.radius * 2f + Vel(Time.fixedTime).magnitude * Time.fixedDeltaTime);
-    }
 
-    public void StartDamage(Vector3 velocity, float range)
+
+    private void FixedUpdate()
     {
-        if (properties.explosive)
+        if (isDestroyed) return;
+
+        Vector3 currentPos = tr.position;
+        Vector3 nextPosition = currentPos + Time.fixedDeltaTime * BallisticVelocity(initDir, initSpeed, dragCoeff, Time.fixedTime - initializedAtTime);
+        Vector3 delta = nextPosition - currentPos;
+
+        if (detonationTime != 0f && Time.time > detonationTime)
         {
-            RaycastHit hit;
-            if(Physics.Raycast(transform.position, velocity, out hit, range, LayerMask.GetMask("SofComplex")))
-                Detonate(hit.point, hit.collider.transform.root);
+            Vector3 velocity = delta / Time.fixedDeltaTime;
+            float dt = Time.time - detonationTime;
+            Vector3 detonationPos = currentPos - dt * velocity;
+            Detonate(detonationPos, null);
         }
-        else
+
+        if (nextPosition.y < 0f) CollideWater();
+
+        int mask = currentPos.y < 500f ? nearGroundMask : layerMask;
+        int c = Physics.OverlapSphereNonAlloc(currentPos, initSpeed * Time.fixedDeltaTime, overlapColliders, mask);
+        if (c > 0)
         {
-            HitResult result = RaycastDamage(transform.position, velocity, range, ballisticChart);
-
-            if (result.summary == HitSummary.NoHit) return;
-
-            properties.AircraftHit(result.firstHit);
-
-            if (result.summary == HitSummary.Penetration)
+            if(Physics.Raycast(currentPos, delta, out RaycastHit hit, initSpeed * Time.fixedDeltaTime, mask))
             {
-                
-                float sqrVelocityLeftRatio = result.velocityLeft.sqrMagnitude / velocity.sqrMagnitude;
-                float spread = Mathf.Lerp(5f, 0f,sqrVelocityLeftRatio);
-                Vector3 newVelocity = Spread(Quaternion.identity, spread) * result.velocityLeft;
-                InitializeTrajectory(newVelocity, ignoreCollider);
-            }
-            else TryRicochet(result.lastHit, result.velocityLeft.magnitude);
-        }
-    }
-    private void CollideTerrain(Collider obj)
-    {
-        Ray ray = new Ray(tr.position, tr.forward);
-        if (!Physics.Raycast(ray, out RaycastHit hit, 20f, LayerMask.GetMask("Default", "Terrain"))) return;
+                SofDamageModel damageModel = hit.collider.GetComponentInParent<SofDamageModel>();
 
-        Vector3 velocity = Vel(Time.fixedTime);
-        SofSimple sofSimple = hit.collider.transform.parent ? hit.collider.transform.parent.GetComponent<SofSimple>() : null;
-        if (sofSimple && sofSimple.bulletAffected)
-            sofSimple.BulletDamage(properties.mass * velocity.sqrMagnitude / 2f);
-
-        if (properties.explosive) Detonate(hit.point, obj.transform);
-        else
-        {
-            if (properties.bulletHits)
-            {
-                if (obj.sharedMaterial == null)
+                if (damageModel != ignoreDamageModel)
                 {
-                    Debug.LogError(obj.gameObject.name + " Does not have a material", obj.gameObject);
-                    return;
+                    Vector3 vel = delta / Time.fixedDeltaTime;
+
+                    if (properties.explosive)
+                    {
+                        mask = LayerMask.GetMask("SofComplex", "Default", "Terrain");
+                        float range = delta.magnitude + (damageModel ? damageModel.RaycastDistanceExtension : 0f);
+                        if (Physics.Raycast(currentPos, delta, out RaycastHit explosiveHit, range, mask))
+                        {
+                            Detonate(explosiveHit.point, explosiveHit.collider.transform.root);
+                            return;
+                        }
+                    }
+                    else if (damageModel)
+                    {
+                        if (damageModel != ignoreDamageModel)
+                        {
+                            SofDamageModelHit(currentPos, vel, damageModel);
+                        }
+                    }
+                    else
+                    {
+                        properties.TerrainHit(hit);
+                        TryRicochet(hit, vel.magnitude);
+                    }
                 }
-                properties.bulletHits.CreateHit(obj.sharedMaterial.name, hit.point, Quaternion.LookRotation(hit.normal), null);
             }
-            TryRicochet(hit, velocity.magnitude);
         }
+
+        tr.position = nextPosition;
+
+        if (Time.time > despawnTime)
+        {
+            DestroyProjectile();
+        }
+    }
+    public HitResult SofDamageModelHit(Vector3 pos, Vector3 velocity, SofDamageModel damageModel)
+    {
+        HitResult result = damageModel.ProjectileRaycast(pos, velocity, ballisticChart);
+
+        switch (result.summary)
+        {
+            case HitSummary.NoHit:
+
+                break;
+            case HitSummary.Stopped:
+                break;
+            case HitSummary.Penetration:
+
+                float velocityLeftRatio = result.velocityLeft.magnitude / velocity.magnitude;
+                float spread = Mathf.Lerp(8f, 0f, velocityLeftRatio);
+                Vector3 newVelocity = Spread(result.velocityLeft, spread);
+                ResetTrajectory(newVelocity, damageModel);
+
+                break;
+            case HitSummary.RicochetChance:
+
+                TryRicochet(result.lastHit, result.velocityLeft.magnitude);
+
+                break;
+        }
+
+        if(result.summary != HitSummary.NoHit) properties.AircraftHit(result.firstHit);
+
+        return result;
     }
     private void CollideWater()
     {
-        if (properties.explosive) Detonate(tr.position - tr.position.y * Vector3.up, null);
+        if (properties.explosive)
+        {
+            Detonate(tr.position - tr.position.y * Vector3.up, null);
+        }
         else if (properties.bulletHits) properties.bulletHits.CreateHit("Water", Vector3.Scale(tr.position, new Vector3(1f, 0f, 1f)), Quaternion.identity, null);
+        DestroyProjectile();
+    }
+    public void SetFuzeBasedOnDistance(float distance) { detonationTime = Time.time + TimeRequiredToReachDistance(distance, initSpeed, dragCoeff); }
+    public void SetFuze(float _timer) { detonationTime = Time.time + _timer; }
+    public void Detonate(Vector3 pos, Transform tran) 
+    {
+        if (properties.explosive) 
+            properties.filler.Detonate(pos, properties.mass, tran);
+
+        DestroyProjectile();
+    }
+
+    public void DestroyProjectile()
+    {
+        isDestroyed = true;
         Destroy(gameObject);
     }
-    public void Detonate(Vector3 pos, Transform tran) { if (properties.explosive) properties.filler.Detonate(pos, properties.mass, tran); Destroy(gameObject); }
 }

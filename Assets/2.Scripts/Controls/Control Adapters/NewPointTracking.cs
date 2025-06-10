@@ -7,12 +7,13 @@ public static partial class NewPointTracking
 {
     const float rollYawAlpha = 30f;
     private const float maxMultiplierValue = 64f;
+    private const float minMultiplierValue = 1f / 256f;
     private const int simSteps = 3;
     private const int iterationsSteps = 4;
 
     private static float SimDt = Time.fixedDeltaTime * 4f;
     private static float SimTime => simSteps * SimDt;
-    public static AircraftAxes FindOptimalControls(Vector3 targetDirection, SofAircraft aircraft, AircraftAxes forcedAxes)
+    public static AircraftAxes FindOptimalControls(Vector3 targetDirection, SofAircraft aircraft, AircraftAxes forcedAxes, float maintainBankFactor)
     {
         targetDirection.Normalize();
         float offAngle = Vector3.Angle(aircraft.rb.velocity, targetDirection);
@@ -26,7 +27,7 @@ public static partial class NewPointTracking
 
         for (int i = 0; i < iterationsSteps; i++)
         {
-            controlsFound = GetControls(aircraft.ptAbstractControls, maxPitch, offAngleFactor, aircraft);
+            controlsFound = GetControls(aircraft.ptAbstractControls, maxPitch, offAngleFactor, maintainBankFactor, aircraft, !float.IsNaN(forcedAxes.roll));
             ApplyForcedAxis(ref controlsFound, forcedAxes);
             controlsFound.Clamp(maxPitch);
 
@@ -36,8 +37,8 @@ public static partial class NewPointTracking
 
             bool verticalOvershoots = Mathf.Sign(previousLocalTarget.y * localTarget.y) == -1f;
             bool horizontalOvershoots = Mathf.Sign(previousLocalTarget.x * localTarget.x) == -1f;
-            aircraft.ptMultipliers.y = Mathf.Clamp(aircraft.ptMultipliers.y * (verticalOvershoots ? 0.5f : 2f), 0f, maxMultiplierValue);
-            aircraft.ptMultipliers.x = Mathf.Clamp(aircraft.ptMultipliers.x * (horizontalOvershoots ? 0.5f : 2f), 0f, maxMultiplierValue);
+            aircraft.ptMultipliers.y = Mathf.Clamp(aircraft.ptMultipliers.y * (verticalOvershoots ? 0.5f : 2f), minMultiplierValue, maxMultiplierValue);
+            aircraft.ptMultipliers.x = Mathf.Clamp(aircraft.ptMultipliers.x * (horizontalOvershoots ? 0.5f : 2f), minMultiplierValue, maxMultiplierValue);
 
             aircraft.ptAbstractControls.y += aircraft.ptMultipliers.y * localTarget.y;
             aircraft.ptAbstractControls.x += aircraft.ptMultipliers.x * localTarget.x;
@@ -48,17 +49,28 @@ public static partial class NewPointTracking
 
         controlsFound = InterpolateForGrounded(controlsFound, aircraft, previousLocalTarget);
         ApplyForcedAxis(ref controlsFound, forcedAxes);
+
         return controlsFound;
     }
-    private static AircraftAxes GetControls(Vector2 abstractControls, float maxPitch, float offAngleFactor, SofAircraft aircraft)
+    const float levelRollLimit = 0.3f;
+    private static AircraftAxes GetControls(Vector2 abstractControls, float maxPitch, float offAngleFactor, float maintainBankFactor, SofAircraft aircraft, bool forceRoll)
     {
         AircraftAxes controls;
-        controls.pitch = abstractControls.y * maxPitch;
         controls.yaw = -abstractControls.x * (1f - offAngleFactor);
 
+        float maintainBank = Mathf.Clamp(aircraft.data.rollRate.Get * -0.02f, -1f, 1f);
+        float levelRoll = Mathf.Clamp(aircraft.tr.right.y * 5f + aircraft.data.rollRate.Get * -0.02f, -levelRollLimit, levelRollLimit);
+        float passiveRoll = Mathf.Lerp(levelRoll, maintainBank, maintainBankFactor);
+
         float aggressiveRoll = abstractControls.x;
-        float levelRoll = aircraft.tr.right.y * 0.2f;
-        controls.roll = Mathf.Lerp(levelRoll, aggressiveRoll, offAngleFactor);
+
+        controls.roll = Mathf.Lerp(passiveRoll, aggressiveRoll, offAngleFactor);
+
+        float slowDownRoll = aircraft.controls.axesSpeed.pitch * Time.fixedDeltaTime * Mathf.Lerp(1f, 0.4f, maintainBankFactor * (1f - offAngleFactor));
+        controls.roll = Mathf.MoveTowards(aircraft.controls.current.roll, controls.roll, slowDownRoll);
+
+        controls.pitch = abstractControls.y * maxPitch;
+        if(!forceRoll) controls.pitch *= Mathf.Clamp01(1.5f - Mathf.Abs(controls.roll) * offAngleFactor);
 
         return controls;
     }

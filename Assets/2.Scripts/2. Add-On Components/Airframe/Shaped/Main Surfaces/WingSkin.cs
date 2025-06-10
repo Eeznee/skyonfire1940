@@ -21,7 +21,7 @@ public class WingSkin : SofModule
         Transform parentTr = parentWing.tr;
         GameObject skinObject = parentTr.CreateChild(parentWing.name + " Skin").gameObject;
 
-        WingSkin skin = skinObject.AddSofComponent<WingSkin>(parentWing.complex);
+        WingSkin skin = skinObject.AddSofComponent<WingSkin>(parentWing.sofModular);
         skin.parentWing = parentWing;
 
         skin.meshCollider = skinObject.gameObject.AddComponent<MeshCollider>();

@@ -4,20 +4,23 @@ using UnityEngine;
 
 public class Torpedo : Detachable
 {
-    public float speedLimit = 20f;
-    public float maximumRange = 3000f;
+    [SerializeField] private float travelSpeedKph = 75f;
+    [SerializeField] private float maximumRange = 3000f;
 
-    public float maxDropSpeed = 100f;
-    public float maxDropAltitude = 50f;
+    public float TravelSpeed => travelSpeedKph / 3.6f;
 
-    public ExplosiveFiller filler;
+    [SerializeField] private float maxDropSpeedKph = 300f;
+    [SerializeField] private float maxDropAltitude = 50f;
+    public float MaxDropSpeed => maxDropSpeedKph / 3.6f;
 
-    public GameObject splashEffect;
-    public GameObject trailEffect;
+    [SerializeField] private ExplosiveFiller filler;
+
+    [SerializeField] private GameObject splashEffect;
+    [SerializeField] private GameObject trailEffect;
 
     private bool underWater;
     private float currentSpeed;
-    const float drag = 0.3f;
+    const float drag = 0.6f;
 
 
     public float maxVerticalSpeed => Physics.gravity.y * Mathf.Sqrt(2f * maxDropAltitude / -Physics.gravity.y);
@@ -30,7 +33,7 @@ public class Torpedo : Detachable
 
     protected override void OnGroundContact(float timeSinceDropped)
     {
-        if (GameManager.map.HeightAtPoint(tr.position) > 0f)
+        if (GameManager.mapTool.HeightAtPoint(tr.position) > 0f)
         {
             Root();
             Destroy(gameObject, 20f);
@@ -43,7 +46,7 @@ public class Torpedo : Detachable
 
         Vector3 horizontalVelocity = inAirVelocity;
         horizontalVelocity.y = 0f;
-        bool overSpeed = horizontalVelocity.magnitude > maxDropSpeed;
+        bool overSpeed = horizontalVelocity.magnitude > MaxDropSpeed;
         bool overDrop = inAirVelocity.y < maxVerticalSpeed;
 
         if (overDrop || overSpeed)
@@ -66,20 +69,27 @@ public class Torpedo : Detachable
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (underWater)
+        if (!underWater) return;
+
+        ShipDamageModel ship = other.GetComponentInParent<ShipDamageModel>();
+        if (ship)
         {
-            Debug.Log(other.name);
-            StopAllCoroutines();
-            filler.Detonate(transform.position, mass, null);
-            Destroy(transform.root.gameObject);
+            Vector3 detonationPoint = other.ClosestPoint(transform.position);
+            ship.DirectTorpedoHit(detonationPoint, filler.TntEquivalent);
         }
+
+        StopAllCoroutines();
+        filler.Detonate(transform.position, mass, null);
+        Destroy(transform.root.gameObject);
+
+
     }
     protected IEnumerator UnderwaterTorpedo()
     {
         Vector3 waterVelocity = startVelocity;
         waterVelocity.y = 0f;
         currentSpeed = waterVelocity.magnitude;
-        float timerLimit = maximumRange / speedLimit;
+        float timerLimit = maximumRange / TravelSpeed;
 
         float securityCount = 0f;
         do
@@ -96,8 +106,8 @@ public class Torpedo : Detachable
     }
     private void UpdateTorpedoTravel()
     {
-        float acceleration = Mathf.Max(2f, Mathf.Abs(currentSpeed - speedLimit) * drag);
-        currentSpeed = Mathf.MoveTowards(currentSpeed, speedLimit, Time.deltaTime * acceleration);
+        float acceleration = Mathf.Max(2f, Mathf.Abs(currentSpeed - TravelSpeed) * drag);
+        currentSpeed = Mathf.MoveTowards(currentSpeed, TravelSpeed, Time.deltaTime * acceleration);
 
         Vector3 position = transform.position;
         position += currentSpeed * transform.forward * Time.deltaTime;

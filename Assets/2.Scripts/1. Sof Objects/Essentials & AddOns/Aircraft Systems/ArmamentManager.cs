@@ -39,7 +39,7 @@ public class ArmamentManager
         ConvergeGuns(aircraft.Convergence);
     }
 
-    public void CheatPointGuns(Vector3 worldPoint, float cheatFactor)
+    public void CheatPointGuns(Vector3 worldPoint)
     {
         foreach (Gun gun in guns)
             if (gun && gun.controller != GunController.Gunner)

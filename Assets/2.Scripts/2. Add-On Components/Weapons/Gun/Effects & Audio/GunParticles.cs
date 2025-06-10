@@ -13,6 +13,7 @@ public class GunParticles : MonoBehaviour
     private ParticleSystem[] muzzleFlashes;
     private ParticleSystem casings;
     private ParticleSystem.ForceOverLifetimeModule casingsDrag;
+    private ParticleSystem.VelocityOverLifetimeModule casingsVelocity;
 
     private float multiplier = 3f;
 
@@ -31,8 +32,11 @@ public class GunParticles : MonoBehaviour
 
         if (preset.casingsFX && gun.ejectCasings && QualitySettings.GetQualityLevel() > 0)
         {
+
+            Quaternion rotation = gun.tr.rotation;
             casings = Instantiate(preset.casingsFX, ejectionPos, gun.tr.rotation, gun.tr).GetComponent<ParticleSystem>();
             casingsDrag = casings.forceOverLifetime;
+            casingsVelocity = casings.velocityOverLifetime;
         }
 
         muzzleFlashes = Instantiate(preset.FireFX, muzzlePos, gun.tr.rotation, gun.tr).GetComponentsInChildren<ParticleSystem>();
@@ -41,16 +45,25 @@ public class GunParticles : MonoBehaviour
 
     private void Effect(float delay)
     {
-        if (!gun.complex.lod)
+        if (!gun.sofModular.lod)
         {
             foreach (ParticleSystem ps in muzzleFlashes) ps.Emit(1);
             return;
         }
 
-        if (gun.complex.lod.LOD() <= 1) foreach (ParticleSystem ps in muzzleFlashes) ps.Emit(1);
-        if (gun.complex.lod.LOD() == 0) if (casings && gun.ejectCasings)
+        if (gun.sofModular.lod.LOD() <= 1) foreach (ParticleSystem ps in muzzleFlashes) ps.Emit(1);
+        if (gun.sofModular.lod.LOD() == 0) if (casings && gun.ejectCasings)
             {
-                casingsDrag.z = -gun.data.ias.Get * gun.data.ias.Get * multiplier;
+                Vector3 drag = gun.tr.InverseTransformDirection(gun.sofModular.tr.forward) * -M.Pow(gun.data.ias.Get,2) * multiplier;
+                casingsDrag.x = drag.x;
+                casingsDrag.y = drag.y;
+                casingsDrag.z = drag.z;
+
+                Vector3 vel = gun.ejectionVector;
+                casingsVelocity.x = vel.x;
+                casingsVelocity.y = vel.y;
+                casingsVelocity.z = vel.z;
+
                 casings.Emit(1);
             }
     }

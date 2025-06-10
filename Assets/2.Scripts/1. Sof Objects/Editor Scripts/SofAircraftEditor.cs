@@ -118,6 +118,10 @@ public class SofAircraftEditor : SofComplexEditor
     {
         SofAircraft aircraft = (SofAircraft)target;
 
+        if(aircraft.GetComponent<Animator>() == null || aircraft.GetComponent<Animator>().runtimeAnimatorController == null)
+        {
+            EditorGUILayout.HelpBox("You must add an animator & assign a controller to it", MessageType.Error);
+        }
         if(aircraft.crew == null || aircraft.crew.Length == 0)
         {
             EditorGUILayout.HelpBox("You must have at least one crewmember inside the aircraft", MessageType.Error);

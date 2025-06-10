@@ -33,14 +33,16 @@ public class HoldFormation : Maneuver
         if (leader == aircraft || leader == null)
         {
             Vector3 pos = transform.position + transform.forward * 500f;
-            pos.y = Mathf.Max(transform.position.y,500f);
+            pos.y = Mathf.Max(transform.position.y,250f);
             PointTracking.Tracking(pos, aircraft, 0f, 1f,true);
         }
         else
         {
             //Direction
             Vector3 targetPos = aircraft.card.formation.GetPosition(leader.transform, aircraft.placeInSquad);
-            PointTracking.Tracking(targetPos + leader.transform.forward * 1000f, aircraft, leader.data.bankAngle.Get, 1f, true);
+            targetPos = targetPos + leader.transform.forward * 1000f;
+            targetPos.y = Mathf.Max(targetPos.y, 30f);
+            PointTracking.Tracking(targetPos, aircraft, leader.data.bankAngle.Get, 1f, true);
 
             //Throttle
             float dis = transform.InverseTransformDirection(targetPos - transform.position).z;

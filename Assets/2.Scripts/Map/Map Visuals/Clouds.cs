@@ -27,6 +27,8 @@ public class Clouds : MonoBehaviour
         {
             CreateCloud(i);
         }
+
+        gameObject.AddComponent<BuildingsMerger>();
     }
 
     public void CreateCloud(int index)
@@ -51,9 +53,11 @@ public class Clouds : MonoBehaviour
         tr.parent = transform;
         tr.localScale = new Vector3(Random.Range(1f, maxStretch), 1f, 1f);
         Vector3 pos = Random.Range(minAltitude, maxAltitude) * Vector3.up;
-        pos.x = (Random.value - 0.5f) * 1.5f * GameManager.map.transform.localScale.x;
-        pos.z = (Random.value - 0.5f) * 1.5f * GameManager.map.transform.localScale.z;
+        pos.x = (Random.value - 0.5f) * 1.5f * GameManager.mapTool.transform.localScale.x;
+        pos.z = (Random.value - 0.5f) * 1.5f * GameManager.mapTool.transform.localScale.z;
         tr.localPosition = pos;
+
+        clouds[index].gameObject.isStatic = true;
     }
 
     public Vector3[] CloudVerts(int sides, float radius)

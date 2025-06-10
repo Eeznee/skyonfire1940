@@ -103,7 +103,7 @@ public abstract class CameraLogic
 
             case CamPos.World:
 
-                return GameManager.gm.mapmap.transform.position;
+                return GameManager.gm.map.transform.position;
 
         }
         return subCam.Target().tr.position;
@@ -139,7 +139,7 @@ public abstract class CameraLogic
     public Transform RelativeTransform()
     {
         if (BasePosMode == CamPos.World)
-            return GameManager.gm.mapmap.transform;
+            return GameManager.gm.map.transform;
         return subCam.Target().tr;
     }
     public Vector3 BaseUp()

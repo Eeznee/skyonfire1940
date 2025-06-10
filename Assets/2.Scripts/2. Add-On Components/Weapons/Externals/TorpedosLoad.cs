@@ -27,7 +27,7 @@ public class TorpedosLoad : OrdnanceLoad
         {
             Vector3 pos = transform.TransformPoint(launchPositions[i]);
             torpedos[i] = Instantiate(torpedoRef, pos, transform.rotation, transform);
-            torpedos[i].SetInstanciatedComponent(complex);
+            torpedos[i].SetInstanciatedComponent(sofModular);
         }
     }
 
@@ -39,6 +39,15 @@ public class TorpedosLoad : OrdnanceLoad
         torpedos[fireIndex].Drop();
 
         base.Launch(delayFuse);
+
+        if(aircraft == Player.aircraft)
+        {
+            foreach(SofAircraft squadAircraft in GameManager.squadrons[aircraft.SquadronId])
+            {
+                if (squadAircraft == Player.aircraft) continue;
+                squadAircraft.armament.DropTorpedo();
+            }
+        }
 
         return true;
     }

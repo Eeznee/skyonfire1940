@@ -62,7 +62,8 @@ public class SofAircraft : SofComplex
 
     public float cruiseSpeed => stats.altitudeZeroMaxSpeed;
     public float Difficulty => squadron.difficulty;
-    public int SquadronId => squadron.id;
+    public override int SquadronId => squadron.id;
+    public override int PlaceInSquad => placeInSquad;
     public bool GroundedStart => squadron.airfield >= 0;
 
 
@@ -73,6 +74,9 @@ public class SofAircraft : SofComplex
     [NonSerialized] public Vector2 ptAbstractControls = Vector2.zero;
     [NonSerialized] public Vector2 ptMultipliers = Vector2.one;
 
+
+    public Action OnUpdateLOD0;
+    public Action OnUpdateLOD1;
 
     public void ResetStationsToDefault()
     {
@@ -103,7 +107,7 @@ public class SofAircraft : SofComplex
 
         forcesCompiler = gameObject.AddComponent<ForcesCompiler>();
         lod = this.GetCreateComponentInChildren<ObjectLOD>();
-        if (!simpleDamage) bubble = transform.CreateChild("Object Bubble").gameObject.AddComponent<ObjectBubble>();
+        if(!damageModel) damageModel = gameObject.AddComponent<ModularDamageModel>();
     }
     protected override void InitializePhysics()
     {
@@ -137,8 +141,24 @@ public class SofAircraft : SofComplex
         Transform tr = col.GetContact(0).thisCollider.transform;
         tr = tr.GetComponent<WingSkin>() ? tr.parent : tr;
         SofAirframe collided = tr.GetComponent<SofAirframe>();
-        if (collided && col.impulse.magnitude > 10000f) collided.Rip();
+        if (collided && col.impulse.magnitude > 10000f)
+        {
+            collided.Rip();
 
+            if (!collided.Detachable)
+            {
+                ShipDamageModel ship = col.collider.GetComponentInParent<ShipDamageModel>();
+                if (ship)
+                {
+                    ship.AircraftCrashDamage(this);
+                }
+            }
+        }
+    }
+    private void Update()
+    {
+        if (lod.LOD() == 0) OnUpdateLOD0?.Invoke();
+        if (lod.LOD() <= 1) OnUpdateLOD1?.Invoke();
     }
     protected override void FixedUpdate()
     {
@@ -148,9 +168,9 @@ public class SofAircraft : SofComplex
 
         //Call the pilot seat behaviour before inputs and force compilation
         CrewMember mainPilot = mainSeat.seatedCrew;
-        if (mainPilot != null && !mainPilot.ripped && mainPilot.complex == complex)
+        if (mainPilot != null && !mainPilot.ripped && mainPilot.sofModular == modular)
         {
-            if (mainPilot == Player.crew) mainSeat.PlayerFixed(mainPilot);
+            if (mainPilot == Player.crew && Player.controllingPlayer) mainSeat.PlayerFixed(mainPilot);
             else mainSeat.AiFixed(mainPilot);
         }
 

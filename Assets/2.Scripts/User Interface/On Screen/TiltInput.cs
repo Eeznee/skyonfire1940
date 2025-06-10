@@ -38,6 +38,7 @@ namespace UnityEngine.InputSystem.OnScreen
         {
             get
             {
+                
                 if (GravitySensor.current != null) return GravitySensor.current.gravity.ReadValue();
                 if (Accelerometer.current != null) return Accelerometer.current.acceleration.ReadValue();
 

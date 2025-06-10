@@ -23,7 +23,7 @@ public class SofCamera : MonoBehaviour
     private static Vector2 axis;
     private static Vector2 savedAxis;
 
-    const float smoothDampSpeed = 20f;
+    const float smoothDampSpeed = 10f;
 
     public static event Action OnSwitchCamEvent;
 
@@ -66,7 +66,7 @@ public class SofCamera : MonoBehaviour
         if (subCam.Offset() != Vector3.zero) tr.position = subCam.Position();
 
         if (!lookAround) directionInput = desiredRotation * Vector3.forward;
-        else if (PlayerActions.pilot.Pitch.phase == InputActionPhase.Started) directionInput = Player.tr.forward;
+        else if (PlayerPilotControl.forceCameraPointDirection && Player.role == SeatRole.Pilot) directionInput = Player.tr.forward;
 
         PositionDelta = transform.position - previousPos;
         Velocity = PositionDelta / Time.unscaledDeltaTime;

@@ -15,7 +15,7 @@ public class FuelPump : AnalogInteractable
     private float pumped;
     private float previousInput;
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
 

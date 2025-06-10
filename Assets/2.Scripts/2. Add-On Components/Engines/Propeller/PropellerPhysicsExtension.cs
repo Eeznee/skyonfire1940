@@ -136,12 +136,14 @@ public partial class Propeller : SofModule, IMassComponent, IAircraftForce
 
         return -Mathf.Sign(radPerSec) * BladeSpeedSquared(radPerSec, data.tas.Get) * cd * radius / engine.PistonPreset.PropellerReductionGear;
     }
+
+
     private float TorqueBladeCoefficient(float currentAlpha, float optimalAlpha)
     {
         if (currentAlpha < optimalAlpha)
         {
             float reverseEfficiency = 1f - M.Pow(optimalAlpha / 90f - 1f, 2);
-            return (currentAlpha - optimalAlpha) * 0.04f * reverseEfficiency + 1f;
+            return (currentAlpha - optimalAlpha) * 0.025f * reverseEfficiency + 1f;
         }
         else return (currentAlpha - optimalAlpha) * 0.1f + 1f;
     }

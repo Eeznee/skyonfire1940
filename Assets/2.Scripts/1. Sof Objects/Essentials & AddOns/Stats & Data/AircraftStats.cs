@@ -191,7 +191,8 @@ public class AircraftStats
                 PistonEngine pistonEngine = engine as PistonEngine;
 
                 float power = pistonEngine.PistonPreset.BestPower(altitude, EngineRunMode.Continuous);
-                totalPistonPower += power * throttle * pistonEngine.GetComponentInChildren<Propeller>().Efficiency;
+                Propeller propeller = pistonEngine.GetComponentInChildren<Propeller>();
+                totalPistonPower += power * throttle * (propeller ? propeller.Efficiency : 0.9f);
             }
         }
         return EquilibrumSpeed(totalPistonPower, totalJetThrust, totalAreaDrag);

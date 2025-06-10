@@ -22,7 +22,7 @@ public class Tracer : MonoBehaviour
     public void InitializeTracer(TracerProperties _properties, Projectile _projectile)
     {
         properties = _properties;
-        projectile   =_projectile;
+        projectile = _projectile;
 
         line = projectile.gameObject.AddComponent<LineRenderer>();
         line.startColor = properties.color;
@@ -35,10 +35,8 @@ public class Tracer : MonoBehaviour
         line.positionCount = 4;
         line.useWorldSpace = true;
     }
-    private float randomizedDelay;
     private void Start()
     {
-        randomizedDelay = Random.value * Time.fixedDeltaTime * 0.3f;
         Update();
     }
 
@@ -46,13 +44,11 @@ public class Tracer : MonoBehaviour
     {
         if (Time.timeScale == 0f) return;
 
-        float dt = Time.deltaTime * 0.7f;
-
-        Vector3 tail = TracerPos(randomizedDelay);
-        Vector3 head = TracerPos(randomizedDelay + dt);
+        Vector3 head = TracerPos(-Time.fixedDeltaTime + Time.deltaTime * 0.7f);
+        Vector3 tail = TracerPos(-Time.fixedDeltaTime);
 
         Vector3 midPos = Vector3.Lerp(tail, head, Random.value);
-        Vector3 midOffset = Random.insideUnitSphere * properties.scatter * properties.width * Time.timeScale;
+        Vector3 midOffset = properties.scatter * properties.width * Time.timeScale * Random.insideUnitSphere;
 
         line.SetPosition(0, tail);
         line.SetPosition(1, midPos + midOffset * 0.5f);

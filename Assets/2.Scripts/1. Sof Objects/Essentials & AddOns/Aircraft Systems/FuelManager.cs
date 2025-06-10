@@ -9,7 +9,7 @@ public class FuelManager
     public float fullThrottleCons;
 
 
-    private SofComplex complex;
+    private SofModular modular;
     private List<LiquidTank> fuelTanks;
     private int currentPack;
 
@@ -28,12 +28,12 @@ public class FuelManager
     public float FuelTimer { get { return TotalFuel / fullThrottleCons * 3600f; } }
 
     
-    public FuelManager(SofComplex _complex)
+    public FuelManager(SofModular _complex)
     {
-        complex = _complex;
+        modular = _complex;
         TotalCapacity = 0f;
         fuelTanks = new List<LiquidTank>();
-        foreach (LiquidTank liquidTank in complex.GetComponentsInChildren<LiquidTank>())
+        foreach (LiquidTank liquidTank in modular.GetComponentsInChildren<LiquidTank>())
         {
             if (liquidTank.liquid && liquidTank.liquid.type == LiquidType.Fuel)
             {
@@ -44,7 +44,7 @@ public class FuelManager
 
         fuelTanks.Sort(SortByPosition);
 
-        complex.OnInitialize += OnInitialize;
+        modular.OnInitialize += OnInitialize;
     }
 
     private void OnInitialize()
@@ -59,13 +59,17 @@ public class FuelManager
             fuelTanks.Remove(newPack.symmetricTank);
         }
         currentPack = packs.Count - 1;
-        Empty = false;
+        if(currentPack < 0)
+            Empty = true;
+        else
+            Consume(0f);
+        
 
         float totalConsumption = 0f;
 
-        if (!complex.aircraft) return;
+        if (!modular.aircraft) return;
 
-        foreach (Engine engine in complex.aircraft.engines.AllEngines)
+        foreach (Engine engine in modular.aircraft.engines.AllEngines)
         {
             if (engine.Preset == null) continue;
 
@@ -102,9 +106,18 @@ public class FuelManager
         if (Mathf.Abs(f1.localPos.x) > Mathf.Abs(f2.localPos.x) + 1f) return 1;
         else if (Mathf.Abs(f1.localPos.x) < Mathf.Abs(f2.localPos.x) - 1f) return -1;
 
-        float f1DistanceCog = Mathf.Abs(f1.complex.cogForwardDistance - f1.localPos.z);
-        float f2DistanceCog = Mathf.Abs(f1.complex.cogForwardDistance - f2.localPos.z);
-        return f1DistanceCog > f2DistanceCog ? 1 : -1;
+        if(f1.sofComplex && f2.sofComplex)
+        {
+            float f1DistanceCog = Mathf.Abs(f1.sofComplex.cogForwardDistance - f1.localPos.z);
+            float f2DistanceCog = Mathf.Abs(f2.sofComplex.cogForwardDistance - f2.localPos.z);
+            return f1DistanceCog > f2DistanceCog ? 1 : -1;
+        }
+        else
+        {
+            float f1DistanceCog = Mathf.Abs(f1.localPos.z);
+            float f2DistanceCog = Mathf.Abs(f2.localPos.z);
+            return f1DistanceCog > f2DistanceCog ? 1 : -1;
+        }
     }
 
 
@@ -136,10 +149,10 @@ public class FuelManager
         {
             if (f1 == f2) return false;
 
-            Vector3 f1LocalPos = f1.complex.tr.InverseTransformPoint(f1.tr.position);
+            Vector3 f1LocalPos = f1.sofModular.tr.InverseTransformPoint(f1.tr.position);
             if (Mathf.Abs(f1LocalPos.x) < 0.2f) return false;
 
-            Vector3 f2LocalPos = f2.complex.tr.InverseTransformPoint(f2.tr.position);
+            Vector3 f2LocalPos = f2.sofModular.tr.InverseTransformPoint(f2.tr.position);
             f2LocalPos.x *= -1f;
 
             return (f1LocalPos - f2LocalPos).magnitude < 1f;

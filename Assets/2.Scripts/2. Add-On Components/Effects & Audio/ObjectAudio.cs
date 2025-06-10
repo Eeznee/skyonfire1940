@@ -62,7 +62,7 @@ public class ObjectAudio : SofComponent
 
         use3dSound = true;
     }
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
         UpdatePlayer();

@@ -20,15 +20,16 @@ public class DefaultManeuver : Maneuver
     public override void Execute(AI.GeometricData data)
     {
         base.Execute(data);
+
         if (aircraft.CanPairUp()) { pair.Execute(aircraft); return; }
+
         switch (data.state)
         {
             case AI.DogfightState.Offensive: pursuit.Execute(data); break;
             case AI.DogfightState.Defensive: evasive.Execute(data); break;
-            case AI.DogfightState.Neutral:
-                if (data.aspectAngle + data.crossAngle > 340f) headOn.Execute(data);
-                else turnfight.Execute(data); break;
-            case AI.DogfightState.Engage:  turnfight.Execute(data); break;
+            case AI.DogfightState.Turnfight:  turnfight.Execute(data); break;
+            case AI.DogfightState.HeadOn: headOn.Execute(data); break;
+            case AI.DogfightState.Engage:  pursuit.Execute(data); break;
         }
     }
 }

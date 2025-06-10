@@ -7,7 +7,7 @@ public class EnginesAudio : AudioComponent
 {
     private List<EnginesGroupAudio> groups;
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
 
@@ -58,11 +58,18 @@ public class EnginesGroupAudio : MonoBehaviour
     private float invertFullRPS;
     private bool effectiveBoosting;
 
+    const int frameInterval = 8;
+    static int globalEngineGroupId = 0;
+    private int thisGroupId;
+
     public void Initialize(Engine firstEngine, ObjectAudio _avm)
     {
         engines = new List<Engine>();
         preset = firstEngine.Preset;
         avm = _avm;
+
+        thisGroupId = globalEngineGroupId;
+        globalEngineGroupId = (globalEngineGroupId + 1) % frameInterval;
     }
     private void Start()
     {
@@ -103,26 +110,28 @@ public class EnginesGroupAudio : MonoBehaviour
 
     void Update()
     {
-        float highestRPS = 0f;
-        float highestVolume = 0f;
-        float highestThrottle = 0f;
-        effectiveBoosting = false;
-        foreach (Engine engine in engines)
+        if(thisGroupId == Time.frameCount % frameInterval)
         {
-            highestRPS = Mathf.Max(highestRPS, engine.RadPerSec);
-            highestThrottle = Mathf.Max(highestThrottle, engine.Throttle);
-            highestVolume = Mathf.Max(highestVolume, VolumeFadeInIgnition(engine));
-            effectiveBoosting |= engine.BoostIsEffective;
+            float highestRPS = 0f;
+            float highestVolume = 0f;
+            float highestThrottle = 0f;
+            effectiveBoosting = false;
+
+            foreach (Engine engine in engines)
+            {
+                highestRPS = Mathf.Max(highestRPS, engine.RadPerSec);
+                highestThrottle = Mathf.Max(highestThrottle, engine.Throttle);
+                highestVolume = Mathf.Max(highestVolume, VolumeFadeInIgnition(engine));
+                effectiveBoosting |= engine.BoostIsEffective;
+            }
+
+            rps = highestRPS;
+            throttle = highestThrottle;
+            volumeFadeInIgnition = highestVolume;
+            UpdateVolume();
+            UpdatePitch();
+            UpdateBoostedMixer();
         }
-
-        //if (volume == highestVolume && Mathf.Abs(rps-highestRPS) < rpsThreshold) return;
-
-        rps = highestRPS;
-        throttle = highestThrottle;
-        volumeFadeInIgnition = highestVolume;
-        UpdateVolume();
-        UpdatePitch();
-        UpdateBoostedMixer();
     }
     private float VolumeFadeInIgnition(Engine engine)
     {
@@ -132,7 +141,7 @@ public class EnginesGroupAudio : MonoBehaviour
     }
     private void UpdateVolume()
     {
-        if(volumeFadeInIgnition < 1f) //when volume is lower than 1, it means the engine is
+        if(volumeFadeInIgnition < 1f)
         {
             idleCockpit.source.volume = idleExternal.source.volume = volumeFadeInIgnition;
             fullCockpit.source.volume = fullExternal.source.volume = 0f;
@@ -149,7 +158,7 @@ public class EnginesGroupAudio : MonoBehaviour
             idleCockpit.source.volume = idleExternal.source.volume = idleVolume;
             fullCockpit.source.volume = fullExternal.source.volume = fullVolume;
 
-            float spacialVolume = volumeFadeInIgnition * 5f * Mathf.InverseLerp(300f * 300f, 2000f * 2000f, (transform.position - SofAudioListener.position).sqrMagnitude);
+            float spacialVolume = volumeFadeInIgnition * 5f * Mathf.InverseLerp(300f * 300f, 2000f * 2000f, (transform.position - SofAudioListener.Position).sqrMagnitude);
             spatial.source.volume = spacialVolume;
         }
     }

@@ -11,7 +11,7 @@ public class SplitHydraulics : HydraulicSystem
     public string[] parameters;
     private HydraulicsCurve[] curves;
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         curves = new HydraulicsCurve[parameters.Length];
         for (int i = 0; i < curves.Length; i++)

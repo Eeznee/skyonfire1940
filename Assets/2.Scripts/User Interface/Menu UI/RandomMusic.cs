@@ -9,6 +9,13 @@ public class RandomMusic : MonoBehaviour
     public Text text;
     void Start()
     {
+        bool playMusic = PlayerPrefs.GetInt("Music", 1) == 1;
+
+        if (!playMusic)
+        {
+            text.text = "";
+            return;
+        }
         int id = Random.Range(0, clips.Length);
         GetComponent<AudioSource>().clip = clips[id];
         GetComponent<AudioSource>().Play();

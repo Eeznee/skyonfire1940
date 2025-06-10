@@ -23,7 +23,6 @@ public class StaticReferences : ScriptableObject
 
     public AircraftsList defaultAircrafts;
 
-    public BulletHits fragmentsHits;
     public Mesh wheelCollisionMesh;
     public Airfoil stabilizersAirfoil;
     public PhysicMaterial wheelPhysicMaterial;

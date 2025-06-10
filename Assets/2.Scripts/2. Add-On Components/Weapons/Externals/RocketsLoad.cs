@@ -49,10 +49,10 @@ public class RocketsLoad : OrdnanceLoad
         r.enabled = true;
 
         r.transform.rotation = Ballistics.Spread(transform.rotation, dispersion);
-        r.InitializeTrajectory(r.transform.forward * r.properties.baseVelocity, complex.bubble.bubble);
+        r.InitializeTrajectory(r.transform.forward * r.properties.baseVelocity, sofModular.damageModel);
         r.GetComponentInChildren<ParticleSystem>().Play();
 
-        complex.ShiftMass(-SingleMass);
+        if (sofComplex) sofComplex.ShiftMass(-SingleMass);
 
         base.Launch(delayFuse);
 

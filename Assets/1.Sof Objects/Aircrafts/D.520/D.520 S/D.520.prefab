@@ -217,8 +217,6 @@ MonoBehaviour:
   rightEulerOffset: {x: -150, y: 0, z: 0}
   leftPosOffset: {x: -0.12, y: -0.11, z: 0.05}
   leftEulerOffset: {x: -150, y: 0, z: 0}
-  rightHintPos: {x: 0, y: 0, z: 0}
-  leftHintPos: {x: 0, y: 0, z: 0}
   fixedRotation: 0
   grip: 0.2
   trigger: 0.2
@@ -709,6 +707,7 @@ MonoBehaviour:
   seats:
   - {fileID: 652579637596583000}
   seatIdTest: 0
+  stunDuration: 0
 --- !u!114 &543141825821263934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -736,7 +735,7 @@ GameObject:
   - component: {fileID: 604684394561387829}
   - component: {fileID: 742032383583562493}
   - component: {fileID: 1965988162045507135}
-  - component: {fileID: 9112347228458026075}
+  - component: {fileID: 7949342257673634211}
   m_Layer: 9
   m_Name: Fin
   m_TagString: Untagged
@@ -834,7 +833,7 @@ MonoBehaviour:
     dihedral: 90
     sweep: -32.6
     tipScale: 33.7
---- !u!64 &9112347228458026075
+--- !u!64 &7949342257673634211
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1034,8 +1033,6 @@ MonoBehaviour:
   rightEulerOffset: {x: -14.57, y: -0, z: 34.7}
   leftPosOffset: {x: 0.0205, y: 0.0962, z: -0.1101}
   leftEulerOffset: {x: 0, y: 0, z: -40.96}
-  rightHintPos: {x: 0, y: 0, z: 0}
-  leftHintPos: {x: 0, y: 0, z: 0}
   fixedRotation: 1
   grip: 0.22
   trigger: 0.37
@@ -1820,8 +1817,6 @@ MonoBehaviour:
   rightEulerOffset: {x: 6.98, y: -20.89, z: 34.7}
   leftPosOffset: {x: -0.0255, y: 0.1119, z: -0.0996}
   leftEulerOffset: {x: 6.98, y: 20.89, z: -34.7}
-  rightHintPos: {x: 0, y: 0, z: 0}
-  leftHintPos: {x: 0, y: 0, z: 0}
   fixedRotation: 1
   grip: 0.24
   trigger: 0.29
@@ -2338,7 +2333,6 @@ GameObject:
   - component: {fileID: 2236610169101857607}
   - component: {fileID: 1821808591638860757}
   - component: {fileID: 9044854894741073952}
-  - component: {fileID: 4869051728225196828}
   m_Layer: 9
   m_Name: Left Wing Section 3
   m_TagString: Untagged
@@ -2448,20 +2442,6 @@ MonoBehaviour:
     rootExtension: 0.57
     tipShortening: 0.15
     interWingExtension: 0.3
---- !u!64 &4869051728225196828
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2807377362267450626}
-  m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -2280753601310350741, guid: 1ef0d042f7dba224299e0e5c8c76668a, type: 3}
 --- !u!1 &2822455024650367624
 GameObject:
   m_ObjectHideFlags: 0
@@ -2729,6 +2709,7 @@ MonoBehaviour:
   separateBulletPos: 0
   ejectCasings: 1
   ejectionPos: {x: -0.2859999, y: -0.04339999, z: -1.181}
+  ejectionVector: {x: 0, y: 0, z: 0}
   muzzlePos: {x: 0, y: 0, z: 0}
   bulletPos: {x: 0, y: 0, z: 0}
   noConvergeance: 0
@@ -2756,7 +2737,6 @@ GameObject:
   - component: {fileID: 6517485156093162282}
   - component: {fileID: 3382813961242172038}
   - component: {fileID: 4124555543036698695}
-  - component: {fileID: 6955035746648781013}
   m_Layer: 9
   m_Name: Left Wing Section 4
   m_TagString: Untagged
@@ -2867,20 +2847,6 @@ MonoBehaviour:
     rootExtension: 0.57
     tipShortening: 0.15
     interWingExtension: 0.3
---- !u!64 &6955035746648781013
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2985919306621392740}
-  m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -1200515753749600095, guid: 1ef0d042f7dba224299e0e5c8c76668a, type: 3}
 --- !u!1 &3013905183011367775
 GameObject:
   m_ObjectHideFlags: 0
@@ -3183,8 +3149,6 @@ MonoBehaviour:
   rightEulerOffset: {x: 1.71, y: 13.7, z: -103.3}
   leftPosOffset: {x: -0.0292, y: 0.0194, z: -0.1399}
   leftEulerOffset: {x: 1.71, y: -13.7, z: 103.3}
-  rightHintPos: {x: 0, y: 0, z: 0}
-  leftHintPos: {x: 0, y: 0, z: 0}
   fixedRotation: 0
   grip: 0.62
   trigger: 0.73
@@ -3297,6 +3261,7 @@ MonoBehaviour:
   separateBulletPos: 0
   ejectCasings: 1
   ejectionPos: {x: 0.28600007, y: -0.04340005, z: -1.181}
+  ejectionVector: {x: 0, y: 0, z: 0}
   muzzlePos: {x: 0, y: 0, z: 0}
   bulletPos: {x: 0, y: 0, z: 0}
   noConvergeance: 0
@@ -3439,7 +3404,6 @@ GameObject:
   - component: {fileID: 4527418088422933630}
   - component: {fileID: 3718266063055322378}
   - component: {fileID: 4149851488456922653}
-  - component: {fileID: 6414858165925136374}
   m_Layer: 9
   m_Name: Left Wing Section 2
   m_TagString: Untagged
@@ -3552,20 +3516,6 @@ MonoBehaviour:
     rootExtension: 0.57
     tipShortening: 0.15
     interWingExtension: 0.3
---- !u!64 &6414858165925136374
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3531024460571814334}
-  m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 3087670285986194820, guid: 1ef0d042f7dba224299e0e5c8c76668a, type: 3}
 --- !u!1 &3593511733009395015
 GameObject:
   m_ObjectHideFlags: 0
@@ -3762,6 +3712,7 @@ MonoBehaviour:
   externalViewPoint: {x: 0, y: 2.1, z: -10}
   goProViewPoint: {x: 1, y: 0, z: 0}
   defaultPOV: {fileID: 8951651274639771946}
+  shipGunnerProtectedFromStun: 0
   rightHandGrip: {fileID: 2195949091867550415}
   leftHandGrip: {fileID: 4089055792690106322}
   rightFootRest: {fileID: 8148413862271970738}
@@ -4055,8 +4006,6 @@ MonoBehaviour:
   rightEulerOffset: {x: -14.57, y: -0, z: 34.7}
   leftPosOffset: {x: 0.0263, y: 0.0211, z: -0.0918}
   leftEulerOffset: {x: -14.57, y: 0, z: -34.7}
-  rightHintPos: {x: 0, y: 0, z: 0}
-  leftHintPos: {x: 0, y: 0, z: 0}
   fixedRotation: 1
   grip: 0.48
   trigger: 0.61
@@ -5218,7 +5167,7 @@ MonoBehaviour:
   shape:
     tr: {fileID: 1490291899404527916}
     snapped: 0
-    localPosition: {x: 0.21, y: 0, z: 0.19999999}
+    localPosition: {x: 0.21, y: 0, z: 0.2}
     scale: {x: 1.52, y: 1.15}
     incidence: 0
     dihedral: 0
@@ -5537,8 +5486,6 @@ MonoBehaviour:
   rightEulerOffset: {x: -14.57, y: -0, z: 34.7}
   leftPosOffset: {x: 0.0263, y: 0.0211, z: -0.0918}
   leftEulerOffset: {x: -14.57, y: 0, z: -34.7}
-  rightHintPos: {x: 0, y: 0, z: 0}
-  leftHintPos: {x: 0, y: 0, z: 0}
   fixedRotation: 1
   grip: 0.48
   trigger: 0.61
@@ -5606,8 +5553,6 @@ MonoBehaviour:
   rightEulerOffset: {x: -14.57, y: -0, z: 34.7}
   leftPosOffset: {x: 0.0155, y: 0.1204, z: -0.0694}
   leftEulerOffset: {x: 36.7, y: 0, z: 0}
-  rightHintPos: {x: 0, y: 0, z: 0}
-  leftHintPos: {x: 0, y: 0, z: 0}
   fixedRotation: 1
   grip: 0.22
   trigger: 0.44
@@ -5743,7 +5688,6 @@ GameObject:
   - component: {fileID: 347274099099590537}
   - component: {fileID: 340062393500140243}
   - component: {fileID: 5807151815599183277}
-  - component: {fileID: 3655834567213796973}
   m_Layer: 9
   m_Name: Right Wing Section 1
   m_TagString: Untagged
@@ -5857,20 +5801,6 @@ MonoBehaviour:
     rootExtension: 0.57
     tipShortening: 0.15
     interWingExtension: 0.3
---- !u!64 &3655834567213796973
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6081426144866136030}
-  m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -1395944461018079038, guid: 1ef0d042f7dba224299e0e5c8c76668a, type: 3}
 --- !u!1 &6106421337673986851
 GameObject:
   m_ObjectHideFlags: 0
@@ -5921,6 +5851,7 @@ MonoBehaviour:
   separateBulletPos: 0
   ejectCasings: 1
   ejectionPos: {x: 0, y: -0.8472, z: -2.431}
+  ejectionVector: {x: 0, y: 0, z: 0}
   muzzlePos: {x: 0, y: 0, z: 0}
   bulletPos: {x: 0, y: 0, z: 0}
   noConvergeance: 0
@@ -6298,6 +6229,7 @@ MonoBehaviour:
   separateBulletPos: 0
   ejectCasings: 1
   ejectionPos: {x: -0.30500007, y: -0.052700043, z: -1.181}
+  ejectionVector: {x: 0, y: 0, z: 0}
   muzzlePos: {x: 0, y: 0, z: 0}
   bulletPos: {x: 0, y: 0, z: 0}
   noConvergeance: 0
@@ -6831,8 +6763,6 @@ MonoBehaviour:
   rightEulerOffset: {x: -90, y: 0, z: 0}
   leftPosOffset: {x: -0.12, y: 0, z: 0}
   leftEulerOffset: {x: -90, y: 0, z: 0}
-  rightHintPos: {x: 0, y: 0, z: 0}
-  leftHintPos: {x: 0, y: 0, z: 0}
   fixedRotation: 0
   grip: 0.7
   trigger: 0.7
@@ -7008,16 +6938,7 @@ MonoBehaviour:
   warOnly: 0
   destroyed: 0
   burning: 0
-  cogForwardDistance: 0.95
-  targetEmptyMass: 2135
-  EmptyMass:
-    mass: 2135
-    center: {x: 0.000000053602303, y: -0.19258353, z: 0.9499996}
-  LoadedMass:
-    mass: 2658.7302
-    center: {x: 0.000000038739103, y: -0.14754184, z: 0.8592286}
   lod: {fileID: 0}
-  bubble: {fileID: 0}
   avm: {fileID: 4845967542157588536}
   components:
   - {fileID: 7227293705058590713}
@@ -7025,6 +6946,7 @@ MonoBehaviour:
   - {fileID: 4709869431585139969}
   - {fileID: 2462761169513063388}
   - {fileID: 4026652883361128871}
+  - {fileID: 2813156065224462097}
   - {fileID: 6148338957544009869}
   - {fileID: 248636422438972978}
   - {fileID: 1679744628730029545}
@@ -7161,6 +7083,14 @@ MonoBehaviour:
   - {fileID: 2863016618664349591}
   crew:
   - {fileID: 3989542668311270441}
+  cogForwardDistance: 0.95
+  targetEmptyMass: 2135
+  EmptyMass:
+    mass: 2135
+    center: {x: 0.000000053602303, y: -0.19258353, z: 0.9499996}
+  LoadedMass:
+    mass: 2658.7302
+    center: {x: 0.000000038739103, y: -0.14754184, z: 0.8592286}
   card: {fileID: 11400000, guid: 28956fe88e52f9b48a65a86ac0e122cb, type: 2}
   stations: []
   maxG: 10
@@ -7658,7 +7588,6 @@ GameObject:
   - component: {fileID: 5121024480042928042}
   - component: {fileID: 5180973989733801898}
   - component: {fileID: 6339268068208255781}
-  - component: {fileID: 8365404885568579490}
   m_Layer: 9
   m_Name: Right Wing Section 3
   m_TagString: Untagged
@@ -7768,20 +7697,6 @@ MonoBehaviour:
     rootExtension: 0.57
     tipShortening: 0.15
     interWingExtension: 0.3
---- !u!64 &8365404885568579490
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8313551585977926586}
-  m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 5166901755026341751, guid: 1ef0d042f7dba224299e0e5c8c76668a, type: 3}
 --- !u!1 &8471637825310517152
 GameObject:
   m_ObjectHideFlags: 0
@@ -7927,8 +7842,6 @@ MonoBehaviour:
   rightEulerOffset: {x: -14.57, y: -0, z: 34.7}
   leftPosOffset: {x: 0.0263, y: 0.0211, z: -0.0918}
   leftEulerOffset: {x: -14.57, y: 0, z: -34.7}
-  rightHintPos: {x: 0, y: 0, z: 0}
-  leftHintPos: {x: 0, y: 0, z: 0}
   fixedRotation: 1
   grip: 0.48
   trigger: 0.61
@@ -8106,6 +8019,7 @@ MonoBehaviour:
   separateBulletPos: 0
   ejectCasings: 1
   ejectionPos: {x: 0.30499995, y: -0.052700102, z: -1.181}
+  ejectionVector: {x: 0, y: 0, z: 0}
   muzzlePos: {x: 0, y: 0, z: 0}
   bulletPos: {x: 0, y: 0, z: 0}
   noConvergeance: 0
@@ -8133,7 +8047,6 @@ GameObject:
   - component: {fileID: 1294062023110065292}
   - component: {fileID: 762178846856876853}
   - component: {fileID: 4356415418171298025}
-  - component: {fileID: 8604111363368576336}
   m_Layer: 9
   m_Name: Right Wing Section 4
   m_TagString: Untagged
@@ -8244,20 +8157,6 @@ MonoBehaviour:
     rootExtension: 0.57
     tipShortening: 0.15
     interWingExtension: 0.3
---- !u!64 &8604111363368576336
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8700939345199035475}
-  m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -1487018313667324116, guid: 1ef0d042f7dba224299e0e5c8c76668a, type: 3}
 --- !u!1 &8844728207410787480
 GameObject:
   m_ObjectHideFlags: 0
@@ -8397,7 +8296,6 @@ GameObject:
   - component: {fileID: 750210909914155054}
   - component: {fileID: 1879806615830566784}
   - component: {fileID: 7501626145160231641}
-  - component: {fileID: 6893246696263332039}
   m_Layer: 9
   m_Name: Right Wing Section 2
   m_TagString: Untagged
@@ -8510,20 +8408,6 @@ MonoBehaviour:
     rootExtension: 0.57
     tipShortening: 0.15
     interWingExtension: 0.3
---- !u!64 &6893246696263332039
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9109439920946255070}
-  m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -834096902236664869, guid: 1ef0d042f7dba224299e0e5c8c76668a, type: 3}
 --- !u!1 &9154238839803902931
 GameObject:
   m_ObjectHideFlags: 0
@@ -8638,7 +8522,6 @@ GameObject:
   - component: {fileID: 1057390618402348609}
   - component: {fileID: 5485825329138175371}
   - component: {fileID: 8365611820299590523}
-  - component: {fileID: 8989460131737600523}
   m_Layer: 9
   m_Name: Left Wing Section 1
   m_TagString: Untagged
@@ -8751,20 +8634,6 @@ MonoBehaviour:
     rootExtension: 0.57
     tipShortening: 0.15
     interWingExtension: 0.3
---- !u!64 &8989460131737600523
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9211098837556034477}
-  m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 5915357314931916918, guid: 1ef0d042f7dba224299e0e5c8c76668a, type: 3}
 --- !u!1001 &834924620311308282
 PrefabInstance:
   m_ObjectHideFlags: 0

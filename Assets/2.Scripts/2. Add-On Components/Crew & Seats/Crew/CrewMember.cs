@@ -17,7 +17,6 @@ public class CrewMember : SofModule, IMassComponent
     public float LoadedMass => RealMass;
     public float RealMass => 90f;
 
-
     public List<CrewSeat> seats;
 
     private CrewSeat seat;
@@ -56,33 +55,49 @@ public class CrewMember : SofModule, IMassComponent
     public bool IsVrPlayer => Player.crew == this && GameManager.gm.vr && Application.isPlaying;
     public int SeatId => seats.IndexOf(Seat);
     protected bool SkipUpdate => Time.timeScale == 0f || !sofObject;
-    public bool ActionsUnavailable => ripped || IsVrPlayer || (forcesEffect != null && forcesEffect.Gloc());
-    public Vector3 HeadPosition => tr.parent.TransformPoint(localHeadPosition);
-    public Vector3 CameraPosition => tr.position;
+    public bool ActionsUnavailable => ripped || IsVrPlayer || (forcesEffect != null && forcesEffect.Gloc()) || (stunDuration > 0f && Player.crew != this);
 
-
-    private Vector3 localHeadPosition;
-
+    public float stunDuration;
     public CrewBailing bailOut { get; private set; }
     public CrewForcesEffect forcesEffect { get; protected set; }
 
     public Action OnAttachPlayer;
     public Action OnDetachPlayer;
 
-    public Vector3 TargetHeadPosition()
+
+
+    readonly Vector3 eyesOffset = new Vector3(0f, -0.05f, 0f);
+
+    public Vector3 TargetHeadWorldPosition
     {
-        if (!Seat) return transform.position;
-        if (IsVrPlayer) return SofCamera.tr.position;
+        get
+        {
+            if (!Seat) return transform.position;
+            if (IsVrPlayer) return SofCamera.tr.position;
 
-        Vector3 headPosition = CameraInputs.zoomed && IsPlayer ? Seat.ZoomedHeadPosition : Seat.DefaultHeadPosition;
+            Vector3 headPosition = CameraInputs.zoomed && IsPlayer && SofCamera.viewMode == 1 ? Seat.ZoomedHeadPosition : Seat.DefaultHeadPosition;
 
-        if (IsPlayer && forcesEffect != null)
-            headPosition += forcesEffect.headPositionOffset;
+            if (IsPlayer && forcesEffect != null)
+                headPosition += forcesEffect.headPositionOffset;
 
-        return headPosition;
+            return headPosition;
+        }
     }
-
-    public override void Initialize(SofComplex _complex)
+    public Vector3 TargetHeadLocalPosition
+    {
+        get
+        {
+            return transform.parent.InverseTransformPoint(TargetHeadWorldPosition) + eyesOffset;
+        }
+    }
+    public Vector3 CameraPosition
+    {
+        get
+        {
+            return tr.position + tr.TransformDirection(-eyesOffset);
+        }
+    }
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
 
@@ -92,7 +107,7 @@ public class CrewMember : SofModule, IMassComponent
         UpdateSeatsList();
         SwitchSeat(0);
 
-        localHeadPosition = tr.parent.InverseTransformPoint(Seat.DefaultHeadPosition);
+        tr.localPosition = tr.parent.InverseTransformPoint(Seat.DefaultHeadPosition);
 
         CreateAndSetCapsuleCollider();
 
@@ -107,7 +122,7 @@ public class CrewMember : SofModule, IMassComponent
             }
 
             visualModel = Instantiate(visualModel, transform.position, transform.rotation, tr);
-            visualModel.GetComponent<CrewAnimator>().SetInstanciatedComponent(complex);
+            visualModel.GetComponent<CrewAnimator>().SetInstanciatedComponent(sofModular);
         }
     }
 
@@ -115,9 +130,11 @@ public class CrewMember : SofModule, IMassComponent
     Vector3 velRef = Vector3.zero;
     private void Update()
     {
+        if (stunDuration > 0f) stunDuration = Mathf.Min(stunDuration - Time.deltaTime, 15f);
+
         if (ActionsUnavailable || SkipUpdate) return;
 
-        if (Player.crew == this) Seat.PlayerUpdate(this);
+        if (Player.crew == this && Player.controllingPlayer) Seat.PlayerUpdate(this);
         else
         {
             SwitchToPrioritySeat();
@@ -133,7 +150,7 @@ public class CrewMember : SofModule, IMassComponent
         if (ActionsUnavailable || SkipUpdate) return;
         if (IsPilot) return;
 
-        if (Player.crew == this) Seat.PlayerFixed(this);
+        if (Player.crew == this && Player.controllingPlayer) Seat.PlayerFixed(this);
         else Seat.AiFixed(this);
     }
     public override void Rip()
@@ -152,7 +169,7 @@ public class CrewMember : SofModule, IMassComponent
     protected void UpdateSeatsList()
     {
         for (int i = 0; i < seats.Count; i++)
-            if (!seats[i] || seats[i].complex != complex)
+            if (!seats[i] || seats[i].sofModular != sofModular)
             {
                 seats.RemoveAt(i);
                 i--;
@@ -160,7 +177,7 @@ public class CrewMember : SofModule, IMassComponent
     }
     public void ChangeSeat(CrewSeat newSeat)
     {
-        bool seatError = newSeat == null || newSeat.complex != complex || newSeat.seatedCrew != null;
+        bool seatError = newSeat == null || newSeat.sofModular != sofModular || newSeat.seatedCrew != null;
         if (seatError) UpdateSeatsList();
         if (seatError || newSeat == Seat) return;
 
@@ -177,14 +194,11 @@ public class CrewMember : SofModule, IMassComponent
     }
     public void MoveToSeatSmooth()
     {
-        Vector3 targetLocalPos = tr.parent.InverseTransformPoint(TargetHeadPosition());
-        localHeadPosition = Vector3.SmoothDamp(localHeadPosition, targetLocalPos, ref velRef, headSmoothTime);
-        tr.localPosition = localHeadPosition;
+        tr.localPosition = Vector3.SmoothDamp(tr.localPosition, TargetHeadLocalPosition, ref velRef, headSmoothTime);
     }
     public void MoveToSeatInstant()
     {
-        localHeadPosition = tr.parent.InverseTransformPoint(TargetHeadPosition());
-        tr.localPosition = localHeadPosition;
+        tr.localPosition = TargetHeadLocalPosition;
     }
 
     const float capsuleHeight = 0.96f;

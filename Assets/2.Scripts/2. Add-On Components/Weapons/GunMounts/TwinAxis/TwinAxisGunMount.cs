@@ -32,7 +32,7 @@ public abstract class TwinAxisGunMount : GunMount
         return Mathf.InverseLerp(-0.5f, 0f, localDir.y);
     }
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
         traverseAngle = traversor.localRotation.eulerAngles.y;

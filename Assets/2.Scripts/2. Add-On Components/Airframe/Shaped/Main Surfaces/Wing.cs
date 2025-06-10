@@ -60,9 +60,9 @@ public class Wing : MainSurface
             return aircraft.MaxGForce * coeff;
         }
     }
-    public override float AerodynamicIntegrity => skin.structureDamage;
+    public override float AerodynamicIntegrity => skin ? skin.structureDamage : structureDamage;
 
-    public override void SetReferences(SofComplex _complex)
+    public override void SetReferences(SofModular _complex)
     {
         child = transform.childCount > 0 ? transform.GetChild(0).GetComponent<Wing>() : null;
         parent = transform.parent ? transform.parent.GetComponent<Wing>() : null;
@@ -70,11 +70,16 @@ public class Wing : MainSurface
 
         airfoil?.UpdateValues();
     }
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
         if (skinMesh) skin = WingSkin.CreateSkin(this, skinMesh);
         if(airfoil == null) Debug.LogError(aircraft.name + "  " + name + " does not have an airfoil assigned");
+
+        foreach (SparSettings spar in sparSettings)
+        {
+            spar.CreateBoxCollider(this);
+        }
     }
 
     public void CopyRootValues(Wing rootWing)
@@ -100,7 +105,7 @@ public class Wing : MainSurface
     {
         base.OnDrawGizmos();
 
-        if (SofWindow.showWingsSpars)
+        if (SofWindow.showWingsSpars && !Application.isPlaying)
         {
             foreach (SparSettings spar in sparSettings)
             {

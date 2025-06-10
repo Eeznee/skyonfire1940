@@ -3,9 +3,10 @@ using System;
 
 public class Player : MonoBehaviour
 {
+    public static bool controllingPlayer;
     public static Transform tr;
     public static SofObject sofObj;
-    public static SofComplex complex;
+    public static SofModular modular;
     public static SofAircraft aircraft;
     public static Game.Squadron Squadron => aircraft ? aircraft.squadron : null;
 
@@ -17,9 +18,9 @@ public class Player : MonoBehaviour
     {
         get
         {
-            if (complex == null || crew == null) return -1; 
-            for (int i = 0; i < complex.crew.Length; i++)
-                if (complex.crew[i] == crew) return i;
+            if (modular == null || crew == null) return -1; 
+            for (int i = 0; i < modular.crew.Length; i++)
+                if (modular.crew[i] == crew) return i;
             return -1;
         }
     }
@@ -37,39 +38,59 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+        controllingPlayer = true;
         Set(GameManager.squadrons[PlayerPrefs.GetInt("PlayerSquadron", 0)][0]);
     }
     public static void NextSquadron(int offset)
     {
-        Set(OffsetSquadron(offset, squad));
+        SofModular newPlayer = OffsetSquadron(offset, squad);
+        if (newPlayer == null) return;
+        Set(newPlayer);
         if (SofCamera.viewMode < 0) SofCamera.SwitchViewMode(0);
     }
     public static void NextWing(int offset)
     {
-        Set(OffsetWing(offset, wing, squad));
+        SofModular newPlayer = OffsetWing(offset, wing, squad);
+        if (newPlayer == null) return;
+        Set(newPlayer);
         if (SofCamera.viewMode < 0) SofCamera.SwitchViewMode(0);
     }
-    public static SofAircraft OffsetSquadron(int offset, int squad)
+    public static SofModular OffsetSquadron(int offset, int squad)
     {
-        int squadronId = (int)Mathf.Repeat(squad + offset, GameManager.squadrons.Count);
-        SofAircraft[] squadron = GameManager.squadrons[squadronId];
+        int squadronId = (int)Mathf.Repeat(squad + offset, GameManager.squadrons.Count + 1);
+        SofModular[] squadron = squadronId == GameManager.squadrons.Count ? GameManager.crewedModulars.ToArray() : GameManager.squadrons[squadronId];
 
-        foreach (SofAircraft a in squadron)
+        foreach (SofModular a in squadron)
             if (a.crew[0] && a.crew[0].sofObject == a)
                 return a;
 
+
+        //if squadron is empty, switch to the next one
         if (Mathf.Abs(offset) < GameManager.squadrons.Count)
             return OffsetSquadron(offset + (int)Mathf.Sign(offset), squad);
+
+
         return null;
     }
-    public static SofAircraft OffsetWing(int offset, int wing, int squad)
+    public static SofModular OffsetWing(int offset, int wing, int squadronId)
     {
-        SofAircraft[] squadron = GameManager.squadrons[squad];
-        return squadron[(int)Mathf.Repeat(wing + offset, squadron.Length)];
+        SofModular[] squadron = squadronId == GameManager.squadrons.Count ? GameManager.crewedModulars.ToArray() : GameManager.squadrons[squadronId];
+
+
+        SofModular modular = squadron[(int)Mathf.Repeat(wing + offset, squadron.Length)];
+        if (modular.crew[0].sofModular == modular)
+            return modular;
+
+        //if squadron is empty, switch to the next one
+        if (Mathf.Abs(offset) < squadron.Length)
+            return OffsetWing(offset + (int)Mathf.Sign(offset), wing, squad);
+
+
+        return null;
     }
     public static void PlayerNull()
     {
-        sofObj = complex = aircraft = null;
+        sofObj = modular = aircraft = null;
         tr = null;
         crew = null;
         seat = null;
@@ -81,7 +102,7 @@ public class Player : MonoBehaviour
         OnComplexChange?.Invoke();
         OnCrewChange?.Invoke();
         OnSeatChange?.Invoke();
-        complex.OnDetachPlayer?.Invoke();
+        modular.OnDetachPlayer?.Invoke();
         crew.OnDetachPlayer?.Invoke();
     }
     public static void SetPlayer(CrewMember newCrew, int newSeatId)
@@ -90,10 +111,10 @@ public class Player : MonoBehaviour
         if (nullId) return;
 
         CrewMember previousCrew = crew;
-        SofComplex previousComplex = complex;
-        SofComplex newComplex = newCrew.transform.root.GetComponent<SofComplex>();
+        SofModular previousModular = modular;
+        SofModular newComplex = newCrew.GetComponentInParent<SofModular>(true);
 
-        bool differentComplex = newComplex != complex;
+        bool differentComplex = newComplex != modular;
         bool differentCrew = crew != newCrew;
         bool differentSeat = differentComplex || differentCrew || crew.SeatId != newSeatId;
 
@@ -101,9 +122,9 @@ public class Player : MonoBehaviour
 
         if (differentComplex)
         {
-            sofObj = complex = newComplex;
-            aircraft = complex.GetComponent<SofAircraft>();
-            tr = complex.transform;
+            sofObj = modular = newComplex;
+            aircraft = modular.GetComponent<SofAircraft>();
+            tr = modular.transform;
 
             if (aircraft)
             {
@@ -115,7 +136,12 @@ public class Player : MonoBehaviour
                 logTxt += "; Aircraft n°" + (aircraft.placeInSquad + 1);
                 Log.Print(logTxt, "Squadron");
             }
-            else Log.Print("Controlling " + complex.name, "Controlling Object");
+            else
+            {
+                squad = GameManager.squadrons.Count;
+                wing = GameManager.crewedModulars.IndexOf(modular);
+                Log.Print("Controlling " + modular.name, "Controlling Object");
+            }
         }
 
         crew = newCrew;
@@ -139,8 +165,8 @@ public class Player : MonoBehaviour
         if (differentComplex)
         {
             OnComplexChange?.Invoke();
-            complex.OnAttachPlayer?.Invoke();
-            if (previousComplex != null) previousComplex.OnDetachPlayer?.Invoke();
+            modular.OnAttachPlayer?.Invoke();
+            if (previousModular != null) previousModular.OnDetachPlayer?.Invoke();
         }
         if (differentCrew)
         {
@@ -151,9 +177,10 @@ public class Player : MonoBehaviour
         if (differentSeat) OnSeatChange?.Invoke();
     }
 
-    public static void Set(SofComplex newComplex)
+    public static void Set(SofModular newComplex)
     {
-        if (newComplex == complex) return;
+        if (newComplex == modular) return;
+        if (newComplex == null) return;
         SetPlayer(newComplex.crew[0], 0);
     }
     public static void SetCrew(CrewMember newCrew)
@@ -163,10 +190,10 @@ public class Player : MonoBehaviour
     }
     public static void SetCrew(int newCrewId)
     {
-        bool nullId = newCrewId != Mathf.Clamp(newCrewId, 0, complex.crew.Length - 1);
+        bool nullId = newCrewId != Mathf.Clamp(newCrewId, 0, modular.crew.Length - 1);
         if (nullId) return;
 
-        SetCrew(complex.crew[newCrewId]);
+        SetCrew(modular.crew[newCrewId]);
     }
     public static void SetSeat(CrewSeat seat)
     {
@@ -185,7 +212,7 @@ public class Player : MonoBehaviour
     {
         SetSeat((crew.SeatId + 1) % crew.seats.Count);
     }
-    public static void SetSeat(SeatId seatId) { SetPlayer(complex.crew[seatId.crewId], seatId.seatId); }
+    public static void SetSeat(SeatId seatId) { SetPlayer(modular.crew[seatId.crewId], seatId.seatId); }
 
 
     /*

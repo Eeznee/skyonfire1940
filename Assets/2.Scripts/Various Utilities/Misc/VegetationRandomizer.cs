@@ -17,7 +17,7 @@ public class VegetationRandomizer : MonoBehaviour
     public Mesh[] trunkMeshes;
     void OnEnable()
     {
-        float height = GameManager.map.HeightAtPoint(transform.position);
+        float height = GameManager.mapTool.HeightAtPoint(transform.position);
         transform.Translate(Vector3.up * (height - transform.position.y));
         transform.localScale *= Mathf.Lerp(minScale, maxScale, Random.value);
         transform.Rotate(transform.up * Random.Range(0, 360));

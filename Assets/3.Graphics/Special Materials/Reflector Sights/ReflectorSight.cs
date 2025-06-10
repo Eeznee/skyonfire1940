@@ -61,10 +61,10 @@ public class ReflectorSight : MonoBehaviour
             maxEmmissions[i] = reticles[i].sharedMaterial.GetFloat("_Emission");
     }
 
-    private void Update()
-    {
+    //private void Update()
+    //{
         //ChangeBrightness(0.5f);
-    }
+    //}
 }
 #if UNITY_EDITOR
 [CustomEditor(typeof(ReflectorSight)), CanEditMultipleObjects]

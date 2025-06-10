@@ -31,6 +31,7 @@ public class SparSettings
         SparPosition sparPosition = new SparPosition(wing, this);
 
         GameObject sparObject = new GameObject(wing.name + " spar " + chordPosition.ToString("0.00"));
+        sparObject.layer = wing.DefaultLayer();
         sparObject.transform.parent = wing.transform;
         sparObject.transform.position = sparPosition.worldPos;
         sparObject.transform.rotation = sparPosition.worldRot;
@@ -39,7 +40,9 @@ public class SparSettings
         boxCollider.isTrigger = true;
         boxCollider.size = sparPosition.boxSize;
         boxCollider.center = Vector3.zero;
+        boxCollider.sharedMaterial = StaticReferences.Instance.aircraftPhysicMaterial;
     }
+#if UNITY_EDITOR
     public void DrawGizmos(Wing wing)
     {
         SparPosition sparPosition = new SparPosition(wing, this);
@@ -51,6 +54,7 @@ public class SparSettings
 
         Handles.matrix = Matrix4x4.identity;
     }
+#endif
     private struct SparPosition
     {
         public Vector3 rootPos;

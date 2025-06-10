@@ -8,6 +8,8 @@ public class RangeByAltitude : MonoBehaviour
     float maxRange;
     const float altitudeZeroFactor = 0.7f;
 
+    public static float currentRange;
+
     void Start()
     {
         cam = GetComponent<Camera>();
@@ -18,6 +20,8 @@ public class RangeByAltitude : MonoBehaviour
     {
         bool cockpit = GameManager.gm.vr || SofCamera.viewMode != 0;
         cam.nearClipPlane = cockpit ? 0.1f : 1f;
-        cam.farClipPlane = Mathf.Lerp(altitudeZeroFactor * maxRange, maxRange, cam.transform.position.y / 6000f);
+
+        currentRange = Mathf.Lerp(altitudeZeroFactor * maxRange, maxRange, cam.transform.position.y / 6000f);
+        cam.farClipPlane = currentRange;
     }
 }

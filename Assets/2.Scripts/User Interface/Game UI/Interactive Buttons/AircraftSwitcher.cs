@@ -9,31 +9,42 @@ public class AircraftSwitcher : MonoBehaviour
     public bool playerAuto = true;
     public Text squadText;
     public Text wingText;
-    [HideInInspector] public SofAircraft Current { get; set; }
-
+    [HideInInspector] public SofAircraft CurrentAircraft { get; set; }
+    [HideInInspector] public SofModular CurrentSofModular { get; set; }
 
     public UnityEvent onValueChanged;
 
+    public void SetSpectatingAI(bool isSpectating)
+    {
+        Player.controllingPlayer = !isSpectating;
+    }
     public void OffsetSquadron(int offset)
     {
-        if (!Current) Current = GameManager.squadrons[0][0];
-        SetCurrent(Player.OffsetSquadron(offset, Current.SquadronId));
+        if (!CurrentSofModular) SetCurrent(GameManager.squadrons[0][0]);
+        else SetCurrent(Player.OffsetSquadron(offset, CurrentSofModular.SquadronId));
     }
     public void OffsetWing(int offset)
     {
-        if (!Current) Current = GameManager.squadrons[0][0];
-        SetCurrent(Player.OffsetWing(offset, Current.placeInSquad, Current.SquadronId));
+        if (!CurrentSofModular) SetCurrent(GameManager.squadrons[0][0]);
+        else SetCurrent(Player.OffsetWing(offset, CurrentSofModular.PlaceInSquad, CurrentSofModular.SquadronId));
     }
-    public void SetCurrent(SofAircraft newSelection)
+    public void SetCurrent(SofModular newSelection)
     {
-        if (newSelection == Current) return;
-        Current = newSelection;
+        if (newSelection == CurrentSofModular) return;
+
+        CurrentSofModular = newSelection;
+        CurrentAircraft = newSelection.aircraft;
         onValueChanged.Invoke();
 
-        if (Current)
+        if (CurrentAircraft)
         {
-            squadText.text = "Squadron n°" + (Current.SquadronId + 1).ToString();
-            wingText.text = Current.placeInSquad == 0 ? "Leader" : "Wing " + (Current.placeInSquad + 1).ToString();
+            squadText.text = "Squadron n°" + (CurrentAircraft.SquadronId + 1).ToString();
+            wingText.text = CurrentAircraft.placeInSquad == 0 ? "Leader" : "Wing " + (CurrentAircraft.placeInSquad + 1).ToString();
+        }
+        else if (CurrentSofModular)
+        {
+            squadText.text = "Ground/Sea Units";
+            wingText.text = CurrentSofModular.name;
         }
         else
         {
@@ -45,8 +56,20 @@ public class AircraftSwitcher : MonoBehaviour
     public void SelectPlayerCamera()
     {
         float minAngle = 10f;
+
         SofObject nearest = null;
-        foreach(SofObject so in GameManager.sofObjects)
+        foreach(SofModular so in GameManager.crewedModulars)
+        {
+            if (so == null) continue;
+            float angle = Vector3.Angle(SofCamera.tr.forward, so.transform.position - SofCamera.tr.position);
+            if (angle < minAngle)
+            {
+                minAngle = angle;
+                nearest = so;
+            }
+        }
+
+        foreach (SofObject so in GameManager.sofObjects)
         {
             if (so == null) continue;
             float angle = Vector3.Angle(SofCamera.tr.forward, so.transform.position - SofCamera.tr.position);
@@ -56,11 +79,12 @@ public class AircraftSwitcher : MonoBehaviour
                 nearest = so;
             }
         }
-        if (nearest != null) SetCurrent(nearest.aircraft);
+
+        if (nearest != null) SetCurrent(nearest.modular);
     }
 
     void Update()
     {
-        if (playerAuto && Current != Player.aircraft) SetCurrent(Player.aircraft);
+        if (playerAuto && CurrentSofModular != Player.sofObj) SetCurrent(Player.modular);
     }
 }

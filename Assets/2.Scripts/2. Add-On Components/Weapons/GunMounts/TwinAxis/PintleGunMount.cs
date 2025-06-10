@@ -8,7 +8,7 @@ using UnityEditor.SceneManagement;
 [AddComponentMenu("Sof Components/Weapons/Gun Mounts/Pintle")]
 public class PintleGunMount : TwinAxisGunMount
 {
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
         verticalRate = horizontalRate;

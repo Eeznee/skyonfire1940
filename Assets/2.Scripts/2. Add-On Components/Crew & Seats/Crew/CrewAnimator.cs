@@ -49,7 +49,7 @@ public class CrewAnimator : SofComponent
             return restingGrip;
         }
     }
-    public override void SetReferences(SofComplex _complex)
+    public override void SetReferences(SofModular _complex)
     {
         base.SetReferences(_complex);
 
@@ -63,7 +63,7 @@ public class CrewAnimator : SofComponent
         //gameObject.hideFlags = HideFlags.HideAndDontSave;
 #endif
     }
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
 
@@ -100,7 +100,7 @@ public class CrewAnimator : SofComponent
 #if UNITY_EDITOR
     private void Update()
     {
-        if (!Application.isPlaying && crew && crew.complex && crewAnimator != null)
+        if (!Application.isPlaying && crew && crew.sofModular && crewAnimator != null)
         {
             crewAnimator.Update(0f);
             crewAnimator.Update(0f);
@@ -129,7 +129,7 @@ public class CrewAnimator : SofComponent
     }
     private void SetBodyRotation()
     {
-        Vector3 bodyForward = Seat.transform.position - crew.HeadPosition;
+        Vector3 bodyForward = Seat.transform.position - crew.tr.position;
         Vector3 bodyUp = Seat.transform.forward;// * 2f + (crew.IsVrPlayer ? SofCamera.tr.forward : Vector3.zero);
         Quaternion bodyRotation = Quaternion.LookRotation(bodyForward, bodyUp);
         bodyRotation *= Quaternion.Euler(-90f, 0f, 0f);

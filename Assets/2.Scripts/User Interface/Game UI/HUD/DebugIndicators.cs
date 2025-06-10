@@ -17,7 +17,7 @@ public class DebugIndicators : MonoBehaviour
     {
         if (!Player.aircraft) return "";
         SofAircraft aircraft = Player.aircraft;
-        ObjectData data = Player.complex.data;
+        ObjectData data = Player.modular.data;
 
         string finalText = "";
 

@@ -63,8 +63,6 @@ MonoBehaviour:
   rightEulerOffset: {x: -0.5, y: 11.53, z: -97.2}
   leftPosOffset: {x: -0.02, y: 0, z: -0.108}
   leftEulerOffset: {x: -0.5, y: -11.53, z: 97.2}
-  rightHintPos: {x: 0, y: 0, z: 0}
-  leftHintPos: {x: 0, y: 0, z: 0}
   fixedRotation: 0
   grip: 0.59
   trigger: 0.77
@@ -118,6 +116,7 @@ MonoBehaviour:
   separateBulletPos: 0
   ejectCasings: 0
   ejectionPos: {x: 0, y: 0, z: 0}
+  ejectionVector: {x: 0, y: 0, z: 0}
   muzzlePos: {x: 0, y: 0, z: 0}
   bulletPos: {x: 0, y: 0, z: 0}
   noConvergeance: 0
@@ -2771,8 +2770,6 @@ GameObject:
   - component: {fileID: 5280802545747369777}
   - component: {fileID: 3677353357910324358}
   - component: {fileID: 664228770329043945}
-  - component: {fileID: 4896485123730893214}
-  - component: {fileID: 3339069148401297657}
   m_Layer: 9
   m_Name: Left Wing Center
   m_TagString: Untagged
@@ -2891,34 +2888,6 @@ MonoBehaviour:
     rootExtension: 0.4
     tipShortening: 0.25
     interWingExtension: 0.4
---- !u!64 &4896485123730893214
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2314550797167576880}
-  m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 6890347440395306560, guid: ba5308a7c8ad77c44b9e4e451ed6453a, type: 3}
---- !u!64 &3339069148401297657
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2314550797167576880}
-  m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -2791708612804295295, guid: ba5308a7c8ad77c44b9e4e451ed6453a, type: 3}
 --- !u!1 &2319348594077419637
 GameObject:
   m_ObjectHideFlags: 0
@@ -3235,6 +3204,7 @@ MonoBehaviour:
   seats:
   - {fileID: 8801992786076254662}
   seatIdTest: 0
+  stunDuration: 0
 --- !u!114 &6689344140827488988
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3262,8 +3232,6 @@ GameObject:
   - component: {fileID: 6351217119602707869}
   - component: {fileID: 4680871149787289099}
   - component: {fileID: 2394215899466260449}
-  - component: {fileID: 2263166671423812934}
-  - component: {fileID: 7706659408535098653}
   m_Layer: 9
   m_Name: Right Wing Tip
   m_TagString: Untagged
@@ -3381,34 +3349,6 @@ MonoBehaviour:
     rootExtension: 0.4
     tipShortening: 0.25
     interWingExtension: 0.4
---- !u!64 &2263166671423812934
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2537092531211814547}
-  m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -5129860607061701055, guid: ba5308a7c8ad77c44b9e4e451ed6453a, type: 3}
---- !u!64 &7706659408535098653
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2537092531211814547}
-  m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 8463220251284937502, guid: ba5308a7c8ad77c44b9e4e451ed6453a, type: 3}
 --- !u!1 &2846622542652030860
 GameObject:
   m_ObjectHideFlags: 0
@@ -3719,6 +3659,7 @@ MonoBehaviour:
   separateBulletPos: 0
   ejectCasings: 0
   ejectionPos: {x: 0, y: 0, z: 0}
+  ejectionVector: {x: 0, y: 0, z: 0}
   muzzlePos: {x: 0, y: 0, z: 0}
   bulletPos: {x: 0, y: 0, z: 0}
   noConvergeance: 0
@@ -4086,6 +4027,7 @@ MonoBehaviour:
   externalViewPoint: {x: 0, y: 2, z: -12}
   goProViewPoint: {x: 1, y: 0, z: 0}
   defaultPOV: {fileID: 2104927765939918885}
+  shipGunnerProtectedFromStun: 0
   rightHandGrip: {fileID: 1718923091208303194}
   leftHandGrip: {fileID: 5867013374271710412}
   rightFootRest: {fileID: 1315776122396122146}
@@ -4671,6 +4613,7 @@ MonoBehaviour:
   separateBulletPos: 0
   ejectCasings: 0
   ejectionPos: {x: 0, y: 0, z: 0}
+  ejectionVector: {x: 0, y: 0, z: 0}
   muzzlePos: {x: 0, y: 0, z: 0}
   bulletPos: {x: 0, y: 0, z: 0}
   noConvergeance: 0
@@ -4765,8 +4708,6 @@ MonoBehaviour:
   rightEulerOffset: {x: 0, y: 0, z: 0}
   leftPosOffset: {x: 0, y: 0, z: 0}
   leftEulerOffset: {x: 0, y: 0, z: 0}
-  rightHintPos: {x: 0, y: 0, z: 0}
-  leftHintPos: {x: 0, y: 0, z: 0}
   fixedRotation: 0
   grip: 0
   trigger: 0
@@ -4947,8 +4888,6 @@ GameObject:
   - component: {fileID: 7623792302192800951}
   - component: {fileID: 7963707370834337620}
   - component: {fileID: 5680453361475038964}
-  - component: {fileID: 379958034331027266}
-  - component: {fileID: 7037049540575799645}
   m_Layer: 9
   m_Name: Left Wing Tip
   m_TagString: Untagged
@@ -5066,34 +5005,6 @@ MonoBehaviour:
     rootExtension: 0.4
     tipShortening: 0.25
     interWingExtension: 0.4
---- !u!64 &379958034331027266
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4806286008270774723}
-  m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -3146740676895294562, guid: ba5308a7c8ad77c44b9e4e451ed6453a, type: 3}
---- !u!64 &7037049540575799645
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4806286008270774723}
-  m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4774316976724203670, guid: ba5308a7c8ad77c44b9e4e451ed6453a, type: 3}
 --- !u!1 &4844043937047204000
 GameObject:
   m_ObjectHideFlags: 0
@@ -5142,6 +5053,7 @@ MonoBehaviour:
   separateBulletPos: 0
   ejectCasings: 0
   ejectionPos: {x: 0, y: 0, z: 0}
+  ejectionVector: {x: 0, y: 0, z: 0}
   muzzlePos: {x: 0, y: 0, z: 0}
   bulletPos: {x: 0, y: 0, z: 0}
   noConvergeance: 0
@@ -5232,8 +5144,6 @@ GameObject:
   - component: {fileID: 531838421180629312}
   - component: {fileID: 1870200938358526078}
   - component: {fileID: 3862669380175756608}
-  - component: {fileID: 6953495305379540786}
-  - component: {fileID: 6819899793688861179}
   m_Layer: 9
   m_Name: Left Wing Base
   m_TagString: Untagged
@@ -5355,34 +5265,6 @@ MonoBehaviour:
     rootExtension: 0.4
     tipShortening: 0.25
     interWingExtension: 0.4
---- !u!64 &6953495305379540786
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5155221121086583766}
-  m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 3746233829355551055, guid: ba5308a7c8ad77c44b9e4e451ed6453a, type: 3}
---- !u!64 &6819899793688861179
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5155221121086583766}
-  m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 3463080769293500808, guid: ba5308a7c8ad77c44b9e4e451ed6453a, type: 3}
 --- !u!1 &5208462828061948003
 GameObject:
   m_ObjectHideFlags: 0
@@ -5691,8 +5573,6 @@ GameObject:
   - component: {fileID: 3973683805442860966}
   - component: {fileID: 5090530490177916276}
   - component: {fileID: 8041740409355677518}
-  - component: {fileID: 865804578093022044}
-  - component: {fileID: 3667612384874576810}
   m_Layer: 9
   m_Name: Right Wing Base
   m_TagString: Untagged
@@ -5814,34 +5694,6 @@ MonoBehaviour:
     rootExtension: 0.4
     tipShortening: 0.25
     interWingExtension: 0.4
---- !u!64 &865804578093022044
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6160031509639066142}
-  m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 6798056930789834329, guid: ba5308a7c8ad77c44b9e4e451ed6453a, type: 3}
---- !u!64 &3667612384874576810
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6160031509639066142}
-  m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -4233237723248650865, guid: ba5308a7c8ad77c44b9e4e451ed6453a, type: 3}
 --- !u!1 &6247449892045347523
 GameObject:
   m_ObjectHideFlags: 0
@@ -6353,6 +6205,7 @@ MonoBehaviour:
   externalViewPoint: {x: 0, y: 1.2, z: -7}
   goProViewPoint: {x: 1, y: 0, z: 0}
   defaultPOV: {fileID: 6281906766362990857}
+  shipGunnerProtectedFromStun: 0
   rightHandGrip: {fileID: 5211493041374061203}
   leftHandGrip: {fileID: 2019723317356119047}
   rightFootRest: {fileID: 7690703622438855259}
@@ -7275,8 +7128,6 @@ MonoBehaviour:
   rightEulerOffset: {x: 2.303, y: 0.675, z: -54.271}
   leftPosOffset: {x: 0, y: 0, z: 0}
   leftEulerOffset: {x: 0, y: 0, z: 0}
-  rightHintPos: {x: 0, y: 0, z: 0}
-  leftHintPos: {x: 0, y: 0, z: 0}
   fixedRotation: 0
   grip: 0
   trigger: 0
@@ -7383,22 +7234,14 @@ MonoBehaviour:
   warOnly: 0
   destroyed: 0
   burning: 0
-  cogForwardDistance: 0.2
-  targetEmptyMass: 2950
-  EmptyMass:
-    mass: 2949.9998
-    center: {x: -0.000000022791202, y: -0.19613919, z: 0.20000003}
-  LoadedMass:
-    mass: 3592.8113
-    center: {x: -0.00000003835602, y: -0.17143635, z: 0.08670631}
   lod: {fileID: 0}
-  bubble: {fileID: 0}
   avm: {fileID: 0}
   components:
   - {fileID: 3343191154683626990}
   - {fileID: 7732750328845277578}
   - {fileID: 1031657560371738203}
   - {fileID: 1404043268046564778}
+  - {fileID: 5622246579035280796}
   - {fileID: 1559851718184650713}
   - {fileID: 6220262916694788679}
   - {fileID: 7418034948648171204}
@@ -7426,6 +7269,7 @@ MonoBehaviour:
   - {fileID: 8688619634530640500}
   - {fileID: 7392429609244442575}
   - {fileID: 1378227669072072731}
+  - {fileID: 6440472569288361495}
   - {fileID: 7683653980266451630}
   - {fileID: 8772018371537657087}
   - {fileID: 8864988036140867452}
@@ -7438,6 +7282,7 @@ MonoBehaviour:
   - {fileID: 2695069680724841821}
   - {fileID: 7740569824078787057}
   - {fileID: 8889903751826798628}
+  - {fileID: 4697813716702517783}
   - {fileID: 4827877335504770322}
   - {fileID: 3288449126205539455}
   - {fileID: 1313804837313340233}
@@ -7556,6 +7401,14 @@ MonoBehaviour:
   crew:
   - {fileID: 4910382430158545771}
   - {fileID: 2202520062386024960}
+  cogForwardDistance: 0.2
+  targetEmptyMass: 2950
+  EmptyMass:
+    mass: 2949.9998
+    center: {x: -0.000000022791202, y: -0.19613919, z: 0.20000003}
+  LoadedMass:
+    mass: 3592.8113
+    center: {x: -0.00000003835602, y: -0.17143635, z: 0.08670631}
   card: {fileID: 11400000, guid: 53f59aafaba631c43abc3aafabef41bb, type: 2}
   stations: []
   maxG: 7
@@ -7929,8 +7782,6 @@ GameObject:
   - component: {fileID: 3725785688807560517}
   - component: {fileID: 7788698556171736855}
   - component: {fileID: 576187449850319068}
-  - component: {fileID: 1812196164054018387}
-  - component: {fileID: 4648060356905234517}
   m_Layer: 9
   m_Name: Right Wing Center
   m_TagString: Untagged
@@ -8049,34 +7900,6 @@ MonoBehaviour:
     rootExtension: 0.4
     tipShortening: 0.25
     interWingExtension: 0.4
---- !u!64 &1812196164054018387
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7868316483310199560}
-  m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 2346117766799547103, guid: ba5308a7c8ad77c44b9e4e451ed6453a, type: 3}
---- !u!64 &4648060356905234517
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7868316483310199560}
-  m_Material: {fileID: 13400000, guid: 01571ba68fb2dad46aa03094ab219579, type: 2}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -5331332405368820631, guid: ba5308a7c8ad77c44b9e4e451ed6453a, type: 3}
 --- !u!1 &7918119310912291018
 GameObject:
   m_ObjectHideFlags: 0
@@ -8629,8 +8452,6 @@ MonoBehaviour:
   rightEulerOffset: {x: 0, y: 0, z: 0}
   leftPosOffset: {x: 0, y: 0, z: 0}
   leftEulerOffset: {x: -31.381, y: 0, z: 0}
-  rightHintPos: {x: 0, y: 0, z: 0}
-  leftHintPos: {x: 0, y: 0, z: 0}
   fixedRotation: 0
   grip: 0
   trigger: 0
@@ -9013,6 +8834,7 @@ MonoBehaviour:
   seats:
   - {fileID: 5446146218561762707}
   seatIdTest: 0
+  stunDuration: 0
 --- !u!114 &459527226489512887
 MonoBehaviour:
   m_ObjectHideFlags: 0

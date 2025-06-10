@@ -19,7 +19,7 @@ public abstract class Detachable : SofComponent
 
     protected Vector3 inAirVelocity;
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
         dropped = false;
@@ -44,7 +44,7 @@ public abstract class Detachable : SofComponent
 
         transform.parent = null;
 
-        complex.RemoveComponentRoot(this);
+        sofModular.RemoveComponentRoot(this);
 
         StartCoroutine(DropSequence());
 
@@ -57,7 +57,7 @@ public abstract class Detachable : SofComponent
         yield return null;
         inAirVelocity = startVelocity;
         float timeSinceDrop = 0f;
-        float heightPrediction = GameManager.map.RelativeHeight(tr.position) + rb.velocity.y * Time.deltaTime;
+        float heightPrediction = GameManager.mapTool.RelativeHeight(tr.position) + rb.velocity.y * Time.deltaTime;
 
         while (heightPrediction > 0f)
         {
@@ -68,7 +68,7 @@ public abstract class Detachable : SofComponent
             transform.rotation = Quaternion.LookRotation(forward, transform.up);
 
             timeSinceDrop += Time.deltaTime;
-            heightPrediction = GameManager.map.RelativeHeight(tr.position) + rb.velocity.y * Time.deltaTime;
+            heightPrediction = GameManager.mapTool.RelativeHeight(tr.position) + rb.velocity.y * Time.deltaTime;
             yield return null;
         }
 
@@ -82,7 +82,7 @@ public abstract class Detachable : SofComponent
     protected void Root()
     {
         Vector3 pos = transform.position;
-        pos.y = GameManager.map.HeightAtPoint(pos);
+        pos.y = GameManager.mapTool.HeightAtPoint(pos);
         transform.position = pos;
     }
     protected void SetCollider(bool enabled)

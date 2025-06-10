@@ -24,6 +24,7 @@ public class ExplosionFX : MonoBehaviour
     public SpecificExplosion waterExplosion;
     public bool air;
     public SpecificExplosion airExplosion;
+    public BulletHits fragmentHits;
 
     private float range = 0f;
     private bool soundPlayed = true;
@@ -31,7 +32,7 @@ public class ExplosionFX : MonoBehaviour
     public void Explode(float tnt)
     {
         //Chose appropriate effect and audio
-        float height = GameManager.map.HeightAtPoint(transform.position);
+        float height = GameManager.mapTool.HeightAtPoint(transform.position);
         SpecificExplosion explosion;
         if (transform.position.y < 2f && height < 2f && water)
             explosion = waterExplosion;
@@ -110,6 +111,7 @@ public class ExplosionFXEditor : Editor
         if (fx.water && fx.waterExplosion.effect != null) fx.waterExplosion.effects = fx.waterExplosion.effect.GetComponentsInChildren<ParticleSystem>();
         if (fx.air && fx.airExplosion.effect != null) fx.airExplosion.effects = fx.airExplosion.effect.GetComponentsInChildren<ParticleSystem>();
 
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("fragmentHits"), true);
 
         fx.audioSource = fx.GetComponent<AudioSource>();
         fx.audioSource.playOnAwake = false;

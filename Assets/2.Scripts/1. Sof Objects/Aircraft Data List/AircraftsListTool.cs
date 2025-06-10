@@ -21,13 +21,7 @@ public class AircraftsListTool : MonoBehaviour
     ///WRITE YOUR CUSTOM CODE HERE
     public void CustomFunction(SofAircraft aircraft)
     {
-        foreach(Wing wing in aircraft.GetComponentsInChildren<Wing>())
-        {
-            foreach(MeshCollider meshCollider in wing.GetComponents<MeshCollider>())
-            {
-                DestroyImmediate(meshCollider);
-            }
-        }
+
     }
 }
 #if UNITY_EDITOR

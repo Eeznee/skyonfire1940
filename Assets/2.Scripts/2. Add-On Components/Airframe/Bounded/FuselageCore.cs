@@ -30,11 +30,11 @@ public class FuselageCore : Fuselage, IAircraftForce
     public float CombinedArea()
     {
         float areas = 0f;
-        foreach (Fuselage fus in linkedFuselages) if (fus.complex == complex) areas += fus.area;
+        foreach (Fuselage fus in linkedFuselages) if (fus.sofModular == sofModular) areas += fus.area;
         return areas;
     }
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
 

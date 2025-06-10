@@ -9,19 +9,25 @@ using UnityEditor.SceneManagement;
 [AddComponentMenu("Sof Components/Crew Seats/Gunner Seat")]
 public class GunnerSeat : CrewSeat
 {
-    private bool mainGun = false;
-    [FormerlySerializedAs("turret")] public GunMount gunMount;
+    public GunMount gunMount;
     public HydraulicSystem progressiveHydraulic;
-    private float perlinRandomizer;
+
+    private float difficulty;
+    private bool mainGun = false;
+    private float maxGunRange;
+    private float perlinRandomizer1;
+    private float perlinRandomizer2;
+    private float perlinRandomizer3;
+    private float perlinRandomizer4;
 
     private Vector3 currentLead;
-    private float difficulty;
+    private Quaternion lead;
+
 
     const float leadMatchNoob = 12f;
     const float leadMatchExpert = 25f;
 
-    const float maxRange = 700f;
-    const float maxRangeAA = 3500f;
+    const float maxRangeAircraftGunner = 700f;
     const float sprayTargetCycle = 4f;
     const float burstPerlinNoob = 0.42f;
     const float burstPerlinExpert = 0.52f;
@@ -33,7 +39,7 @@ public class GunnerSeat : CrewSeat
     {
         get
         {
-            if(!gunMount) return base.DefaultHeadPosition;
+            if (!gunMount) return base.DefaultHeadPosition;
 
             Vector3 baseToAim = gunMount.AimPosition - defaultPOV.position;
             Vector3 positionShift = Vector3.ProjectOnPlane(baseToAim, LookingDirection) * 0.3f;
@@ -42,14 +48,14 @@ public class GunnerSeat : CrewSeat
     }
     public override Vector3 ZoomedHeadPosition => gunMount ? gunMount.AimPosition : base.ZoomedHeadPosition;
     public override Vector3 CrosshairPosition => gunMount ? gunMount.AimPosition + gunMount.FiringDirection * 500f : base.CrosshairPosition;
-    
+
     public override int Priority
     {
         get
         {
             if (mainGun && aircraft && aircraft.crew[0] == Player.crew)
             {
-                if (Vector3.Dot(gunMount.FiringDirection, aircraft.tr.forward) < 0.999f) return 5;
+                if (Vector3.Angle(gunMount.FiringDirection, aircraft.tr.forward) > 0.001f) return 5;
                 return -1;
             }
             if (target) return 2;
@@ -57,17 +63,26 @@ public class GunnerSeat : CrewSeat
         }
     }
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
-        InvokeRepeating("GetTarget", Random.Range(0f, 2f), 1.5f);
-        difficulty = aircraft ? aircraft.Difficulty : 1f;
-        perlinRandomizer = Random.Range(0f, 1000f);
-        currentLead = Vector3.zero;
-        mainGun = gunMount.PilotMainGun;
-    }
 
-    private void Update()
+        difficulty = aircraft ? aircraft.Difficulty : 1f;
+        mainGun = gunMount.PilotMainGun;
+        maxGunRange = gunMount.Ammunition.MaxRange * 0.9f;
+
+        perlinRandomizer1 = Random.Range(0f, 1000f);
+        perlinRandomizer2 = Random.Range(0f, 1000f);
+        perlinRandomizer3 = Random.Range(0f, 1000f);
+        perlinRandomizer4 = Random.Range(0f, 1000f);
+
+        InvokeRepeating(nameof(GetTarget), Random.Range(0f, 2f), 1.5f);
+
+        currentLead = Vector3.zero;
+
+        sofModular.onComponentRootRemoved += CheckIfGunMountHasBeenRemoved;
+    }
+    private void CheckIfGunMountHasBeenRemoved(SofComponent detachedComponent)
     {
         if (gunMount && gunMount.transform.root != transform.root)
         {
@@ -75,7 +90,6 @@ public class GunnerSeat : CrewSeat
             NewGrips(null, null);
         }
     }
-
     public override void PlayerUpdate(CrewMember crew)
     {
         base.PlayerUpdate(crew);
@@ -87,8 +101,6 @@ public class GunnerSeat : CrewSeat
         }
         if (!gunMount) return;
         if (!handsBusy) NewGrips(defaultRightHand, defaultLeftHand);
-
-        if (complex.bubble) complex.bubble.EnableColliders(false);
 
         Vector2 basic = PlayerActions.gunner.BasicAxis.ReadValue<Vector2>();
         float special = PlayerActions.gunner.SpecialAxis.ReadValue<float>();
@@ -104,61 +116,110 @@ public class GunnerSeat : CrewSeat
         gunMount.OperateTrigger(firing, false);
         if (gunMount.Firing) VibrationsManager.SendVibrations(0.2f, 0.1f, aircraft);
     }
+
     public override void AiUpdate(CrewMember crew)
     {
         base.AiUpdate(crew);
 
         if (handsBusy || !gunMount) return;
+        if (!sofObject) return;
+        if (sofObject.destroyed) return;
+
         if (mainGun && Player.crew == aircraft.crew[0])
         {
-            gunMount.OperateMainTracking(tr.root.forward);
-            gunMount.OperateTrigger(false, false);
+            gunMount.OperateResetToDefault();
             return;
         }
-        bool firing = false;
 
-        if (target && sofObject && !sofObject.destroyed) firing = AiTargeting();
-
-        gunMount.OperateTrigger(firing, true);
+        if (target)
+        {
+            bool firing = AiTargeting();
+            gunMount.OperateTrigger(firing, true);
+        }
+        else if(!gunMount.AlignedWithDefaultDirection)
+        {
+            gunMount.OperateResetToDefault();
+        }
     }
+
+    public void GetTarget()
+    {
+        if (!gunMount || !sofObject || sofObject.destroyed) return;
+
+        spotted = visibility.Spot();
+
+        SofAircraft newTarget = TargetPicker.PickTargetGunner(gunMount, spotted, target);
+        if (newTarget != target)
+        {
+            target = newTarget;
+            targetTr = target ? target.transform : null;
+
+            previousLead = Quaternion.identity;
+            leadAccuracy = 1f;
+        }
+    }
+
+    private Quaternion previousLead;
+    private float leadAccuracy = 1f;
+
+    const float accuracyGain = 0.1f;
+    const float minSway = 2f;
+    const float swayGain = 0.4f;
+
 
     public bool AiTargeting()
     {
-        AI.GunnerTargetingData targetData = new AI.GunnerTargetingData(gunMount, target.rb); //Compute Ballistic data
-        float t = Ballistics.InterceptionTime(gunMount.MuzzleVelocity * 0.95f, targetData.dir, targetData.relativeVel);
-        Vector3 gravityLead = -Physics.gravity * t * t * 0.5f;
-        Vector3 speedLead = t * target.rb.velocity;
-        Vector3 targetLead = speedLead + gravityLead - rb.velocity * t * 1.2f;
-        targetLead *= Mathf.Lerp(-0.7f + difficulty * 1.1f, 3f - 1.35f * difficulty, Mathf.PerlinNoise(perlinRandomizer, Time.time * 0.33f));
+        //PERFECT LEAD
+        float t = Ballistics.PerfectTimeToTarget(gunMount, target, gunMount.Ammunition.defaultMuzzleVel, gunMount.Ammunition.DragCoeff);
+        Vector3 gravityLead = 0.5f * t * t * -Physics.gravity;
+        Vector3 velocityLead = t * target.rb.velocity;
+        Vector3 perfectLead = velocityLead + gravityLead - gunMount.rb.velocity * t;
 
-        if (gunMount.Firing) //Spray when firing
-        {
-            float sprayTarget = Mathf.PingPong(Time.time * 2f / sprayTargetCycle, 2f) - 1f;
-            targetLead += targetTr.right * sprayTarget * target.stats.wingSpan * 0.33f;
-        }
+        Vector3 targetDirection = target.tr.position - gunMount.tr.position;
+        Vector3 targetVel = target.rb.velocity;
+        float targetDistance = (targetDirection + perfectLead).magnitude;
+        float relativeTargetAngularVelocity = Vector3.Angle(targetDirection, targetDirection + targetVel);
 
-        currentLead = Vector3.MoveTowards(currentLead, targetLead, Mathf.Lerp(leadMatchNoob, leadMatchExpert, difficulty) * Time.deltaTime);
-        currentLead += Random.insideUnitSphere * targetData.distance * 0.01f * Mathf.Lerp(0.8f, 0.15f, difficulty);
+        Quaternion perfectLeadRot = Quaternion.FromToRotation(targetDirection, targetDirection + perfectLead);
 
-        Vector3 targetDir = targetTr.position - transform.position + currentLead;
-        gunMount.OperateMainTracking(targetDir);
-        gunMount.OperateSpecialTracking(targetDir);
+        //ACCURACY GAIN/LOSS
+        leadAccuracy = Mathf.MoveTowards(leadAccuracy, 0f, leadAccuracy * accuracyGain * Time.deltaTime);
+        leadAccuracy += Vector3.Angle(previousLead * Vector3.forward, perfectLeadRot * Vector3.forward);
+        previousLead = perfectLeadRot;
 
-        float gunsAngle = Vector3.Angle(targetDir, gunMount.FiringDirection);
-        float minAngle = Mathf.Max(target.stats.wingSpan / targetData.distance * Mathf.Rad2Deg, 1f);
 
-        //Solution temporaire pour 40 mm
-        if (!aircraft) gunMount.SetFuze(targetData.distance);
+        //INACCURATE LEAD
+        float velocityInaccuracy = Mathf.PerlinNoise(perlinRandomizer1, Time.time * 0.33f) * 2f;
+        velocityInaccuracy = Mathf.Lerp(1f, velocityInaccuracy, leadAccuracy);
+        float gravityInaccuracy = Mathf.PerlinNoise(perlinRandomizer2, Time.time * 0.33f) * 2f * velocityInaccuracy;
+        gravityInaccuracy = Mathf.Lerp(1f, gravityInaccuracy, leadAccuracy);
 
-        if (gunsAngle > minAngle || targetData.distance > (aircraft ? maxRange : maxRangeAA)) return false;
-        return Mathf.PerlinNoise(perlinRandomizer, Time.time) < Mathf.Lerp(burstPerlinNoob, burstPerlinExpert, difficulty);
-    }
-    public void GetTarget()
-    {
-        if (!gunMount) return;
-        spotted = visibility.Spot();
-        target = TargetPicker.PickTargetGunner(gunMount, spotted, target);
-        targetTr = target ? target.transform : null;
+        Vector3 inaccurateLead = velocityInaccuracy * velocityLead + gravityInaccuracy * gravityLead - gunMount.rb.velocity * t;
+        Quaternion inaccurateLeadRot = Quaternion.FromToRotation(targetDirection, targetDirection + inaccurateLead);
+
+        //SWAY
+        float perlinXSway = Mathf.PerlinNoise(perlinRandomizer3, Time.time * 0.33f) * 2f - 1f;
+        float perlinYSway = Mathf.PerlinNoise(perlinRandomizer4, Time.time * 0.33f) * 2f - 1f;
+        Vector2 sway = new Vector2(perlinXSway, perlinYSway);
+        sway *= minSway + swayGain * relativeTargetAngularVelocity;
+
+        Quaternion swayRot = Quaternion.Euler(sway.y, sway.x, 0f);
+        
+        //OPERATE GUN MOUNT
+        Vector3 aimingDirection = swayRot * inaccurateLeadRot * targetDirection;
+        gunMount.OperateMainTracking(aimingDirection);
+        gunMount.OperateSpecialTracking(aimingDirection);
+
+        
+        //CHECK IF GUNS SHOULD BE SHOOTING
+        float gunsAngle = Vector3.Angle(aimingDirection, gunMount.FiringDirection);
+        float minAngle = Mathf.Max(target.stats.wingSpan / targetDistance * Mathf.Rad2Deg, 1f);
+
+        float fuzeInaccuracy = 100f + Mathf.Abs(Vector3.Dot(gunMount.FiringDirection, target.rb.velocity));
+        if (!aircraft) gunMount.SetFuze(targetDistance + Random.Range(-fuzeInaccuracy, fuzeInaccuracy));
+
+        if (gunsAngle > minAngle || targetDistance > (aircraft ? maxRangeAircraftGunner : maxGunRange)) return false;
+        return Mathf.PerlinNoise(perlinRandomizer1, Time.time) < Mathf.Lerp(burstPerlinNoob, burstPerlinExpert, difficulty);
     }
 }
 #if UNITY_EDITOR
@@ -167,6 +228,7 @@ public class GunnerSeatEditor : CrewSeatEditor
 {
     SerializedProperty gunMount;
     SerializedProperty progressiveHydraulic;
+    SerializedProperty shipGunnerProtectedFromStun;
 
     protected override void OnEnable()
     {
@@ -174,9 +236,18 @@ public class GunnerSeatEditor : CrewSeatEditor
 
         gunMount = serializedObject.FindProperty("gunMount");
         progressiveHydraulic = serializedObject.FindProperty("progressiveHydraulic");
+        shipGunnerProtectedFromStun = serializedObject.FindProperty("shipGunnerProtectedFromStun");
     }
     protected override void WeaponsGUI()
     {
+
+        GunnerSeat seat = (GunnerSeat)target;
+
+        if (seat.GetComponentInParent<SofShip>())
+        {
+            EditorGUILayout.PropertyField(shipGunnerProtectedFromStun);
+        }
+
         EditorGUILayout.PropertyField(gunMount);
 
         base.WeaponsGUI();

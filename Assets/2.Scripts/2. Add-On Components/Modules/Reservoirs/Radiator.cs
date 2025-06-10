@@ -15,7 +15,7 @@ public class Radiator : SofModule, IDamageTick
     public override ModuleArmorValues Armor => new ModuleArmorValues(0f,0f);
     public override float MaxHp => ModulesHPData.radiator;
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
         circuit = new Circuit(transform, mainTank);

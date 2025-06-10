@@ -5,12 +5,10 @@ using UnityEngine;
 public class PointTracking : MonoBehaviour
 {
     public const float futureTime = 1f;
-    const float throttleIncrement = 0.0002f;
-    const float minAltitude = 50f;
     const float targetMaxAngle = Mathf.PI / 3f;
-    const float frontDistance = 500f;
+    const float frontDistance = 1000f;
 
-    const float bankTurnAngle = 8f;
+    const float aggressiveAngle = 8f;
 
     public static void Tracking(Vector3 target, SofAircraft aircraft, float targetRoll, float levelingFactor, bool assist)
     {
@@ -25,9 +23,11 @@ public class PointTracking : MonoBehaviour
         AircraftAxes axes = AircraftAxes.zero;
         if (aircraft.data.ias.Get < 5f) return axes;
 
+        float bankLimit = Mathf.Infinity;
         if (assist)
         {
-            target = AssistTarget(target, aircraft);
+            PreventGroundCrash(ref target, out bankLimit, aircraft);
+            targetRoll = Mathf.Clamp(targetRoll, -bankLimit ,bankLimit);
         }
 
         //Target Angles
@@ -37,20 +37,18 @@ public class PointTracking : MonoBehaviour
         float rollAngle = Mathf.Asin(localTarget.x) * Mathf.Rad2Deg;
 
         //Roll
-        float levelRoll = Mathv.Angle180(aircraft.data.bankAngle.Get - targetRoll) * Mathf.Clamp01(1f - offAngle / bankTurnAngle) * levelingFactor;
+        float levelRoll = Mathv.Angle180(aircraft.data.bankAngle.Get - targetRoll) * Mathf.Clamp01(1f - offAngle / aggressiveAngle) * levelingFactor;
         float agressiveRoll = Mathf.Clamp(rollAngle * Mathf.Lerp(3f, 1f, offAngle / 90f), -90f, 90f);
         float error = (levelRoll + agressiveRoll) / 180f;
-        if (assist)
-        {
-            float min180Altitude = 100f + Mathf.Max(360f - aircraft.stats.RollRateCurrentSpeed(), 0f);
-            float rollLimit = Mathf.Lerp(45f, 180f, (aircraft.data.relativeAltitude.Get - minAltitude) / min180Altitude);
-            float multiplier = Mathf.InverseLerp(rollLimit * 1.5f, rollLimit / 2f, Mathf.Abs(aircraft.data.bankAngle.Get)); //Value between 0 and 1, 0.5 being the middle
-            multiplier = (multiplier - 0.5f) * 2f; //Make it a value between 1 and - 1
-            if (Mathf.Sign(error) != Mathf.Sign(aircraft.data.bankAngle.Get)) error *= Mathf.Clamp01(multiplier);
-            if (multiplier < 0f) error = -multiplier * Mathf.Sign(aircraft.data.bankAngle.Get);
-        }
 
         axes.roll = aircraft.pidRoll.Update(error, Time.fixedDeltaTime);
+
+        if (assist && Mathf.Abs(aircraft.data.bankAngle.Get) > bankLimit)
+        {
+            float excessBank = Mathf.Abs(aircraft.data.bankAngle.Get) - bankLimit;
+            axes.roll += Mathf.Sign(aircraft.data.bankAngle.Get) * excessBank * 0.1f;
+        }
+
 
         //Pitch
         error = pitchAngle;
@@ -60,32 +58,39 @@ public class PointTracking : MonoBehaviour
         return axes;
     }
 
-    public static Vector3 AssistTarget(Vector3 target, SofAircraft ctr)
+    public static void PreventGroundCrash(ref Vector3 targetPos, out float bankLimit, SofAircraft aircraft)
     {
-        target -= ctr.transform.position;
-        if (target.y < 0f)
+        bankLimit = Mathf.Infinity;
+        if (aircraft.data.ias.Get > aircraft.SpeedLimitMps * 0.85f)
         {
-            if (ctr.data.ias.Get > ctr.SpeedLimitMps * 0.8f) target = Vector3.up;
-            Vector3 frontPoint = ctr.transform.position + Vector3.ProjectOnPlane(ctr.transform.forward * frontDistance, Vector3.up);
-            float frontRelAlt = ctr.data.altitude.Get - GameManager.map.HeightAtPoint(frontPoint);
-            float relAlt = Mathf.Min(ctr.data.relativeAltitude.Get, frontRelAlt) - minAltitude;
-            float spd = ctr.data.gsp.Get;
-            float timeToGetOutOfDive = 1.5f * 90f / ctr.stats.MaxTurnRate;
-            float minCrashDelay = timeToGetOutOfDive * Mathf.Lerp(1f, 3f, Mathf.Abs(ctr.data.bankAngle.Get) / 180f);
-            target.Normalize();
-            float verticalSpeed = Mathf.Min(ctr.transform.forward.y, target.y) * spd;
-            float crashDelay = relAlt / -verticalSpeed;
-            if (verticalSpeed < 0f && crashDelay < minCrashDelay)
-            {
-                //target y is adjusted to avoid crash
-                Vector3 flatTarget = new Vector3(target.x, 0f, target.z);
-                Vector3 emerTarget = new Vector3(ctr.transform.forward.x, 0f, ctr.transform.forward.z);
-                target = Vector3.Lerp(emerTarget, flatTarget, Mathf.InverseLerp(0.5f, 1f, crashDelay / minCrashDelay * 1.5f - 0.5f));
-                target.y = -relAlt / (minCrashDelay * spd);
-                target.Normalize();
-            }
-            target *= 500f;
+            targetPos = aircraft.transform.position + Vector3.up * 500f;
+            return;
         }
-        return target + ctr.transform.position;
+
+        Vector3 targetDir = targetPos - aircraft.transform.position;
+        targetDir.Normalize();
+
+        Vector3 frontPoint = aircraft.transform.position + aircraft.transform.forward * frontDistance;
+
+        bool flyingOverSea = Mathf.Abs(aircraft.data.relativeAltitude.Get - aircraft.data.altitude.Get) < 1f;
+        float minRelativeAltitude = aircraft.data.altitude.Get - GameManager.mapTool.HeightAtPoint(frontPoint);
+        minRelativeAltitude = Mathf.Min(aircraft.data.relativeAltitude.Get, minRelativeAltitude);
+
+        float minAltitudeAllowed = flyingOverSea ? 20f : 50f; //min altitude tolerance is lower when flying above sea
+        float timeToAvoidCrash = 2f * 90f / aircraft.stats.MaxTurnRate + 180f / aircraft.stats.RollRateCurrentSpeed();
+        float altitudeWhenDelayIsReached = minRelativeAltitude + aircraft.data.vsp.Get * timeToAvoidCrash;
+
+        if (altitudeWhenDelayIsReached > minAltitudeAllowed + 150f) return;
+
+        float bankLimitFactor = Mathf.InverseLerp(minAltitudeAllowed + 150f, minAltitudeAllowed, altitudeWhenDelayIsReached);
+        bankLimit = Mathf.Lerp(180f,10f, bankLimitFactor);
+
+        if (altitudeWhenDelayIsReached > minAltitudeAllowed) return;
+
+        float factor = Mathf.InverseLerp(minAltitudeAllowed, minAltitudeAllowed - 100f, altitudeWhenDelayIsReached);
+        targetDir = Vector3.ProjectOnPlane(targetDir, Vector3.up).normalized;
+        targetDir = Vector3.Lerp(targetDir, Vector3.up, factor).normalized;
+
+        targetPos = targetDir * 500f + aircraft.transform.position;
     }
 }

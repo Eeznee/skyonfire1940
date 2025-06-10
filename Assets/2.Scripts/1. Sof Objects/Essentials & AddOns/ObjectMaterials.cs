@@ -33,7 +33,7 @@ public class ObjectMaterials : SofComponent
         }
     }
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
         if (lit == null) lit = Shader.Find("Universal Render Pipeline/Lit");
@@ -46,7 +46,7 @@ public class ObjectMaterials : SofComponent
 
     public void ReplaceMaterial(Material newMat, Renderer refRenderer)
     {
-        foreach (Renderer renderer in complex.GetComponentsInChildren<Renderer>())
+        foreach (Renderer renderer in sofModular.GetComponentsInChildren<Renderer>())
         {
             if (renderer == refRenderer) continue;
             if (renderer.sharedMaterial == refRenderer.sharedMaterial)

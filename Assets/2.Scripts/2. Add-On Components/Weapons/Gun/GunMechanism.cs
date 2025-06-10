@@ -71,7 +71,7 @@ public class GunMechanism : MonoBehaviour
     {
         cycleState = newCycleState;
 
-        if(cycleState < 0.3f) TryEject();
+        TryEject();
 
         while (movement != Movement.Locked && Mathf.Clamp01(cycleState) != cycleState)
         {
@@ -106,7 +106,7 @@ public class GunMechanism : MonoBehaviour
     }
     private void TryPullFreshRound()
     {
-        if (movement == Movement.Opening || movement == Movement.Locked || roundState != RoundState.None) return;
+        if (movement == Movement.Opening || movement == Movement.Locked ||  movement == Movement.Forced || roundState != RoundState.None) return;
         if (gun.Jam()) roundState = RoundState.Casing;
         else if (gun.magazine && gun.magazine.EjectRound())
         {

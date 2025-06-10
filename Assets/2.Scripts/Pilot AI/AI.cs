@@ -6,7 +6,8 @@ public static class AI
 {
     public enum DogfightState
     {
-        Neutral,
+        Turnfight,
+        HeadOn,
         Offensive,
         Defensive,
         Engage
@@ -16,9 +17,28 @@ public static class AI
         public SofAircraft aircraft;
         public SofAircraft target; 
 
-        const float stateNeutralLimit = 0.3f;
+        const float offensiveStateLimit = 0.5f;
+        const float defensiveStateLimit =-0.3f;
         const float stateEngageDis = 1000f;
+        const float stateNeutralDis = 700f;
         public DogfightState state;
+
+        public string StateString
+        {
+            get
+            {
+                return state switch
+                {
+                    DogfightState.Turnfight => "Turnfight",
+                    DogfightState.HeadOn => "HeadOn",
+                    DogfightState.Defensive => "Evasive",
+                    DogfightState.Offensive => "Pursuit",
+                    DogfightState.Engage => "Engage",
+                    _ => "",
+                };
+            }
+        }
+
         public Vector3 dir;
         public float distance;
         public float closure;       //How fast a2 is moving towards a1
@@ -40,10 +60,25 @@ public static class AI
             aspectAngle = Vector3.Angle(dir, target.transform.forward);
             energyDelta = aircraft.data.energy.Get - target.data.energy.Get;
 
-            float offensiveness = (180f-offAngle - aspectAngle) / 180f; //1f is full offensive, -1f is defensive
-            state = offensiveness > stateNeutralLimit ? DogfightState.Offensive : (offensiveness < -stateNeutralLimit ? DogfightState.Defensive : DogfightState.Neutral);
-            if (distance > stateEngageDis) state = DogfightState.Engage;
-            if (state == DogfightState.Offensive && !aircraft.card.fighter) state = DogfightState.Neutral;
+
+
+            float offensiveAdvantage = (180f - offAngle - aspectAngle) / 180f; //1f is full offensive, -1f is defensive
+            state = offensiveAdvantage > offensiveStateLimit ? DogfightState.Offensive : (offensiveAdvantage < defensiveStateLimit ? DogfightState.Defensive : DogfightState.Turnfight);
+
+            if (state == DogfightState.Turnfight && offAngle < 20f)
+            {
+                state = DogfightState.HeadOn;
+            }
+            if (distance > stateEngageDis)
+            {
+                state = DogfightState.Engage;
+                return;
+            }
+            if (distance > stateNeutralDis && state == DogfightState.Defensive)
+            {
+                state = DogfightState.Turnfight;
+                return;
+            }
         }
 
         public bool Collision(float t) { return distance - target.stats.wingSpan + closure * t < 0f; }
@@ -51,7 +86,7 @@ public static class AI
     public class GunnerTargetingData
     {
         GunMount turret;
-        Rigidbody target;
+        public Rigidbody target;
         public float distance;
         public float closure;
         public Vector3 dir;

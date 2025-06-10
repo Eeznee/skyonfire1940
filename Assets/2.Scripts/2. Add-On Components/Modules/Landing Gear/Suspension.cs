@@ -37,11 +37,12 @@ public class Suspension : BarFrame
 
     public float forceApplied { get; private set; }
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
         axis = axis.normalized;
 
+        
         parent = tr.parent;
         lowestPos = tr.localPosition;
 
@@ -105,11 +106,11 @@ public class Suspension : BarFrame
             float lowestPosDis = Vector3.Project(wheelRestPos, axis).magnitude;
             float lowestPosToOriginDis = Vector3.Project(deformationOrigin - wheelRestPos, axis).magnitude;
 
-            float deformationRequired =  distance / lowestPosToOriginDis;
+            float deformationRequired = distance / lowestPosToOriginDis;
             float offsetRequired = lowestPosDis * distance;
 
-            tr.localScale = Vector3.one - axis * deformationRequired;
             tr.localPosition = lowestPos + axis * offsetRequired;
+            tr.localScale = Vector3.one - axis * deformationRequired;
         }
     }
 }

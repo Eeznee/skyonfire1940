@@ -15,7 +15,7 @@ public class LensGunMount : GimbalGunMount
     private float lensAngle = 0f;
 
 
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
         lensAngle = lens.localEulerAngles.z;
@@ -23,6 +23,15 @@ public class LensGunMount : GimbalGunMount
     public override void OperateSpecialManual(float input)
     {
         lensAngle += Time.deltaTime * lensRotationSpeed * input;
+        lensAngle = lensAngle % 360f;
+
+        Vector3 euler = lens.localEulerAngles;
+        euler.z = lensAngle;
+        lens.localEulerAngles = euler;
+    }
+    public override void OperateSpecialResetDefault()
+    {
+        lensAngle = Mathf.MoveTowards(lensAngle, 0f, Time.deltaTime * lensRotationSpeed);
         lensAngle = lensAngle % 360f;
 
         Vector3 euler = lens.localEulerAngles;

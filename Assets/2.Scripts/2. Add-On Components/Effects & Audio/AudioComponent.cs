@@ -6,5 +6,5 @@ using UnityEngine.Audio;
 
 public class AudioComponent : SofComponent
 {
-    public ObjectAudio avm { get { return complex.avm; } }
+    public ObjectAudio avm { get { return sofModular.avm; } }
 }

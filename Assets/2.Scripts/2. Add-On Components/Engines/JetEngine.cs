@@ -45,7 +45,7 @@ public class JetEngine : Engine, IAircraftForce
         float torque = Working ? Mathf.Max(Mathf.Abs(targetRps - RadPerSec) * torqueCoeff, minTorque) : friction;
         RadPerSec = Mathf.MoveTowards(RadPerSec, Working ? targetRps : 0f, torque * dt);
         //Debug.Log(Throttle * 1f);
-        Thrust = data.relativeDensity.Get * TrueThrottle * jetPreset.MaxThrust * structureDamage;
+        Thrust = Working ? data.relativeDensity.Get * TrueThrottle * jetPreset.MaxThrust * structureDamage : 0f;
     }
     private void Update()
     {

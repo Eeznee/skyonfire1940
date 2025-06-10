@@ -28,11 +28,11 @@ public class ObjectLOD : SofComponent
         if (lod2) lod2.gameObject.SetActive(true);
         if (lod3) lod3.gameObject.SetActive(true);
     }
-    public override void Initialize(SofComplex _complex)
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
-        renderers = new List<Renderer>(complex.GetComponentsInChildren<Renderer>());
-        lodGroup = complex.GetCreateComponent<LODGroup>();
+        renderers = new List<Renderer>(sofModular.GetComponentsInChildren<Renderer>());
+        lodGroup = sofModular.GetCreateComponent<LODGroup>();
 
         GetComponentInParent<Animator>().Update(0f);
 
@@ -40,7 +40,7 @@ public class ObjectLOD : SofComponent
 
         ResetLODGroup();
 
-        complex.onComponentRootRemoved += OnComponentDetached;
+        sofModular.onComponentRootRemoved += OnComponentDetached;
     }
     void Update()
     {
@@ -52,7 +52,7 @@ public class ObjectLOD : SofComponent
     }
     public void UpdateMergedModel()
     {
-        merger.UpdateMergedModel();
+        merger.UpdateMergedModels();
     }
     private void OnComponentDetached(SofComponent detachedComponent)
     {
@@ -79,7 +79,7 @@ public class ObjectLOD : SofComponent
     }
 
     const float lod0Limit = 0.1f;
-    const float lod1Limit = 0.05f;
+    const float lod1Limit = 0.03f;
     const float lod2Limit = 0.01f;
     const float lod3Limit = 0f;
     public void ResetLODGroup()
@@ -148,7 +148,7 @@ public class ObjectLOD : SofComponent
     }
     private int LODLevel()
     {
-        if (Player.complex == complex) return 0;
+        if (Player.modular == sofModular) return 0;
         int newLod;
         if (merger.fullMerged.renderer.isVisible) newLod = 1;
         else if (lod2.isVisible) newLod = 2;

@@ -82,7 +82,7 @@ public class CameraEditor : MonoBehaviour
         target.gameObject.SetActive(logic.BaseDirMode == CamDir.Tracking || !targetsPlayer.isOn);
         holdPos.gameObject.SetActive(logic.BasePosMode == CamPos.World);
         gravity.gameObject.SetActive(logic.UpMode == CamUp.Custom);
-        trackingWarning.SetActive(logic.BaseDirMode == CamDir.Tracking && Player.complex == SofCamera.subCam.trackTarget);
+        trackingWarning.SetActive(logic.BaseDirMode == CamDir.Tracking && Player.modular == SofCamera.subCam.trackTarget);
 
         OnSubcamSettingsChange?.Invoke();
     }
@@ -98,7 +98,7 @@ public class CameraEditor : MonoBehaviour
         gravity.isOn = currentCam.gravity;
         reverseTrack.isOn = currentCam.reverseTrack;
         tilt.value = currentCam.tilt;
-        target.Current = currentCam.trackTarget.aircraft;
+        target.SetCurrent(currentCam.trackTarget);
 
         AddListeners();
     }
@@ -111,7 +111,7 @@ public class CameraEditor : MonoBehaviour
         currentCam.gravity = gravity.isOn;
         currentCam.reverseTrack = reverseTrack.isOn;
         currentCam.tilt = tilt.value;
-        currentCam.trackTarget = target.Current;
+        currentCam.trackTarget = target.CurrentSofModular;
         currentCam.SaveSettings();
     }
     private void AddListeners()

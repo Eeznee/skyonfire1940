@@ -37,7 +37,7 @@ public class UIManager : MonoBehaviour
     private void OnEnable()
     {
         instance = this;
-        Player.OnSeatChange += GoBackToGameUI;
+        Player.OnSeatChange += ResetInterface;
         SofCamera.OnSwitchCamEvent += ResetInterface;
 
         dynamicUis = new List<DynamicUI>(GetComponentsInChildren<DynamicUI>(true));
@@ -45,7 +45,7 @@ public class UIManager : MonoBehaviour
     }
     private void OnDisable()
     {
-        Player.OnSeatChange -= GoBackToGameUI;
+        Player.OnSeatChange -= ResetInterface;
         SofCamera.OnSwitchCamEvent -= ResetInterface;
     }
     private void GoBackToGameUI() { SwitchGameUI(GameUI.Game); }

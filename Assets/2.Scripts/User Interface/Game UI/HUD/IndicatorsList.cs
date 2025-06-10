@@ -31,9 +31,9 @@ public class IndicatorsList : MonoBehaviour
 
     public string Text()
     {
-        if (!Player.complex) return "";
+        if (!Player.modular) return "";
         SofAircraft aircraft = Player.aircraft;
-        ObjectData data = Player.complex.data;
+        ObjectData data = Player.modular.data;
         
         string finalText = "";
         if (gsp)

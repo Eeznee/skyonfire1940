@@ -20,23 +20,19 @@ public class ProjectileProperties
     public float diameter;
     public float mass;
 
-
     public float baseVelocity;
     public float basePenetration;
 
-
     public BulletHits bulletHits;
 
-    public  bool ap;
+    public bool ap;
     public bool explosive;
     public bool incendiary;
     public bool tracer;
     public ExplosiveFiller filler;
     public float fuze = 0f;
 
-
     public float Energy => baseVelocity * baseVelocity * mass * 0.5f;
-
 
     public ProjectileProperties(string n, float m, float d, float bv, float bp)
     {
@@ -48,13 +44,21 @@ public class ProjectileProperties
         ap = explosive = incendiary = tracer = false;
     }
 
-    public float LifeTime => Mathf.Lerp(4f, 10f, Mathf.InverseLerp(4000f, 20000f, Energy));
+    public float DragCoeff => Ballistics.ProjectileDragCoeff(diameter, mass);
+    public float LifeTime => Mathf.Min(10f, Ballistics.TimeRequiredToReachSpeed(baseVelocity, baseVelocity * AmmunitionPreset.deleteAtVelocityRatio, DragCoeff));
+
 
     public void AircraftHit(RaycastHit hit)
     {
         if (!bulletHits) return;
 
         bulletHits.AircraftHit(incendiary && !explosive, hit);
+    }
+    public void TerrainHit(RaycastHit hit)
+    {
+        if (!bulletHits) return;
+
+        bulletHits.CreateHit(hit.collider.sharedMaterial.name, hit.point, Quaternion.LookRotation(hit.normal), null);
     }
     public static ProjectileProperties Fragment()
     {

@@ -13,9 +13,10 @@ public class TrackingCrosshair : MonoBehaviour
 
     void LateUpdate()
     {
-        if (Player.aircraft && !Player.crew.ripped && !Player.crew.ActionsUnavailable)
+        if (Player.modular && !Player.crew.ripped && !Player.crew.ActionsUnavailable)
         {
-            Vector3 pos = SofCamera.cam.WorldToScreenPoint(Player.tr.position + SofCamera.directionInput * Player.aircraft.Convergence);
+            float convergence = Player.aircraft ? Player.aircraft.Convergence : 1000f;
+            Vector3 pos = SofCamera.cam.WorldToScreenPoint(Player.tr.position + SofCamera.directionInput * convergence);
             transform.position = pos;
             level.transform.rotation = Quaternion.Euler(0f, 0f, -SofCamera.tr.eulerAngles.z);
 
@@ -31,7 +32,7 @@ public class TrackingCrosshair : MonoBehaviour
             Color c = dynamic.color;
             if (Player.aircraft && SofCamera.viewMode == 1)
             {
-                float angle = Vector3.Angle(SofCamera.directionInput, Player.aircraft.transform.forward);
+                float angle = Vector3.Angle(SofCamera.directionInput, Player.tr.forward);
                 c.a = Mathf.Clamp01((angle - 2f) / 2f);
                 c.a = Mathf.Max(c.a, 1f - delta);
             } else c.a = 1f;

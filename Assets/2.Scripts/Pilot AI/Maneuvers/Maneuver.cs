@@ -92,12 +92,10 @@ public class ManeuversLibrary
                 return PickManeuver(data, allOffensiveManeuvers);
             case AI.DogfightState.Defensive:
                 return PickManeuver(data, allDefensiveManeuvers);
-            case AI.DogfightState.Neutral:
-                //Zoom
-                //Disengage
-                break;
             case AI.DogfightState.Engage:
                 if (data.crossAngle < 30f) return PickManeuver(data, allOffensiveManeuvers);
+                break;
+            default:
                 break;
         }
         return null;
@@ -123,21 +121,20 @@ public class ManeuversLibrary
     public ManeuversLibrary(float _expertise, bool turretFighter)
     {
         expertise = _expertise;
+
         if (turretFighter)
         {
             allDefensiveManeuvers = new List<ActiveManeuver>() { new HammerHead(), 
-            new Sliceback() };
-            allNeutralManeuvers = new List<ActiveManeuver>() {
-            new Disengage() };
+            new Sliceback(), new ZoomOut() };
+            allNeutralManeuvers = new List<ActiveManeuver>(0);
             allOffensiveManeuvers = new List<ActiveManeuver>() {  new DefiantBellyAssault(),
             new DefiantSideAssault() };
         }
         else
         {
             allDefensiveManeuvers = new List<ActiveManeuver>() { new BreakTurn(),  
-            new HammerHead(), new Overshoot(), new RollingScissors(), new Sliceback() };
-            allNeutralManeuvers = new List<ActiveManeuver>() {
-            new Disengage(), new Zoom() };
+            new HammerHead(), new Overshoot(), new RollingScissors(), new Sliceback() ,new ZoomOut()};
+            allNeutralManeuvers = new List<ActiveManeuver>(0);
             allOffensiveManeuvers = new List<ActiveManeuver>(0);
         }
 

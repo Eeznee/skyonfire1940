@@ -32,6 +32,8 @@ public class AircraftMarker : Marker
     }
     protected override string TextToShow(float distance)
     {
+        if (!targetAircraft) return "";
+
         string name = targetAircraft.card.completeName;
         string distanceTxt = (UnitsConverter.distance.Multiplier * distance).ToString("0.00") + " " + UnitsConverter.distance.Symbol;
         string difficultyTxt = (targetAircraft.Difficulty * 100f).ToString("0");
@@ -43,7 +45,7 @@ public class AircraftMarker : Marker
             txt += "Sqdr " + (targetAircraft.SquadronId + 1);
             txt += targetAircraft.placeInSquad == 0 ? " Leader" : " Wing " + targetAircraft.placeInSquad;
         }
-        else if (targetAircraft.crew[0] != null)
+        else if (targetAircraft && targetAircraft.crew[0] != null)
         {
             txt += targetAircraft.crew[0].Seat.Action;
         }

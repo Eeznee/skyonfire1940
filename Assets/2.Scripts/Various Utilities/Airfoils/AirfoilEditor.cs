@@ -30,6 +30,7 @@ public partial class Airfoil : ScriptableObject, IAirfoil
         liftPlot = new Vector2[points];
         dragPlot = new Vector2[points];
         flapsLiftDragPlot = new Vector2[points];
+        liftDragPlot = new Vector2[points];
 
         flapsLiftPlot = new Vector2[points];
         flapsDragPlot = new Vector2[points];

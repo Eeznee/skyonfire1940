@@ -44,14 +44,26 @@ public static class TargetPicker
         Rigidbody targetRb = target.rb;
         Vector3 dir = target.tr.position - aircraft.tr.position;
         float dis = dir.magnitude;
-        float closure = Vector3.Dot(targetRb.velocity - rb.velocity, dir / dis);
+        dir = dir / dis;
+        float closure = Vector3.Dot(targetRb.velocity - rb.velocity, dir);
         float prio = dis + Mathf.Abs(closure) * 10f;
         prio *= Mathf.Clamp01(2f * (target.card.bomber ? bombersPrio : 1f - bombersPrio)); 
-        if (currentTarget == target) prio -= 300f;
+        if (currentTarget == target) prio -= 400f;
+
+
+        SofAircraft[] squadron =GameManager.squadrons[aircraft.SquadronId];
+        foreach(SofAircraft squadAircraft in squadron)
+        {
+            if (squadAircraft == aircraft) continue;
+
+            if (squadAircraft.mainSeat.target == target && (squadAircraft.tr.position - aircraft.tr.position).magnitude < 300f) prio += 300f;
+        }
+
         return prio;
         //Priority is only dependant on closure and distance
-        //No closure makes an aircraft an important target
-        //The priority of a target dis 0 closure -200m/s (head on result) is  the same as a target 2 km away
+        //Zero closure makes an aircraft an important target
+        //The priority of a target dis 0 closure -200m/s is  the same as a target 1 km away
+        //The priority of a target dis 500 closure 10 m/s is  the same as a target 600 m away
     }
     private static float TargetPrioGunner(GunMount turret, SofAircraft target, SofAircraft currentTarget)
     {
@@ -61,6 +73,7 @@ public static class TargetPicker
         float threaten = Vector3.Dot(target.transform.forward, dir) + 1f;
         float alignement = -Vector3.Dot(turret.FiringDirection, dir) + 1f;
         float prio = dis + threaten * 300f + alignement * 400f;
+        prio += Random.Range(0f, 300f);
         if (currentTarget == target) prio -= 200f;
         return prio * turret.TargetAvailability(target.tr.position);
         //Target aiming perpendicular is equivalent to 300m, target aiming opposite is equivalent to 600m

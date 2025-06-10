@@ -35,7 +35,7 @@ public abstract class SofAirframe : SofFrame, IDamageTick, IMassComponent
         UpdateQuad();
         UpdateArea();
     }
-    public override void SetReferences(SofComplex _complex)
+    public override void SetReferences(SofModular _complex)
     {
         base.SetReferences(_complex);
         UpdateAerofoil();
@@ -45,7 +45,7 @@ public abstract class SofAirframe : SofFrame, IDamageTick, IMassComponent
         if (aircraft) return;
 
         ForceAtPoint fap = CurrentForces();
-        rb.AddForceAtPosition(fap.force, fap.point);
+        if(!float.IsNaN(fap.force.x)) rb.AddForceAtPosition(fap.force, fap.point);
     }
     public virtual Vector2 SimulatedCoefficients(float angleOfAttack, AircraftAxes axes)
     {
@@ -80,7 +80,7 @@ public abstract class SofAirframe : SofFrame, IDamageTick, IMassComponent
     }
     public ForceAtPoint CurrentForces()
     {
-        return SimulatePointForce(new FlightConditions(complex, false));
+        return SimulatePointForce(new FlightConditions(sofModular, false));
     }
 
 #if UNITY_EDITOR

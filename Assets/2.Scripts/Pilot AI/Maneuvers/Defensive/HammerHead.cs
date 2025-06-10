@@ -5,9 +5,10 @@ using UnityEngine;
 public class HammerHead : ActiveManeuver
 {
     private float way;
+    const float maxChance = 0.6f;
     public override float PickFactor(AI.GeometricData data)
     {
-        float energyDeltaFactor = Mathf.InverseLerp(250f * -Physics.gravity.y,600f * -Physics.gravity.y, data.energyDelta);
+        float energyDeltaFactor = Mathf.InverseLerp(2500f,6000f, data.energyDelta) * maxChance;
         return energyDeltaFactor;
     }
     public override string Label()

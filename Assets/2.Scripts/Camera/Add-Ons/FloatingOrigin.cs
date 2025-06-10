@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using UnityEditor;
 
 [RequireComponent(typeof(Camera))]
 public class FloatingOrigin : MonoBehaviour
@@ -17,6 +18,19 @@ public class FloatingOrigin : MonoBehaviour
 
     ParticleSystem.Particle[] parts = null;
 
+#if UNITY_EDITOR
+    private void Start()
+    {
+        EditorApplication.playModeStateChanged += OnPlayModeChanged;
+    }
+    private void OnPlayModeChanged(PlayModeStateChange playMode)
+    {
+        if(playMode == PlayModeStateChange.ExitingPlayMode)
+        {
+            if (SceneView.lastActiveSceneView) SceneView.lastActiveSceneView.pivot += GameManager.refPos;
+        }
+    }
+#endif
     void MoveParticles(Vector3 offset)
     {
         Object[] objects = FindObjectsOfType(typeof(ParticleSystem));
@@ -63,7 +77,11 @@ public class FloatingOrigin : MonoBehaviour
             r.sleepThreshold = r.transform.position.sqrMagnitude > physicsThreshold2 ? float.MaxValue : defaultSleepThreshold;
         Physics.SyncTransforms();
 
-        GameManager.refPos = GameManager.gm.mapmap.transform.position;
+        GameManager.refPos = GameManager.gm.map.transform.position;
+
+#if UNITY_EDITOR
+        if(SceneView.lastActiveSceneView) SceneView.lastActiveSceneView.pivot -= cameraPosition;
+#endif
     }
 
     void LateUpdate()

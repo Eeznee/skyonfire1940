@@ -81,7 +81,12 @@ public class Wheel : SofModule, IMassComponent
     private Vector3 rotateAxis;
     private bool damaged;
 
-    public override void Initialize(SofComplex _complex)
+    public override void SetReferences(SofModular _complex)
+    {
+        if(aircraft) aircraft.OnUpdateLOD1 -= UpdateWheelRotation;
+        base.SetReferences(_complex);
+    }
+    public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
 
@@ -93,15 +98,17 @@ public class Wheel : SofModule, IMassComponent
         suspension = GetComponentInParent<Suspension>();
         if (!suspension) Debug.LogError(name + " has no Suspension parent");
 
-        currentFriction = GameManager.gm.mapmap.frictionPreset;
+        currentFriction = GameManager.gm.map.frictionPreset;
 
         rotateAxis = transform.parent.InverseTransformDirection(transform.right);
         damaged = false;
 
         OnDirectDamage += OnDamageTaken;
+        aircraft.OnUpdateLOD1 += UpdateWheelRotation;
 
         SetAutomatedValues();
     }
+
     const float brakesToWeightRatio = 1.3f;
     private void SetAutomatedValues()
     {
@@ -111,11 +118,8 @@ public class Wheel : SofModule, IMassComponent
 
         maxBrakeTorque = aircraft.targetEmptyMass * radius * brakesToWeightRatio;
     }
-    private void Update()
+    private void UpdateWheelRotation()
     {
-        if (!aircraft) return;
-        if (angularVelocity == 0f) return;
-
         Vector3 worldRotateAxis = transform.parent.TransformDirection(rotateAxis);
         tr.Rotate(worldRotateAxis, angularVelocity * Time.deltaTime * Mathf.Rad2Deg,Space.World);
     }
@@ -241,6 +245,7 @@ public class Wheel : SofModule, IMassComponent
             rotateAxis += Vector3.up * Random.Range(0.06f, 0.12f) * Mathf.Abs(Random.Range(-1f, 1f));
         }
     }
+    
     public override void Rip()
     {
         base.Rip();
