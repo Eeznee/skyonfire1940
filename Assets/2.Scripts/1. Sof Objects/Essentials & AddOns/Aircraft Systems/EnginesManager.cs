@@ -50,7 +50,7 @@ public class EnginesManager
         }
         AtLeastOneEngineOn = oneEngineOn;
 
-        if (allEnginesDestroyed && aircraft.data.gsp.Get < 10f) aircraft.destroyed = true;
+        if (allEnginesDestroyed && aircraft.data.gsp.Get < 10f) aircraft.Destroy();
     }
 
     public void SetEngines(bool on, bool instant)

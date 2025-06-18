@@ -12,13 +12,13 @@ public static class TargetPicker
         for(int i = 1; i < targets.Count; i++)
         {
             float prio = TargetPrioPilot(aircraft, targets[i], currentTarget,bombersPrio);
-            if (!targets[i].destroyed && prio < bestPrio)
+            if (!targets[i].Destroyed && prio < bestPrio)
             {
                 bestPrio = prio;
                 picked = i;
             }
         }
-        if (targets[picked].destroyed) return null;
+        if (targets[picked].Destroyed) return null;
         return targets[picked];
     }
     public static SofAircraft PickTargetGunner(GunMount turret, List<SofAircraft> targets, SofAircraft currentTarget)
@@ -29,13 +29,13 @@ public static class TargetPicker
         for (int i = 1; i < targets.Count; i++)
         {
             float prio = TargetPrioGunner(turret, targets[i], currentTarget);
-            if (!targets[i].destroyed && prio < bestPrio)
+            if (!targets[i].Destroyed && prio < bestPrio)
             {
                 bestPrio = prio;
                 picked = i;
             }
         }
-        if (targets[picked].destroyed) return null;
+        if (targets[picked].Destroyed) return null;
         return targets[picked];
     }
     private static float TargetPrioPilot(SofAircraft aircraft, SofAircraft target, SofAircraft currentTarget,float bombersPrio)

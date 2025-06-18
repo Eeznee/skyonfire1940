@@ -78,7 +78,7 @@ public class BulletHits : ScriptableObject
                 CreateHit(debris, pos, Quaternion.LookRotation(normal), null, false);
 
         if (Player.tr == tr.root)
-            Player.modular.avm.persistent.local.PlayOneShot(GetClip(false), 1f);
+            Player.modular.objectAudio.localClipsPlayer.PlayOneShot(GetClip(false), 1f);
     }
     public void AircraftHit(bool incendiary, RaycastHit hit)
     {

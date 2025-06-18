@@ -70,7 +70,7 @@ public struct ProjectileChart
 }
 public static class Ballistics
 {
-    public const float kineticEnergyToDamage = 0.00009f;
+    public const float kineticEnergyToDamage = 0.00012f;
     public static Vector3 Spread(Vector3 velocity, float maxAngle)
     {
         return Quaternion.AngleAxis(maxAngle, Random.onUnitSphere) * velocity;

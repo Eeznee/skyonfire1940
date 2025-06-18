@@ -48,7 +48,7 @@ public abstract class SofFrame : SofModule, IDamageTick, IMassComponent
     {
         if (ripped) return;
         base.Rip();
-        if (vital && aircraft) aircraft.destroyed = true;  //If vital down the airplane
+        if (vital && aircraft) aircraft.Destroy();  //If vital down the airplane
         foreach (SofModule module in ripOnRip)
             if (module) module.Rip();           //Rip the assigned surface is there is one
         if (Detachable) DetachAndCreateDebris();

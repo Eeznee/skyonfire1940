@@ -15,7 +15,7 @@ public class FollowPair : Maneuver
 
         //Create teams of 2
         SofAircraft leader = GameManager.squadrons[aircraft.SquadronId][aircraft.placeInSquad - aircraft.placeInSquad % 2];
-        if (leader.destroyed) leader = aircraft;
+        if (leader.Destroyed) leader = aircraft;
 
         //Direction
         Vector3 targetPos = leader.transform.position - Vector3.ProjectOnPlane(leader.transform.forward, Vector3.up) * pairDistance;

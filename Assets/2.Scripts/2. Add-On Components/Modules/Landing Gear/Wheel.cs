@@ -126,12 +126,12 @@ public class Wheel : SofModule, IMassComponent
     void FixedUpdate()
     {
         if (!aircraft) return;
-        if (rb.transform != transform.root) return;
 
         if (data.relativeAltitude.Get > 20f)
         {
             grounded = false;
-            AirborneFixedUpdate();
+            suspension.RestSuspensionInstant();
+            if (angularVelocity != 0f) angularVelocity = Mathf.MoveTowards(angularVelocity, 0f, rollingResistanceTorque * inertiaInvert * Time.fixedDeltaTime);
         }
         else
         {
@@ -157,12 +157,6 @@ public class Wheel : SofModule, IMassComponent
         SideFriction(hit);
     }
 
-    private void AirborneFixedUpdate()
-    {
-        suspension.RestSuspension();
-
-        angularVelocity = Mathf.MoveTowards(angularVelocity, 0f, rollingResistanceTorque * inertiaInvert * Time.fixedDeltaTime);
-    }
     const float perlinScale = 0.23f;
     private void PerlinGroundOffset(ref RaycastHit hit)
     {

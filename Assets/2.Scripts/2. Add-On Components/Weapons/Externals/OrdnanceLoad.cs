@@ -46,7 +46,7 @@ public abstract class OrdnanceLoad : SofComponent, IMassComponent
         if (launchClips.Length > 0)
         {
             AudioClip clip = launchClips[Random.Range(0, launchClips.Length)];
-            sofModular.avm.persistent.global.PlayOneShot(clip);
+            sofModular.objectAudio.localClipsPlayer.PlayOneShot(clip);
         }
 
         Mass mass = new Mass(SingleMass, localPos + launchPositions[fireIndex]);

@@ -38,10 +38,12 @@ namespace UnityEngine.InputSystem.OnScreen
         {
             get
             {
-                
+#if PLATFORM_IOS
+                return Input.acceleration;
+#else
                 if (GravitySensor.current != null) return GravitySensor.current.gravity.ReadValue();
                 if (Accelerometer.current != null) return Accelerometer.current.acceleration.ReadValue();
-
+#endif
                 return Vector3.down;
             }
         }

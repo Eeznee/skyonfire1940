@@ -12,7 +12,7 @@ public class SofModular : SofObject
 
 
     public ObjectLOD lod;
-    public ObjectAudio avm;
+    public ObjectAudio objectAudio;
 
     [NonSerialized] public ObjectData data;
 
@@ -29,6 +29,8 @@ public class SofModular : SofObject
     public Action OnDetachPlayer;
     public Action OnInitialize;
     public Action OnFixedUpdate;
+
+
 
     public virtual int SquadronId => GameManager.squadrons.Count;
     public virtual int PlaceInSquad => GameManager.crewedModulars.IndexOf(this);
@@ -52,7 +54,8 @@ public class SofModular : SofObject
     }
     protected virtual void InitializeImportantComponents()
     {
-        avm = transform.CreateChild("Audio Visual Manager").gameObject.AddComponent<ObjectAudio>();
+        objectAudio = GetComponentInChildren<ObjectAudio>();
+        if(objectAudio == null) objectAudio = transform.CreateChild("Object Audio").gameObject.AddComponent<ObjectAudio>();
         InvokeRepeating("DamageTick", damageTickInterval, damageTickInterval);
     }
     protected virtual void InitializePhysics()
@@ -100,7 +103,7 @@ public class SofModular : SofObject
     public void Repair()
     {
         foreach (SofModule module in modules) module.Repair();
-        burning = false;
+        Burning = false;
     }
     private void DamageTick()
     {

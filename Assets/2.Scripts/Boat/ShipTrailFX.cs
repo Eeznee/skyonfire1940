@@ -111,8 +111,14 @@ public class ShipTrailFX : MonoBehaviour
         return pos;
     }
 
+    int cycleUpdate = 10;
+    int cycle;
+
     private void LateUpdate()
     {
+        cycle++;
+        if (cycle % cycleUpdate != 0) return;
+
         if (BoatMoving)
         {
             if (tracked.Count == 0 || Time.time - tracked[^1].time > totalTime / posAmount)
@@ -127,6 +133,7 @@ public class ShipTrailFX : MonoBehaviour
                 tracked.RemoveAt(0);
             }
         }
+        else return;
 
         Vector3[] rightPositions = Positions(1f);
         Vector3[] leftPositions = Positions(-1f);
@@ -137,8 +144,8 @@ public class ShipTrailFX : MonoBehaviour
             leftTrail.positionCount = leftPositions.Length;
         }
 
-        rightTrail.SetPositions(Positions(1f));
-        leftTrail.SetPositions(Positions(-1f));
+        rightTrail.SetPositions(rightPositions);
+        leftTrail.SetPositions(leftPositions);
     }
 
     private void RegisterPos()

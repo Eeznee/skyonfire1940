@@ -20,22 +20,12 @@ public class SplitHydraulics : HydraulicSystem
 
         base.Initialize(_complex);
     }
-    private void Update()
+    protected override void OnStateReached()
     {
-        AnimateUpdate();
-        AudioUpdate();
-    }
-
-    protected override void AnimateUpdate()
-    {
-        if (!animating)
-        {
-            if (state == 0f || state == 1f)
-                for (int i = 0; i < parameters.Length; i++)
-                    curves[i].Reset(state == 1f);
-        }
-
-        base.AnimateUpdate();
+        base.OnStateReached();
+        if (state == 0f || state == 1f)
+            for (int i = 0; i < parameters.Length; i++)
+                curves[i].Reset(state == 1f);
     }
     protected override void ApplyStateAnimator()
     {
@@ -69,7 +59,6 @@ public class HydraulicsCurve
     {
         earlyFinish = Random.Range(0.6f, 1f);
         reverse = _reverse;
-
 
         firstPoint = new Vector2(Random.Range(0.1f, 0.4f), Random.Range(0.1f, 0.4f));
         secondPoint = new Vector2(Random.Range(firstPoint.x + 0.1f, 0.9f), Random.Range(firstPoint.y + 0.1f, 0.9f));

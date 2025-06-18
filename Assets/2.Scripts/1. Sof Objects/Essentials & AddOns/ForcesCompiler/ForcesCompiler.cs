@@ -9,6 +9,8 @@ public class ForcesCompiler : SofComponent
 
     ResultingForce force;
 
+    FlightConditions realTimeFlightConditions;
+
 #if UNITY_EDITOR
     private void LateUpdate()
     {
@@ -34,6 +36,9 @@ public class ForcesCompiler : SofComponent
 
         sofModular.onComponentAdded += OnComponentAdded;
         sofModular.onComponentRootRemoved += OnComponentRemoved;
+
+        realTimeFlightConditions = new(aircraft, false);
+        previousMass = aircraft.GetMass();
     }
     public void OnComponentAdded(SofComponent component)
     {
@@ -54,18 +59,27 @@ public class ForcesCompiler : SofComponent
         rb.AddForce(force.force);
         rb.AddTorque(force.torque);
     }
+
+    float previousMass;
     public ResultingForce ComputeCurrent()
     {
-        FlightConditions flightConditions = new FlightConditions(aircraft, false);
-        return Compute(flightConditions);
+        bool differentMass = previousMass != aircraft.GetMass();
+        if (differentMass)
+        {
+            previousMass = aircraft.GetMass();
+        }
+        realTimeFlightConditions.UpdateFlightConditions(differentMass);
+
+        return Compute(realTimeFlightConditions);
     }
 
     public ResultingForce Compute(FlightConditions flightConditions)
     {
+        Vector3 worldCenterOfMass = flightConditions.WorldCenterOfMass;
         for (int i = 0; i < forcesComponents.Length; i++)
         {
             forcesAtPoints[i] = forcesComponents[i].SimulatePointForce(flightConditions);
-            forcesAtPoints[i].point -= flightConditions.WorldCenterOfMass;
+            forcesAtPoints[i].point -= worldCenterOfMass;
         }
 
         return new ResultingForce(forcesAtPoints);

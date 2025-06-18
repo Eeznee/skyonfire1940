@@ -42,7 +42,7 @@ public class BoltHandle : CockpitInteractable
     private void PlayClip(AudioClip clip)
     {
         if (clip && sofObject == Player.sofObj && (Player.crew.transform.position - transform.position).sqrMagnitude < 4f)
-            sofModular.avm.persistent.local.PlayOneShot(clip, 1f);
+            sofModular.objectAudio.localClipsPlayer.PlayOneShot(clip, 1f);
     }
 
     IEnumerator AnimatedPull()

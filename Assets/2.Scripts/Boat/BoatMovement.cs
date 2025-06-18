@@ -50,7 +50,7 @@ public class BoatMovement : MonoBehaviour
         float targetAngularSpeed = turnInput * maxAngularSpeed;
         targetAngularSpeed *= currentSpeed / maxSpeed;
 
-        if (sofShip.destroyed) targetSpeed = targetAngularSpeed = 0f;
+        if (sofShip.Destroyed) targetSpeed = targetAngularSpeed = 0f;
 
         currentSpeed = Mathf.MoveTowards(currentSpeed, targetSpeed, speedAcceleration * Time.deltaTime);
         currentAngularSpeed = Mathf.MoveTowards(currentAngularSpeed, targetAngularSpeed, angularAcceleration * Time.deltaTime);

@@ -14,6 +14,7 @@ public class Wing : MainSurface
 
     public float oswald = 0.75f;
     public WingSkin skin;
+    private bool hasSkin;
     public Mesh skinMesh;
     public SparSettings[] sparSettings = new SparSettings[] { new SparSettings() };
 
@@ -22,7 +23,8 @@ public class Wing : MainSurface
     public Wing root { get; private set; }
 
     public override Transform SubSurfaceParent => root.tr;
-    public override float AirframeDamage => base.AirframeDamage * (skin ? skin.structureDamage : 1f);
+    public override float AirframeDamage => base.AirframeDamage * (hasSkin ? skin.structureDamage : 1f);
+    public override float AerodynamicIntegrity => hasSkin ? skin.structureDamage : structureDamage;
     public override IAirfoil Airfoil => airfoil ? airfoil : StaticReferences.Instance.stabilizersAirfoil;
 
     protected override Collider MainCollider => skin ? skin.skinCollider : base.MainCollider;
@@ -60,7 +62,7 @@ public class Wing : MainSurface
             return aircraft.MaxGForce * coeff;
         }
     }
-    public override float AerodynamicIntegrity => skin ? skin.structureDamage : structureDamage;
+
 
     public override void SetReferences(SofModular _complex)
     {
@@ -80,6 +82,7 @@ public class Wing : MainSurface
         {
             spar.CreateBoxCollider(this);
         }
+        hasSkin = skin != null;
     }
 
     public void CopyRootValues(Wing rootWing)

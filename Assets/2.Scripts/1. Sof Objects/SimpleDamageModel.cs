@@ -41,8 +41,8 @@ public class SimpleDamageModel : SofDamageModel
     }
     public void Destroy()
     {
-        if (sofObject.destroyed) return;
-        sofObject.destroyed = true;
+        if (sofObject.Destroyed) return;
+        sofObject.Destroy();
         GameManager.sofObjects.Remove(sofObject);
 
         if (intactVersion) intactVersion.SetActive(false);

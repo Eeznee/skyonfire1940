@@ -35,7 +35,7 @@ public class IgnitableExtension : MonoBehaviour
         if (Random.value > chanceNotToBurn)
         {
             burning = true;
-            if (module.sofObject) module.sofObject.burning = true;
+            if (module.sofObject) module.sofObject.StartBurning();
 
             burningEffect = Instantiate(iIgnitable.BurningEffect, transform);
             burningEffect.Play();

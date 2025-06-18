@@ -34,7 +34,7 @@ public class ObjectData
     public Value<float> energy, relativeAltitude, altitude, heading;
     public Value<float> density, relativeDensity, temperature, pressure;
     public Value<float> pitchAngle, bankAngle, angleOfSlip, angleOfAttack, turnRate, rollRate;
-    public Value<float> groundEffect;
+    public Value<float> dragGroundEffect, liftGroundEffect;
     public Value<bool> grounded;
 
     private void InitializeValues()
@@ -66,8 +66,8 @@ public class ObjectData
         }, this);
         angleOfSlip = new Value<float>(() => { return Vector3.SignedAngle(tr.forward, Vector3.ProjectOnPlane(rb.velocity, tr.up), tr.up); }, this);
         angleOfAttack = new Value<float>(() => { return tas.Get < 2f ? 0f : Vector3.SignedAngle(tr.forward, Vector3.ProjectOnPlane(rb.velocity, tr.right), tr.right); }, this);
-        groundEffect = new Value<float>(() => { return aircraft ? Aerodynamics.GetGroundEffect(relativeAltitude.Get, aircraft.stats.wingSpan) : 1f; }, this);
-
+        dragGroundEffect = new Value<float>(() => { return aircraft ? Aerodynamics.GetDragGroundEffect(relativeAltitude.Get, aircraft.stats.wingSpan) : 1f; }, this);
+        liftGroundEffect = new Value<float>(() => { return aircraft ? Aerodynamics.GetLiftGroundEffect(relativeAltitude.Get, aircraft.stats.wingSpan) : 1f; }, this);
         grounded = new Value<bool>(() => 
         {
             if (!aircraft) return true;

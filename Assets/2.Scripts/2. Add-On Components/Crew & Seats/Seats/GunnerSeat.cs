@@ -114,7 +114,7 @@ public class GunnerSeat : CrewSeat
 
         bool firing = PlayerActions.gunner.Fire.ReadValue<float>() > 0.5f;
         gunMount.OperateTrigger(firing, false);
-        if (gunMount.Firing) VibrationsManager.SendVibrations(0.2f, 0.1f, aircraft);
+        if (gunMount.Firing) VibrationsManager.SendVibrations(0.2f, 0.1f);
     }
 
     public override void AiUpdate(CrewMember crew)
@@ -123,7 +123,7 @@ public class GunnerSeat : CrewSeat
 
         if (handsBusy || !gunMount) return;
         if (!sofObject) return;
-        if (sofObject.destroyed) return;
+        if (sofObject.Destroyed) return;
 
         if (mainGun && Player.crew == aircraft.crew[0])
         {
@@ -144,7 +144,7 @@ public class GunnerSeat : CrewSeat
 
     public void GetTarget()
     {
-        if (!gunMount || !sofObject || sofObject.destroyed) return;
+        if (!gunMount || !sofObject || sofObject.Destroyed) return;
 
         spotted = visibility.Spot();
 

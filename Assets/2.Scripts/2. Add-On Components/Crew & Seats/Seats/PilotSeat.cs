@@ -72,13 +72,12 @@ public class PilotSeat : CrewSeat
     public override void PlayerUpdate(CrewMember crew)
     {
         base.PlayerUpdate(crew);
-        PlayerPilotControl.ControlsUpdate(crew);
+        PlayerActions.PilotUpdateAxes(crew);
     }
 
-    public override void PlayerFixed(CrewMember crew)
+    public void PlayerPilotAircraft(CrewMember crew)
     {
-        base.PlayerFixed(crew);
-        PlayerPilotControl.ControlAxesFixedUpdate(crew);
+        PlayerActions.PilotFixedUpdateAxes(crew);
     }
 
 
@@ -101,9 +100,8 @@ public class PilotSeat : CrewSeat
         aiTargetAltitude = Mathf.MoveTowards(aiTargetAltitude, data.altitude.Get, Time.deltaTime * 10f);
         aiTargetAltitude = Mathf.Max(aiTargetAltitude, 700f);
     }
-    public override void AiFixed(CrewMember crew)
+    public void AIPilotAircraft(CrewMember crew)
     {
-        base.AiFixed(crew);
         if (target && !aircraft.card.bomber) //DOGFIGHT TIME !
         {
             AI.GeometricData bfmData = new(aircraft, target);
@@ -134,7 +132,7 @@ public class PilotSeat : CrewSeat
         if (bfmCounter == 0f) //Pick new Maneuver
         {
             ActiveManeuver m = library.PickManeuver(bfmData);
-            if (m != null) { maneuver = m; bfmCounter = bfmManeuverCoolDown * Random.Range(0.5f, 1.5f) * Mathf.Lerp(1f, 0.3f, difficulty); }
+            if (m != null) { maneuver = m; bfmCounter = bfmManeuverCoolDown * Random.Range(0.7f, 1.3f) * Mathf.Lerp(1f, 0.5f, difficulty); }
             else bfmCounter = bfmManeuverRefresh;
         }
         //Execute current active maneuver if available
@@ -156,7 +154,7 @@ public class PilotSeat : CrewSeat
     const float cheatAngle = 7f;
     private void Shooting(AI.GeometricData bfmData)
     {
-        if (target.destroyed) return;
+        if (target.Destroyed) return;
         if (bfmData.state == AI.DogfightState.HeadOn && !HeadOn.CanHeadOn(bfmData)) return;
 
         float t = Ballistics.PerfectTimeToTarget(this, target, ammoReference.defaultMuzzleVel, ammoReference.DragCoeff);

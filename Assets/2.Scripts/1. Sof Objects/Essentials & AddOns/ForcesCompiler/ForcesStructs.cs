@@ -22,6 +22,8 @@ public struct ResultingForce
     public Vector3 force;
     public Vector3 torque;
 
+    const float minimumForceSqrMagnitude = 0.1f * 0.1f;
+
     public ResultingForce(ForceAtPoint[] forceAtPoints)
     {
         force = Vector3.zero;
@@ -29,10 +31,10 @@ public struct ResultingForce
 
         for (int i = 0; i < forceAtPoints.Length; i++)
         {
-            ForceAtPoint fap = forceAtPoints[i];
-            force += fap.force;
+            if (forceAtPoints[i].force.sqrMagnitude < minimumForceSqrMagnitude) continue;
 
-            torque += Vector3.Cross(fap.point, fap.force);
+            force += forceAtPoints[i].force;
+            torque += Vector3.Cross(forceAtPoints[i].point, forceAtPoints[i].force);
         }
     }
     public ResultingForce(Vector3 _force, Vector3 _torque)

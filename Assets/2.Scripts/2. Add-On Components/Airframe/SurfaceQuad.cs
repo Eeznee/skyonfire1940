@@ -70,9 +70,11 @@ public class SurfaceQuad
 
     public Position botAeroPos;
     public Position topAeroPos;
+
     public Direction botToTopDir;
     public Direction aeroDir;
     public Direction chordDir;
+    public Direction upDir;
 
     public Position centerAero;
     public Position centerMass;
@@ -101,6 +103,8 @@ public class SurfaceQuad
         float sign = Mathf.Abs(_botToTopDir.x) < 0.1f ? 1f :  Mathf.Sign(_botToTopDir.x);
         aeroDir = new Direction(this, _botToTopDir * sign);
         chordDir = new Direction(this, (_leadingTop + _leadingBot - _trailingTop - _trailingBot).normalized);
+        upDir = new Direction(this, Vector3.Cross(chordDir.LocalDir, aeroDir.LocalDir).normalized);
+
         centerAero = new Position(this, (_botAeroPos + _topAeroPos) * 0.5f);
         centerMass = new Position(this, (_leadingBot + _leadingTop + _trailingBot + _trailingTop) * 0.25f);
 

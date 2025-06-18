@@ -22,6 +22,7 @@ public class AircraftInputs
     public AircraftAxes rawUncorrected;
     public AircraftAxes target;
     public AircraftAxes current;
+    private AircraftAxes currentLeverage;
 
     public AircraftAxes axesSpeed;
 
@@ -46,6 +47,8 @@ public class AircraftInputs
         elevators = aircraft.GetComponentsInChildren<IPitchControlled>();
         ailerons = aircraft.GetComponentsInChildren<IRollControlled>();
         rudders = aircraft.GetComponentsInChildren<IYawControlled>();
+
+        currentLeverage = new AircraftAxes(1f, 1f, 1f);
     }
     public void FixedUpdate()
     {
@@ -56,25 +59,29 @@ public class AircraftInputs
 
     public void SetTargetInput(AircraftAxes input, PitchCorrectionMode mode)
     {
-       target = rawUncorrected = input;
+        target = rawUncorrected = input;
 
         if (mode == PitchCorrectionMode.Raw || aircraft.data.grounded.Get) return;
-        
-        if(mode == PitchCorrectionMode.Clamped)
+
+        if (mode == PitchCorrectionMode.Clamped)
         {
+            if (current.pitch < 0.7f || input.pitch < 0.7f) return;
+
             float maxPitch = PitchCorrection.MaxPitchAbs(aircraft, input.pitch);
             target.pitch = Mathf.Clamp(input.pitch, -maxPitch, maxPitch);
             return;
         }
         target.pitch = PitchCorrection.CorrectPitch(aircraft, input.pitch, mode == PitchCorrectionMode.FullyAssisted);
     }
+
     public AircraftAxes SimulateControls(float ias, AircraftAxes currentInputs, AircraftAxes targetInputs, float dt)
     {
-        AircraftAxes leverage = MaximumInputs(ias, currentInputs);
-        targetInputs.Clamp(leverage);
+        currentLeverage = MaximumInputs(ias, currentInputs);
+
+        targetInputs.Clamp(currentLeverage);
         if (Player.aircraft == aircraft && Player.role == SeatRole.Bombardier) targetInputs.yaw = aircraft.bombardierSeat.forcedYawInput;
 
-        return AircraftAxes.MoveTowards(currentInputs, targetInputs, leverage * axesSpeed, dt);
+        return AircraftAxes.MoveTowards(currentInputs, targetInputs, currentLeverage * axesSpeed, dt);
     }
     public AircraftAxes MaximumInputs(float ias, AircraftAxes currentInputs)
     {
@@ -91,7 +98,7 @@ public class AircraftInputs
         AircraftAxes controlForces = new AircraftAxes(pitchResistance, rollResistance, yawResistance) * ias * ias;
 
         float stickForce = pilotForceStick * aircraft.StickTorqueFactor;
-        float pedalForce = pilotForcePedals * aircraft.StickTorqueFactor; 
+        float pedalForce = pilotForcePedals * aircraft.StickTorqueFactor;
 
         AircraftAxes maximumInputs = new AircraftAxes(stickForce / controlForces.pitch, stickForce / controlForces.roll, pedalForce / controlForces.yaw);
         maximumInputs.Clamp();

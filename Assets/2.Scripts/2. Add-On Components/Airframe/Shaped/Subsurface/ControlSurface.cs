@@ -42,15 +42,16 @@ public abstract class ControlSurface : Subsurface
     }
     public float ControlAngle(AircraftAxes axes)
     {
-        return ControlAngle(ExtractControl(axes));
+        float controlState = ExtractControl(axes);
+        return controlState * (controlState >= 0f ? maxDeflection : minDeflection);
     }
     public float ControlAngle(float controlState)
     {
-        return controlState * DeflectionLimit(controlState);
+        return controlState * (controlState >= 0f ? maxDeflection : minDeflection);
     }
-    public virtual float DeflectionLimit(float controlStateSign)
+    public float DeflectionLimit(float controlStateSign)
     {
-        return (controlStateSign >= 0f) ? MaxDeflection : MinDeflection;
+        return (controlStateSign >= 0f) ? maxDeflection : minDeflection;
     }
     public override void SetReferences(SofModular _complex)
     {
@@ -73,7 +74,7 @@ public abstract class ControlSurface : Subsurface
     public Vector3 Gradient(FlightConditions conditions, bool positiveControlState)
     {
         float maxAngle = positiveControlState ? MaxDeflection : MinDeflection;
-        float aoaGradient = Parent.controlSurfaces.TotalOverlap * Parent.controlSqrt * maxAngle;
+        float aoaGradient = Parent.controlSurfaceCoefficient * maxAngle;
         float clGradient = aoaGradient * Parent.Airfoil.Gradient();
 
         Vector3 vel = conditions.PointVelocity(Parent.quad.centerAero.Pos(conditions));

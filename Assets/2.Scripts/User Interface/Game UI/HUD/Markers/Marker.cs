@@ -53,21 +53,40 @@ public class Marker : MonoBehaviour
         target = _target;
         rect = GetComponent<RectTransform>();
     }
+
+
+    int cycle;
+    const int cycleUpdate = 10;
+
+    float previousAngle;
     private void LateUpdate()
     {
         Vector3 rawScreenPos = SofCamera.cam.WorldToScreenPoint(TargetPos);
         rect.position = MarkerPosition(rawScreenPos, out bool targetIsOnScreen, out float angle);
-        arrow.rectTransform.rotation = Quaternion.Euler(0f, 0f, angle);
 
         IsOnScreen = targetIsOnScreen;
-
-        SetSize(rawScreenPos);
+        if (IsOnScreen && arrow.isActiveAndEnabled)
+        {
+            if(Mathf.Abs(previousAngle - angle) > 1f)
+            {
+                arrow.rectTransform.rotation = Quaternion.Euler(0f, 0f, angle);
+                previousAngle = angle;
+            }
+        }
         SetVisibility();
 
-        UpdateColorAndOpacity();
+        cycle++;
+        if(cycle % cycleUpdate == 0)
+        {
+            SetSize(rawScreenPos);
+            UpdateColorAndOpacity();
 
-        float distance = (SofCamera.cam.transform.position - target.tr.position).magnitude;
-        infos.text = TextToShow(distance);
+            if (IsOnScreen)
+            {
+                float distance = (SofCamera.cam.transform.position - target.tr.position).magnitude;
+                infos.text = TextToShow(distance);
+            }
+        }
     }
 
     protected void SetSize(Vector3 rawScreenPos)
@@ -118,19 +137,25 @@ public class Marker : MonoBehaviour
         }
         screenPoint += HalvedScreenSize;
     }
+
+    private Color previousColor;
     protected void UpdateColorAndOpacity()
     {
         Color color = MarkerColor();
+        if(previousColor != color)
+        {
+            color.a = reticleOverlapOpacity;
+            reticle.color = arrow.color = color;
 
-        color.a = reticleOverlapOpacity;
-        reticle.color = arrow.color = color;
+            color.a = textOverlapOpacity;
+            infos.color = color;
 
-        color.a = textOverlapOpacity;
-        infos.color = color;
+            previousColor = color;
+        }
     }
     protected virtual Color MarkerColor()
     {
-        if (target.destroyed) return Color.black;
+        if (target.Destroyed) return Color.black;
 
         Color color = target.CompareTag(Player.Tag) ? Color.blue : Color.red;
 
@@ -142,10 +167,22 @@ public class Marker : MonoBehaviour
         string distanceTxt = (UnitsConverter.distance.Multiplier * distance).ToString("0.00") + " " + UnitsConverter.distance.Symbol;
         return name + "\n" + distanceTxt;
     }
+
     protected void SetVisibility()
     {
-        infos.enabled = IsOnScreen && ShouldBeVisible();
-        reticle.enabled = IsOnScreen && ShouldBeVisible();
-        arrow.enabled = !IsOnScreen && !target.destroyed && ShouldBeVisible();
+        bool visible = ShouldBeVisible();
+        bool onScreenReticle = IsOnScreen && visible;
+
+        if(onScreenReticle != infos.enabled)
+        {
+            infos.enabled = onScreenReticle;
+            reticle.enabled = onScreenReticle;
+        }
+
+        bool arrowEnabled = !IsOnScreen && !target.Destroyed && visible;
+        if(arrow.enabled != arrowEnabled)
+        {
+            arrow.enabled = arrowEnabled;
+        }
     }
 }

@@ -41,7 +41,7 @@ public class CrashEffect : SofComponent
     void Crash(float g)
     {
         crashed = true;
-        aircraft.destroyed = true;
+        aircraft.Destroy();
 
         if (g > 45f)
         {

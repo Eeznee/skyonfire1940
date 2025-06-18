@@ -16,10 +16,11 @@ public class Slat : Subsurface
     public float straightLockedSpeed = 10f;
     public float aoaEffect = 5f;
 
-    public float extend { get; private set; }
+    public float visualExtension { get; private set; }
 
 
     private Vector3 defaultPos;
+    private float straightFactor;
 
     const float lockAngle = 15f;
 
@@ -27,36 +28,42 @@ public class Slat : Subsurface
     public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
-        extend = 0f;
+        visualExtension = 0f;
         defaultPos = transform.localPosition;
+        straightFactor = lockedSpeed / straightLockedSpeed;
+
+        aircraft.OnUpdateLOD0 += UpdateSlatPosition;
     }
-
-
-
-    protected override void FixedUpdate()
+    public override void SetReferences(SofModular _complex)
     {
-        base.FixedUpdate();
-        if (Parent && aircraft)
-        {
-            Vector3 velocity = rb.GetPointVelocity(transform.position);
-            float alpha = Vector3.SignedAngle(Parent.shape.Forward, velocity, Parent.shape.Right);
-            if (data.ias.Get < 1f) alpha = 0f;
-
-            float straightFactor = lockedSpeed / straightLockedSpeed;
-            float aerodynamicForce = data.ias.Get;
-            if (alpha < 0f) aerodynamicForce *= straightFactor * Mathf.InverseLerp(-90f, 0f, alpha);
-            else if (alpha < lockAngle) aerodynamicForce *= Mathf.Lerp(1f, straightFactor, Mathf.InverseLerp(lockAngle, 0f, alpha));
-            else aerodynamicForce *= Mathf.InverseLerp(-90f, lockAngle, alpha);
-
-            float targetExtend = Mathf.InverseLerp(lockedSpeed, extendedSpeed, aerodynamicForce);
-            extend = Mathf.MoveTowards(extend, targetExtend, Time.fixedDeltaTime * 2f);
-        }
+        if (aircraft) aircraft.OnUpdateLOD0 -= UpdateSlatPosition;
+        base.SetReferences(_complex);
     }
-    private void Update()
+    public float SlatExtension(float speed, float alpha)
     {
-        if (!aircraft) return;
+        if (speed < 1f) alpha = 0f;
 
-        transform.localPosition = defaultPos + Vector3.forward * distance * extend;
+        float aerodynamicForce = speed;
+        if (alpha < 0f) aerodynamicForce *= straightFactor * Mathf.InverseLerp(-90f, 0f, alpha);
+        else if (alpha < lockAngle) aerodynamicForce *= Mathf.Lerp(1f, straightFactor, Mathf.InverseLerp(lockAngle, 0f, alpha));
+        else aerodynamicForce *= Mathf.InverseLerp(-90f, lockAngle, alpha);
+
+        return Mathf.InverseLerp(lockedSpeed, extendedSpeed, aerodynamicForce);
+    }
+    public float SlatEffect(float speed, float alpha)
+    {
+        float extension = SlatExtension(speed, alpha);
+        return extension * aoaEffect * Mathf.InverseLerp(15f, 15f + aoaEffect * 2f, alpha);
+    }
+    private void UpdateSlatPosition()
+    {
+        Vector3 velocity = rb.GetPointVelocity(transform.position);
+        float alpha = Vector3.SignedAngle(Parent.shape.Forward, velocity, Parent.shape.Right);
+
+        float extension = SlatExtension(velocity.magnitude, alpha);
+        visualExtension = Mathf.MoveTowards(visualExtension, extension, Time.fixedDeltaTime * 2f);
+
+        transform.localPosition = defaultPos + Vector3.forward * distance * visualExtension;
     }
 }
 #if UNITY_EDITOR

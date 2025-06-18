@@ -86,7 +86,7 @@ public class Suspension : BarFrame
 
         UpdatePosition(newSuspensionDistance);
     }
-    public void RestSuspension()
+    public void RestSuspensionInstant()
     {
         UpdatePosition(0f);
         forceApplied = 0f;

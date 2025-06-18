@@ -66,7 +66,7 @@ public class SofCamera : MonoBehaviour
         if (subCam.Offset() != Vector3.zero) tr.position = subCam.Position();
 
         if (!lookAround) directionInput = desiredRotation * Vector3.forward;
-        else if (PlayerPilotControl.forceCameraPointDirection && Player.role == SeatRole.Pilot) directionInput = Player.tr.forward;
+        else if (PlayerActions.forceCameraPointDirection && Player.role == SeatRole.Pilot) directionInput = Player.tr.forward;
 
         PositionDelta = transform.position - previousPos;
         Velocity = PositionDelta / Time.unscaledDeltaTime;

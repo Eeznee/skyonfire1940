@@ -27,7 +27,7 @@ public abstract class SofComponent : MonoBehaviour  //Objects elements are the b
 
     private bool initialized = false;
 
-
+    public ObjectAudio objectAudio { get; private set; }
     public ObjectData data => sofModular.data;
 
 
@@ -53,6 +53,7 @@ public abstract class SofComponent : MonoBehaviour  //Objects elements are the b
         tr = transform;
         rb = sofModular.rb;
         animator = aircraft ? aircraft.animator : null;
+        objectAudio = _modular.objectAudio;
 
         localPos = sofModular.transform.InverseTransformPoint(tr.position);
         localRot = Quaternion.Inverse(sofModular.transform.rotation) * tr.rotation;

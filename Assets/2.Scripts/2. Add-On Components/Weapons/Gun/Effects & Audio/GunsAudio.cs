@@ -9,8 +9,8 @@ public class GunsGroupAudio : MonoBehaviour
     public List<Gun> guns;
     private ObjectAudio avm;
 
-    private SofAudio outSource;
-    private SofAudio inSource;
+    private SofSmartAudioSource outSource;
+    private SofSmartAudioSource inSource;
 
     private bool firing = false;
 
@@ -24,8 +24,9 @@ public class GunsGroupAudio : MonoBehaviour
     }
     private void Start()
     {
-        outSource = new SofAudio(avm, null, SofAudioGroup.External, true);
-        inSource = new SofAudio(avm, null, SofAudioGroup.Cockpit, false);
+        outSource = new SofSmartAudioSource(avm, null, SofAudioGroup.External, true, null);
+        inSource = new SofSmartAudioSource(avm, null, SofAudioGroup.Cockpit, false, null);
+
 
         foreach (Gun gun in guns)
             gun.OnFireEvent += ShotFired;
@@ -38,9 +39,13 @@ public class GunsGroupAudio : MonoBehaviour
     }
     IEnumerator AudioCycle()
     {
+        outSource.source.enabled = true;
+        inSource.source.enabled = true;
+
         //Guns Started Firing
         firing = true;
         yield return null;
+
         sample = GunAudioSample.GetBestSample(preset.audioSamples, GunsFiring());
         outSource.source.clip = sample.autoOut;
         inSource.source.clip = sample.autoIn;
@@ -51,7 +56,25 @@ public class GunsGroupAudio : MonoBehaviour
         outSource.source.time = inSource.source.time = delay;
         outSource.source.volume = inSource.source.volume = 1f;
 
-        do yield return new WaitForSeconds(60f / preset.FireRate);
+        do
+        {
+            float totalVibrations = 0f;
+
+            foreach(Gun gun in guns)
+            {
+                if (gun && !gun.gunPreset.singleShotsAudio && gun.Firing())
+                {
+                    float vibrationsPower = preset.FireRate * preset.ammunition.mass * 0.06f;
+                    float sqrDistance = (SofCamera.tr.position - gun.tr.position).magnitude;
+                    totalVibrations += vibrationsPower / Mathf.Max(sqrDistance, 1f);
+                }
+
+                totalVibrations = Mathf.Log(totalVibrations + 1f, 10f);
+            }
+            if (avm.sofModular == Player.modular) VibrationsManager.SendVibrations(totalVibrations, 0.15f);
+
+            yield return new WaitForSeconds(60f / preset.FireRate);
+        }
         while (GunsFiring() > 0);
 
         //Guns Stopped Firing
@@ -65,23 +88,26 @@ public class GunsGroupAudio : MonoBehaviour
             outSource.source.volume = inSource.source.volume = volume;
             yield return null;
         }
-        outSource.Stop();
-        inSource.Stop();
+        outSource.source.enabled = false;
+        inSource.source.enabled = false;
         firing = false;
     }
     private void PlayEndClips()
     {
-        if (sample.endOut) avm.external.global.PlayOneShot(sample.endOut);
-        if (sample.endIn) avm.cockpit.local.PlayOneShot(sample.endIn);
+        if (sample.endOut) avm.globalExternalClipsPlayer.PlayOneShot(sample.endOut);
+        if (sample.endIn) avm.localCockpitClipsPlayer.PlayOneShot(sample.endIn, 1f);
     }
     private void ShotFired(float delay)
     {
         if (preset.singleShotsAudio)
+        {
             PlayEndClips();
+            if (avm.sofModular == Player.modular) VibrationsManager.SendVibrations(1f, 0.25f);
+        }
         else if (!firing) StartCoroutine(AudioCycle());
     }
 }
-public class GunsAudio : AudioComponent
+public class GunsAudio : SofComponent
 {
     private List<GunsGroupAudio> groups;
 
@@ -102,7 +128,7 @@ public class GunsAudio : AudioComponent
             if (isNewPreset)
             {
                 GunsGroupAudio newGroup = gameObject.AddComponent<GunsGroupAudio>();
-                newGroup.Initialize(gun, avm);
+                newGroup.Initialize(gun, objectAudio);
                 groups.Add(newGroup);
             }
         }

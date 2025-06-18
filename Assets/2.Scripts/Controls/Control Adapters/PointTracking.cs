@@ -13,7 +13,7 @@ public class PointTracking : MonoBehaviour
     public static void Tracking(Vector3 target, SofAircraft aircraft, float targetRoll, float levelingFactor, bool assist)
     {
         AircraftAxes axes = TrackingInputs(target, aircraft, targetRoll, levelingFactor, assist);
-        aircraft.controls.SetTargetInput(axes, PitchCorrectionMode.FullyAssisted);
+        aircraft.controls.SetTargetInput(axes, PitchCorrectionMode.Clamped);
     }
     public static AircraftAxes TrackingInputs(Vector3 target, SofAircraft aircraft, float targetRoll, float levelingFactor, bool assist)
     {

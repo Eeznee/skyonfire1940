@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -9,6 +11,12 @@ public enum GunController
     Gunner,
     PilotPrimary,
     PilotSecondary,
+}
+public enum TriggerStage
+{
+    Off,
+    On,
+    WaitingForReset
 }
 [AddComponentMenu("Sof Components/Weapons/Guns/Gun")]
 public class Gun : SofComponent, IMassComponent
@@ -47,7 +55,6 @@ public class Gun : SofComponent, IMassComponent
     public BoltHandle bolt;
 
 
-    private GunTrigger trigger;
     [HideInInspector] public GunMechanism mechanism;
 
     //References
@@ -105,7 +112,6 @@ public class Gun : SofComponent, IMassComponent
     }
     public override void Initialize(SofModular _complex)
     {
-        trigger = this.GetCreateComponent<GunTrigger>();
         mechanism = this.GetCreateComponent<GunMechanism>();
 
         if (!separateBulletPos) bulletPos = muzzlePos;
@@ -131,13 +137,46 @@ public class Gun : SofComponent, IMassComponent
         OnFireEvent += FireBullet;
         OnFireEvent += RecoilAndHeatup;
         OnChamberRoundEvent += CycleNextBullet;
+        if (!gunPreset.fullAuto) OnEjectEvent += LockForSingleFire;
 
         temperature = data.temperature.Get;
 
         gameObject.AddComponent<GunParticles>();
     }
     //Must be called each frame to fire
-    public void Trigger() { trigger.TriggerThisFrame(); }
+
+    private bool triggeredThisFrame = false;
+    private TriggerStage triggerStage = TriggerStage.Off;
+
+    public bool TriggerOn => triggerStage == TriggerStage.On;
+    public void Trigger()
+    {
+        if (triggerStage == TriggerStage.Off)
+        {
+            StartCoroutine(TriggerCycle());
+        }
+        triggeredThisFrame = true;
+    }
+    public IEnumerator TriggerCycle()
+    {
+        triggerStage = TriggerStage.On;
+        OnTriggerEvent?.Invoke();
+
+        triggeredThisFrame = true;
+
+        while (triggeredThisFrame)
+        {
+            triggeredThisFrame = false;
+            yield return null;
+        }
+
+        triggerStage = TriggerStage.Off;
+    }
+    private void LockForSingleFire()
+    {
+        triggerStage = TriggerStage.WaitingForReset;
+    }
+
     private void FixedUpdate()
     {
         if (temperature < 80f) return;

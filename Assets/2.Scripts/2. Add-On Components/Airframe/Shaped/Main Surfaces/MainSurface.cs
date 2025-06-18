@@ -15,13 +15,16 @@ public abstract class MainSurface : ShapedAirframe, IAircraftForce
     public SubsurfacesCollection<ControlSurface> controlSurfaces { get; private set; }
     public SubsurfacesCollection<Flap> flaps { get; private set; }
     public SubsurfacesCollection<Slat> slats { get; private set; }
-    public float controlSqrt { get; private set; }
+
+    public ControlSurface mainControlSurface { get; private set; }
+    public float controlSurfaceCoefficient { get; private set; }
     public Wing thisWing { get; private set; }
     public bool isAWing { get; private set; }
     public bool hasSlats { get; private set; }
     public bool hasControlSurface { get; private set; }
     public bool hasFlaps { get; private set; }
     public float inducedDragCoefficient { get; private set; }
+
 
     public virtual Transform SubSurfaceParent => tr;
 
@@ -37,7 +40,7 @@ public abstract class MainSurface : ShapedAirframe, IAircraftForce
 
         ReloadControlSurfacesCollections(null);
 
-        if (hasControlSurface) controlSqrt = Mathf.Sqrt(controlSurfaces.MainSurface.quad.midChord / quad.midChord);
+        if (hasControlSurface) controlSurfaceCoefficient = controlSurfaces.TotalOverlap *  Mathf.Sqrt(controlSurfaces.MainSurface.quad.midChord / quad.midChord);
     }
     public override void Initialize(SofModular _complex)
     {
@@ -53,10 +56,11 @@ public abstract class MainSurface : ShapedAirframe, IAircraftForce
         controlSurfaces.CheckSubsurfacesArray();
         flaps.CheckSubsurfacesArray();
         slats.CheckSubsurfacesArray();
-        hasSlats = slats.MainSurface != null;
-        hasControlSurface = controlSurfaces.MainSurface != null;
-        hasFlaps = flaps.MainSurface != null;
+        hasSlats = slats.MainSurface != null && slats.TotalOverlap != 0f;
+        hasControlSurface = controlSurfaces.MainSurface != null && controlSurfaces.TotalOverlap != 0f;
+        hasFlaps = flaps.MainSurface != null && flaps.TotalOverlap != 0f;
 
+        mainControlSurface = controlSurfaces.MainSurface;
     }
     public float ControlSurfaceEffect(AircraftAxes axes)
     {
@@ -65,16 +69,14 @@ public abstract class MainSurface : ShapedAirframe, IAircraftForce
     }
     private float ControlSurfaceEffectUnsafe(AircraftAxes axes)
     {
-        return controlSurfaces.TotalOverlap * controlSqrt * controlSurfaces.MainSurface.ControlAngle(axes);
+        return controlSurfaceCoefficient * mainControlSurface.ControlAngle(axes);
     }
-    public override Vector2 SimulatedCoefficients(float angleOfAttack, AircraftAxes axes)
+    public override Vector2 SimulatedCoefficients(float angleOfAttack, float pointSpeed, AircraftAxes axes)
     {
         //Slats Effect
         if (hasSlats)
         {
-            Slat mainSlat = slats.MainSurface;
-            float slatEffect = mainSlat.extend * mainSlat.aoaEffect * Mathf.InverseLerp(15f, 15f + mainSlat.aoaEffect * 2f, angleOfAttack);
-            angleOfAttack -= slatEffect * slats.TotalOverlap;
+            angleOfAttack -= slats.MainSurface.SlatEffect(pointSpeed, angleOfAttack) * slats.TotalOverlap;
         }
 
         //Control Surfaces Effect
@@ -87,17 +89,22 @@ public abstract class MainSurface : ShapedAirframe, IAircraftForce
         //Flaps Effect
         Vector2 coeffs;
         if (HasAircraft && hasFlaps && aircraft.hydraulics.flaps.state != 0f)
-            coeffs = Airfoil.Coefficients(angleOfAttack, flaps.MainSurface.Design, aircraft.hydraulics.flaps.state * flaps.TotalOverlap);
+            coeffs = airfoil.Coefficients(angleOfAttack, flaps.MainSurface.Design, aircraft.hydraulics.flaps.state * flaps.TotalOverlap);
         else 
-            coeffs = Airfoil.Coefficients(angleOfAttack);
+            coeffs = airfoil.Coefficients(angleOfAttack);
 
         //Induced Drag Effect
         if (isAWing && HasAircraft)
-            coeffs.x += Mathv.Square(coeffs.y) * aircraft.stats.wingsArea * inducedDragCoefficient;
+            coeffs.x += coeffs.y * coeffs.y * aircraft.stats.wingsArea * inducedDragCoefficient;
 
         //Ground Effect
         if (data.relativeAltitude.Get < 50f)
-            coeffs.x *= sofModular.data.groundEffect.Get;
+        {
+            coeffs.x *= sofModular.data.dragGroundEffect.Get;
+            coeffs.y *= sofModular.data.liftGroundEffect.Get;
+        }
+
+
         return coeffs;
     }
 

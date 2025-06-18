@@ -12,6 +12,7 @@ public class ObjectLOD : SofComponent
     public Transform[] mobileFiltersExceptions = new Transform[0];
     public Renderer lod2;
     public Renderer lod3;
+    public GameObject[] lod0Details;
 
     private SofComplexMerger merger;
     private LODGroup lodGroup;
@@ -22,6 +23,7 @@ public class ObjectLOD : SofComponent
 
     public delegate void SwitchEvent(int lod);
     public SwitchEvent OnSwitchEvent;
+
     private void Awake()
     {
         brokenMode = false;
@@ -47,7 +49,7 @@ public class ObjectLOD : SofComponent
         if (LODLevel() != lod)
         {
             lod = LODLevel();
-            if (OnSwitchEvent != null) OnSwitchEvent(lod);
+            OnSwitchEvent?.Invoke(lod);
         }
     }
     public void UpdateMergedModel()
@@ -142,13 +144,13 @@ public class ObjectLOD : SofComponent
     }
     private Renderer[] BrokenModeLOD2orLOD3(bool trueIsLod3)
     {
-        List<Renderer> renderers = new List<Renderer>(LOD1Renderers());
+        List<Renderer> renderers = new (LOD1Renderers());
         renderers.Add(trueIsLod3 ? lod3 : lod2);
         return renderers.ToArray();
     }
     private int LODLevel()
     {
-        if (Player.modular == sofModular) return 0;
+        //if (Player.modular == sofModular) return 0;
         int newLod;
         if (merger.fullMerged.renderer.isVisible) newLod = 1;
         else if (lod2.isVisible) newLod = 2;

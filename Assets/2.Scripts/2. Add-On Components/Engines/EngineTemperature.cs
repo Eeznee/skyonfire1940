@@ -9,6 +9,7 @@ public class EngineTemperature
     private PistonEngine pistonEngine;
     private JetEngine jetEngine;
 
+    public float TotalHeatCapacityInverted { get; private set; }
     public float CoolingCoefficient { get; private set; }
     public float Temperature { get; private set; }
     public float WaterToEngineTempRatio { get; private set; }
@@ -77,14 +78,15 @@ public class EngineTemperature
         else pistonEngine = engine as PistonEngine;
 
         Temperature = engine.data.temperature.Get;
-
-        ComputeCoolingFactor();
+        ComputeCoefficients();
     }
 
     const float steelHeatCapacity = 500f;
     const float engineThermalEnergyRatio = 2f;
-    private void ComputeCoolingFactor()
+    private void ComputeCoefficients()
     {
+        TotalHeatCapacityInverted = 1f / (preset.Weight * steelHeatCapacity);
+
         float heatingSpeed;
         float peakTempAltitude;
 
@@ -120,14 +122,13 @@ public class EngineTemperature
 
     public float HeatingSpeed(float powerOrThrust)
     {
-        float heatingPower = powerOrThrust * engineThermalEnergyRatio;
-        return heatingPower / (preset.Weight * steelHeatCapacity);
+        return powerOrThrust * engineThermalEnergyRatio * TotalHeatCapacityInverted;
     }
 
     public float CoolingSpeed(float coolingDeviceTemp, float altitude)
     {
-        float airDensity = Aerodynamics.GetAirDensity(altitude);
-        float airTemperature = Aerodynamics.GetTemperature(altitude);
+        float airDensity = engine.data.density.Get;
+        float airTemperature = engine.data.temperature.Get;
 
         if (jet)
             return (airTemperature - coolingDeviceTemp) * CoolingCoefficientDamageIncluded * airDensity;

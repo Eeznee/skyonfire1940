@@ -47,7 +47,8 @@ public partial class Propeller : SofModule, IMassComponent, IAircraftForce
     public float RadPerSec => engine.RadPerSec * ReductionGear;
 
     public float Torque { get; private set; }
-    public float Thrust { get; private set; }
+    public float PowerToThrustCoefficient { get; private set; }
+    public float Thrust => engine.BrakePower * PowerToThrustCoefficient;
     public float BladeAngle { get; private set; }
     public PistonEngine engine { get; private set; }
     public float DragCoefficient { get; private set; }
@@ -81,17 +82,38 @@ public partial class Propeller : SofModule, IMassComponent, IAircraftForce
         if(invertRotation) rotation *= -1f;
         transform.Rotate(-Vector3.forward * rotation);
     }
+
+    private float lastRadPerSec;
+    private float lastTAS;
+    private float lastBladeAngle;
+
+    const float radPerSecDelta = 2f;
+    const float tasDelta = 2f;
+    const float bladeAngleDelta = 0.1f;
+
+
     void FixedUpdate()
     {
         if (Time.timeScale == 0f || !aircraft) return;
+        if (tr.position.y < radius) engine.Rip();
 
         if (pitchControl == PitchControl.ConstantSpeed) ConstantSpeedPitchAdjust(Time.fixedDeltaTime);
         if (pitchControl == PitchControl.TwoPitch) TwoPitchAdjust(Time.fixedDeltaTime);
 
-        Torque = CurrentMotionTorque();
-        Thrust = EngineDrivenThrust();
+        bool recompute = false;
+        recompute |= Mathf.Abs(lastRadPerSec - RadPerSec) > radPerSecDelta;
+        recompute |= Mathf.Abs(lastTAS - data.tas.Get) > tasDelta;
+        recompute |= Mathf.Abs(lastBladeAngle - BladeAngle) > bladeAngleDelta;
 
-        if (tr.position.y < radius) engine.Rip();
+        if (recompute)
+        {
+            Torque = CurrentMotionTorque();
+            PowerToThrustCoefficient = CurrentThrustCoefficient();
+
+            lastRadPerSec = RadPerSec;
+            lastTAS = data.tas.Get;
+            lastBladeAngle = BladeAngle;
+        }
     }
 
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
-public class EnginesAudio : AudioComponent
+public class EnginesAudio : SofComponent
 {
     private List<EnginesGroupAudio> groups;
 
@@ -22,12 +22,13 @@ public class EnginesAudio : AudioComponent
             if (group == null)
             {
                 group = gameObject.AddComponent<EnginesGroupAudio>();
-                group.Initialize(engine, avm);
+                group.Initialize(engine, objectAudio);
                 groups.Add(group);
             }
             group.engines.Add(engine);
         }
     }
+
     public EnginesGroupAudio TryToFindExistingGroup(Engine engine)
     {
         foreach (EnginesGroupAudio group in groups)
@@ -44,11 +45,11 @@ public class EnginesGroupAudio : MonoBehaviour
     public EnginePreset preset;
 
     //Sources
-    private SofAudio idleCockpit;
-    private SofAudio fullCockpit;
-    private SofAudio idleExternal;
-    private SofAudio fullExternal;
-    private SofAudio spatial;
+    private SofSmartAudioSource idleCockpit;
+    private SofSmartAudioSource fullCockpit;
+    private SofSmartAudioSource idleExternal;
+    private SofSmartAudioSource fullExternal;
+    private SofSmartAudioSource spatial;
     private ObjectAudio avm;
 
     private float volumeFadeInIgnition;
@@ -76,11 +77,13 @@ public class EnginesGroupAudio : MonoBehaviour
         invertIdleRPS = 1f / preset.IdleRadPerSec;
         invertFullRPS = 1f / preset.NominalRadPerSec;
 
-        idleCockpit = new SofAudio(avm, preset.IdleAudioCockpit, SofAudioGroup.Cockpit, false);
-        fullCockpit = new SofAudio(avm, preset.FullAudioCockpit, SofAudioGroup.Cockpit, false);
-        idleExternal = new SofAudio(avm, preset.IdleAudioExtSelf, SofAudioGroup.External, true);
-        fullExternal = new SofAudio(avm, preset.FullAudioExtSelf, SofAudioGroup.External, true);
-        spatial = new SofAudio(avm, preset.SpatialAudio, SofAudioGroup.External, true);
+        idleCockpit = new SofSmartAudioSource(avm, preset.IdleAudioCockpit, SofAudioGroup.Cockpit, false, null);
+        fullCockpit = new SofSmartAudioSource(avm, preset.FullAudioCockpit, SofAudioGroup.Cockpit, false, null);
+        idleExternal = new SofSmartAudioSource(avm, preset.IdleAudioExtSelf, SofAudioGroup.External, true, null);
+        fullExternal = new SofSmartAudioSource(avm, preset.FullAudioExtSelf, SofAudioGroup.External, true, UpdateAudio);
+
+        spatial = new SofSmartAudioSource(avm, preset.SpatialAudio, SofAudioGroup.External, true, null);
+
         fullExternal.source.minDistance = idleExternal.source.minDistance = 300f;
         spatial.source.minDistance = 600f;
 
@@ -90,48 +93,46 @@ public class EnginesGroupAudio : MonoBehaviour
 
     public void OnEngineIgnition(Engine engine)
     {
-        if (engine.Class == EngineClass.JetEngine) avm.persistent.global.PlayOneShot(preset.IgnitionClip);
+        if (engine.Class == EngineClass.JetEngine) AudioSource.PlayClipAtPoint(preset.IgnitionClip, transform.position, 1f);
 
         else StartCoroutine(IgnitionCoroutine(engine));
     }
-
     public IEnumerator IgnitionCoroutine(Engine engine)
     {
-        avm.persistent.global.PlayOneShot(preset.PreIgnitionClip);
+        AudioSource.PlayClipAtPoint(preset.PreIgnitionClip, transform.position, 1f);
 
         while (engine.RadPerSec < PistonEngine.preIgnitionRadPerSec)
         {
             yield return null;
         }
 
-        avm.persistent.global.PlayOneShot(preset.IgnitionClip);
+        AudioSource.PlayClipAtPoint(preset.IgnitionClip, transform.position, 1f);
     }
 
 
-    void Update()
+    public void UpdateAudio()
     {
-        if(thisGroupId == Time.frameCount % frameInterval)
+        if (thisGroupId != Time.frameCount % frameInterval) return;
+
+        float highestRPS = 0f;
+        float highestVolume = 0f;
+        float highestThrottle = 0f;
+        effectiveBoosting = false;
+
+        foreach (Engine engine in engines)
         {
-            float highestRPS = 0f;
-            float highestVolume = 0f;
-            float highestThrottle = 0f;
-            effectiveBoosting = false;
-
-            foreach (Engine engine in engines)
-            {
-                highestRPS = Mathf.Max(highestRPS, engine.RadPerSec);
-                highestThrottle = Mathf.Max(highestThrottle, engine.Throttle);
-                highestVolume = Mathf.Max(highestVolume, VolumeFadeInIgnition(engine));
-                effectiveBoosting |= engine.BoostIsEffective;
-            }
-
-            rps = highestRPS;
-            throttle = highestThrottle;
-            volumeFadeInIgnition = highestVolume;
-            UpdateVolume();
-            UpdatePitch();
-            UpdateBoostedMixer();
+            highestRPS = Mathf.Max(highestRPS, engine.RadPerSec);
+            highestThrottle = Mathf.Max(highestThrottle, engine.Throttle);
+            highestVolume = Mathf.Max(highestVolume, VolumeFadeInIgnition(engine));
+            effectiveBoosting |= engine.BoostIsEffective;
         }
+
+        rps = highestRPS;
+        throttle = highestThrottle;
+        volumeFadeInIgnition = highestVolume;
+        UpdateVolume();
+        UpdatePitch();
+        UpdateBoostedMixer();
     }
     private float VolumeFadeInIgnition(Engine engine)
     {
@@ -141,7 +142,7 @@ public class EnginesGroupAudio : MonoBehaviour
     }
     private void UpdateVolume()
     {
-        if(volumeFadeInIgnition < 1f)
+        if (volumeFadeInIgnition < 1f)
         {
             idleCockpit.source.volume = idleExternal.source.volume = volumeFadeInIgnition;
             fullCockpit.source.volume = fullExternal.source.volume = 0f;
@@ -160,6 +161,12 @@ public class EnginesGroupAudio : MonoBehaviour
 
             float spacialVolume = volumeFadeInIgnition * 5f * Mathf.InverseLerp(300f * 300f, 2000f * 2000f, (transform.position - SofAudioListener.Position).sqrMagnitude);
             spatial.source.volume = spacialVolume;
+
+            if (idleVolume > 0.05f != idleExternal.source.isPlaying)
+            {
+                idleCockpit.source.enabled = idleVolume > 0.05f;
+                idleExternal.source.enabled = idleVolume > 0.05f;
+            }
         }
     }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,11 @@ using UnityEngine.Audio;
 
 public class SofAudioListener : MonoBehaviour
 {
+    public static List<ObjectAudio> allowedObjectsAudios = new List<ObjectAudio>();
+    public static List<ObjectAudio> allObjectAudios = new List<ObjectAudio>();
+    public const int maxAllowedObjectsAudios = 5;
+    public const float sqrDistanceLimit = 3000f * 3000f;
+
     public AudioMixerGroup external;
     public AudioMixerGroup cockpit;
     public AudioMixerGroup persistent;
@@ -20,18 +26,24 @@ public class SofAudioListener : MonoBehaviour
     AudioMixer mixer;
     float cockpitRatio = 1f;
 
-    public static bool AttachedToSofObject(SofObject sofObj) { return tr && tr.IsChildOf(sofObj.tr); }
+    public static Action OnAttachToNewTransform;
+
+    public static Transform attachedTransform => tr ? tr.parent : tr;
+
+    private int count;
 
     private void OnEnable()
     {
         instance = this;
         tr = transform;
-        listener = gameObject.AddComponent<AudioListener>();
+        listener = this.GetCreateComponent<AudioListener>();
         mixer = GameManager.gm.mixer;
         StartCoroutine(FadeVolumeIn());
 
         localSource = gameObject.AddComponent<AudioSource>();
         localSource.spatialBlend = 0f;
+
+        allowedObjectsAudios = new List<ObjectAudio>();
 
         AudioListener.volume = 1f;
         TimeManager.OnPauseEvent += OnPause;
@@ -74,11 +86,39 @@ public class SofAudioListener : MonoBehaviour
 
         if (tr.parent != CurrentParent())
         {
-            tr.parent = CurrentParent();
-            tr.localPosition = Vector3.zero;
+            AttachToNewParent();
         }
         tr.rotation = SofCamera.tr.rotation;
+
+        foreach(ObjectAudio objectAudio in allowedObjectsAudios)
+        {
+            objectAudio.UpdateSofSmartAudioSources();
+        }
+
+        count = (count + 1) % allObjectAudios.Count;
+        TryToAdd(allObjectAudios[count]);
+
+        allowedObjectsAudios.Sort((a1, a2) => a1.SqrDistanceToListener.CompareTo(a2.SqrDistanceToListener));
     }
+
+    private void AttachToNewParent()
+    {
+        enabled = false;
+
+        tr.parent = CurrentParent();
+        tr.localPosition = Vector3.zero;
+
+        foreach (ObjectAudio objectAudio in allowedObjectsAudios)
+        {
+            objectAudio.DisableFadeOut();
+        }
+        allowedObjectsAudios = new List<ObjectAudio>();
+
+        enabled = true;
+
+        OnAttachToNewTransform?.Invoke();
+    }
+
 
     const float speed = 3f;
 
@@ -92,6 +132,34 @@ public class SofAudioListener : MonoBehaviour
             volume = Mathf.MoveTowards(volume, finalVolume, Time.deltaTime * 80f * speed);
             mixer.SetFloat("MasterVolume", volume);
             yield return null;
+        }
+    }
+
+    public static void TryToAdd(ObjectAudio objectAudio)
+    {
+        if (!objectAudio.gameObject.activeInHierarchy) return;
+        if (allowedObjectsAudios.Contains(objectAudio)) return;
+
+        if (allowedObjectsAudios.Count < maxAllowedObjectsAudios)
+        {
+            allowedObjectsAudios.Add(objectAudio);
+            objectAudio.EnableFadeIn();
+            return;
+        }
+
+        float sqrDistance = objectAudio.SqrDistanceToListener;
+
+        if (sqrDistance > sqrDistanceLimit) return;
+
+        if (sqrDistance < allowedObjectsAudios[^1].SqrDistanceToListener)
+        {
+            allowedObjectsAudios[^1].DisableFadeOut();
+            allowedObjectsAudios.RemoveAt(allowedObjectsAudios.Count - 1);
+
+            allowedObjectsAudios.Add(objectAudio);
+            objectAudio.EnableFadeIn();
+
+            allowedObjectsAudios.Sort((a1, a2) => a1.SqrDistanceToListener.CompareTo(a2.SqrDistanceToListener));
         }
     }
 }

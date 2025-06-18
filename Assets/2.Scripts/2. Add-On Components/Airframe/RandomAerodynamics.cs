@@ -20,8 +20,10 @@ public class RandomAerodynamics : SofComponent
     {
         Vector2 coefficients = airfoil.Coefficients(data.angleOfAttack.Get);
 
-        Vector3 lift = Aerodynamics.Lift(rb.velocity, transform.up, data.density.Get, area, coefficients.y, 1f);
-        Vector3 drag = Aerodynamics.Drag(rb.velocity, data.density.Get, area, coefficients.x, 1f);
+        float velMagnitude = rb.velocity.magnitude;
+
+        Vector3 lift = Aerodynamics.Lift(rb.velocity, velMagnitude, transform.up, data.density.Get, area, coefficients.y, 1f);
+        Vector3 drag = Aerodynamics.Drag(rb.velocity, velMagnitude, data.density.Get, area, coefficients.x, 1f);
 
         rb.AddForceAtPosition(lift + drag,transform.TransformPoint(localAeroCenter));
     }

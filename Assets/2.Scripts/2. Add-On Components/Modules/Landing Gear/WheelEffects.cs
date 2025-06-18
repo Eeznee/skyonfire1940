@@ -10,7 +10,11 @@ public class WheelEffects : SofComponent
     private ParticleSystem[] effects;
 
 
-
+    public override void SetReferences(SofModular _modular)
+    {
+        if (aircraft) aircraft.OnUpdateLOD1 -= UpdateAllWheelEffects;
+        base.SetReferences(_modular);
+    }
     public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
@@ -24,7 +28,7 @@ public class WheelEffects : SofComponent
             wheels[i].OnRip += OnWheelRipped;
         }
 
-
+        aircraft.OnUpdateLOD1 += UpdateAllWheelEffects;
     }
     private void OnWheelRipped(SofModule wheel)
     {
@@ -37,7 +41,7 @@ public class WheelEffects : SofComponent
             }
         }
     }
-    private void Update()
+    private void UpdateAllWheelEffects()
     {
         if (sofModular.data.relativeAltitude.Get > 15f) return;
 
@@ -50,7 +54,6 @@ public class WheelEffects : SofComponent
     }
     void WheelEffect(Wheel wheel, ParticleSystem frictionFx)
     {
-
         bool playFrictionFX = wheel.grounded && sofModular.lod.LOD() <= 1;
 
         bool slipping = Mathf.Abs(wheel.sideSpeed) > 2f;

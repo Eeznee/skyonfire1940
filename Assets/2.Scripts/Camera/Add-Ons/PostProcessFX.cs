@@ -37,9 +37,9 @@ public class PostProcessFX : MonoBehaviour
 
     private float sickness => body != null ? body.Sickness() : 0f;
     private float pain => body != null ? body.Pain() : 0f;
-    private bool GLoc => body != null ? body.Gloc() : false;
+    private bool GLoc => body != null ? body.Gloc : false;
 
-    private float blackout => body != null ? Mathf.Clamp(body.Blood() * (1f - body.Stamina()), -1f, 1f) : 0f;
+    private float blackout => body != null ? Mathf.Clamp(body.Blood() * (1f - body.StaminaRatio), -1f, 1f) : 0f;
 
     void Start()
     {

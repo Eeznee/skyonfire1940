@@ -33,9 +33,9 @@ public class VibrationsManager : MonoBehaviour
         }
     }
 
-    public static void SendVibrations(float i, float d, SofAircraft a)
+    public static void SendVibrations(float i, float d)
     {
-        if (a == Player.aircraft && i >= intensity && i > 0.05f)
+        if (i >= intensity && i > 0.05f)
         {
             targetIntensity = Mathf.Clamp01(i);
             duration = currentDuration = Mathf.Max(d, 0.05f);

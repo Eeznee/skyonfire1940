@@ -16,7 +16,6 @@ public class SofDebris : SofComplex
     {
         
     }
-
     protected override void GameInitialization()
     {
         base.GameInitialization();
@@ -39,6 +38,8 @@ public class SofDebris : SofComplex
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
+
+        foreach (SofAirframe frame in airframes) frame.ApplyForceDebris();
         WaterPhysics();
     }
 

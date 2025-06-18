@@ -81,8 +81,14 @@ public class UIManager : MonoBehaviour
     {
         TimeManager.SetPause(pause);
     }
+
+
+    const int updateCycle = 10;
+    int cycle = 0;
     void Update()
     {
-        if (currentIndicator) indicators.text = currentIndicator.Text();
+        cycle++;
+
+        if (currentIndicator && cycle % updateCycle == 0) indicators.text = currentIndicator.Text();
     }
 }

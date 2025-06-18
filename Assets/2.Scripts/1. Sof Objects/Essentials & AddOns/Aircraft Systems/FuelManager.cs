@@ -141,9 +141,11 @@ public class FuelManager
             float multiplier = 0.5f;
             if (mainTank.Empty) multiplier *= 2f;
             if (!symmetricTank || symmetricTank.Empty) multiplier *= 2f;
-            consumedMass *= multiplier * -1f;
-            mainTank.ShiftFluidMass(consumedMass);
-            symmetricTank?.ShiftFluidMass(consumedMass);
+
+            consumedMass *= multiplier;
+
+            mainTank.ShiftFluidMass(-consumedMass);
+            if(symmetricTank) symmetricTank.ShiftFluidMass(-consumedMass);
         }
         static bool IsSymmetrical(LiquidTank f1, LiquidTank f2)
         {

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
-public class Siren : AudioComponent
+public class Siren : SofComponent
 {
     public AudioClip sirenClip;
-    SofAudio siren;
+    SofSmartAudioSource siren;
     public Transform[] spinners;
 
     public float minSpeed = 400f / 3.6f;
@@ -17,11 +17,21 @@ public class Siren : AudioComponent
     public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
-        siren = new SofAudio(avm, sirenClip, SofAudioGroup.Persistent, true);
-    }
+        siren = new SofSmartAudioSource(objectAudio, sirenClip, SofAudioGroup.Persistent, true, UpdateAudio);
 
-    // Update is called once per frame
-    void Update()
+        aircraft.OnUpdateLOD1 += UpdateSpinning;
+    }
+    public override void SetReferences(SofModular _modular)
+    {
+        if (aircraft) aircraft.OnUpdateLOD1 -= UpdateSpinning;
+        base.SetReferences(_modular);
+    }
+    public void UpdateSpinning()
+    {
+        foreach (Transform spinner in spinners)
+            if (spinner != null) spinner.Rotate(Vector3.forward * siren.source.volume * 5000f * Time.deltaTime);
+    }
+    public void UpdateAudio()
     {
         if (siren.source.isPlaying)
         {
@@ -31,7 +41,6 @@ public class Siren : AudioComponent
         }
         siren.source.volume = Mathf.Lerp(0f, maxVolume, 2 * (data.ias.Get - minSpeed) / minSpeed);
         siren.source.pitch = Mathf.Lerp(minPitch, maxPitch, 2 * (data.ias.Get - minSpeed) / minSpeed);
-        foreach (Transform spinner in spinners)
-            if(spinner != null) spinner.Rotate(Vector3.forward * siren.source.volume * 5000f * Time.deltaTime);
+
     }
 }

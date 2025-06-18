@@ -54,6 +54,8 @@ public class FuselageCore : Fuselage, IAircraftForce
 
     public override ForceAtPoint SimulatePointForce(FlightConditions flightConditions)
     {
+        //return new ForceAtPoint();
+
         float areaMultiplier = CombinedArea() / area;
         ForceAtPoint forceAtPoint = base.SimulatePointForce(flightConditions);
         forceAtPoint.force *= areaMultiplier;

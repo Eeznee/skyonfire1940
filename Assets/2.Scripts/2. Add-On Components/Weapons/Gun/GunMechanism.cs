@@ -18,7 +18,6 @@ public class GunMechanism : MonoBehaviour
         Forced
     }
     //References
-    private GunTrigger trigger;
     private Gun gun;
     private GunPreset gunPreset;
 
@@ -32,7 +31,6 @@ public class GunMechanism : MonoBehaviour
     private void Awake()
     {
         gun = GetComponent<Gun>();
-        trigger = GetComponent<GunTrigger>();
         gunPreset = gun.gunPreset;
 
         gun.OnTriggerEvent += OnTrigger;
@@ -100,7 +98,7 @@ public class GunMechanism : MonoBehaviour
     }
     private void TryLock()
     {
-        bool locked = BoltCatch() || (!trigger.On() && gunPreset.openBolt);
+        bool locked = BoltCatch() || (!gun.TriggerOn && gunPreset.openBolt);
         movement = locked ? Movement.Locked : Movement.Closing;
         if (locked) gun.OnLockOpenEvent?.Invoke();
     }
@@ -118,7 +116,7 @@ public class GunMechanism : MonoBehaviour
     {
         bool firing = roundState == RoundState.HotRound;
         if (gunPreset.openBolt) firing &= movement == Movement.Closing;
-        else firing &= trigger.On();
+        else firing &= gun.TriggerOn;
         if (firing)
         {
             float excessCycle = cycleState - 1f;

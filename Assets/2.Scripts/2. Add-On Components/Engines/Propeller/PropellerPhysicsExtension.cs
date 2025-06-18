@@ -66,10 +66,10 @@ public partial class Propeller : SofModule, IMassComponent, IAircraftForce
         return new Vector2(a, b);
     }
 
-    public float EngineDrivenThrust()
+    public float CurrentThrustCoefficient()
     {
         float rpsFactor = Mathf.Clamp01(1.5f * engine.RadPerSec / engine.Preset.NominalRadPerSec);
-        return engine.BrakePower * PowerToThrust(RadPerSec, data.signedTas.Get, BladeAngle) * efficiency * rpsFactor;
+        return PowerToThrust(RadPerSec, data.signedTas.Get, BladeAngle) * efficiency * rpsFactor;
     }
 
     public float AdvanceRatio() { return AdvanceRatio(RadPerSec, data.signedTas.Get); }

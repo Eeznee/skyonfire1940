@@ -62,10 +62,12 @@ public class MarkersManager : MonoBehaviour
         marker.reticleOverlapOpacity = 1f;
         marker.textOverlapOpacity = 1f;
 
+        if (!marker.IsOnScreen) return;
+
         for (int j = 0; j < markers.Count; j++)
         {
             if (j == i) continue;
-            if (!markers[j].ShouldBeVisible()) continue;
+            if (!markers[j].ShouldBeVisible() || !markers[j].IsOnScreen) continue;
 
             CheckOverlapAndMultiplyOpacity(marker, markers[j]);
         }

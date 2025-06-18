@@ -74,7 +74,6 @@ public class SofAircraft : SofComplex
     [NonSerialized] public Vector2 ptAbstractControls = Vector2.zero;
     [NonSerialized] public Vector2 ptMultipliers = Vector2.one;
 
-
     public Action OnUpdateLOD0;
     public Action OnUpdateLOD1;
 
@@ -168,10 +167,13 @@ public class SofAircraft : SofComplex
 
         //Call the pilot seat behaviour before inputs and force compilation
         CrewMember mainPilot = mainSeat.seatedCrew;
-        if (mainPilot != null && !mainPilot.ripped && mainPilot.sofModular == modular)
+        if (mainPilot != null && !mainPilot.ActionsUnavailable && mainPilot.sofModular == modular)
         {
-            if (mainPilot == Player.crew && Player.controllingPlayer) mainSeat.PlayerFixed(mainPilot);
-            else mainSeat.AiFixed(mainPilot);
+            if (mainPilot == Player.crew && Player.controllingPlayer) mainSeat.PlayerPilotAircraft(mainPilot);
+            else mainSeat.AIPilotAircraft(mainPilot);
+        } else
+        {
+            controls.SetTargetInput(new AircraftAxes(0f, 0f, 0f), PitchCorrectionMode.Raw);
         }
 
         if (data.grounded.Get) timeSinceLastLanding = 0f;

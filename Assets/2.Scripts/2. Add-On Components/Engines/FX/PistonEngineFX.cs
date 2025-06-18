@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(PistonEngine))]
-public class PistonEngineFX : AudioComponent
+public class PistonEngineFX : SofComponent
 {
     private PistonEngine engine;
     private EnginePreset preset;
@@ -14,6 +14,11 @@ public class PistonEngineFX : AudioComponent
 
     private AudioClip[] pops;
 
+    public override void SetReferences(SofModular _modular)
+    {
+        if (aircraft) aircraft.OnUpdateLOD1 -= UpdateEngineFX;
+        base.SetReferences(_modular);
+    }
     public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
@@ -31,8 +36,9 @@ public class PistonEngineFX : AudioComponent
         ignitionShape.meshShapeType = boostShape.meshShapeType = overHeatShape.meshShapeType = ParticleSystemMeshShapeType.Triangle;
         ignitionShape.mesh = boostShape.mesh = overHeatShape.mesh = exhaustMesh;
 
-
         engine.OnDirectDamage += OnEngineDamage;
+
+        aircraft.OnUpdateLOD1 += UpdateEngineFX;
     }
 
     const float popDamageThreshold = 0.001f;
@@ -46,11 +52,11 @@ public class PistonEngineFX : AudioComponent
             damageTracker = popDamageThreshold * Random.Range(0.7f,1.5f);
 
             overHeatEffect.Emit(1);
-            avm.persistent.global.PlayOneRandom(pops, 0.4f);
+            objectAudio.globalExternalClipsPlayer.PlayOneRandom(pops, 0.4f);
         }
     }
 
-    private void Update()
+    private void UpdateEngineFX()
     {
         bool playBoostEffect = engine.BoostIsEffective;
         playBoostEffect &= sofModular.lod && sofModular.lod.LOD() <= 2;

@@ -80,6 +80,10 @@ public abstract class Engine : SofModule, IMassComponent, IDamageTick, IIgnitabl
         temp = new EngineTemperature(this);
 
         OnProjectileDamage += OnDamageOilLeakChance;
+
+        InvokeRepeating("UpdateTemperature", UnityEngine.Random.Range(0f, temperatureUpdateDelay), temperatureUpdateDelay);
+        InvokeRepeating("OilFrictionDamageUpdate", UnityEngine.Random.Range(0f, temperatureUpdateDelay), temperatureUpdateDelay);
+        InvokeRepeating("UpdatePowerAndConsumption", UnityEngine.Random.Range(0f, updatePowerDelay), updatePowerDelay);
     }
 
     public bool Functional => HasAircraft && !ripped;
@@ -88,28 +92,34 @@ public abstract class Engine : SofModule, IMassComponent, IDamageTick, IIgnitabl
     public virtual float MinimumRps => Preset.NominalRadPerSec * 0.1f;
     protected abstract void UpdatePowerAndRPS(float dt);
 
+
+    const float temperatureUpdateDelay = 1f;
+    protected void UpdateTemperature()
+    {
+        Temp.Update(temperatureUpdateDelay);
+    }
+    const float oilFrictionUpdateDelay = 2f;
+    const float fullFrictionDps = 0.001f;
+    private void OilFrictionDamageUpdate()
+    {
+        if (!Working) return;
+
+        float frictionFactor = 1f - structureDamage * OilTank.FillRatio;
+        if (frictionFactor > 0.3f)
+            DirectStructuralDamage(frictionFactor * TrueThrottle * fullFrictionDps * oilFrictionUpdateDelay);
+    }
+    const float updatePowerDelay = 0.2f;
+    private void UpdatePowerAndConsumption()
+    {
+        carburetor?.Update(Time.fixedDeltaTime);
+        if (!Igniting) UpdatePowerAndRPS(updatePowerDelay);
+        if (Working)
+            aircraft.fuel.Consume(ConsumptionRate, updatePowerDelay);
+    }
+
     protected void FixedUpdate()
     {
         Working = Functional && FuelAvailable && !Igniting && OnInput && RadPerSec > MinimumRps;
-
-        carburetor?.Update(Time.fixedDeltaTime);
-        Temp.Update(Time.fixedDeltaTime);
-
-        if(!Igniting) UpdatePowerAndRPS(Time.fixedDeltaTime);
-
-        if (Working)
-        {
-            aircraft.fuel.Consume(ConsumptionRate, Time.fixedDeltaTime);
-            OilFrictionDamage(Time.fixedDeltaTime);
-        }
-    }
-
-    const float fullFrictionDps = 0.001f;
-    private void OilFrictionDamage(float dt)
-    {
-        float frictionFactor = 1f - structureDamage * OilTank.FillRatio;
-        if (frictionFactor > 0.3f)
-            DirectStructuralDamage(frictionFactor * TrueThrottle * fullFrictionDps * dt);
     }
     public void SetOnInput(bool on)
     {

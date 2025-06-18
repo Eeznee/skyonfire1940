@@ -30,23 +30,52 @@ public static class Aerodynamics
     public const float liftLine = 0.75f;
     const float maxDragCoeffDamaged = 3f;
 
-    public static float GetGroundEffect(float relativeAltitude, float wingSpan)
+    public static float GetDragGroundEffect(float relativeAltitude, float wingSpan)
     {
         if (relativeAltitude > 50f) return 1f;
         float ratio = relativeAltitude / wingSpan;
         float groundEffect = ratio * Mathf.Sqrt(ratio) * 33f;
         return 1f / groundEffect + 1f;
     }
+    const float peakGroundEffect = 1.25f;
+    public static float GetLiftGroundEffect(float relativeAltitude, float wingSpan)
+    {
+        if (relativeAltitude > wingSpan) return 1f;
+
+        float ratio = relativeAltitude / wingSpan;
+        return Mathf.Lerp(peakGroundEffect,1f, ratio);
+    }
 
     public static Vector3 Lift(Vector3 velocity, Vector3 aeroDir, float dens, float surface, float cl, float dmg)
     {
-        Vector3 liftDir = Vector3.Cross(velocity, aeroDir);
-        float dmgLiftCoeff = dmg * dmg * dmg;
-        return 0.5f * cl * dens * dmgLiftCoeff * surface * velocity.magnitude * liftDir;
+        return Lift(velocity, velocity.magnitude, aeroDir, dens, surface, cl, dmg);
     }
     public static Vector3 Drag(Vector3 velocity, float dens, float surface, float cd, float dmg)
     {
+        return Drag(velocity, velocity.magnitude, dens, surface, cd, dmg);
+    }
+
+    public static Vector3 Lift(Vector3 velocity, float velocityMagnitude, Vector3 aeroDir, float dens, float surface, float cl, float dmg)
+    {
+        Vector3 liftDir = Vector3.Cross(velocity, aeroDir);
+        float dmgLiftCoeff = dmg * dmg * dmg;
+        return 0.5f * cl * dens * dmgLiftCoeff * surface * velocityMagnitude * liftDir;
+    }
+    public static Vector3 Drag(Vector3 velocity, float velocityMagnitude, float dens, float surface, float cd, float dmg)
+    {
         float dmgDragCoeff = maxDragCoeffDamaged - dmg * (maxDragCoeffDamaged - 1f);
-        return 0.5f * cd * dens * dmgDragCoeff * surface * velocity.magnitude * -velocity;
+        return 0.5f * cd * dens * dmgDragCoeff * surface * velocityMagnitude * -velocity;
+    }
+
+    public static Vector3 LiftAndDrag(Vector3 velocity, float velocityMagnitude, Vector3 aeroDir, float dens, float surface, Vector2 coeffs, float dmg)
+    {
+        Vector3 liftDir = Vector3.Cross(velocity, aeroDir);
+
+        float commonFactor = 0.5f * dens * surface * velocityMagnitude;
+        float lift = dmg * dmg * dmg * coeffs.y * commonFactor;
+        float drag = (maxDragCoeffDamaged - dmg * (maxDragCoeffDamaged - 1f)) * coeffs.x * commonFactor;
+        
+
+        return lift * liftDir + drag *  -velocity;
     }
 }

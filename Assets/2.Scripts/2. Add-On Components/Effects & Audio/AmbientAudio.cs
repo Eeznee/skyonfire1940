@@ -3,21 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
-public class AmbientAudio : AudioComponent
+public class AmbientAudio : SofComponent
 {
     public AudioClip ruralClip;
 
-    SofAudio rural;
+    SofSmartAudioSource rural;
 
     public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
-        rural = new SofAudio(avm, ruralClip, SofAudioGroup.External, false);
+        rural = new SofSmartAudioSource(objectAudio, ruralClip, SofAudioGroup.External, false, UpdateAudio);
     }
-
-    public void Update()
+    public void UpdateAudio()
     {
-        if (aircraft != Player.aircraft) return;
         float targetVolume = Mathf.InverseLerp(50f, 0f, data.relativeAltitude.Get) * 0.1f;
         rural.source.volume = Mathf.MoveTowards(rural.source.volume, targetVolume, Time.deltaTime);
     }

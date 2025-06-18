@@ -123,16 +123,9 @@ public class CrewSeat : SofComponent
     {
 
     }
-    public virtual void PlayerFixed(CrewMember crew)
-    {
-
-    }
     public virtual void AiUpdate(CrewMember crew)
     {
         TryReload(true);
-    }
-    public virtual void AiFixed(CrewMember crew)
-    {
     }
     protected void NewGrips(HandGrip right, HandGrip left)
     {

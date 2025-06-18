@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 
 [AddComponentMenu("Sof Components/Liquid Systems/Hydraulics")]
@@ -50,7 +51,7 @@ public class HydraulicSystem : SofComponent
         if (control.IsAlwaysBinary()) binary = true;
         if (!control.HasCustomDefaultState()) defaultState = control.DefaultState();
 
-        sofAudio = new SofAudio(sofModular.avm, clip, SofAudioGroup.Persistent, false);
+        sofAudio = new SofSmartAudioSource(sofModular.objectAudio, clip, SofAudioGroup.Persistent, false, UpdateAudio);
         sofAudio.source.pitch = pitch;
 
         if (control == HydraulicControl.Type.LandingGear) SetInstant(aircraft.GroundedStart);
@@ -74,13 +75,22 @@ public class HydraulicSystem : SofComponent
     }
     public virtual void SetDirection(int speed)
     {
-        if (speed == 1) stateInput = 1f;
-        if (speed == -1) stateInput = 0f;
-        if (speed == 0 && !binary) stateInput = state;
+        if (speed == 1) Set(1f);
+        if (speed == -1) Set(0f);
+        if (speed == 0 && !binary) Set(state);
     }
     public virtual void Set() { Set((stateInput == 0f) ? 1f : 0f); }
     public virtual void Set(bool s) { Set(s ? 1f : 0f); }
-    public virtual void Set(float input) { stateInput = Mathf.Clamp01(input); }
+    public virtual void Set(float input) 
+    {
+        if (disabled) return;
+        stateInput = Mathf.Clamp01(input);
+
+        if (!animating)
+        {
+            StartCoroutine(HydraulicsUpdateUntilStateReached());
+        }
+    }
     public virtual void SetInstant(bool lowered)
     {
         SetInstant(lowered ? 1f : 0f);
@@ -90,32 +100,41 @@ public class HydraulicSystem : SofComponent
         stateInput = state = Mathf.Clamp01(input);
         ApplyStateAnimator();
     }
-    private void Update()
+    protected IEnumerator HydraulicsUpdateUntilStateReached()
     {
-        AnimateUpdate();
-        AudioUpdate();
+        while (state != stateInput)
+        {
+            if (disabled)
+            {
+                animating = false;
+                yield break;
+            }
+            animating = true;
+
+            float travel = Time.deltaTime / (stateInput > state ? loweringTime : retractingTime);
+            state = Mathf.MoveTowards(state, stateInput, travel);
+            if (control == HydraulicControl.Type.LandingGear && aircraft)
+            {
+                aircraft.RecomputeRealMass();
+            }
+            if (aircraft && Mathf.Abs(lastStateUpdatedLOD - state) > updateLODthreshold || state == stateInput)
+            {
+                aircraft.lod.UpdateMergedModel();
+                lastStateUpdatedLOD = state;
+            }
+            ApplyStateAnimator();
+            yield return null;
+        }
+        animating = false;
+        OnStateReached();
+    }
+    protected virtual void OnStateReached()
+    {
+
     }
 
     private float lastStateUpdatedLOD = 0f;
     const float updateLODthreshold = 0.05f;
-    protected virtual void AnimateUpdate()
-    {
-        animating = (state != stateInput) && !disabled;
-        if (!animating) return;
-
-        float travel = Time.deltaTime / (stateInput > state ? loweringTime : retractingTime);
-        state = Mathf.MoveTowards(state, stateInput, travel);
-        if (control == HydraulicControl.Type.LandingGear && aircraft)
-        {
-            aircraft.RecomputeRealMass();
-        }
-        if (aircraft && Mathf.Abs(lastStateUpdatedLOD - state) > updateLODthreshold || state == stateInput)
-        {
-            aircraft.lod.UpdateMergedModel();
-            lastStateUpdatedLOD = state;
-        }
-        ApplyStateAnimator();
-    }
     private float oneFrameStatePrevious;
     public void OneFrameSetStart(float newState)
     {
@@ -147,17 +166,15 @@ public class HydraulicSystem : SofComponent
     }
 
     //AUDIO SECTION
-    private SofAudio sofAudio;
+    private SofSmartAudioSource sofAudio;
     [SerializeField] private AudioClip clip;
     [SerializeField] private AudioClip extendedLockClip;
     [SerializeField] private AudioClip retractedLockClip;
     [SerializeField] private bool extendOnly = false;
     [SerializeField] private float volume = 0.3f;
     [SerializeField] private float pitch = 1f;
-    protected void AudioUpdate()
+    private void UpdateAudio()
     {
-        if (!sofAudio.Enabled()) return;
-
         bool play = animating && !(extendOnly && stateInput < state);
         if (play != sofAudio.source.isPlaying)
         {
@@ -167,7 +184,7 @@ public class HydraulicSystem : SofComponent
 
         sofAudio.source.volume = Mathf.MoveTowards(sofAudio.source.volume, play ? volume : 0f, Time.deltaTime * 5f);
 
-        if (extendedLockClip && animating && state == 1f) aircraft.avm.persistent.local.PlayOneShot(extendedLockClip, 1f);
-        if (retractedLockClip && animating && state == 0f) aircraft.avm.persistent.local.PlayOneShot(retractedLockClip, 1f);
+        if (extendedLockClip && animating && state == 1f) aircraft.objectAudio.localClipsPlayer.PlayOneShot(extendedLockClip, 1f);
+        if (retractedLockClip && animating && state == 0f) aircraft.objectAudio.localClipsPlayer.PlayOneShot(retractedLockClip, 1f);
     }
 }

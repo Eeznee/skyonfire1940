@@ -55,7 +55,7 @@ public class CrewMember : SofModule, IMassComponent
     public bool IsVrPlayer => Player.crew == this && GameManager.gm.vr && Application.isPlaying;
     public int SeatId => seats.IndexOf(Seat);
     protected bool SkipUpdate => Time.timeScale == 0f || !sofObject;
-    public bool ActionsUnavailable => ripped || IsVrPlayer || (forcesEffect != null && forcesEffect.Gloc()) || (stunDuration > 0f && Player.crew != this);
+    public bool ActionsUnavailable => ripped || IsVrPlayer || (forcesEffect != null && forcesEffect.Gloc) || (stunDuration > 0f && Player.crew != this);
 
     public float stunDuration;
     public CrewBailing bailOut { get; private set; }
@@ -97,6 +97,13 @@ public class CrewMember : SofModule, IMassComponent
             return tr.position + tr.TransformDirection(-eyesOffset);
         }
     }
+
+
+    public override void SetReferences(SofModular _complex)
+    {
+        if (aircraft) aircraft.OnUpdateLOD1 -= MoveToSeatSmooth;
+        base.SetReferences(_complex);
+    }
     public override void Initialize(SofModular _complex)
     {
         base.Initialize(_complex);
@@ -124,6 +131,8 @@ public class CrewMember : SofModule, IMassComponent
             visualModel = Instantiate(visualModel, transform.position, transform.rotation, tr);
             visualModel.GetComponent<CrewAnimator>().SetInstanciatedComponent(sofModular);
         }
+
+        if (aircraft) aircraft.OnUpdateLOD1 += MoveToSeatSmooth;
     }
 
     const float headSmoothTime = 0.2f;
@@ -131,7 +140,6 @@ public class CrewMember : SofModule, IMassComponent
     private void Update()
     {
         if (stunDuration > 0f) stunDuration = Mathf.Min(stunDuration - Time.deltaTime, 15f);
-
         if (ActionsUnavailable || SkipUpdate) return;
 
         if (Player.crew == this && Player.controllingPlayer) Seat.PlayerUpdate(this);
@@ -140,22 +148,14 @@ public class CrewMember : SofModule, IMassComponent
             SwitchToPrioritySeat();
             Seat.AiUpdate(this);
         }
-
-        MoveToSeatSmooth();
     }
     private void FixedUpdate()
     {
-        if(aircraft) forcesEffect.UpdateForces(Time.fixedDeltaTime);
-
-        if (ActionsUnavailable || SkipUpdate) return;
-        if (IsPilot) return;
-
-        if (Player.crew == this && Player.controllingPlayer) Seat.PlayerFixed(this);
-        else Seat.AiFixed(this);
+        if (aircraft) forcesEffect.UpdateForces(Time.fixedDeltaTime);
     }
     public override void Rip()
     {
-        if (aircraft && IsPilot) aircraft.destroyed = true;
+        if (aircraft && IsPilot) aircraft.Destroy();
         base.Rip();
     }
     protected void SwitchToPrioritySeat()
@@ -194,6 +194,8 @@ public class CrewMember : SofModule, IMassComponent
     }
     public void MoveToSeatSmooth()
     {
+        if ((tr.localPosition - TargetHeadLocalPosition).sqrMagnitude < 0.01f * 0.01f) return;
+
         tr.localPosition = Vector3.SmoothDamp(tr.localPosition, TargetHeadLocalPosition, ref velRef, headSmoothTime);
     }
     public void MoveToSeatInstant()

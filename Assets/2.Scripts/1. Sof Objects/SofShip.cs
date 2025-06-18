@@ -108,19 +108,23 @@ public class SofShip : SofModular
 
     public void Update()
     {
-        UpdateRollAngle();
-        UpdatePitchAngle();
+        if(equilibrumRoll != 0f || equilibrumPitch != 0f)
+        {
+            UpdateRollAngle();
+            UpdatePitchAngle();
 
-        float yawAngle = transform.rotation.eulerAngles.y;
-        Vector3 euler = new Vector3(pitchAngle, yawAngle, rollAngle);
-        transform.rotation = Quaternion.Euler(euler);
-
-        Vector3 pos = transform.position;
+            float yawAngle = tr.rotation.eulerAngles.y;
+            Vector3 euler = new(pitchAngle, yawAngle, rollAngle);
+            tr.rotation = Quaternion.Euler(euler);
+        }
+        Vector3 pos = tr.position;
         pos.y = sinkingDepth;
-        transform.position = pos;
+        tr.position = pos;
     }
     private void UpdateRollAngle()
     {
+        rollAngle = equilibrumRoll;
+        return;
         float springForce = (equilibrumRoll - rollAngle) * spring;
         float damperForce = -rollVelocity * damper;
 
@@ -131,6 +135,8 @@ public class SofShip : SofModular
     }
     private void UpdatePitchAngle()
     {
+        pitchAngle = equilibrumPitch;
+        return;
         float springForce = (equilibrumPitch - pitchAngle) * spring * 0.5f;
         float damperForce = -pitchVelocity * damper * 2f;
 
@@ -162,12 +168,12 @@ public class SofShip : SofModular
     }
     public void DestroyShip(Vector3 finalDamagePosition)
     {
-        if (destroyed == true) return;
+        if (Destroyed == true) return;
 
 
         Log.Print(name + " sunk", "ship sunk");
 
-        destroyed = true;
+        Destroyed = true;
 
         Vector3 localPos = transform.InverseTransformPoint(finalDamagePosition);
 

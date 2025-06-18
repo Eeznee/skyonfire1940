@@ -20,7 +20,7 @@ public class HoldFormation : Maneuver
         SofAircraft[] squad = GameManager.squadrons[aircraft.SquadronId];
         SofAircraft leader = null;
         for (int i = 0; i < squad.Length && leader == null; i++)
-            if (!squad[i].destroyed) leader = squad[i];
+            if (!squad[i].Destroyed) leader = squad[i];
         /*
         if (breakFormation && breakFormationTimer < Time.time)
         {
@@ -40,9 +40,9 @@ public class HoldFormation : Maneuver
         {
             //Direction
             Vector3 targetPos = aircraft.card.formation.GetPosition(leader.transform, aircraft.placeInSquad);
-            targetPos = targetPos + leader.transform.forward * 1000f;
-            targetPos.y = Mathf.Max(targetPos.y, 30f);
-            PointTracking.Tracking(targetPos, aircraft, leader.data.bankAngle.Get, 1f, true);
+            Vector3 distantTargetPos = targetPos + leader.transform.forward * 1000f;
+            distantTargetPos.y = Mathf.Max(distantTargetPos.y, 30f);
+            PointTracking.Tracking(distantTargetPos, aircraft, leader.data.bankAngle.Get, 1f, true);
 
             //Throttle
             float dis = transform.InverseTransformDirection(targetPos - transform.position).z;

@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
-using Unity.IO.LowLevel.Unsafe;
+using System.Collections.Generic;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -23,8 +24,22 @@ public class SofObject : MonoBehaviour
 
     public bool warOnly;
 
-    public bool destroyed = false;
-    public bool burning = false;
+    public bool Destroyed { get; protected set; }
+    public bool Burning { get; protected set; }
+
+
+    public Action OnStartBurning;
+    public Action OnDestroyed;
+    public void StartBurning()
+    {
+        Burning = true;
+        OnStartBurning?.Invoke();
+    }
+    public void Destroy()
+    {
+        Destroyed = true;
+        OnDestroyed?.Invoke();
+    }
 
     public virtual void SetReferences()
     {
@@ -63,6 +78,8 @@ public class SofObject : MonoBehaviour
     protected virtual void GameInitialization()
     {
         SetReferences();
+        Burning = false;
+        Destroyed = false;
     }
     protected virtual void OnEnable()
     {

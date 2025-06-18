@@ -23,7 +23,7 @@ public class Carburetor
 
         carburetorState = Mathf.MoveTowards(carburetorState, Mathf.Sign(engine.data.gForce + 0.5f), deltaTime);
 
-        if (carburetorFlowing && carburetorState < 0f) VibrationsManager.SendVibrations(0.6f, 0.5f, engine.aircraft);
+        if (carburetorFlowing && carburetorState < 0f && Player.aircraft == engine.aircraft) VibrationsManager.SendVibrations(0.6f, 0.5f);
         carburetorFlowing = carburetorState > 0f;
     }
 }

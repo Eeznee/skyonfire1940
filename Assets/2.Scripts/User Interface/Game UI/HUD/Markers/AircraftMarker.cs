@@ -18,7 +18,7 @@ public class AircraftMarker : Marker
     }
     protected override Color MarkerColor()
     {
-        if (target.destroyed) return Color.black;
+        if (target.Destroyed) return Color.black;
 
         Color color = base.MarkerColor();
 

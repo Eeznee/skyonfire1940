@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class WingTipsTrails : AudioComponent
+public class WingTipsTrails : SofComponent
 {
     public TrailRenderer trailReference;
     private TrailRenderer[] tipTrails;

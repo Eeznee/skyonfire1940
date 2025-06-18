@@ -29,7 +29,9 @@ public class FlightConditions
 
     public Vector3 PointVelocity(Vector3 worldPoint)
     {
-        Vector3 localPoint = worldPoint - WorldCenterOfMass;
+        if (!fictionalConditions) return complex.rb.GetPointVelocity(worldPoint);
+
+        Vector3 localPoint = worldPoint -  WorldCenterOfMass;
         return velocity + Vector3.Cross(angularVelocity, localPoint);
     }
     public Vector3 TransformWorldPos(Vector3 worldPoint)
@@ -89,7 +91,7 @@ public class FlightConditions
 
         InitializeMass();
     }
-    public FlightConditions(SofModular _complex, Vector3 _velocity, Vector3 _angularVelocity, AircraftAxes _axes)//, AircraftAxes _axes)
+    public FlightConditions(SofModular _complex, Vector3 _velocity, Vector3 _angularVelocity, AircraftAxes _axes)
     {
         complex = _complex;
 
@@ -107,12 +109,26 @@ public class FlightConditions
 
         InitializeMass();
     }
+
+    public void UpdateFlightConditions(bool updateMass)
+    {
+        position = complex.tr.position;
+        rotation = complex.tr.rotation;
+
+        velocity = complex.rb.velocity;
+        angularVelocity = complex.rb.angularVelocity;
+
+        if (complex.aircraft) axes = complex.aircraft.controls.current;
+        else axes = new AircraftAxes(0f, 0f, 0f);
+
+        airDensity = complex.data.density.Get;
+
+        if(updateMass) InitializeMass();
+    }
     public void SimulateControls(AircraftAxes target, float dt)
     {
         axes = complex.aircraft.controls.SimulateControls(IAS, axes, target, dt);
     }
-
-    Vector3 previousAngularAcceleration;
     public void ApplyForces(ResultingForce force, bool applyGravity, float dt)
     {
         if (applyGravity) velocity += Physics.gravity * dt;

@@ -27,8 +27,6 @@ public class DisableObjectsAtDistance : MonoBehaviour
             }
         }
         StartCoroutine(RepeatUpdateDisableState());
-        UpdateDisableState();
-
     }
 
     IEnumerator RepeatUpdateDisableState()

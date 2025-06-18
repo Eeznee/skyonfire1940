@@ -32,6 +32,7 @@ public class AirfoilQuarterTool
         zeroCl = _zeroCl;
         minCd = _minCd;
         cdGrowth = _cdGrowth;
+        prestallCdFactor = cdGrowth * clToCdPreStall * 0.5f;
 
         linearSlope = (maxCl * ltclf - zeroCl) / maxAlpha;
         linearToPeakAlpha = (maxAlpha * (maxCl * (ltclf - 2f) + zeroCl)) / (zeroCl - maxCl * ltclf);
@@ -93,10 +94,11 @@ public class AirfoilQuarterTool
 
     private float maxAlphaCd;
     private float stalledCd;
+    private float prestallCdFactor;
     private float PreStallDrag(float cl)
     {
-        float polynomialTo1 = degree4Factor * M.Pow(cl, 4) + degree3Factor * M.AbsPow(cl, 3) + degree2Factor * M.Pow(cl, 2);
-        return polynomialTo1 * clToCdPreStall * cdGrowth + minCd;
+        // degree4Factor * M.Pow(cl, 4) + degree3Factor * M.AbsPow(cl, 3) + degree2Factor * M.Pow(cl, 2);
+        return cl * cl * (1f + Mathf.Abs(cl)) * prestallCdFactor + minCd;
     }
 
     private float PostStallDrag(float alpha)
@@ -108,7 +110,7 @@ public class AirfoilQuarterTool
     private float PlateLikeDrag(float alpha)
     {
         float t = Mathv.InverseLerpUnclamped(finalStallAlpha, 90f, alpha);
-        return Mathf.Lerp(stalledCd, flatPlateMaxDrag, Mathv.SmoothStop(t,2));
+        return Mathf.Lerp(stalledCd, flatPlateMaxDrag, t * t);
     }
 
     public float Cd(float alpha, float cl)

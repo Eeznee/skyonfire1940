@@ -32,7 +32,6 @@ public class SteeringAxis : SofComponent
             PedalsSteeringFixedUpdate();
         else
             FreeWheelFixedUpdate();
-
     }
     private void PedalsSteeringFixedUpdate()
     {
