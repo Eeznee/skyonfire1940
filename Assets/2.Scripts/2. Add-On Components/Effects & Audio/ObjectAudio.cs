@@ -125,14 +125,14 @@ public class ObjectAudio : SofComponent
 
         foreach (SofSmartAudioSource sa in globalSofAudios)
         {
-            sa.v = sa.source.volume;
+            sa.v = Mathf.Clamp01(sa.source.volume);
         }
         while (volume < 1f)
         {
-            volume += Time.unscaledDeltaTime * 0.5f;
+            volume = Mathf.Clamp01(volume + Time.unscaledDeltaTime * 0.5f);
             foreach (SofSmartAudioSource sa in globalSofAudios)
             {
-                sa.source.volume = sa.v * volume;
+                sa.source.volume = Mathf.Min(volume,Mathf.Max(sa.v,sa.source.volume));
             }
             yield return null;
         }
