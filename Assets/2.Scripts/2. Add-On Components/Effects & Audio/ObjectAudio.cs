@@ -96,7 +96,6 @@ public class ObjectAudio : SofComponent
 
             SofAudioListener.TryToAdd(this);
     }
-
     public void EnableFadeIn()
     {
         if (!gameObject.activeInHierarchy)
@@ -123,12 +122,17 @@ public class ObjectAudio : SofComponent
         globalHolder.SetActive(true);
 
         float volume = 0f;
+
+        foreach (SofSmartAudioSource sa in globalSofAudios)
+        {
+            sa.v = sa.source.volume;
+        }
         while (volume < 1f)
         {
             volume += Time.unscaledDeltaTime * 0.5f;
             foreach (SofSmartAudioSource sa in globalSofAudios)
             {
-                sa.source.volume = Mathf.Min(sa.source.volume,volume);
+                sa.source.volume = sa.v * volume;
             }
             yield return null;
         }

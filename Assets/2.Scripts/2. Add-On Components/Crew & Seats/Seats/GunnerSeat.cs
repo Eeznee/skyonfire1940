@@ -55,7 +55,7 @@ public class GunnerSeat : CrewSeat
         {
             if (mainGun && aircraft && aircraft.crew[0] == Player.crew)
             {
-                if (Vector3.Angle(gunMount.FiringDirection, aircraft.tr.forward) > 0.001f) return 5;
+                if (Vector3.Angle(gunMount.FiringDirection, aircraft.tr.forward) > 0.005f) return 5;
                 return -1;
             }
             if (target) return 2;

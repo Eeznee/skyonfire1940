@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.UI;
 
 
 public class ThirdPersonGameCam : CameraLogic
@@ -32,7 +33,14 @@ public class FreeCam : CameraLogic
 
     public override Vector3 DefaultStartingPos()
     {
-        return Player.modular.tr.position;
+        if(Player.seat)
+        {
+            return Player.modular.tr.TransformPoint(Player.seat.externalViewPoint);
+        }
+        else
+        {
+            return Player.modular.tr.position;
+        }
     }
 }
 public class BombSightCam : CameraLogic

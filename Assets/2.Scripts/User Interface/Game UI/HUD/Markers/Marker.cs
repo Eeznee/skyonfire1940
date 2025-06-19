@@ -138,11 +138,13 @@ public class Marker : MonoBehaviour
         screenPoint += HalvedScreenSize;
     }
 
+    private float previousReticleOpacity;
+    private float previousTextOpacity;
     private Color previousColor;
     protected void UpdateColorAndOpacity()
     {
         Color color = MarkerColor();
-        if(previousColor != color)
+        if(previousColor != color || Mathf.Abs(previousReticleOpacity - reticleOverlapOpacity) > 0.02f || Mathf.Abs(previousTextOpacity - textOverlapOpacity) > 0.02f)
         {
             color.a = reticleOverlapOpacity;
             reticle.color = arrow.color = color;
@@ -151,6 +153,8 @@ public class Marker : MonoBehaviour
             infos.color = color;
 
             previousColor = color;
+            previousReticleOpacity = reticleOverlapOpacity;
+            previousTextOpacity = textOverlapOpacity;
         }
     }
     protected virtual Color MarkerColor()

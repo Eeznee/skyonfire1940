@@ -47,7 +47,7 @@ public class CameraEditor : MonoBehaviour
     }
     public void ResetPosition()
     {
-        currentCam.Reset();
+        currentCam.ResetPosition();
     }
     public void OnCameraChange()
     {

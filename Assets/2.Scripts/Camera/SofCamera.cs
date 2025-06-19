@@ -82,6 +82,7 @@ public class SofCamera : MonoBehaviour
     {
         desiredRotation = subCam.logic.BaseRotation();
         axis = Vector2.zero;
+        savedAxis = Vector2.zero;
     }
     public static void ResetRotationInstant()
     {
@@ -112,6 +113,6 @@ public class SofCamera : MonoBehaviour
         resetRotation &= viewMode != 2;
         if (resetRotation) ResetRotationInstant();
 
-        subCam.ResetNoneHoldPos();
+        subCam.OnCameraSwitchedToThis();
     }
 }

@@ -27,6 +27,8 @@ public class GunsGroupAudio : MonoBehaviour
         outSource = new SofSmartAudioSource(avm, null, SofAudioGroup.External, true, null);
         inSource = new SofSmartAudioSource(avm, null, SofAudioGroup.Cockpit, false, null);
 
+        outSource.CancelDoppler();
+        inSource.CancelDoppler();
 
         foreach (Gun gun in guns)
             gun.OnFireEvent += ShotFired;
@@ -94,7 +96,7 @@ public class GunsGroupAudio : MonoBehaviour
     }
     private void PlayEndClips()
     {
-        if (sample.endOut) avm.globalExternalClipsPlayer.PlayOneShot(sample.endOut);
+        if (sample.endOut) avm.globalExternalClipsPlayer.PlayOneShot(sample.endOut, 1f);
         if (sample.endIn) avm.localCockpitClipsPlayer.PlayOneShot(sample.endIn, 1f);
     }
     private void ShotFired(float delay)

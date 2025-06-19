@@ -13,6 +13,10 @@ public class SofSmartAudioSource
     public delegate void UpdateAudioDelegate();
     public UpdateAudioDelegate updateAudio;
 
+    private bool useDoppler;
+
+    public float v;
+
     public SofSmartAudioSource(ObjectAudio _avm,  AudioClip clip,SofAudioGroup g, bool _global, UpdateAudioDelegate updateAudioFunction)
     {
         updateAudio = updateAudioFunction;
@@ -32,8 +36,15 @@ public class SofSmartAudioSource
         UpdatePriorityAndSpatialization();
         if (source.clip) source.time = Random.Range(0f, clip.length);
         if (holder.activeInHierarchy) source.Play();
+        useDoppler = true;
 
         avm.AddSofAudio(this);
+    }
+
+    public void CancelDoppler()
+    {
+        useDoppler = false;
+        source.dopplerLevel = 0f;
     }
 
     public void UpdatePriorityAndSpatialization()
@@ -41,7 +52,7 @@ public class SofSmartAudioSource
         bool audioListenerTarget = avm.AudioListenerIsAttachedToThisObject;
         source.priority = audioListenerTarget ? 0 : 128;
         source.spatialize = !audioListenerTarget;
-        source.dopplerLevel = audioListenerTarget ? 0f : 1f;
+        source.dopplerLevel = audioListenerTarget ? 0f : (useDoppler ? 1f : 0f);
         source.spatialBlend = audioListenerTarget ? 0f : 1f;
     }
 

@@ -15,9 +15,10 @@ public static class CameraOperations
 
         return GroundClipPos(basePos, offset);
     }
-    public static Quaternion RotateRelative(ref Vector2 axis, Vector3 defaultForward, Vector3 defaultUp)
+    public static Quaternion RotateRelative(ref Vector2 axis, Vector3 defaultForward, Vector3 defaultUp, float tilt)
     {
         Vector2 inputs = CameraInputs.CameraInput();
+        inputs = Quaternion.Euler(0f, 0f, tilt) * inputs;
 
         float yLimit = SofCamera.subCam.logic.BasePosMode == CamPos.FirstPerson ? 84f : 180f;
 
@@ -29,18 +30,31 @@ public static class CameraOperations
 
         return rot;
     }
-    public static Quaternion RotateWorld(Quaternion rotation, Vector3 defaultForward, Vector3 defaultUp)
+    public static Quaternion RotateWorld(ref Vector2 axis)
     {
         Vector2 inputs = CameraInputs.CameraInput();
+
+        float yLimit = SofCamera.subCam.logic.BasePosMode == CamPos.FirstPerson ? 84f : 180f;
+
+        axis.x += Mathf.Sign(90f - Mathf.Abs(axis.y)) * inputs.x;
+        axis.y = Mathf.Clamp(axis.y + inputs.y, -yLimit, yLimit);
+        Quaternion rot = Quaternion.AngleAxis(axis.x, Vector3.up);
+        rot = Quaternion.AngleAxis(axis.y, rot * Vector3.right) * rot;
+
+        return rot;
+    }
+    public static Quaternion RotateWorld(Quaternion rotation, Vector3 defaultForward, Vector3 defaultUp, float tilt)
+    {
+        Vector2 inputs = CameraInputs.CameraInput();
+        inputs = Quaternion.Euler(0f, 0f, tilt) * inputs;
 
         Vector3 up = defaultUp;
         float upAngle = Vector3.Angle(up, rotation.Forward());
 
         if (upAngle < minUp || upAngle > 180f - minUp) up = rotation.Up();
-        else
+        else if (SofCamera.lookAround || UIManager.gameUI == GameUI.PhotoMode)
         {
             bool backwards = Vector3.Angle(up, rotation.Up()) > 90f;
-            if (!SofCamera.lookAround && Vector3.Angle(defaultForward, rotation.Forward()) < 90f) backwards = false;
             if (backwards) up = -up;
         }
         rotation = Quaternion.LookRotation(rotation * Vector3.forward, up);

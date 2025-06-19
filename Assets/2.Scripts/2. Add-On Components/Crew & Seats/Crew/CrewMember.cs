@@ -161,8 +161,10 @@ public class CrewMember : SofModule, IMassComponent
     protected void SwitchToPrioritySeat()
     {
         int newSeatId = 0;
-        for (int i = 1; i < seats.Count; i++) if (seats[i].Priority > seats[newSeatId].Priority) newSeatId = i;
-
+        for (int i = 1; i < seats.Count; i++)
+        {
+            if (seats[i].Priority > seats[newSeatId].Priority) newSeatId = i;
+        }
         if (seats[newSeatId] == Seat) return;
         SwitchSeat(newSeatId);
     }
@@ -194,7 +196,7 @@ public class CrewMember : SofModule, IMassComponent
     }
     public void MoveToSeatSmooth()
     {
-        if ((tr.localPosition - TargetHeadLocalPosition).sqrMagnitude < 0.01f * 0.01f) return;
+        if ((tr.localPosition - TargetHeadLocalPosition).sqrMagnitude < 0.0001f * 0.0001f) return;
 
         tr.localPosition = Vector3.SmoothDamp(tr.localPosition, TargetHeadLocalPosition, ref velRef, headSmoothTime);
     }

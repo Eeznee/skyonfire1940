@@ -45,6 +45,7 @@ public class CrewBailing : SofComponent
     {
         if (tryingToBail) return;
         if (Player.aircraft == aircraft && Player.controllingPlayer) return;
+        if (crew.ripped) return;
 
         if (aircraft && (aircraft.Burning || aircraft.Destroyed)) StartBailing(Random.Range(1f, 3f));
     }
@@ -70,6 +71,7 @@ public class CrewBailing : SofComponent
     public void StartBailing(float delay)
     {
         if (!aircraft || crew.ripped || tryingToBail) return;
+
         tryingToBail = true;
         if (crew.Seat.canopy) crew.Seat.canopy.Set(1f);
         bailingCount = bailTime + delay;
@@ -79,6 +81,7 @@ public class CrewBailing : SofComponent
     public void CancelBailing()
     {
         if (!aircraft || crew.ripped) return;
+
         tryingToBail = false;
         if (crew.Seat.canopy) crew.Seat.canopy.Set(0f);
 

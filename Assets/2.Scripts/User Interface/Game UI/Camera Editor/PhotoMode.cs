@@ -22,7 +22,7 @@ public class PhotoMode : MonoBehaviour
 
     public void ResetPosition()
     {
-        photoCam.Reset();
+        photoCam.ResetPosition();
     }
 
     public void OnSubcamSettingsChanged<T>(T fillerVariable) { SendProperties();  }

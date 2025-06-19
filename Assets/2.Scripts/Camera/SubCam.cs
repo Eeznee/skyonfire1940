@@ -48,7 +48,7 @@ public class SubCam
         {
             Quaternion fromCurrentToDefault = Quaternion.Inverse(logic.RelativeTransform().rotation) * SofCamera.tr.rotation;
             customPos += fromCurrentToDefault * input;
-        } 
+        }
         else if (logic.Adjustment == CamAdjustment.Offset)
         {
             customOffset.z += input.z;
@@ -66,18 +66,19 @@ public class SubCam
     {
         if (UIManager.gameUI == GameUI.CamEditor || UIManager.gameUI == GameUI.PhotoMode) MovePositionAndOffset();
 
-        return CameraOperations.Position(logic,customPos,Offset());
+        return CameraOperations.Position(logic, customPos, Offset());
     }
     public Quaternion Rotation(ref Vector2 axis, Quaternion currentRotation)
     {
         if (Player.role == SeatRole.Bombardier) return logic.BaseRotation();
 
         Quaternion rotation;
+        currentRotation *= Quaternion.AngleAxis(tilt, Vector3.forward);
 
         if (logic.FollowBaseDir)
-            rotation = CameraOperations.RotateRelative(ref axis, logic.BaseRotation() * Vector3.forward, logic.BaseUp());
+            rotation = CameraOperations.RotateRelative(ref axis, logic.BaseRotation() * Vector3.forward, logic.BaseUp(), tilt);
         else
-            rotation = CameraOperations.RotateWorld(currentRotation, logic.BaseDirection(),logic.BaseUp());
+            rotation = CameraOperations.RotateWorld(currentRotation, logic.BaseDirection(), logic.BaseUp(), tilt);
 
         rotation *= Quaternion.AngleAxis(-tilt, Vector3.forward);
         return rotation;
@@ -89,16 +90,25 @@ public class SubCam
         if (GameManager.squadrons.Count > squad && GameManager.squadrons[squad].Length > wing) return GameManager.squadrons[squad][wing];
         return GameManager.squadrons[0][0];
     }
-    public void ResetNoneHoldPos()
+    public void OnCameraSwitchedToThis()
     {
-        if (logic.BasePosMode == CamPos.World && !holdPos) Reset();
+        if (logic.BasePosMode == CamPos.World && !holdPos)
+        {
+            if(UIManager.gameUI == GameUI.PhotoMode)
+                customPos = logic.RelativeTransform().InverseTransformPoint(SofCamera.tr.position);
+            else
+                ResetPosition();
+        }
     }
-    public void Reset()
+
+    public void ResetPosition()
     {
         if (logic.Adjustment == CamAdjustment.Position)
             customPos = logic.RelativeTransform().InverseTransformPoint(logic.DefaultStartingPos());
+
         if (logic.Adjustment == CamAdjustment.Offset)
             customOffset = TargetCrew().Seat.externalViewPoint;
+
     }
     public void ChangeLogic(CustomCamLogic newLogic)
     {
@@ -111,7 +121,7 @@ public class SubCam
         bool firstLogic = logic == null;
         logic = newLogic;
         logic.subCam = this;
-        if (!firstLogic) Reset();
+        if (!firstLogic) ResetPosition();
     }
     public SubCam(CameraLogic _logic, bool _smooth, bool _holdPos)
     {
@@ -140,7 +150,7 @@ public class SubCam
 
         ChangeLogic((CustomCamLogic)PlayerPrefs.GetInt("camBehaviour" + i, 0));
 
-        logName = "Cam " + i + " " +  logic.Name;
+        logName = "Cam " + i + " " + logic.Name;
     }
     public void SaveSettings()
     {
