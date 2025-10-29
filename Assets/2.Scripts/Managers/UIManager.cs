@@ -1,0 +1,98 @@
+﻿using System;
+using UnityEngine;
+using UnityEngine.UI;
+using System.Collections.Generic;
+
+public enum GameUI
+{
+    Game,
+    Pause,
+    CamEditor,
+    PhotoMode
+}
+public class UIManager : MonoBehaviour
+{
+    public static GameUI gameUI;
+    public static UIManager instance;
+
+    public GameObject gameMenu;
+    public GameObject pauseMenu;
+    public GameObject camerasEditor;
+    public GameObject photoMode;
+
+    public Text indicators;
+
+    public IndicatorsList pilotIndicators;
+    public IndicatorsList gunnerIndicators;
+    public IndicatorsList bomberIndicators;
+
+    private SeatRole seatInterface;
+
+    public DynamicUI[] dynamicUis;
+
+    private IndicatorsList currentIndicator;
+
+    public static event Action OnUISwitchEvent;
+
+    private void OnEnable()
+    {
+        instance = this;
+        Player.OnSeatChange += ResetInterface;
+        SofCamera.OnSwitchCamEvent += ResetInterface;
+
+        dynamicUis = GetComponentsInChildren<DynamicUI>(true);
+        gameUI = GameUI.Game;
+    }
+    private void OnDisable()
+    {
+        Player.OnSeatChange -= ResetInterface;
+        SofCamera.OnSwitchCamEvent -= ResetInterface;
+    }
+    private void GoBackToGameUI() { SwitchGameUI(GameUI.Game); }
+    public static void SwitchGameUI(GameUI newUI)
+    {
+        gameUI = newUI;
+        instance.ResetInterface();
+        OnUISwitchEvent?.Invoke();
+    }
+    public void ResetInterface()
+    {
+        seatInterface = Player.role;
+
+        dynamicUis.ResetProperties();
+
+        if (!Extensions.IsMobile)
+        {
+            bool cursor = seatInterface == SeatRole.Bombardier || gameUI != GameUI.Game;
+            Cursor.visible = cursor;
+            Cursor.lockState = cursor ? CursorLockMode.None : CursorLockMode.Locked;
+        }
+
+
+        currentIndicator = null;
+        switch (seatInterface)
+        {
+            case SeatRole.Pilot:currentIndicator = pilotIndicators; break;
+            case SeatRole.Gunner: currentIndicator = gunnerIndicators; break;
+            case SeatRole.Bombardier:currentIndicator = bomberIndicators; break;
+        }
+        gameMenu.SetActive(gameUI == GameUI.Game);
+        pauseMenu.SetActive(gameUI == GameUI.Pause);
+        camerasEditor.SetActive(gameUI == GameUI.CamEditor);
+        photoMode.SetActive(gameUI == GameUI.PhotoMode);
+    }
+    public void SetPause(bool pause)
+    {
+        TimeManager.SetPause(pause);
+    }
+
+
+    const int updateCycle = 10;
+    int cycle = 0;
+    void Update()
+    {
+        cycle++;
+
+        if (currentIndicator && cycle % updateCycle == 0) indicators.text = currentIndicator.Text();
+    }
+}

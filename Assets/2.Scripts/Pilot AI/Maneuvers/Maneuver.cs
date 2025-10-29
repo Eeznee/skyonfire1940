@@ -48,9 +48,11 @@ public class TurnData
     public void TurnFixedTime()
     {
         if (ended) return;
-        AircraftAxes axes = PointTracking.TrackingInputs(aircraft.transform.position + aircraft.transform.forward * 500f, aircraft, bankAngle, 1f, true);
-        axes.pitch = intensity;
-        aircraft.controls.SetTargetInput(axes, PitchCorrectionMode.FullyAssisted);
+
+        AircraftAxes axes = aircraft.controls.SimpleTrackingAxes(aircraft.transform.forward, bankAngle, 1f, true);
+        axes.pitch = aircraft.controls.MaxPitch * intensity;
+        aircraft.controls.SetTargetInput(axes, false, PitchCorrectionMode.Raw);
+
         count += Time.fixedDeltaTime;
         if (count >= turnTime) ended = true;
     }

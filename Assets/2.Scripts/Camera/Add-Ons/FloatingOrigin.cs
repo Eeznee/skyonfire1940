@@ -33,7 +33,7 @@ public class FloatingOrigin : MonoBehaviour
 #endif
     void MoveParticles(Vector3 offset)
     {
-        Object[] objects = FindObjectsOfType(typeof(ParticleSystem));
+        Object[] objects = FindObjectsByType(typeof(ParticleSystem),FindObjectsSortMode.None);
         foreach (Object o in objects)
         {
             ParticleSystem sys = (ParticleSystem)o;
@@ -67,13 +67,15 @@ public class FloatingOrigin : MonoBehaviour
 
     private void Move(Vector3 cameraPosition)
     {
+        SofAudioListener.listener.enabled = false;
+
         foreach (GameObject g in SceneManager.GetActiveScene().GetRootGameObjects())
             g.transform.position -= cameraPosition;
 
         MoveParticles(cameraPosition);
 
         float physicsThreshold2 = physicsThreshold * physicsThreshold; // simplify check on threshold
-        foreach (Rigidbody r in FindObjectsOfType(typeof(Rigidbody)))
+        foreach (Rigidbody r in FindObjectsByType(typeof(Rigidbody), FindObjectsSortMode.None))
             r.sleepThreshold = r.transform.position.sqrMagnitude > physicsThreshold2 ? float.MaxValue : defaultSleepThreshold;
         Physics.SyncTransforms();
 
@@ -82,6 +84,8 @@ public class FloatingOrigin : MonoBehaviour
 #if UNITY_EDITOR
         if(SceneView.lastActiveSceneView) SceneView.lastActiveSceneView.pivot -= cameraPosition;
 #endif
+
+        SofAudioListener.listener.enabled = true;
     }
 
     void LateUpdate()

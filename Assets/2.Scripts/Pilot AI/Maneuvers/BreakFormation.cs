@@ -13,6 +13,8 @@ public class BreakFormation : ActiveManeuver
         leader = GameManager.squadrons[data.aircraft.SquadronId][0];
         breakDir = aircraft.card.formation.GetBreakDirection(leader.transform, aircraft.placeInSquad);
         breakCountDown = 2.5f;
+
+        if (GameManager.squadrons[data.aircraft.SquadronId].Length == 1) done = true;
     }
     public override string Label()
     {
@@ -24,8 +26,7 @@ public class BreakFormation : ActiveManeuver
         base.Execute(data);
 
         breakCountDown -= Time.fixedDeltaTime;
-        AircraftAxes axes = PointTracking.TrackingInputs(transform.position + breakDir * 300f, aircraft, 0f, 0f, true);
-        aircraft.controls.SetTargetInput(axes, PitchCorrectionMode.FullyAssisted);
+        aircraft.controls.SimpleTracking(breakDir, 0f, 0f, true);
         if (breakCountDown < 0f) done = true;
     }
 }

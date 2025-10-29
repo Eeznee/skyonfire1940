@@ -27,7 +27,7 @@ namespace Pinwheel.Jupiter
             skyComponent.Profile = profile;
             skyComponent.MoonLightSource = null;
 
-            Light[] lights = Object.FindObjectsOfType<Light>();
+            Light[] lights = Object.FindObjectsByType(typeof(Light), FindObjectsSortMode.None) as Light[];
             for (int i = 0; i < lights.Length; ++i)
             {
                 if (lights[i].type == LightType.Directional)
@@ -60,7 +60,7 @@ namespace Pinwheel.Jupiter
             skyComponent.Profile = profile;
             skyComponent.SunLightSource = null;
 
-            Light[] lights = Object.FindObjectsOfType<Light>();
+            Light[] lights = Object.FindObjectsByType(typeof(Light), FindObjectsSortMode.None) as Light[];
             for (int i = 0; i < lights.Length; ++i)
             {
                 if (lights[i].type == LightType.Directional)

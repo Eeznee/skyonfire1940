@@ -54,7 +54,7 @@ public static class AI
 
             dir = target.transform.position - aircraft.transform.position;
             distance = dir.magnitude;
-            closure = Vector3.Dot(target.rb.velocity - aircraft.rb.velocity, dir/distance);
+            closure = Vector3.Dot(target.rb.linearVelocity - aircraft.rb.linearVelocity, dir/distance);
             offAngle = Vector3.Angle(dir, aircraft.transform.forward);
             crossAngle = Vector3.Angle(aircraft.transform.forward, target.transform.forward);
             aspectAngle = Vector3.Angle(dir, target.transform.forward);
@@ -100,9 +100,9 @@ public static class AI
 
             dir = target.position - turret.transform.position;
             distance = dir.magnitude;
-            relativeVel = target.velocity - turret.rb.velocity;
-            closure = Vector3.Dot(target.velocity - turret.rb.velocity, dir/distance);
-            angularSpeed = Vector3.Angle(dir, dir + target.velocity);
+            relativeVel = target.linearVelocity - turret.rb.linearVelocity;
+            closure = Vector3.Dot(target.linearVelocity - turret.rb.linearVelocity, dir/distance);
+            angularSpeed = Vector3.Angle(dir, dir + target.linearVelocity);
             aspectAngle = Vector3.Angle(dir, target.transform.forward);
         }
     }

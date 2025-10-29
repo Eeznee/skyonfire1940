@@ -15,9 +15,8 @@ public class HeadOn : Maneuver
         if (CanHeadOn(data))
         {
             float bulletTime = data.distance / 850f;
-            Vector3 target = data.target.transform.position + data.target.rb.velocity * bulletTime;
-            AircraftAxes axes = PointTracking.TrackingInputs(target, data.aircraft, 0f, 0f, false);
-            data.aircraft.controls.SetTargetInput(axes, PitchCorrectionMode.FullyAssisted);
+            Vector3 target = data.target.transform.position + data.target.rb.linearVelocity * bulletTime;
+            aircraft.controls.SimpleTrackingPos(target, 0f, 0f, true);
 
         }
         else

@@ -31,10 +31,8 @@ public class ZoomOut : ActiveManeuver
         if (done) return;
 
         base.Execute(data);
-        AircraftAxes axes;
 
-        axes = PointTracking.TrackingInputs(transform.position + targetDirection, aircraft, 0f, 1f, true);
-        aircraft.controls.SetTargetInput(axes, PitchCorrectionMode.FullyAssisted);
+        aircraft.controls.SimpleTracking(targetDirection, 0f, 1f, true);
 
         if (data.distance > maxDistance || aircraft.data.ias.Get < aircraft.stats.MinTakeOffSpeedNoFlaps * 1.3f) done = true;
     }

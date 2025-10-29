@@ -36,24 +36,19 @@ public class RollingScissors : ActiveManeuver
         if (done) return;
         base.Execute(data);
 
-        AircraftAxes axes;
-
         if (phase == 0) //Break Turn Inside Bandit
         {
-            axes = PointTracking.TrackingInputs(transform.position + transform.forward * 500f, aircraft, angle, 1f, true);
-            if (Mathf.Abs(aircraft.data.bankAngle.Get - angle) < 10f) axes.pitch = 1f;
-            aircraft.controls.SetTargetInput(axes, PitchCorrectionMode.FullyAssisted);
+            aircraft.controls.SimpleTracking(transform.forward, angle, 1f, true);
             if (Vector3.Dot(initialDirection, transform.forward) < 0.3f) phase++;
         }
         else if (phase == 1) //Climb Hard
         {
-            axes = PointTracking.TrackingInputs(target.transform.position + Vector3.up * 500f, aircraft, 0f, 0f, true);
-            aircraft.controls.SetTargetInput(axes, PitchCorrectionMode.FullyAssisted);
+            aircraft.controls.SimpleTracking(Vector3.up, 0f, 0f, true);
             if (transform.forward.y > 0.8f) phase++;
         }
         else //Rolling scissors
         {
-            PointTracking.Tracking(data.target.transform.position, data.aircraft, 0f, 0f, true);
+            aircraft.controls.SimpleTracking(data.target.transform.position - transform.position, 0f, 0f, true);
             if (data.state == AI.DogfightState.Offensive) done = true;
         }
         if (timeStart + maxDuration < Time.time) done = true;

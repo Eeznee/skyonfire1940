@@ -13,7 +13,7 @@ public class Turnfight : Maneuver
         float altitudeDelta = targetAltitude - data.aircraft.data.altitude.Get;
 
         Vector3 up = Vector3.ProjectOnPlane(Vector3.up, tr.forward);
-        Vector3 targetBankedDir = Vector3.ProjectOnPlane(data.dir + data.target.rb.velocity, tr.forward);
+        Vector3 targetBankedDir = Vector3.ProjectOnPlane(data.dir + data.target.rb.linearVelocity, tr.forward);
         float bankAngleToTarget = Vector3.SignedAngle(up, targetBankedDir,tr.forward);
 
         float randomPerlin = 30f * (Mathf.PerlinNoise(Time.time * 0.05f, data.aircraft.mainSeat.aiRandomizedPerlin) * 2f - 1f);

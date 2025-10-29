@@ -7,13 +7,19 @@ using UnityEngine.Rendering;
 public class SofLensFlare : MonoBehaviour
 {
     LensFlareComponentSRP lensFlare;
-
-    void Start()
+    void OnEnable()
     {
         lensFlare = GetComponent<LensFlareComponentSRP>();
-
-        int qualityLevel = QualitySettings.GetQualityLevel();
-        lensFlare.useOcclusion = qualityLevel == 3;
-        lensFlare.enabled = qualityLevel == 3;
+        SofSettingsSO.OnUpdateSettings += UpdateLensFlareQuality;
+        UpdateLensFlareQuality();
+    }
+    private void OnDisable()
+    {
+        SofSettingsSO.OnUpdateSettings -= UpdateLensFlareQuality;
+    }
+    private void UpdateLensFlareQuality()
+    {
+        lensFlare.useOcclusion = SofSettingsSO.CurrentSettings.graphicsPreset >= 2;
+        lensFlare.enabled = SofSettingsSO.CurrentSettings.graphicsPreset >= 2;
     }
 }

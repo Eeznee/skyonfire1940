@@ -8,6 +8,8 @@ public abstract class ActiveManeuver : Maneuver
     public bool done;
     protected float timeStart;
 
+    protected float TimeSinceManeuverStart => Time.time - timeStart;
+
     public virtual void Initialize(AI.GeometricData data)
     {
         phase = 0;

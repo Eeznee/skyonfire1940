@@ -151,7 +151,7 @@ public static class NativeGallery
 		{
 			if( m_selectedMediaPath == null )
 			{
-				m_selectedMediaPath = Path.Combine( Application.temporaryCachePath, "pickedMedia" );
+				m_selectedMediaPath = Path.Combine(Application.temporaryCachePath, "pickedMedia" );
 				Directory.CreateDirectory( Application.temporaryCachePath );
 			}
 

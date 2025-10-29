@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
+using UnityEngine.InputSystem;
 
 [CreateAssetMenu(fileName = "Static References",menuName = "SOF/Static References")]
 public class StaticReferences : ScriptableObject
@@ -25,9 +27,10 @@ public class StaticReferences : ScriptableObject
 
     public Mesh wheelCollisionMesh;
     public Airfoil stabilizersAirfoil;
-    public PhysicMaterial wheelPhysicMaterial;
-    public PhysicMaterial aircraftPhysicMaterial;
+    public PhysicsMaterial wheelPhysicMaterial;
+    public PhysicsMaterial aircraftPhysicMaterial;
 
+    public AudioMixer mixer;
     public AudioClip cameraShutterClip;
 
     public ParticleSystem engineBoostEffect;
@@ -38,4 +41,6 @@ public class StaticReferences : ScriptableObject
     public GameObject defaultAlliesCrewmember;
     public GameObject defaultAxisCrewmember;
     public GameObject cube;
+
+    public InputActionAsset mainActions;
 }

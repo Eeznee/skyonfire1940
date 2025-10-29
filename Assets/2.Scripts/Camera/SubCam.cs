@@ -36,12 +36,12 @@ public class SubCam
     {
         if (logic.Adjustment == CamAdjustment.None) return;
 
-        Actions.CameraActions actions = PlayerActions.cam;
+        Actions.CameraActions camActions = ControlsManager.cam;
 
         float speed = CameraInputs.speed;
-        if (actions.MaxSpeed.ReadValue<float>() > 0.5f) speed = CameraInputs.MaxSpeed;
+        if (camActions.MoveAtMaxSpeed.ReadValue<float>() > 0.5f) speed = CameraInputs.MaxSpeed;
 
-        Vector3 input = new Vector3(actions.MoveHorizontal.ReadValue<Vector2>().x, actions.MoveVertical.ReadValue<float>(), actions.MoveHorizontal.ReadValue<Vector2>().y);
+        Vector3 input = new Vector3(camActions.MoveHorizontal.ReadValue<Vector2>().x, camActions.MoveVertical.ReadValue<float>(), camActions.MoveHorizontal.ReadValue<Vector2>().y);
         input *= speed * Time.unscaledDeltaTime;
 
         if (logic.Adjustment == CamAdjustment.Position)

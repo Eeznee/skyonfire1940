@@ -65,7 +65,9 @@ namespace Pinwheel.Jupiter
             BuildTarget buildTarget = EditorUserBuildSettings.activeBuildTarget;
             BuildTargetGroup buildGroup = BuildPipeline.GetBuildTargetGroup(buildTarget);
 
+#pragma warning disable CS0618 // Type or member is obsolete
             string symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildGroup);
+
             List<string> symbolList = new List<string>(symbols.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries));
 
             bool isDirty = false;
@@ -80,7 +82,7 @@ namespace Pinwheel.Jupiter
                 symbols = symbolList.ListElementsToString(";");
                 PlayerSettings.SetScriptingDefineSymbolsForGroup(buildGroup, symbols);
             }
-            
+#pragma warning restore CS0618 // Type or member is obsolete
             if (Completed != null)
             {
                 Completed.Invoke();

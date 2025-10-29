@@ -23,7 +23,6 @@ public class SofAudioListener : MonoBehaviour
     public static Vector3 Position => tr.position;
     public static Transform tr;
     public static AudioSource localSource;
-    AudioMixer mixer;
     float cockpitRatio = 1f;
 
     public static Action OnAttachToNewTransform;
@@ -32,26 +31,6 @@ public class SofAudioListener : MonoBehaviour
 
     private int count;
 
-    private void OnEnable()
-    {
-        instance = this;
-        tr = transform;
-        listener = this.GetCreateComponent<AudioListener>();
-        mixer = GameManager.gm.mixer;
-        StartCoroutine(FadeVolumeIn());
-
-        localSource = gameObject.AddComponent<AudioSource>();
-        localSource.spatialBlend = 0f;
-
-        allowedObjectsAudios = new List<ObjectAudio>();
-
-        AudioListener.volume = 1f;
-        TimeManager.OnPauseEvent += OnPause;
-    }
-    private void OnDisable()
-    {
-        TimeManager.OnPauseEvent -= OnPause;
-    }
     public static AudioMixerGroup GetAudioMixer(SofAudioGroup group)
     {
         switch (group)
@@ -60,17 +39,50 @@ public class SofAudioListener : MonoBehaviour
             case SofAudioGroup.External: return GameManager.gm.listener.external;
             case SofAudioGroup.Persistent: return GameManager.gm.listener.persistent;
         }
-        
+
         return null;
     }
     private Transform CurrentParent()
     {
+        if (!GameManager.gm.playableScene) return transform.parent;
         if (SofCamera.subCam.logic.BasePosMode == CamPos.World) return SofCamera.tr;
         return SofCamera.subCam.Target().transform;
+    }
+
+    private void OnEnable()
+    {
+        instance = this;
+        tr = transform;
+        listener = this.GetCreateComponent<AudioListener>();
+
+        localSource = gameObject.AddComponent<AudioSource>();
+        localSource.spatialBlend = 0f;
+
+        allowedObjectsAudios = new List<ObjectAudio>();
+
+        StartCoroutine(FadeVolumeIn());
+
+        TimeManager.OnPauseEvent += OnPause;
+    }
+    private void OnDisable()
+    {
+        TimeManager.OnPauseEvent -= OnPause;
     }
     private void OnPause()
     {
         AudioListener.volume = TimeManager.paused ? 0.2f : 1f;
+    }
+
+    IEnumerator FadeVolumeIn()
+    {
+        AudioListener.volume = 0f;
+
+        while (AudioListener.volume < 1f)
+        {
+            AudioListener.volume = Mathf.MoveTowards(AudioListener.volume, 1f, Time.unscaledDeltaTime * 0.2f);
+
+            yield return null;
+        }
     }
     void Update()
     {
@@ -78,22 +90,25 @@ public class SofAudioListener : MonoBehaviour
         bool firstPerson = GameManager.gm.vr || SofCamera.viewMode == 1 || SofCamera.viewMode == 3;
         float targetRatio = firstPerson ? Player.seat.CockpitAudioRatio : 0f;
         cockpitRatio = Mathf.MoveTowards(cockpitRatio, targetRatio, 5f * Time.deltaTime);
-        mixer.SetFloat("CockpitVolume", Mathf.Log10(cockpitRatio + 0.0001f) * 20);
         float externalVol = Mathf.Log10(1f - cockpitRatio + 0.0001f) * 20;
-        mixer.SetFloat("ExternalVolume", externalVol);
 
-        mixer.SetFloat("Pitch", Mathf.Max(1/32f,Time.timeScale));
+        StaticReferences.Instance.mixer.SetFloat("CockpitVolume", Mathf.Log10(cockpitRatio + 0.0001f) * 20);
+        StaticReferences.Instance.mixer.SetFloat("ExternalVolume", externalVol);
+        StaticReferences.Instance.mixer.SetFloat("Pitch", Mathf.Max(1 / 32f, Time.timeScale));
+        StaticReferences.Instance.mixer.SetFloat("MasterVolume", Mathf.Log10(SofSettingsSO.CurrentSettings.masterVolume * 0.01f + 0.0001f) * 20f);
+        StaticReferences.Instance.mixer.SetFloat("MusicVolume", Mathf.Log10(SofSettingsSO.CurrentSettings.musicVolume * 0.01f + 0.0001f) * 20f);
 
         if (tr.parent != CurrentParent())
         {
             AttachToNewParent();
         }
-        tr.rotation = SofCamera.tr.rotation;
 
-        foreach(ObjectAudio objectAudio in allowedObjectsAudios)
-        {
+        if (SofCamera.tr) tr.rotation = SofCamera.tr.rotation;
+
+        if (allObjectAudios.Count == 0) return;
+
+        foreach (ObjectAudio objectAudio in allowedObjectsAudios)
             objectAudio.UpdateSofSmartAudioSources();
-        }
 
         count = (count + 1) % allObjectAudios.Count;
         TryToAdd(allObjectAudios[count]);
@@ -117,22 +132,6 @@ public class SofAudioListener : MonoBehaviour
         enabled = true;
 
         OnAttachToNewTransform?.Invoke();
-    }
-
-
-    const float speed = 3f;
-
-    IEnumerator FadeVolumeIn()
-    {
-        float volume = -40f;
-        mixer.GetFloat("MasterVolume", out float finalVolume);
-
-        while (volume < finalVolume)
-        {
-            volume = Mathf.MoveTowards(volume, finalVolume, Time.deltaTime * 80f * speed);
-            mixer.SetFloat("MasterVolume", volume);
-            yield return null;
-        }
     }
 
     public static void TryToAdd(ObjectAudio objectAudio)

@@ -26,16 +26,14 @@ public class Pursuit : Maneuver
 
         float bulletTime = data.distance / 850f;
         bulletTime += Mathf.PerlinNoise(Time.time * 0.2f, data.aircraft.mainSeat.aiRandomizedPerlin * 2f) * 2f - 1f;
-        Vector3 target = data.target.transform.position + data.target.rb.velocity * bulletTime;
+        Vector3 target = data.target.transform.position + data.target.rb.linearVelocity * bulletTime;
 
 
         float levelingFactor = Mathf.InverseLerp(30f,0f,data.offAngle);
         float targetBank = data.target.data.bankAngle.Get;
         targetBank += 60f * (Mathf.PerlinNoise(Time.time * 0.1f, data.aircraft.mainSeat.aiRandomizedPerlin) * 2f - 1f);
 
-        AircraftAxes axes = PointTracking.TrackingInputs(target, data.aircraft,targetBank, levelingFactor, true);
-
-        data.aircraft.controls.SetTargetInput(axes, PitchCorrectionMode.FullyAssisted);
+        aircraft.controls.SimpleTrackingPos(target, targetBank, levelingFactor, true);
     }
 
     public void DisengageFromBomberBeforeCollision(AI.GeometricData data)

@@ -72,13 +72,13 @@ namespace Pinwheel.Jupiter
         private void OnEnable()
         {
             Camera.onPreCull += OnCameraPreCull;
-            RenderPipelineManager.beginFrameRendering += OnBeginFrameRenderingSRP;
+            RenderPipelineManager.beginContextRendering += OnBeginFrameRenderingSRP;
         }
 
         private void OnDisable()
         {
             Camera.onPreCull -= OnCameraPreCull;
-            RenderPipelineManager.beginFrameRendering -= OnBeginFrameRenderingSRP;
+            RenderPipelineManager.beginContextRendering -= OnBeginFrameRenderingSRP;
             RenderSettings.skybox = JJupiterSettings.Instance.DefaultSkybox;
         }
 
@@ -89,7 +89,7 @@ namespace Pinwheel.Jupiter
 
         private void Reset()
         {
-            Light[] lights = FindObjectsOfType<Light>();
+            Light[] lights = FindObjectsByType(typeof(Light), FindObjectsSortMode.None) as Light[];
             for (int i = 0; i < lights.Length; ++i)
             {
                 if (lights[i].type == LightType.Directional)
@@ -106,7 +106,7 @@ namespace Pinwheel.Jupiter
             SyncFog();
         }
 
-        private void OnBeginFrameRenderingSRP(ScriptableRenderContext context, Camera[] cameras)
+        private void OnBeginFrameRenderingSRP(ScriptableRenderContext context, List<Camera> cameras)
         {
             SetupSkyMaterial();
             SyncFog();

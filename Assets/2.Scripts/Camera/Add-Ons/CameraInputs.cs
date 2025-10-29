@@ -26,13 +26,6 @@ public class CameraInputs : MonoBehaviour
 
 
     public static Plane[] frustrumPlanes;
-
-
-    private static float sensitivity = 1f;
-    private static float sensGunner = 1f;
-    private static bool inverted;
-    public static float touchSensitivity = 1f;
-
     public static float MaxSpeed { get { return maxSpeed; } }
 
     private void Start()
@@ -43,12 +36,10 @@ public class CameraInputs : MonoBehaviour
         cam = GetComponent<Camera>();
         fov = fieldOfView;
         zoomed = false;
-        PlayerActions.cam.Aim.performed += _ => Zoom();
 
-        touchSensitivity = PlayerPrefs.GetFloat("TouchSensitivity", 1f);
-        sensitivity = PlayerPrefs.GetFloat("Sensitivity", sensitivity);
-        sensGunner = PlayerPrefs.GetFloat("GunnerSensitivity", sensGunner);
-        inverted = PlayerPrefs.GetInt("InvertTouch", 0) == 1;
+        ControlsManager.cam.ToggleAim.performed += _ => Zoom();
+        ControlsManager.cam.HoldAim.performed += _ => Zoom(true);
+        ControlsManager.cam.HoldAim.canceled += _ => Zoom(false);
 
         SetCamSpeed(0.5f);
         Zoom(false);
@@ -64,8 +55,6 @@ public class CameraInputs : MonoBehaviour
 
         frustrumPlanes = GeometryUtility.CalculateFrustumPlanes(cam);
     }
-
-
     public static void SetCamSpeed(float factor)
     {
         speed = minSpeed * Mathf.Pow(maxSpeed / minSpeed, factor);
@@ -73,59 +62,71 @@ public class CameraInputs : MonoBehaviour
     }
     public static float GetCamSpeedFactor()
     {
-        return Mathf.Log(speed/minSpeed, maxSpeed / minSpeed);
+        return Mathf.Log(speed / minSpeed, maxSpeed / minSpeed);
     }
-
-
     private static bool CameraUnlocked()
     {
-#if MOBILE_INPUT
+        if (Extensions.IsMobile)
+        {
 #if UNITY_EDITOR
-        bool evenSystemNoneSelected = EventSystem.current == null || EventSystem.current.currentSelectedGameObject == null;
-        return PlayerActions.cam.Unlock.ReadValue<float>() > 0.5f && evenSystemNoneSelected;
+            bool evenSystemNoneSelected = EventSystem.current == null || EventSystem.current.currentSelectedGameObject == null;
+            return ControlsManager.cam.Unlock.ReadValue<float>() > 0.5f && evenSystemNoneSelected;
 #else
-        return true;
+            return true;
 #endif
-#else
-        if (ControlsManager.CurrentMode() == ControlsMode.MouseStick) return SofCamera.lookAround;
-        if (UIManager.gameUI != GameUI.Game) return PlayerActions.cam.Unlock.ReadValue<float>() > 0.5f && EventSystem.current.currentSelectedGameObject == null;
-        if (Player.role == SeatRole.Gunner && ControlsManager.CurrentMode() == ControlsMode.Direct) return SofCamera.lookAround;
-        
-        return true;
-#endif
-    }
-    public static float Sensitivity()
-    {
-        float sens = SofCamera.cam.fieldOfView / fieldOfView;
-        sens *= Player.role == SeatRole.Gunner ? sensGunner : sensitivity;
-        return sens;
+        }
+        else
+        {
+            if (ControlsManager.CurrentMode() == ControlsMode.MouseStick) return SofCamera.lookAround;
+            if (UIManager.gameUI != GameUI.Game) return ControlsManager.cam.Unlock.ReadValue<float>() > 0.5f && EventSystem.current.currentSelectedGameObject == null;
+            if (Player.role == SeatRole.Gunner && ControlsManager.CurrentMode() == ControlsMode.Direct) return SofCamera.lookAround;
+
+            return true;
+        }
     }
     public static Vector2 CameraInput()
     {
         if (!CameraUnlocked()) return Vector2.zero;
 
-        Vector2 cameraInput = Sensitivity() * PlayerActions.cam.Rotate.ReadValue<Vector2>();
-        if (inverted) cameraInput = -cameraInput;
-        return cameraInput;
+        Vector2 cameraInput = ControlsManager.cam.Rotate.ReadValue<Vector2>();
+        return SofSettingsSO.CurrentSettings.camSens * 0.01f * SofCamera.cam.fieldOfView / fieldOfView * cameraInput;
     }
-
-
-
-
-
 
     //Zoom Logic
 
     private float zoomVelocity = 0f;
     public void ProgressiveZoom()
     {
-        float input = PlayerActions.cam.ZoomRelativeAxis.ReadValue<float>();
+        float input = ControlsManager.cam.ZoomRelativeAxis.ReadValue<float>();
         float zoomRelativeInput = input * Time.unscaledDeltaTime * 0.2f;
         float fovFactor = 1f - Mathf.Log(fov / minFov, 2) / Mathf.Log(maxFov / minFov, 2);
         SetFov(zoomRelativeInput + fovFactor);
     }
+
+
+    private static bool wasThirdPerson = false;
     public static void Zoom(bool zoomedIn)
     {
+        if (SofSettingsSO.CurrentSettings.firstPersonAiming && Player.aircraft &&  Player.aircraft.card.fighter)
+        {
+            bool pilotFighter = Player.role == SeatRole.Pilot && Player.aircraft && Player.aircraft.card.fighter;
+            bool gunner = Player.role == SeatRole.Gunner;
+            if (pilotFighter || gunner)
+            {
+                if (SofCamera.viewMode == 0 && !zoomed && zoomedIn)
+                {
+                    wasThirdPerson = true;
+                    SofCamera.SwitchViewMode(1);
+                }
+
+                if (wasThirdPerson && SofCamera.viewMode == 1 && zoomed && !zoomedIn)
+                {
+                    wasThirdPerson = false;
+                    SofCamera.SwitchViewMode(3);
+                }
+            }
+        }
+
         zoomed = zoomedIn;
         fov = zoomed ? zoomedFieldOfView : fieldOfView;
     }

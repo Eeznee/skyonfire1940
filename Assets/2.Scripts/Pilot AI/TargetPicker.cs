@@ -45,7 +45,7 @@ public static class TargetPicker
         Vector3 dir = target.tr.position - aircraft.tr.position;
         float dis = dir.magnitude;
         dir = dir / dis;
-        float closure = Vector3.Dot(targetRb.velocity - rb.velocity, dir);
+        float closure = Vector3.Dot(targetRb.linearVelocity - rb.linearVelocity, dir);
         float prio = dis + Mathf.Abs(closure) * 10f;
         prio *= Mathf.Clamp01(2f * (target.card.bomber ? bombersPrio : 1f - bombersPrio)); 
         if (currentTarget == target) prio -= 400f;

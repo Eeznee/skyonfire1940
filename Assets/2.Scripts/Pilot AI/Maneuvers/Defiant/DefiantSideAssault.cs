@@ -34,8 +34,7 @@ public class DefiantSideAssault : ActiveManeuver
 
         //Direction
         Vector3 targetPos = target.transform.position + target.transform.right * distance + Vector3.up * altitudeOffset;
-        AircraftAxes axes = PointTracking.TrackingInputs(targetPos + target.transform.forward * 600f, aircraft, 0f, 1f, true);
-        aircraft.controls.SetTargetInput(axes, PitchCorrectionMode.FullyAssisted);
+        aircraft.controls.SimpleTrackingPos(targetPos + target.transform.forward * 600f, 0f, 1f, true);
 
         //Throttle
         float dis = transform.InverseTransformDirection(targetPos - transform.position).z;

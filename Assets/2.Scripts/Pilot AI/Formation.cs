@@ -16,6 +16,8 @@ public class Formation : ScriptableObject
     {
         Vector3 localPos = aircraftPositions[index];
         Vector3 pos = leader.position;
+        //Quaternion formationRotation = Quaternion.LookRotation(leader.forward, leader.up);
+
         pos += localPos.z * leader.forward;
         pos += localPos.x * (rollRelative ? leader.right : -Vector3.Cross(leader.forward, Vector3.up).normalized);
         pos += localPos.y * (rollRelative ? leader.up : Vector3.up);

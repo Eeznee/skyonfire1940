@@ -66,7 +66,7 @@ public class SofCamera : MonoBehaviour
         if (subCam.Offset() != Vector3.zero) tr.position = subCam.Position();
 
         if (!lookAround) directionInput = desiredRotation * Vector3.forward;
-        else if (PlayerActions.forceCameraPointDirection && Player.role == SeatRole.Pilot) directionInput = Player.tr.forward;
+        else if (ControlsManager.forceCameraPointDirection && Player.role == SeatRole.Pilot) directionInput = Player.tr.forward;
 
         PositionDelta = transform.position - previousPos;
         Velocity = PositionDelta / Time.unscaledDeltaTime;
@@ -84,12 +84,24 @@ public class SofCamera : MonoBehaviour
         axis = Vector2.zero;
         savedAxis = Vector2.zero;
     }
+    public static void LookBehind()
+    {
+        lookAround = true;
+        desiredRotation = Quaternion.AngleAxis(180f, subCam.logic.BaseRotation() * Vector3.up) * subCam.logic.BaseRotation();
+        axis = new Vector2(180f,0f);
+        savedAxis = Vector2.zero;
+    }
     public static void ResetRotationInstant()
     {
         ResetRotation();
         tr.rotation = desiredRotation;
     }
     public static void ResetCamera() { SwitchViewMode(viewMode); }
+
+    public static void ToggleViewMode()
+    {
+        SwitchViewMode(viewMode == 0 ? 1 : 0);
+    }
     public static void SwitchViewMode(int vm)
     {
         if (UIManager.gameUI == GameUI.PhotoMode) vm = 2;

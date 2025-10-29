@@ -36,7 +36,7 @@ public class Overshoot : ActiveManeuver
             }
             else
             {
-                PointTracking.Tracking(transform.position + data.target.transform.forward * 500f, aircraft, data.target.data.bankAngle.Get, 1f, true);
+                aircraft.controls.SimpleTracking(data.target.transform.forward, data.target.data.bankAngle.Get, 1f, true);
             }
         }
         else
